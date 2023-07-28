@@ -1,0 +1,38 @@
+#cdc-initializer--preview {
+    display: flex;
+}
+
+#cdc-initializer--preview > div {
+    margin: 20px;
+}
+
+#cdc-initializer--preview-menu {
+    width: 33.3333%;
+    max-width: 320px;
+}
+
+#cdc-initializer--preview-menu-container .spinner-border {
+    margin: 40px auto;
+}
+
+#cdc-initializer--preview-menu .bstreeview .list-group-item:hover {
+    background-color: var(--bs-list-group-action-hover-bg);
+}
+#cdc-initializer--preview-menu .bstreeview .list-group-item.active {
+    background-color: var(--bs-list-group-active-bg);
+}
+
+#cdc-initializer--preview-container {
+    width: 66.6666%;
+}
+
+#cdc-initializer--preview-menu-container,
+#cdc-initializer--select-api-key-container {
+    margin-bottom: 10px;
+}
+
+#cdc-initializer--select-api-key,
+.list-group-item,
+.alert {
+    font-size: 13px;
+}
