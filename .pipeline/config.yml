@@ -11,6 +11,7 @@ general:
   vaultServerUrl: 'https://vault.tools.sap'
   vaultNamespace: 'ies/hyperspace/pipelines'
   nativeBuild: true
+  nativeVoting: true
   verbose: true
 stages:
   Central Build:
