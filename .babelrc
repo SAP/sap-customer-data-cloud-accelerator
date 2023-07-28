@@ -1,4 +1,17 @@
+/*
+ * Copyright: Copyright 2023 SAP SE or an SAP affiliate company and cdc-initializer contributors
+ * License: Apache-2.0
+ */
 {
-  "presets": [["@babel/preset-react"]],
-  "plugins": ["transform-class-properties", "istanbul"]
+    // "presets": ["env"],
+    // "targets": {
+    //     "esmodules": true
+    // },
+
+    "presets": ["@babel/preset-env"], // npm install --save-dev @babel/cli @babel/core @babel/preset-env
+
+    // "plugins": [["inline-script-import", {}]] // IMPORTANT: THIS PACKAGE IS BUGGY IN FILENAMES WITH "-" // npm install --save-dev babel-plugin-inline-script-import
+
+    "retainLines": true, // https://babeljs.io/docs/options#retainlines (will keep the same line numbers as the original code)
+    "compact": false
 }
