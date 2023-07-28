@@ -11,7 +11,7 @@ void call(Map parameters) {
     {
         echo "Start - checkmarxExecuteScan"
         // this should be enabled later when starting fixing this issues
-        //checkmarxExecuteScan script: parameters.script
+        checkmarxExecuteScan script: parameters.script
         echo "End - checkmarxExecuteScan"
         echo "Start - whitesourceExecuteScan"
         whitesourceExecuteScan script: parameters.script
