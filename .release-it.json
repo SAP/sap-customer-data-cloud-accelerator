@@ -1,0 +1,16 @@
+{
+  "git": {
+    "commitMessage": "chore: release v${version}"
+  },
+  "github": {
+    "release": true,
+    "assets": ["${name}-${version}.zip"]
+  },
+  "npm": {
+    "publish": false
+  },
+  "hooks": {
+    "after:bump": "npm run manifest && npm run build && npm run compress",
+    "after:release": "echo Successfully released ${name} v${version} to ${repo.repository}."
+  }
+}

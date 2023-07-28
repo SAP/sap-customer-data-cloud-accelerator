@@ -1,0 +1,5 @@
+{
+  "GREETING": "Hello $firstName $lastName,",
+  "PLEASE_CLICK_TO_ACTIVATE_ACCOUNT": "Please click this link to activate your account:",
+  "BUTTON_ACTIVATE_LINK": "Activate link"
+}

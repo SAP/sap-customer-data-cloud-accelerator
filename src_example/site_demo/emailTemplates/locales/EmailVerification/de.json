@@ -1,0 +1,5 @@
+{
+  "GREETING": "Hallo $firstName $lastName,",
+  "PLEASE_CLICK_TO_ACTIVATE_ACCOUNT": "Bitte klicken Sie auf diesen Link, um Ihr Konto zu aktivieren:",
+  "BUTTON_ACTIVATE_LINK": "Verknüpfung aktivieren"
+}

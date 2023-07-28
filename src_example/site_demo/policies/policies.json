@@ -1,0 +1,66 @@
+{
+    "registration": {
+        "requireCaptcha": false,
+        "requireSecurityQuestion": false,
+        "requireLoginID": false,
+        "enforceCoppa": false
+    },
+    "gigyaPlugins": {
+        "connectWithoutLoginBehavior": "alwaysLogin",
+        "defaultRegScreenSet": "",
+        "defaultMobileRegScreenSet": "",
+        "sessionExpiration": 0,
+        "rememberSessionExpiration": 0
+    },
+    "accountOptions": {
+        "verifyEmail": true,
+        "verifyProviderEmail": false,
+        "useCodeVerification": false,
+        "allowUnverifiedLogin": false,
+        "preventLoginIDHarvesting": false,
+        "sendWelcomeEmail": false,
+        "sendAccountDeletedEmail": false,
+        "defaultLanguage": "en",
+        "loginIdentifierConflict": "failOnSiteConflictingIdentity",
+        "loginIdentifiers": "email, providerEmail"
+    },
+    "passwordComplexity": {
+        "minCharGroups": 0,
+        "minLength": 8
+    },
+    "security": {
+        "passwordChangeInterval": 0,
+        "passwordHistorySize": 0,
+        "riskAssessmentWithReCaptchaV3": false,
+        "riskAssessmentWithTransUnion": false,
+        "sendUnknownLocationNotification": false,
+        "signDeviceId": "js_latest"
+    },
+    "authentication": {
+        "methods": {
+            "password": {
+                "enabled": true
+            },
+            "push": {
+                "enabled": false
+            }
+        }
+    },
+
+    "profilePhoto": {
+        "thumbnailWidth": 64,
+        "thumbnailHeight": 64
+    },
+    "federation": {
+        "allowMultipleIdentities": false
+    },
+    "twoFactorAuth": {
+        "providers": [
+            {
+                "name": "gigyaPhone",
+                "enabled": true
+            }
+        ],
+        "smsProvider": {}
+    }
+}

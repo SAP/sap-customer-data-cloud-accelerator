@@ -1,0 +1,5 @@
+{
+  "GREETING": "Hello $firstName $lastName,",
+  "PLEASE_CLICK_TO_RESET_PASSWORD": "Please click the link to reset your password:",
+  "BUTTON_RESET_LINK": "Reset link"
+}
