@@ -2,7 +2,7 @@
  * Copyright: Copyright 2023 SAP SE or an SAP affiliate company and cdc-initializer contributors
  * License: Apache-2.0
  */
-// const axios = require('axios').default
+
 const axios = require('axios');
 
 class Gigya {

@@ -3,7 +3,7 @@
  * License: Apache-2.0
  */
 const deploySchema = async ({ gigya, apiKey, dataCenter, buildDirectory }) => {
-    // TODO
+    // needs to be implemented
 }
 
 module.exports = { deploySchema }

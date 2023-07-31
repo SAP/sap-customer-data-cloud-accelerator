@@ -18,18 +18,7 @@ const deployPermissionGroups = async ({ gigya, apiKey, dataCenter, buildDirector
     const aclID = permissionGroupValue.aclID
     const scope = JSON.stringify(permissionGroupValue.scope)
 
-  // Get the partnerID from the apiKey
-//   const partnerIDResponse = await getPartnerID(gigya, {
-//     query: `select partnerID, siteID, baseDomain from sites where apiKey="${apiKey}"`,
-// });
 
-
-//     if (!partnerIDResponse || partnerIDResponse.errorCode) {
-//         console.error(`Failed to retrieve partnerID for apiKey "${apiKey}"`);
-//         throw new Error(JSON.stringify(partnerIDResponse));
-//     }
-
-    // const partnerID = JSON.stringify(partnerIDResponse.data[0].partnerID);
 
     const result = setPermissionRequest(gigya, { apiKey, dataCenter, groupID: groupID, scope: scope, partnerID: "79597568", aclID: aclID })
     if (result.errorCode) {

@@ -6,20 +6,6 @@ const {getPartnerId} = require('../utils/utils')
 const deployAcls = async ({ gigya, apiKey, dataCenter, buildDirectory }) => {
   const aclFiles = fs.readdirSync(buildDirectory)
 
-  // Get the partnerID from the apiKey
-  // const partnerIDResponse = await getPartnerID(gigya, {
-  //     query: `select partnerID, siteID, baseDomain from sites where apiKey="${apiKey}"`,
-  // });
-
-  
-  // const partnerID = JSON.stringify(partnerIDResponse.data[0].partnerID);
-  // console.log(partnerID);
-
-  // if (!getPartnerId) {
-  //     console.error(`Failed to retrieve partnerID for apiKey "${apiKey}"`);
-  //     throw new Error("PartnerID is not available");
-  // }
-
   for (const file of aclFiles) {
     const filePath = path.join(buildDirectory, file)
     const fileContents = fs.readFileSync(filePath, { encoding: 'utf8' })
