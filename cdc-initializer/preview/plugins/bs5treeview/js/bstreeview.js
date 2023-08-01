@@ -8,12 +8,12 @@
  * Project: https://github.com/chniter/bstreeview
  * Project: https://github.com/nhmvienna/bs5treeview (bootstrap 5)
  */
-; (function ($, window, document, undefined) {
+; (function ($, window, document) {
     "use strict";
     /**
      * Default bstreeview  options.
      */
-    var pluginName = "bstreeview",
+    let pluginName = "bstreeview",
         defaults = {
             expandIcon: 'fa fa-angle-down fa-fw',
             collapseIcon: 'fa fa-angle-right fa-fw',
@@ -26,7 +26,7 @@
     /**
      * bstreeview HTML templates.
      */
-    var templates = {
+    let templates = {
         treeview: '<div class="bstreeview"></div>',
         treeviewItem: '<div role="treeitem" class="list-group-item" data-bs-toggle="collapse"></div>',
         treeviewGroupItem: '<div role="group" class="list-group collapse" id="itemid"></div>',
@@ -66,7 +66,7 @@
             $(this.element).addClass('bstreeview');
 
             this.initData({ nodes: this.tree });
-            var _this = this;
+            let _this = this;
             this.build($(this.element), this.tree, 0);
             // Update angle icon on collapse
             $(this.element).on('click', '.list-group-item', function (e) {
@@ -95,8 +95,8 @@
          */
         initData: function (node) {
             if (!node.nodes) return;
-            var parent = node;
-            var _this = this;
+            let parent = node;
+            let _this = this;
             $.each(node.nodes, function checkStates(index, node) {
 
                 node.nodeId = _this.nodes.length;
@@ -115,9 +115,9 @@
          * @param {*} depth
          */
         build: function (parentElement, nodes, depth) {
-            var _this = this;
+            let _this = this;
             // Calculate item padding.
-            var leftPadding = _this.settings.parentsMarginLeft;
+            let leftPadding = _this.settings.parentsMarginLeft;
 
             if (depth > 0) {
                 leftPadding = (_this.settings.indent + depth * _this.settings.indent).toString() + "rem;";
@@ -126,19 +126,19 @@
             // Add each node and sub-nodes.
             $.each(nodes, function addNodes(id, node) {
                 // Main node element.
-                var treeItem = $(templates.treeviewItem)
+                let treeItem = $(templates.treeviewItem)
                     .attr('data-bs-target', "#" + _this.itemIdPrefix + node.nodeId)
                     .attr('style', 'padding-left:' + leftPadding)
                     .attr('aria-level', depth);
                 // Set Expand and Collapse icones.
                 if (node.nodes) {
-                    var treeItemStateIcon = $(templates.treeviewItemStateIcon)
+                    let treeItemStateIcon = $(templates.treeviewItemStateIcon)
                         .addClass((node.expanded)?_this.settings.expandIcon:_this.settings.collapseIcon);
                     treeItem.append(treeItemStateIcon);
                 }
                 // set node icon if exist.
                 if (node.icon) {
-                    var treeItemIcon = $(templates.treeviewItemIcon)
+                    let treeItemIcon = $(templates.treeviewItemIcon)
                         .addClass(node.icon);
                     treeItem.append(treeItemIcon);
                 }
@@ -161,7 +161,7 @@
                 // Build child nodes.
                 if (node.nodes) {
                     // Node group item.
-                    var treeGroup = $(templates.treeviewGroupItem)
+                    let treeGroup = $(templates.treeviewGroupItem)
                         .attr('id', _this.itemIdPrefix + node.nodeId);
                     parentElement.append(treeGroup);
                     _this.build(treeGroup, node.nodes, depth);

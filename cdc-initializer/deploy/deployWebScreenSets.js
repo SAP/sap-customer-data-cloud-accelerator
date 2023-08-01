@@ -22,10 +22,6 @@ const deployWebScreenSets = async ({ gigya, apiKey, dataCenter, buildDirectory }
         fs.readdirSync(buildDirectory).map(async (screenSetID) => {
             const jsFilename = path.join(buildDirectory, screenSetID, `${screenSetID}.js`)
             const cssFilename = path.join(buildDirectory, screenSetID, `${screenSetID}.css`)
-            // const htmlFilename = path.join(buildDirectory, screenSetID, `${screenSetID}.html`)
-            // const metadataFilename = path.join(buildDirectory, screenSetID, `${screenSetID}.metadata.json`)
-            // const translationsFilename = path.join(buildDirectory, screenSetID, `${screenSetID}.translations.json`)
-
             // Get compiled files
             let data = {}
 
@@ -51,23 +47,6 @@ const deployWebScreenSets = async ({ gigya, apiKey, dataCenter, buildDirectory }
                 throw new Error(`Original screenSet html is not available: ${json.stringify(originalScreenSet)}`)
             }
             data.html = originalScreenSet.html
-
-            // html is requred
-            // const html = !fs.existsSync(htmlFilename) ? '' : fs.readFileSync(htmlFilename, { encoding: 'utf8' })
-            // if (!html) {
-            //     throw new Error(`File is required file: ${htmlFilename}`)
-            // }
-            // data.html = html
-
-            // const metadata = !fs.existsSync(metadataFilename) ? '' : fs.readFileSync(metadataFilename, { encoding: 'utf8' })
-            // if (metadata) {
-            //     data.metadata = metadata
-            // }
-
-            // const translations = !fs.existsSync(translationsFilename) ? '' : fs.readFileSync(translationsFilename, { encoding: 'utf8' })
-            // if (translations) {
-            //     data.translations = translations
-            // }
 
             if (!Object.keys(data).length) {
                 console.log(`Nothing to deploy for: ${screenSetID}`)

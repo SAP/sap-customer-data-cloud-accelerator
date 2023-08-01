@@ -2,7 +2,7 @@
  * Copyright: Copyright 2023 SAP SE or an SAP affiliate company and cdc-initializer contributors
  * License: Apache-2.0
  */
-// TODO: Make this file a class
+// Needs to be implemented: Make this file a class
 
 const GIGYA_API_URL = 'https://cdns.gigya.com/js/gigya.js'
 const CONFIG_FILE = '../cdc-initializer.json'
@@ -180,10 +180,8 @@ const isSiteEnabled = ({ apiKey }) => {
         return true
     }
     const siteFilterScreens = getSiteFilteredScreens({ apiKey })
-    if (siteFilterScreens && typeof siteFilterScreens.screens !== 'undefined' && (!siteFilterScreens.screens || !siteFilterScreens.screens.length)) {
-        return false
-    }
-    return true
+   
+    return siteFilterScreens && typeof siteFilterScreens.screens == 'undefined'&& (siteFilterScreens.screens || siteFilterScreens.screens.length)
 }
 
 //
@@ -199,7 +197,7 @@ const getScreenSetsID = (callback = () => {}) => {
                 : callback(
                       res.screenSets.map((screenSet) => {
                           // Get screens from designerHtml
-                          var div = document.createElement('DIV')
+                          let div = document.createElement('DIV')
                           div.innerHTML = screenSet.metadata.designerHtml
                           const screensID = Array.from(div.querySelectorAll('.gigya-screen-set > div')).map((screenHtml) => screenHtml.getAttribute('id'))
                           return { screenSetID: screenSet.screenSetID, screensID }
@@ -335,12 +333,12 @@ const loadScreenSetsMenu = (callback = () => {}) => {
 // Navigation
 //
 
-initNavigation = () => {
+let initNavigation = () => {
     window.addEventListener('hashchange', () => processHashChange(getHashParams()))
     setTimeout(() => processHashChange(getHashParams()), 50)
 }
 
-processHashChange = async (params) => {
+let processHashChange = async (params) => {
     // API Key changed
     if (gigya.apiKey !== params.apiKey) {
         window.location.reload()
@@ -455,7 +453,7 @@ const getScreenSetEventsFromFile = async (filename) => {
         })
 
     // Remove comments and \n
-    screenJs = screenJs.replace(/\/\*[\s\S]*?\*\/|([^\\:]|^)\/\/.*$/gm, '')
+    screenJs = screenJs.replace(/\/\*[\s\S]*?\*\/|^([\\:]|^)\/\/.*$/gm, '')
     screenJs = '' + screenJs.replaceAll('\n', '')
 
     let screenSetEvents

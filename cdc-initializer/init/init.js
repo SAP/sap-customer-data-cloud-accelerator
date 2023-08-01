@@ -52,7 +52,7 @@ const init = async ({ gigya, sites, featureName, environment, reset }) => {
             const { dataCenter } = siteConfig
 
             if (FEATURE.WEB_SDK === featureName || !featureName) {
-                args = {
+                let args = {
                     srcFile: path.join(SRC_DIRECTORY, siteDomain, FEATURE.WEB_SDK, `${FEATURE.WEB_SDK}.js`),
                     srcDirectory: path.join(SRC_DIRECTORY, siteDomain, FEATURE.WEB_SDK),
                     templateWebSdk: TEMPLATE_WEB_SDK_FILE,

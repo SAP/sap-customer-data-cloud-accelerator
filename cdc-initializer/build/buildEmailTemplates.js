@@ -19,7 +19,7 @@ const buildEmailTemplates = ({ srcTemplatesDirectory, srcLocalesDirectory, build
     clearDirectoryContents(buildDirectory)
 
     // Generate outputs templates and create files in output directory
-    templates = templates.map((template) => generateTemplateOutputs({ template, directory: path.join(buildDirectory, template.name) }))
+    templates.map((template) => generateTemplateOutputs({ template, directory: path.join(buildDirectory, template.name) }))
 }
 
 module.exports = { buildEmailTemplates }

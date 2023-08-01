@@ -3,7 +3,7 @@
  * License: Apache-2.0
  */
 const buildSchema = ({ srcDirectory, buildDirectory }) => {
-    // TODO
+    // needs to be implemented
 }
 
 module.exports = { buildSchema }
