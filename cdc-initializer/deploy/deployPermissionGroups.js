@@ -5,21 +5,21 @@
 
 const fs = require('fs');
 const path = require('path');
-const { setPermissionGroupsRequest, getPartnerID } = require('../services/gigya/gigya.helpers');
+const { setPermissionGroupsRequest, getPartnerIdRequest } = require('../services/gigya/gigya.helpers');
 
 const deployPermissionGroups = async ({ gigya, apiKey, buildDirectory }) => {
   const filePath = path.join(buildDirectory, 'permissionGroups.json');
 
-  const partnerIDResponse = await getPartnerID(gigya, {
-    query: `select partnerID, siteID, baseDomain from sites where apiKey="${apiKey}"`,
-    dataCenter:"us1",
-  });
-  const partnerID = partnerIDResponse.data[0].partnerID;
+  const query = `select partnerID, siteID, baseDomain from sites where apiKey="${apiKey}"`;
+  const partnerIDResponse = await getPartnerIdRequest(gigya, { query });
 
-  if (!partnerID) {
+  // Error check
+  if (!partnerIDResponse || !partnerIDResponse.data || !partnerIDResponse.data[0] || !partnerIDResponse.data[0].partnerID) {
     console.error(`Failed to retrieve partnerID for apiKey "${apiKey}"`);
-    throw new Error("PartnerID is not available");
+    throw new Error("Failed to retrieve partnerID or it's not available in the response");
   }
+  
+  const partnerID = partnerIDResponse.data[0].partnerID;
 
   if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
     const fileContents = fs.readFileSync(filePath, { encoding: 'utf8' });

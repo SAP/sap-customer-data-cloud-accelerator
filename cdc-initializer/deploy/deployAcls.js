@@ -5,40 +5,33 @@
 
 const fs = require('fs');
 const path = require('path');
-const { setAclRequest, getPartnerID } = require('../services/gigya/gigya.helpers');
-
-const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+const { setAclRequest, getPartnerIdRequest } = require('../services/gigya/gigya.helpers');
 
 const deployAcls = async ({ gigya, apiKey, buildDirectory }) => {
   const aclFiles = fs.readdirSync(buildDirectory);
-  const dataCenter = "us1";
 
-  const partnerIDResponse = await getPartnerID(gigya, {
-    query: `select partnerID, siteID, baseDomain from sites where apiKey="${apiKey}"`,
-    dataCenter,
-  });
+  const query = `select partnerID, siteID, baseDomain from sites where apiKey="${apiKey}"`;
+  const partnerIDResponse = await getPartnerIdRequest(gigya, { query });
+
+  // Error checking based on your version of getPartnerIdRequest
+  if (!partnerIDResponse || !partnerIDResponse.data || !partnerIDResponse.data[0] || !partnerIDResponse.data[0].partnerID) {
+    console.error(`Failed to retrieve partnerID for apiKey "${apiKey}"`);
+    throw new Error("Failed to retrieve partnerID or it's not available in the response");
+  }
+  
   
   const partnerID = partnerIDResponse.data[0].partnerID;
-
-  if (!partnerID) {
-    console.error(`Failed to retrieve partnerID for apiKey "${apiKey}"`);
-    throw new Error("PartnerID is not available");
-  }
 
   for (const file of aclFiles) {
     const filePath = path.join(buildDirectory, file);
     const fileContents = fs.readFileSync(filePath, { encoding: 'utf8' });
-
-    const aclValue = JSON.parse(fileContents);
     const aclID = path.basename(file, '.json');
-
-    await delay(100); 
 
     const result = setAclRequest(gigya, {
       apiKey,
-      dataCenter,
+      dataCenter: "us1",
       aclID: aclID,
-      acl: JSON.stringify(aclValue),
+      acl: fileContents,
       partnerID: partnerID,
     });
 

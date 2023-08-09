@@ -62,13 +62,13 @@ const setAclRequest = async (gigya, { apiKey, dataCenter, ...props }) => {
     return response.data
 }
 
-const setPermissionRequest = async (gigya, { apiKey, dataCenter, ...props }) => {
+const setPermissionGroupsRequest = async (gigya, { apiKey, dataCenter, ...props }) => {
     const url = `https://accounts.${dataCenter}.gigya.com/admin.createGroup`
     const response = await gigya.request(url, { apiKey, ...props}).catch((error) => error)
     return response.data
 }
 
-const getPartnerID  = async (gigya, {...props }) => {
+const getPartnerIdRequest  = async (gigya, {...props }) => {
     const url = `https://accounts.gigya.com/admin.search`
     const response = await gigya.request(url, { ...props }).catch((error) => error)
     return response.data
@@ -85,6 +85,6 @@ module.exports = {
     setLegalStatementsRequest,
     getPoliciesRequest,
     setAclRequest,
-    setPermissionRequest,
-    getPartnerID,
+    setPermissionGroupsRequest,
+    getPartnerIdRequest,
 }
