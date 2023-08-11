@@ -92,7 +92,7 @@ const getConfigSites = async (origin = 'deploy') => {
 
 const appendGigyaScriptTag = ({ apiKey, webSdk, lang }) => {
     let gigyaScript = document.createElement('script')
-    gigyaScript.src = `${GIGYA_API_URL}?apikey=${apiKey}${lang ? `&lang=${lang}` : ''}`
+    gigyaScript.src = GIGYA_API_URL + '?apikey=' + apiKey + (lang ? '&lang=' + lang : '');
     gigyaScript.innerHTML = webSdk ? webSdk : ''
     document.querySelector('head').append(gigyaScript)
 }
