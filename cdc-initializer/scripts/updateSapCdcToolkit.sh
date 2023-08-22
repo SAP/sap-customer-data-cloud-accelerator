@@ -11,8 +11,8 @@
 #
 
 PROJECT_BASE_DIRECTORY="cdc-initializer"
-TOOLKIT_SRC_CODE_FILE="toolkitSrcCode.zip"
-TOOLKIT_FOLDER="toolkit"
+TOOLKIT_SRC_CODE_FILE="sap-cdc-toolkit.zip"
+TOOLKIT_FOLDER="sap-cdc-toolkit"
 MAC_CONFIG=()
 WINDOWS_CONFIG=()
 OS=$(uname)
