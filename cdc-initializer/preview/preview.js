@@ -62,9 +62,7 @@ const onGigyaServiceReady = () => {
 
 const getConfig = async () =>
     await fetch(CONFIG_FILE)
-        .then((response) => 
-        response.setHeader('Strict-Transport-Security', 'max-age=3600; includeSubDomains'),
-        response.json())
+        .then((response) => response.setHeader('Strict-Transport-Security', 'max-age=3600; includeSubDomains'), response.json())
         .then((data) => data)
 
 const getConfigSites = async (origin = 'deploy') => {
@@ -92,7 +90,7 @@ const getConfigSites = async (origin = 'deploy') => {
 
 const appendGigyaScriptTag = ({ apiKey, webSdk, lang }) => {
     let gigyaScript = document.createElement('script')
-    gigyaScript.src = GIGYA_API_URL + '?apikey=' + apiKey + (lang ? '&lang=' + lang : '');
+    gigyaScript.src = GIGYA_API_URL + '?apikey=' + apiKey + (lang ? '&lang=' + lang : '')
     gigyaScript.innerHTML = webSdk ? webSdk : ''
     document.querySelector('head').append(gigyaScript)
 }
@@ -180,8 +178,8 @@ const isSiteEnabled = ({ apiKey }) => {
         return true
     }
     const siteFilterScreens = getSiteFilteredScreens({ apiKey })
-   
-    return siteFilterScreens && typeof siteFilterScreens.screens == 'undefined'&& (siteFilterScreens.screens || siteFilterScreens.screens.length)
+
+    return siteFilterScreens && typeof siteFilterScreens.screens == 'undefined' && (siteFilterScreens.screens || siteFilterScreens.screens.length)
 }
 
 //
