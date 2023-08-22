@@ -10,6 +10,7 @@
 # license agreement you entered into with SAP.
 #
 
+PROJECT_BASE_DIRECTORY="cdc-initializer"
 TOOLKIT_SRC_CODE_FILE="toolkitSrcCode.zip"
 TOOLKIT_FOLDER="toolkit"
 MAC_CONFIG=()
@@ -142,8 +143,13 @@ extractZipFile() {
 deleteToolkitFolder() {
   local folder=$1
   echo "Deleting folder $toolkitReferencePath"
-  chmod -R 777 $toolkitReferencePath
+  chmod -R 777 $toolkitReferencePath  # make the files writable, so they can be deleted
   $(getCommandDeleteFolder) $folder
+  if [ -d $folder ]
+  then
+    echo "Error: Could not delete directory $folder. Aborting..."
+    exit 1
+  fi
 }
 
 copyToolkitFolder() {
@@ -170,13 +176,13 @@ deleteTestFilesFromToolkitFolder() {
 
 copySrcCodeFolderToProject() {
   local extractedFolderName=$1
-  toolkitReferencePath="./cdc-initializer/$TOOLKIT_FOLDER"
+  local toolkitReferencePath="$PROJECT_BASE_DIRECTORY/$TOOLKIT_FOLDER"
   deleteToolkitFolder $toolkitReferencePath
   echo "Creating folder $toolkitReferencePath"
   mkdir -p $toolkitReferencePath
   copyToolkitFolder $toolkitReferencePath $extractedFolderName
   deleteTestFilesFromToolkitFolder $toolkitReferencePath
-  chmod -R 555 $toolkitReferencePath
+  chmod -R 555 $toolkitReferencePath    # make the directory content not writable, to avoid unaware file changes
 }
 
 deleteTemporaryFiles() {
@@ -188,6 +194,31 @@ deleteTemporaryFiles() {
   echo "Deleting temporary folder ${tempDirectory}$extractedFolderName"
   $(getCommandDeleteFolder) $extractedFolderName
   cd - > /dev/null
+}
+
+getNumberOfFilesOnDirectory() {
+  local directory=$1
+  case $OS in
+    'Windows')
+      #do something here
+      ;;
+    'Mac')
+      echo $(find $directory -name "*.js" | wc -l)
+      ;;
+    *) ;;
+  esac
+}
+
+verifyUpdateResult() {
+  local toolkitReferencePath="$PROJECT_BASE_DIRECTORY/$TOOLKIT_FOLDER"
+  local numberOfFiles=$(getNumberOfFilesOnDirectory "$toolkitReferencePath")
+  if [ $numberOfFiles -gt 30 ]; then
+    echo "Toolkit source files updated successfully"
+    exit 0
+  else
+    echo "Toolkit source files were not updated successfully"
+    exit 1
+  fi
 }
 
 main() {
@@ -203,3 +234,4 @@ main() {
 }
 
 main
+verifyUpdateResult
