@@ -2,7 +2,7 @@
  * Copyright: Copyright 2023 SAP SE or an SAP affiliate company and cdc-initializer contributors
  * License: Apache-2.0
  */
-const path = require('path')
+import path from 'path'
 
 const CDC_INITIALIZER_DIRECTORY = 'cdc-initializer/'
 const CONFIG_FILENAME = 'cdc-initializer.json'
@@ -12,7 +12,7 @@ const FEATURE = {
     EMAIL_TEMPLATES: 'emailTemplates',
     POLICIES: 'policies',
     SCHEMA: 'schema',
-    ACLS: "acls",
+    ACLS: 'acls',
     PERMISSION_GROUPS: 'permissionGroups',
     CONSENT_STATEMENTS: 'consentStatements',
 }
@@ -26,7 +26,7 @@ const TEMPLATE_WEB_SDK_FILE = path.join(CDC_INITIALIZER_DIRECTORY, `/templates/d
 const TEMPLATE_SCREEN_SET_CSS_CUSTOM_CODE_SEPARATOR_START = `/* || CUSTOM CODE START */`
 const TEMPLATE_SCREEN_SET_CSS_CUSTOM_CODE_SEPARATOR_END = `/* || CUSTOM CODE END */`
 
-module.exports = {
+export {
     CDC_INITIALIZER_DIRECTORY,
     CONFIG_FILENAME,
     FEATURE,

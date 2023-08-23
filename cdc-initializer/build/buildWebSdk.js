@@ -2,9 +2,9 @@
  * Copyright: Copyright 2023 SAP SE or an SAP affiliate company and cdc-initializer contributors
  * License: Apache-2.0
  */
-const fs = require('fs')
+import fs from 'fs'
 
-const { cleanJavaScriptModuleBoilerplateWebSdk, replaceFilenamesWithFileContents } = require('../utils/utils')
+import { cleanJavaScriptModuleBoilerplateWebSdk, replaceFilenamesWithFileContents } from '../utils/utils.js'
 
 const buildWebSdk = ({ buildFile, buildDirectory, buildBundledFile }) => {
     let webSdk = fs.readFileSync(buildFile, { encoding: 'utf8' })
@@ -20,4 +20,4 @@ const buildWebSdk = ({ buildFile, buildDirectory, buildBundledFile }) => {
     fs.rmSync(buildDirectory, { recursive: true, force: true })
 }
 
-module.exports = { buildWebSdk }
+export { buildWebSdk }

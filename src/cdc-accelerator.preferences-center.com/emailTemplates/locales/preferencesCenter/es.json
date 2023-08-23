@@ -1,0 +1,12 @@
+{
+    "FROM": "Nestle <ciammailing@ciam.nestle.com>",
+    "SUBJECT": "Tu acceso al Centro de Preferencias Nestlé",
+    "GREETING": "Hola",
+    "YOU_HAVE_REQUESTED_ACCESS_FOR_FOLLOWING_EMAIL": "Has solicitado acceso al Centro de Preferencias Nestlé con el siguiente correo electrónico",
+    "PLEASE_VERIFY_YOUR_EMAIL_ADDRESS": "Por favor haz clic en el siguiente link para acceder con tu correo electrónico:",
+    "LINK_PREFERENCES_CENTER": "Acceso al Centro de Preferencias Nestlé",
+    "THE_LINK_IS_ACTIVE_FOR_24H": "Este link estará activo por 24 horas.",
+    "LINK_YOU_CAN_ACCESS_THE_PREFERENCES_CENTER_TO_UPDATE_YOUR_DETAILS": "Puedes usar el <a href=\"https://mx-test.factory.nestle.com/centro-de-preferencias\">Centro de Preferencias Nestlé</a> para actualizar tu información, editar tus preferencias o darte de baja de cualquier comunicación de Nestlé.",
+    "BEST_REGARDS": "Saludos",
+    "NESTLE": "Nestlé"
+}

@@ -2,10 +2,10 @@
  * Copyright: Copyright 2023 SAP SE or an SAP affiliate company and cdc-initializer contributors
  * License: Apache-2.0
  */
-const fs = require('fs')
-const path = require('path')
+import fs from 'fs'
+import path from 'path'
 
-const { clearDirectoryContents, readJsonFile } = require('../utils/utils')
+import { clearDirectoryContents, readJsonFile } from '../utils/utils.js'
 
 const buildConsentStatements = ({ srcFile, buildFile, buildDirectory, srcLegalStatementsDirectory, buildLegalStatementsDirectory }) => {
     // Get consents file
@@ -44,4 +44,4 @@ const configureLegalStatementsForFolder = ({ legalFolder, srcLegalStatementsDire
     }
 }
 
-module.exports = { buildConsentStatements }
+export { buildConsentStatements }

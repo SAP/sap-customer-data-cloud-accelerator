@@ -9,6 +9,7 @@ const CONFIG_FILE = '../cdc-initializer.json'
 
 const BUILD_DIRECTORY = '../build/'
 
+let ORIGIN = ''
 let FILTER_SCREENS = []
 
 let LINK_CSS_CLASS = ''
@@ -32,6 +33,7 @@ const preview = ({
     linkCssClass = 'cdc-initializer--css-link',
     filterScreens,
 }) => {
+    ORIGIN = origin
     FILTER_SCREENS = filterScreens
 
     LINK_CSS_CLASS = linkCssClass
@@ -62,9 +64,7 @@ const onGigyaServiceReady = () => {
 
 const getConfig = async () =>
     await fetch(CONFIG_FILE)
-        .then((response) => 
-        response.setHeader('Strict-Transport-Security', 'max-age=3600; includeSubDomains'),
-        response.json())
+        .then((response) => response.json())
         .then((data) => data)
 
 const getConfigSites = async (origin = 'deploy') => {
@@ -93,7 +93,7 @@ const getConfigSites = async (origin = 'deploy') => {
 const appendGigyaScriptTag = ({ apiKey, webSdk, lang }) => {
     let gigyaScript = document.createElement('script')
     gigyaScript.src = `${GIGYA_API_URL}?apikey=${apiKey}${lang ? `&lang=${lang}` : ''}`
-    gigyaScript.innerHTML = webSdk ? webSdk : ''
+    gigyaScript.innerHTML = webSdk || ''
     document.querySelector('head').append(gigyaScript)
 }
 
@@ -140,8 +140,8 @@ const selectSite = (apiKey) => {
     window.location.reload()
 }
 
-const loadSiteSelector = async ({ apiKey: currentApiKey, origin }) => {
-    const sites = await getConfigSites(origin)
+const loadSiteSelector = async ({ apiKey: currentApiKey }) => {
+    const sites = await getConfigSites(ORIGIN)
 
     // If no site selected, or invalid apiKey, select the first enabled site
     if (!currentApiKey || !sites.find((site) => site.apiKey === currentApiKey)) {
@@ -180,8 +180,7 @@ const isSiteEnabled = ({ apiKey }) => {
         return true
     }
     const siteFilterScreens = getSiteFilteredScreens({ apiKey })
-   
-    return siteFilterScreens && typeof siteFilterScreens.screens == 'undefined'&& (siteFilterScreens.screens || siteFilterScreens.screens.length)
+    return !(siteFilterScreens && typeof siteFilterScreens.screens !== 'undefined' && (!siteFilterScreens.screens || !siteFilterScreens.screens.length))
 }
 
 //
@@ -229,7 +228,7 @@ const groupScreenSets = (screenSets) =>
 
 const loadScreenSetsMenu = (callback = () => {}) => {
     getScreenSetsID((screenSets) => {
-        if (FILTER_SCREENS && FILTER_SCREENS.length) {
+        if (FILTER_SCREENS?.length) {
             let filterScreens = [...FILTER_SCREENS]
 
             // If separating filters by apiKey, get this apiKey's filters
@@ -333,12 +332,12 @@ const loadScreenSetsMenu = (callback = () => {}) => {
 // Navigation
 //
 
-let initNavigation = () => {
+initNavigation = () => {
     window.addEventListener('hashchange', () => processHashChange(getHashParams()))
     setTimeout(() => processHashChange(getHashParams()), 50)
 }
 
-let processHashChange = async (params) => {
+processHashChange = async (params) => {
     // API Key changed
     if (gigya.apiKey !== params.apiKey) {
         window.location.reload()
@@ -405,7 +404,7 @@ const loadScreenSetCss = async (params) => {
 }
 
 const getScreenSetCssFilename = async ({ apiKey, screenSetID }) => {
-    const sites = await getConfigSites('deploy')
+    const sites = await getConfigSites(ORIGIN)
     const site = sites.find((site) => site.apiKey === apiKey)
 
     let filename = BUILD_DIRECTORY
@@ -418,7 +417,7 @@ const getScreenSetCssFilename = async ({ apiKey, screenSetID }) => {
 }
 
 const getScreenSetWebSdkFilename = async ({ apiKey }) => {
-    const sites = await getConfigSites('deploy')
+    const sites = await getConfigSites(ORIGIN)
     const site = sites.find((site) => site.apiKey === apiKey)
 
     let filename = BUILD_DIRECTORY
@@ -431,7 +430,7 @@ const getScreenSetWebSdkFilename = async ({ apiKey }) => {
 }
 
 const getScreenSetEvents = async ({ apiKey, screenSetID }) => {
-    const sites = await getConfigSites('deploy')
+    const sites = await getConfigSites(ORIGIN)
     const site = sites.find((site) => site.apiKey === apiKey)
 
     let filename = BUILD_DIRECTORY
@@ -453,13 +452,12 @@ const getScreenSetEventsFromFile = async (filename) => {
         })
 
     // Remove comments and \n
-    screenJs = screenJs.replace(/\/\*[\s\S]*?\*\/|^([\\:]|^)\/\/.*$/gm, '')
+    screenJs = screenJs.replace(/\/\*[\s\S]*?\*\/|([^\\:]|^)\/\/.*$/gm, '')
     screenJs = '' + screenJs.replaceAll('\n', '')
 
     let screenSetEvents
     try {
-        // screenSetEvents = eval('(' + screenJs + ')')
-        JSON.parse(screenJs)
+        screenSetEvents = eval('(' + screenJs + ')')
     } catch (error) {
         alert('Error loading local Screen-Set events from file: \n\n' + filename)
         screenSetEvents = {}

@@ -2,23 +2,26 @@
  * Copyright: Copyright 2023 SAP SE or an SAP affiliate company and cdc-initializer contributors
  * License: Apache-2.0
  */
-const path = require('path')
+import path from 'path'
+import 'dotenv/config'
 
-const { CONFIG_FILENAME, FEATURE, BUILD_DIRECTORY } = require('../constants')
+import { CONFIG_FILENAME, FEATURE, BUILD_DIRECTORY } from '../constants.js'
+import { createRequire } from 'module'
+const require = createRequire(import.meta.url)
 const config = require(`../../${CONFIG_FILENAME}`)
-const Gigya = require('../services/gigya/gigya')
-const { getSiteConfigRequest } = require('../services/gigya/gigya.helpers')
-const { parseArguments, runWithProgressAsync } = require('../utils/utils')
-const { deployWebSdk } = require('./deployWebSdk')
-const { deployWebScreenSets } = require('./deployWebScreenSets')
-const { deployEmailTemplates } = require('./deployEmailTemplates')
-const { deployPolicies } = require('./deployPolicies')
-const { deploySchema } = require('./deploySchema')
-const { deployAcls} = require('./deployAcls')
-const { deployPermissionGroups } = require('./deployPermissionGroups')
-const { deployConsentStatements } = require('./deployConsentStatements')
 
-require('dotenv').config()
+import Gigya from '../services/gigya/gigya.js'
+import { getSiteConfigRequest } from '../services/gigya/gigya.helpers.js'
+import { parseArguments, runWithProgressAsync } from '../utils/utils.js'
+import { deployWebSdk } from './deployWebSdk.js'
+import { deployWebScreenSets } from './deployWebScreenSets.js'
+import { deployEmailTemplates } from './deployEmailTemplates.js'
+import { deployPolicies } from './deployPolicies.js'
+import { deploySchema } from './deploySchema.js'
+import { deployAcls } from './deployAcls.js'
+import { deployPermissionGroups } from './deployPermissionGroups.js'
+import { deployConsentStatements } from './deployConsentStatements.js'
+
 const { USER_KEY, SECRET_KEY } = process.env
 const gigya = new Gigya(USER_KEY, SECRET_KEY)
 

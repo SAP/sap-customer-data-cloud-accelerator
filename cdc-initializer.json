@@ -1,0 +1,13 @@
+{
+    "source": [
+        { "apiKey": "4_Ch-q_qKrjBJ_-QBEfMPkKA", "siteDomain": "cdc-accelerator.parent.site-group.com" },
+        { "apiKey": "4_tqmAZeYVLPfPl9SYu_iFxA", "siteDomain": "cdc-accelerator.preferences-center.com" },
+        { "apiKey": "4_G9hcFjoYwj860VKK2eCILA", "siteDomain": "cdc-accelerator.preferences-center.felix.com" },
+        { "apiKey": "4_51rYFDhKRgNJdru9HSz0JA", "siteDomain": "cdc-accelerator.preferences-center.nescafe.com" },
+        { "apiKey": "4_9XTXgPYTsS8EJ8ohejOCZw", "siteDomain": "cdc-accelerator.preferences-center.purina.com" }
+    ],
+    "deploy": [
+        { "apiKey": "4_Ch-q_qKrjBJ_-QBEfMPkKA", "siteDomain": "cdc-accelerator.parent.site-group.com" },
+        { "apiKey": "4_tqmAZeYVLPfPl9SYu_iFxA", "siteDomain": "cdc-accelerator.preferences-center.com" }
+    ]
+}

@@ -1,0 +1,20 @@
+{
+    "serve": ".",
+    "serveRedirect": false,
+    "port": 3000,
+    "bind": "localhost",
+    "watchexps": [
+        "src/index.html # # reload",
+        "src/*.js # npm run build # reload",
+        "src/*.css # npm run build # reload",
+        "src/**/*.js # npm run build # reload",
+        "src/**/*.css # npm run build # reload"
+    ],
+    "interval": 500,
+    "delay": 0,
+    "noReload": false,
+    "quiet": false,
+    "open": true,
+    "http2": false,
+    "historyindex": "/src/index.html"
+}

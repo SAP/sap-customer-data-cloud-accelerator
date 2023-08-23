@@ -38,19 +38,19 @@ const setPoliciesRequest = async (gigya, { apiKey, dataCenter, ...props }) => {
     return response.data
 }
 
-const setConsentsStatementsRequest  = async (gigya, { apiKey, dataCenter, ...props }) => {
+const setConsentsStatementsRequest = async (gigya, { apiKey, dataCenter, ...props }) => {
     const url = `https://accounts.${dataCenter}.gigya.com/accounts.setConsentsStatements`
     const response = await gigya.request(url, { apiKey, ...props }).catch((error) => error)
     return response.data
 }
 
-const setLegalStatementsRequest  = async (gigya, { apiKey, dataCenter, ...props }) => {
+const setLegalStatementsRequest = async (gigya, { apiKey, dataCenter, ...props }) => {
     const url = `https://accounts.${dataCenter}.gigya.com/accounts.setLegalStatements`
     const response = await gigya.request(url, { apiKey, ...props }).catch((error) => error)
     return response.data
 }
 
-const getPoliciesRequest  = async (gigya, { apiKey, dataCenter, ...props }) => {
+const getPoliciesRequest = async (gigya, { apiKey, dataCenter, ...props }) => {
     const url = `https://accounts.${dataCenter}.gigya.com/accounts.getPolicies`
     const response = await gigya.request(url, { apiKey, ...props }).catch((error) => error)
     return response.data
@@ -64,17 +64,17 @@ const setAclRequest = async (gigya, { apiKey, dataCenter, ...props }) => {
 
 const setPermissionRequest = async (gigya, { apiKey, dataCenter, ...props }) => {
     const url = `https://accounts.${dataCenter}.gigya.com/admin.createGroup`
-    const response = await gigya.request(url, { apiKey, ...props}).catch((error) => error)
+    const response = await gigya.request(url, { apiKey, ...props }).catch((error) => error)
     return response.data
 }
 
-const getPartnerID  = async (gigya, {...props }) => {
+const getPartnerID = async (gigya, { ...props }) => {
     const url = `https://accounts.gigya.com/admin.search`
     const response = await gigya.request(url, { ...props }).catch((error) => error)
     return response.data
 }
 
-module.exports = {
+export {
     getSiteConfigRequest,
     setSiteConfigRequest,
     getScreenSetsRequest,

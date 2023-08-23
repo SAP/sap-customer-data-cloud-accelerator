@@ -2,15 +2,18 @@
  * Copyright: Copyright 2023 SAP SE or an SAP affiliate company and cdc-initializer contributors
  * License: Apache-2.0
  */
-const readline = require('readline')
+import 'dotenv/config'
+import readline from 'readline'
 
-const { CONFIG_FILENAME } = require('../constants')
+import { CONFIG_FILENAME } from '../constants.js'
+import { createRequire } from 'module'
+const require = createRequire(import.meta.url)
 const config = require(`../../${CONFIG_FILENAME}`)
-const Gigya = require('../services/gigya/gigya')
-const { parseArguments } = require('../utils/utils')
-const { init } = require('../init/init')
 
-require('dotenv').config()
+import Gigya from '../services/gigya/gigya.js'
+import { parseArguments } from '../utils/utils.js'
+import { init } from '../init/init.js'
+
 const { USER_KEY, SECRET_KEY } = process.env
 const gigya = new Gigya(USER_KEY, SECRET_KEY)
 

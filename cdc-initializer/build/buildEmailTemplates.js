@@ -3,10 +3,10 @@
  * License: Apache-2.0
  */
 
-const path = require('path')
+import path from 'path'
 
-const { getTemplates, getTemplateLocales, generateTemplateOutputs } = require('../utils/utilsEmailTemplates')
-const { clearDirectoryContents } = require('../utils/utils')
+import { getTemplates, getTemplateLocales, generateTemplateOutputs } from '../utils/utilsEmailTemplates.js'
+import { clearDirectoryContents } from '../utils/utils.js'
 
 const buildEmailTemplates = ({ srcTemplatesDirectory, srcLocalesDirectory, buildDirectory }) => {
     // Get templates
@@ -22,4 +22,4 @@ const buildEmailTemplates = ({ srcTemplatesDirectory, srcLocalesDirectory, build
     templates.map((template) => generateTemplateOutputs({ template, directory: path.join(buildDirectory, template.name) }))
 }
 
-module.exports = { buildEmailTemplates }
+export { buildEmailTemplates }
