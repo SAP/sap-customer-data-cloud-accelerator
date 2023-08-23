@@ -2,9 +2,9 @@
  * Copyright: Copyright 2023 SAP SE or an SAP affiliate company and cdc-initializer contributors
  * License: Apache-2.0
  */
-const fs = require('fs')
+import fs from 'fs'
 
-const { setSiteConfigRequest } = require('../services/gigya/gigya.helpers')
+import { setSiteConfigRequest } from '../services/gigya/gigya.helpers.js'
 
 const deployWebSdk = async ({ gigya, apiKey, buildBundledFile }) => {
     // Get bundled webSdk
@@ -20,4 +20,4 @@ const deployWebSdk = async ({ gigya, apiKey, buildBundledFile }) => {
     }
 }
 
-module.exports = { deployWebSdk }
+export { deployWebSdk }

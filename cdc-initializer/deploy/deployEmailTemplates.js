@@ -2,8 +2,8 @@
  * Copyright: Copyright 2023 SAP SE or an SAP affiliate company and cdc-initializer contributors
  * License: Apache-2.0
  */
-const { getOutputTemplates, getParamsSetEmailTemplates } = require('../utils/utilsEmailTemplates')
-const { setEmailTemplatesRequest } = require('../services/gigya/gigya.helpers')
+import { getOutputTemplates, getParamsSetEmailTemplates } from '../utils/utilsEmailTemplates.js'
+import { setEmailTemplatesRequest } from '../services/gigya/gigya.helpers.js'
 
 const deployEmailTemplates = async ({ gigya, apiKey, dataCenter, buildDirectory }) => {
     // Get all files in the output folder
@@ -17,4 +17,4 @@ const deployEmailTemplates = async ({ gigya, apiKey, dataCenter, buildDirectory 
     }
 }
 
-module.exports = { deployEmailTemplates }
+export { deployEmailTemplates }

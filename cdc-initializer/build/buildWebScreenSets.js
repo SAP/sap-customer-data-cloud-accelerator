@@ -2,11 +2,11 @@
  * Copyright: Copyright 2023 SAP SE or an SAP affiliate company and cdc-initializer contributors
  * License: Apache-2.0
  */
-const path = require('path')
-const fs = require('fs')
+import fs from 'fs'
+import path from 'path'
 
-const { TEMPLATE_SCREEN_SET_CSS_CUSTOM_CODE_SEPARATOR_START, TEMPLATE_SCREEN_SET_CSS_CUSTOM_CODE_SEPARATOR_END } = require('../constants')
-const { cleanJavaScriptModuleBoilerplateScreenSetEvents, processMainScriptInlineImports, bundleInlineImportScripts } = require('../utils/utils')
+import { TEMPLATE_SCREEN_SET_CSS_CUSTOM_CODE_SEPARATOR_START, TEMPLATE_SCREEN_SET_CSS_CUSTOM_CODE_SEPARATOR_END } from '../constants.js'
+import { cleanJavaScriptModuleBoilerplateScreenSetEvents, processMainScriptInlineImports, bundleInlineImportScripts } from '../utils/utils.js'
 
 const buildWebScreenSets = ({ srcDirectory, buildDirectory }) => {
     fs.readdirSync(buildDirectory).forEach((screenSetID) => {
@@ -72,4 +72,4 @@ const buildWebScreenSets = ({ srcDirectory, buildDirectory }) => {
     })
 }
 
-module.exports = { buildWebScreenSets }
+export { buildWebScreenSets }

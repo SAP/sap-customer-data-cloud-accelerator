@@ -2,19 +2,19 @@
  * Copyright: Copyright 2023 SAP SE or an SAP affiliate company and cdc-initializer contributors
  * License: Apache-2.0
  */
-const fs = require('fs')
-const path = require('path')
+import fs from 'fs'
+import path from 'path'
 
-const { FEATURE, FEATURE_NAME_LIST, SRC_DIRECTORY, BUILD_DIRECTORY } = require('../constants')
-const { runWithProgress } = require('../utils/utils')
-const { buildWebSdk } = require('./buildWebSdk')
-const { buildWebScreenSets } = require('./buildWebScreenSets')
-const { buildEmailTemplates } = require('./buildEmailTemplates')
-const { buildPolicies } = require('./buildPolicies')
-const { buildSchema } = require('./buildSchema')
-const { buildPermissionGroups } = require('./buildPermissionGroups')
-const { buildConsentStatements } = require('./buildConsentStatements')
-const { buildAcls} = require('./buildAcls')
+import { FEATURE, FEATURE_NAME_LIST, SRC_DIRECTORY, BUILD_DIRECTORY } from '../constants.js'
+import { runWithProgress } from '../utils/utils.js'
+import { buildWebSdk } from './buildWebSdk.js'
+import { buildWebScreenSets } from './buildWebScreenSets.js'
+import { buildEmailTemplates } from './buildEmailTemplates.js'
+import { buildPolicies } from './buildPolicies.js'
+import { buildSchema } from './buildSchema.js'
+import { buildPermissionGroups } from './buildPermissionGroups.js'
+import { buildConsentStatements } from './buildConsentStatements.js'
+import { buildAcls } from './buildAcls.js'
 
 const build = () => {
     try {
@@ -72,7 +72,6 @@ const build = () => {
                 buildDirectory: path.join(BUILD_DIRECTORY, siteDomain, FEATURE.PERMISSION_GROUPS, FEATURE.ACLS),
             }
             runWithProgress({ name: FEATURE.ACLS, pathMustExist: args.srcDirectory, run: () => buildAcls(args) })
-            
 
             args = {
                 srcFile: path.join(SRC_DIRECTORY, siteDomain, FEATURE.CONSENT_STATEMENTS, `${FEATURE.CONSENT_STATEMENTS}.json`),

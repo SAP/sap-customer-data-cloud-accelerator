@@ -3,6 +3,7 @@
     "version": "1.2.12",
     "description": "",
     "main": "index.js",
+    "type": "module",
     "scripts": {
         "test": "CI=true jest --collect-coverage --coverage --watch=all --coverageDirectory=coverage/unit",
         "init": "node cdc-initializer/init/index.js",

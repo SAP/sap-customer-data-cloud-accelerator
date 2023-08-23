@@ -2,11 +2,11 @@
  * Copyright: Copyright 2023 SAP SE or an SAP affiliate company and cdc-initializer contributors
  * License: Apache-2.0
  */
-const fs = require('fs')
-const path = require('path')
+import fs from 'fs'
+import path from 'path'
 
-const { FEATURE_NAME_LIST } = require('../constants')
-const {  getPartnerID } = require('../services/gigya/gigya.helpers')
+import { FEATURE_NAME_LIST } from '../constants.js'
+import { getPartnerID } from '../services/gigya/gigya.helpers.js'
 
 const parseArguments = ({ args, config }) => {
     let [, , featureName, environment] = args
@@ -35,16 +35,16 @@ const parseArguments = ({ args, config }) => {
 
 const getPartnerId = async (gigya, apiKey) => {
     const partnerIDResponse = await getPartnerID(gigya, {
-      query: `select partnerID, siteID, baseDomain from sites where apiKey="${apiKey}"`,
-    });
-  
+        query: `select partnerID, siteID, baseDomain from sites where apiKey="${apiKey}"`,
+    })
+
     if (!partnerIDResponse || partnerIDResponse.errorCode) {
-      console.error(`Failed to retrieve partnerID for apiKey "${apiKey}"`);
-      throw new Error(JSON.stringify(partnerIDResponse));
+        console.error(`Failed to retrieve partnerID for apiKey "${apiKey}"`)
+        throw new Error(JSON.stringify(partnerIDResponse))
     }
-  
-    return partnerIDResponse.data[0].partnerID;
-  }
+
+    return partnerIDResponse.data[0].partnerID
+}
 
 const runWithProgress = ({ name, pathMustExist, run }) => {
     if (fs.existsSync(pathMustExist)) {
@@ -380,7 +380,7 @@ const readJsonFile = (filePath) => {
     return JSON.parse(fileContent)
 }
 
-module.exports = {
+export {
     parseArguments,
     runWithProgress,
     runWithProgressAsync,
@@ -393,5 +393,5 @@ module.exports = {
     bundleInlineImportScripts,
     processMainScriptInlineImports,
     readJsonFile,
-    getPartnerId
+    getPartnerId,
 }

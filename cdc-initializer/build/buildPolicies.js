@@ -2,9 +2,9 @@
  * Copyright: Copyright 2023 SAP SE or an SAP affiliate company and cdc-initializer contributors
  * License: Apache-2.0
  */
-const fs = require('fs')
+import fs from 'fs'
 
-const { clearDirectoryContents } = require('../utils/utils')
+import { clearDirectoryContents } from '../utils/utils.js'
 
 const buildPolicies = ({ srcFile, buildFile, buildDirectory }) => {
     // Get file policies file
@@ -17,4 +17,4 @@ const buildPolicies = ({ srcFile, buildFile, buildDirectory }) => {
     fs.writeFileSync(buildFile, JSON.stringify(policies, null, 4))
 }
 
-module.exports = { buildPolicies }
+export { buildPolicies }

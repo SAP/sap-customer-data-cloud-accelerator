@@ -2,9 +2,9 @@
  * Copyright: Copyright 2023 SAP SE or an SAP affiliate company and cdc-initializer contributors
  * License: Apache-2.0
  */
-const fs = require('fs')
+import fs from 'fs'
 
-const { setPoliciesRequest } = require('../services/gigya/gigya.helpers')
+import { setPoliciesRequest } from '../services/gigya/gigya.helpers.js'
 
 const deployPolicies = async ({ gigya, apiKey, dataCenter, buildFile }) => {
     // Get file policies file
@@ -20,4 +20,4 @@ const deployPolicies = async ({ gigya, apiKey, dataCenter, buildFile }) => {
     }
 }
 
-module.exports = { deployPolicies }
+export { deployPolicies }

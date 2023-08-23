@@ -6,4 +6,4 @@ const deploySchema = async ({ gigya, apiKey, dataCenter, buildDirectory }) => {
     // needs to be implemented
 }
 
-module.exports = { deploySchema }
+export { deploySchema }
