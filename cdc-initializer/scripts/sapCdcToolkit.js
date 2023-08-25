@@ -7,8 +7,10 @@ import path from 'path';
 class SapCdcToolkit {
     static #PROJECT_BASE_DIRECTORY = 'cdc-initializer'
     static #TOOLKIT_FOLDER = 'sap-cdc-toolkit'
-    static #TOOLKIT_SRC_CODE_FILE = SapCdcToolkit.#TOOLKIT_FOLDER + '.zip'
     static #TOOLKIT_FOLDER_PATH = path.join(SapCdcToolkit.#PROJECT_BASE_DIRECTORY, SapCdcToolkit.#TOOLKIT_FOLDER)
+    static #TOOLKIT_SRC_CODE_FILE = SapCdcToolkit.#TOOLKIT_FOLDER + '.zip'
+    static #TEMP_DIR = process.platform == "win32" ? process.env.TEMP : process.env.TMPDIR
+    static #TOOLKIT_SRC_CODE_FILE_PATH = path.join(SapCdcToolkit.#TEMP_DIR, SapCdcToolkit.#TOOLKIT_SRC_CODE_FILE)
 
     #checkGitHubToken() {
         if (process.env.GITHUB_TOKEN == undefined) {
@@ -39,7 +41,7 @@ class SapCdcToolkit {
     }
 
     async #downloadSrcCode(srcCodeUrl) {
-        const destinationFile = path.join(process.env.TMPDIR, SapCdcToolkit.#TOOLKIT_SRC_CODE_FILE)
+        const destinationFile = SapCdcToolkit.#TOOLKIT_SRC_CODE_FILE_PATH
         console.log(`Downloading source code from ${srcCodeUrl} to ${destinationFile}`)
         try {
             const response = await axios({
@@ -65,7 +67,7 @@ class SapCdcToolkit {
     }
 
     async #extractZipFileAndFilterContents() {
-        const filePath = path.join(process.env.TMPDIR, SapCdcToolkit.#TOOLKIT_SRC_CODE_FILE)
+        const filePath = SapCdcToolkit.#TOOLKIT_SRC_CODE_FILE_PATH
         if(!fs.existsSync(filePath)) {
             throw new Error(`Expected zip file ${filePath} do not exists. Aborting...`)
         }
@@ -96,7 +98,7 @@ class SapCdcToolkit {
     }
 
     #deleteTemporaryFiles() {
-        const filePath = path.join(process.env.TMPDIR, SapCdcToolkit.#TOOLKIT_SRC_CODE_FILE)
+        const filePath = SapCdcToolkit.#TOOLKIT_SRC_CODE_FILE_PATH
         console.log(`Deleting temporary file ${filePath}`)
         fs.rmSync(filePath)
     }
