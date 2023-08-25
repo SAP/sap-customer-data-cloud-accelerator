@@ -114,6 +114,7 @@ dist
 # development time ignore rules
 src/*
 build/*
+cdc-initializer/sap-cdc-toolkit/*
 cdc-initializer.json
 client.test.js
 

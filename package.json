@@ -10,7 +10,8 @@
         "reset": "node cdc-initializer/reset/reset.js",
         "build": "babel --delete-dir-on-start src -d build && prettier --semi true --trailing-comma none --write build/**/*.js && node cdc-initializer/build/build.js",
         "deploy": "babel --delete-dir-on-start src -d build && prettier --semi true --trailing-comma none --write build/**/webScreenSets/**/*.js && node cdc-initializer/build/build.js && node cdc-initializer/deploy/deploy.js",
-        "start": "babel --delete-dir-on-start src -d build && prettier --semi true --trailing-comma none --write build/**/webScreenSets/**/*.js && node cdc-initializer/build/build.js && light-server -c .lightserverrc"
+        "start": "babel --delete-dir-on-start src -d build && prettier --semi true --trailing-comma none --write build/**/webScreenSets/**/*.js && node cdc-initializer/build/build.js && light-server -c .lightserverrc",
+        "update-sap-cdc-toolkit": "node cdc-initializer/scripts/updateSapCdcToolkit.js"
     },
     "repository": {
         "type": "git",
@@ -39,6 +40,7 @@
         "axios": "^1.2.3",
         "dotenv": "^16.0.3",
         "light-server": "^2.9.1",
-        "mustache": "^4.2.0"
+        "mustache": "^4.2.0",
+        "jszip": "^3.10.1"
     }
 }
