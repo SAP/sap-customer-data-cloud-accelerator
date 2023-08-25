@@ -2,10 +2,10 @@
  * Copyright: Copyright 2023 SAP SE or an SAP affiliate company and cdc-initializer contributors
  * License: Apache-2.0
  */
-const path = require('path')
-const fs = require('fs')
+import fs from 'fs'
+import path from 'path'
 
-const { setScreenSetsRequest, getScreenSetsRequest } = require('../services/gigya/gigya.helpers')
+import { setScreenSetsRequest, getScreenSetsRequest } from '../services/gigya/gigya.helpers.js'
 
 const deployWebScreenSets = async ({ gigya, apiKey, dataCenter, buildDirectory }) => {
     // Get screenSets to use html for deploy
@@ -62,4 +62,4 @@ const deployWebScreenSets = async ({ gigya, apiKey, dataCenter, buildDirectory }
     )
 }
 
-module.exports = { deployWebScreenSets }
+export { deployWebScreenSets }

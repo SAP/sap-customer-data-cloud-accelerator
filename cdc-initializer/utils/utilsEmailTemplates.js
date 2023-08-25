@@ -2,9 +2,10 @@
  * Copyright: Copyright 2023 SAP SE or an SAP affiliate company and cdc-initializer contributors
  * License: Apache-2.0
  */
-const path = require('path')
-const fs = require('fs')
-const Mustache = require('mustache')
+import fs from 'fs'
+import path from 'path'
+
+import Mustache from 'mustache'
 
 const getTemplates = (directory) =>
     fs.readdirSync(directory).map((filename) => ({
@@ -64,4 +65,4 @@ const getParamsSetEmailTemplates = (outputTemplates) => {
     return params
 }
 
-module.exports = { getTemplates, getTemplateLocales, generateTemplateOutputs, getOutputTemplates, getOutputTemplateLocale, getParamsSetEmailTemplates }
+export { getTemplates, getTemplateLocales, generateTemplateOutputs, getOutputTemplates, getOutputTemplateLocale, getParamsSetEmailTemplates }

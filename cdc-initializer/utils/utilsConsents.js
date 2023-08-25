@@ -2,9 +2,10 @@
  * Copyright: Copyright 2023 SAP SE or an SAP affiliate company and cdc-initializer contributors
  * License: Apache-2.0
  */
-const fs = require('fs')
-const path = require('path')
-const { readJsonFile } = require('../utils/utils')
+import fs from 'fs'
+import path from 'path'
+
+import { readJsonFile } from '../utils/utils.js'
 
 const getLegalFolders = (directory) => fs.readdirSync(directory)
 
@@ -35,9 +36,4 @@ const getParamsForLegalStatement = (apiKey, dataCenter, consentId, lang, legalSt
     legalStatements: JSON.stringify(legalStatements),
 })
 
-module.exports = {
-    getLegalFolders,
-    getLegalFilesAndLanguages,
-    getParamsForConsentsStatements,
-    getParamsForLegalStatement,
-}
+export { getLegalFolders, getLegalFilesAndLanguages, getParamsForConsentsStatements, getParamsForLegalStatement }

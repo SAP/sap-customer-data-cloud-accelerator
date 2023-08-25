@@ -2,7 +2,7 @@
  * Copyright: Copyright 2023 SAP SE or an SAP affiliate company and cdc-initializer contributors
  * License: Apache-2.0
  */
-const fs = require('fs')
+import fs from 'fs'
 
 const initWebSdk = async ({ reset, siteConfig, srcFile, srcDirectory, templateWebSdk }) => {
     let { globalConf: originalWebSdk } = siteConfig
@@ -32,4 +32,4 @@ const initWebSdk = async ({ reset, siteConfig, srcFile, srcDirectory, templateWe
     fs.writeFileSync(srcFile, webSdk)
 }
 
-module.exports = { initWebSdk }
+export { initWebSdk }

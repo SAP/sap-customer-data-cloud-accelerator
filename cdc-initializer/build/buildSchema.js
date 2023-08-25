@@ -6,4 +6,4 @@ const buildSchema = ({ srcDirectory, buildDirectory }) => {
     // needs to be implemented
 }
 
-module.exports = { buildSchema }
+export { buildSchema }

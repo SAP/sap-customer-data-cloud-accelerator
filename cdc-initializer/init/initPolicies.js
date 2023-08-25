@@ -2,10 +2,10 @@
  * Copyright: Copyright 2023 SAP SE or an SAP affiliate company and cdc-initializer contributors
  * License: Apache-2.0
  */
-const fs = require('fs')
-const path = require('path')
+import fs from 'fs'
+import path from 'path'
 
-const { getPoliciesRequest } = require('../services/gigya/gigya.helpers')
+import { getPoliciesRequest } from '../services/gigya/gigya.helpers.js'
 
 const initPolicies = async ({ gigya, apiKey, dataCenter, reset, srcDirectory }) => {
     // Get policies
@@ -32,7 +32,7 @@ const initPolicies = async ({ gigya, apiKey, dataCenter, reset, srcDirectory }) 
     const srcFile = path.join(srcDirectory, `policies.json`)
 
     // Create policy file
-    fs.writeFileSync(srcFile, JSON.stringify(policyRes, null, 4))  
+    fs.writeFileSync(srcFile, JSON.stringify(policyRes, null, 4))
 }
 
-module.exports = { initPolicies }
+export { initPolicies }

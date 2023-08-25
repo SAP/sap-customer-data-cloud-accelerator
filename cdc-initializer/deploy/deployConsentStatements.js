@@ -2,11 +2,11 @@
  * Copyright: Copyright 2023 SAP SE or an SAP affiliate company and cdc-initializer contributors
  * License: Apache-2.0
  */
-const path = require('path')
+import path from 'path'
 
-const { setConsentsStatementsRequest, setLegalStatementsRequest } = require('../services/gigya/gigya.helpers')
-const { readJsonFile } = require('../utils/utils')
-const { getLegalFolders, getLegalFilesAndLanguages, getParamsForConsentsStatements, getParamsForLegalStatement } = require('../utils/utilsConsents')
+import { setConsentsStatementsRequest, setLegalStatementsRequest } from '../services/gigya/gigya.helpers.js'
+import { readJsonFile } from '../utils/utils.js'
+import { getLegalFolders, getLegalFilesAndLanguages, getParamsForConsentsStatements, getParamsForLegalStatement } from '../utils/utilsConsents.js'
 
 const deployConsentStatements = async ({ gigya, apiKey, dataCenter, buildFile, buildLegalStatementsDirectory }) => {
     const consents = readJsonFile(buildFile).preferences
@@ -32,4 +32,4 @@ const deployConsentStatements = async ({ gigya, apiKey, dataCenter, buildFile, b
     }
 }
 
-module.exports = { deployConsentStatements }
+export { deployConsentStatements }

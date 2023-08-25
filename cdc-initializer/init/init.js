@@ -2,22 +2,22 @@
  * Copyright: Copyright 2023 SAP SE or an SAP affiliate company and cdc-initializer contributors
  * License: Apache-2.0
  */
-const fs = require('fs')
-const path = require('path')
+import fs from 'fs'
+import path from 'path'
 
-const { getSiteConfigRequest } = require('../services/gigya/gigya.helpers')
-const {
+import { getSiteConfigRequest } from '../services/gigya/gigya.helpers.js'
+import {
     FEATURE,
     SRC_DIRECTORY,
     TEMPLATE_WEB_SDK_FILE,
     TEMPLATE_SCREEN_SET_JAVASCRIPT_FILE,
     TEMPLATE_SCREEN_SET_CSS_CUSTOM_CODE_SEPARATOR_START,
     TEMPLATE_SCREEN_SET_CSS_CUSTOM_CODE_SEPARATOR_END,
-} = require('../constants')
-const { runWithProgressAsync } = require('../utils/utils')
-const { initWebSdk } = require('./initWebSdk')
-const { initWebScreenSets } = require('./initWebScreenSets')
-const { initPolicies } = require('./initPolicies')
+} from '../constants.js'
+import { runWithProgressAsync } from '../utils/utils.js'
+import { initWebSdk } from './initWebSdk.js'
+import { initWebScreenSets } from './initWebScreenSets.js'
+import { initPolicies } from './initPolicies.js'
 
 const init = async ({ gigya, sites, featureName, environment, reset }) => {
     try {
@@ -66,7 +66,7 @@ const init = async ({ gigya, sites, featureName, environment, reset }) => {
             }
 
             if (FEATURE.WEB_SCREEN_SETS === featureName || !featureName) {
-                args = {
+                let args = {
                     srcDirectory: path.join(SRC_DIRECTORY, siteDomain, FEATURE.WEB_SCREEN_SETS),
                     templateJavaScript: TEMPLATE_SCREEN_SET_JAVASCRIPT_FILE,
                     templateCssCustomCodeSeparatorStart: TEMPLATE_SCREEN_SET_CSS_CUSTOM_CODE_SEPARATOR_START,
@@ -80,7 +80,7 @@ const init = async ({ gigya, sites, featureName, environment, reset }) => {
             }
 
             if (FEATURE.POLICIES === featureName || !featureName) {
-                args = {
+                let args = {
                     srcDirectory: path.join(SRC_DIRECTORY, siteDomain, FEATURE.POLICIES),
                 }
                 await runWithProgressAsync({
@@ -98,4 +98,4 @@ const init = async ({ gigya, sites, featureName, environment, reset }) => {
     }
 }
 
-module.exports = { init }
+export { init }
