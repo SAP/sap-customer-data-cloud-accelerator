@@ -9,7 +9,7 @@ import { FEATURE_NAME_LIST } from '../constants.js'
 import { getPartnerID } from '../services/gigya/gigya.helpers.js'
 
 const parseArguments = ({ args, config }) => {
-    let [, , featureName, environment] = args
+    let [, , phase, featureName, environment] = args
 
     // If no feature selected, deploy all features and the environment might be in the featureName variable
     if (!FEATURE_NAME_LIST.includes(featureName)) {
@@ -30,7 +30,7 @@ const parseArguments = ({ args, config }) => {
         sites = config
     }
 
-    return { sites, featureName, environment }
+    return { phase, sites, featureName, environment }
 }
 
 const getPartnerId = async (gigya, apiKey) => {
