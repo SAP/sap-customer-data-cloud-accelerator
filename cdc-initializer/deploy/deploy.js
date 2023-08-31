@@ -26,106 +26,65 @@ const { USER_KEY, SECRET_KEY } = process.env
 const gigya = new Gigya(USER_KEY, SECRET_KEY)
 
 const deploy = async ({ gigya, sites, featureName, environment }) => {
+    const environmentInfo = environment ? ` (${environment})` : ''
     try {
-        console.log(`Deploy start${environment ? ` (${environment})` : ''}`)
+        console.log(`Deploy start${environmentInfo}`)
 
-        if (!sites) {
-            if (environment) {
-                throw new Error(`No deploy sites to use for "${environment}" environment.`)
-            } else {
-                throw new Error(`No deploy sites to use.`)
-            }
+        if (!sites) throw new Error(environment ? `No deploy sites to use for "${environment}" environment.` : 'No deploy sites to use.')
+
+        for (const site of sites) {
+            displaySiteLog(site)
+
+            const siteConfig = await getSiteConfigRequest(gigya, { apiKey: site.apiKey })
+            if (siteConfig.errorCode) throw new Error(JSON.stringify(siteConfig))
+
+            await handleFeatureDeployment(site, featureName, siteConfig.dataCenter)
         }
-
-        for (const { apiKey, siteDomain = '' } of sites) {
-            // If apiKey has siteDomain, use the contents inside that directory for that site, else use the contents of the build/ directory
-            if (siteDomain) {
-                console.log(`\n${siteDomain} - ${apiKey}`)
-            } else {
-                console.log(`\n${apiKey}`)
-            }
-
-            // Check if site exists
-            const siteConfig = await getSiteConfigRequest(gigya, { apiKey })
-            if (siteConfig.errorCode) {
-                throw new Error(JSON.stringify(siteConfig))
-            }
-            const { dataCenter } = siteConfig
-
-            if (FEATURE.WEB_SDK === featureName || !featureName) {
-                const args = { buildBundledFile: path.join(BUILD_DIRECTORY, siteDomain, `${FEATURE.WEB_SDK}.js`) }
-                await runWithProgressAsync({
-                    name: FEATURE.WEB_SDK,
-                    pathMustExist: args.buildBundledFile,
-                    run: async () => await deployWebSdk({ gigya, apiKey, dataCenter, ...args }),
-                })
-            }
-            if (FEATURE.WEB_SCREEN_SETS === featureName || !featureName) {
-                const args = { buildDirectory: path.join(BUILD_DIRECTORY, siteDomain, FEATURE.WEB_SCREEN_SETS) }
-                await runWithProgressAsync({
-                    name: FEATURE.WEB_SCREEN_SETS,
-                    pathMustExist: args.buildDirectory,
-                    run: async () => await deployWebScreenSets({ gigya, apiKey, dataCenter, ...args }),
-                })
-            }
-            if (FEATURE.EMAIL_TEMPLATES === featureName || !featureName) {
-                const args = { buildDirectory: path.join(BUILD_DIRECTORY, siteDomain, FEATURE.EMAIL_TEMPLATES) }
-                await runWithProgressAsync({
-                    name: FEATURE.EMAIL_TEMPLATES,
-                    pathMustExist: args.buildDirectory,
-                    run: async () => await deployEmailTemplates({ gigya, apiKey, dataCenter, ...args }),
-                })
-            }
-            if (FEATURE.POLICIES === featureName || !featureName) {
-                const args = { buildFile: path.join(BUILD_DIRECTORY, siteDomain, FEATURE.POLICIES, `${FEATURE.POLICIES}.json`) }
-                await runWithProgressAsync({
-                    name: FEATURE.POLICIES,
-                    pathMustExist: args.buildFile,
-                    run: async () => await deployPolicies({ gigya, apiKey, dataCenter, ...args }),
-                })
-            }
-            if (FEATURE.SCHEMA === featureName || !featureName) {
-                const args = { buildDirectory: path.join(BUILD_DIRECTORY, siteDomain, FEATURE.SCHEMA) }
-                await runWithProgressAsync({
-                    name: FEATURE.SCHEMA,
-                    pathMustExist: args.buildDirectory,
-                    run: async () => await deploySchema({ gigya, apiKey, dataCenter, ...args }),
-                })
-            }
-            if (FEATURE.ACLS === featureName || !featureName) {
-                const args = { buildDirectory: path.join(BUILD_DIRECTORY, siteDomain, FEATURE.PERMISSION_GROUPS, FEATURE.ACLS) }
-                await runWithProgressAsync({
-                    name: FEATURE.ACLS,
-                    pathMustExist: args.buildDirectory,
-                    run: async () => await deployAcls({ gigya, apiKey, dataCenter, ...args }),
-                })
-            }
-            if (FEATURE.PERMISSION_GROUPS === featureName || !featureName) {
-                const args = { buildDirectory: path.join(BUILD_DIRECTORY, siteDomain, FEATURE.PERMISSION_GROUPS) }
-                await runWithProgressAsync({
-                    name: FEATURE.PERMISSION_GROUPS,
-                    pathMustExist: args.buildDirectory,
-                    run: async () => await deployPermissionGroups({ gigya, apiKey, dataCenter, ...args }),
-                })
-            }
-            if (FEATURE.CONSENT_STATEMENTS === featureName || !featureName) {
-                const args = {
-                    buildFile: path.join(BUILD_DIRECTORY, siteDomain, FEATURE.CONSENT_STATEMENTS, `${FEATURE.CONSENT_STATEMENTS}.json`),
-                    buildLegalStatementsDirectory: path.join(BUILD_DIRECTORY, siteDomain, FEATURE.CONSENT_STATEMENTS, 'legalStatements'),
-                }
-                await runWithProgressAsync({
-                    name: FEATURE.CONSENT_STATEMENTS,
-                    pathMustExist: args.buildFile,
-                    run: async () => await deployConsentStatements({ gigya, apiKey, dataCenter, ...args }),
-                })
-            }
-        }
-
-        console.log(`\nDeploy result${environment ? ` (${environment})` : ''}: \x1b[32m%s\x1b[0m\n`, `Success`)
+        console.log(`\nDeploy result${environmentInfo}: \x1b[32mSuccess\x1b[0m\n`)
     } catch (error) {
-        console.log('\x1b[31m%s\x1b[0m', `${String(error)}\n`)
-        console.log(`Deploy result${environment ? ` (${environment})` : ''}: \x1b[31m%s\x1b[0m\n`, `Fail`)
+        console.error('\x1b[31m', `${error}\n`)
+        console.log(`Deploy result${environmentInfo}: \x1b[31mFail\x1b[0m\n`)
     }
+}
+
+function displaySiteLog({ apiKey, siteDomain = '' }) {
+    console.log(`\n${siteDomain ? `${siteDomain} - ` : ''}${apiKey}`)
+}
+
+async function handleFeatureDeployment(site, featureName, dataCenter) {
+    for (const [feature, deployFunction] of Object.entries(featureDeploymentFunctions)) {
+        if (feature === featureName || !featureName) {
+            const args = constructArgumentsForFeature(site.siteDomain, feature)
+            await runWithProgressAsync({
+                name: feature,
+                pathMustExist: args.buildDirectory || args.buildBundledFile,
+                run: async () => await deployFunction({ gigya, apiKey: site.apiKey, dataCenter, ...args }),
+            })
+        }
+    }
+}
+
+function constructArgumentsForFeature(siteDomain, feature) {
+    if (feature === FEATURE.CONSENT_STATEMENTS) {
+        return {
+            buildFile: path.join(BUILD_DIRECTORY, siteDomain, FEATURE.CONSENT_STATEMENTS, `${FEATURE.CONSENT_STATEMENTS}.json`),
+            buildLegalStatementsDirectory: path.join(BUILD_DIRECTORY, siteDomain, FEATURE.CONSENT_STATEMENTS, 'legalStatements'),
+        }
+    }
+
+    if (feature === FEATURE.WEB_SDK) {
+        return { buildBundledFile: path.join(BUILD_DIRECTORY, siteDomain, `${FEATURE.WEB_SDK}.js`) }
+    }
+
+    if (feature === FEATURE.POLICIES) {
+        return { buildFile: path.join(BUILD_DIRECTORY, siteDomain, FEATURE.POLICIES, `${FEATURE.POLICIES}.json`) }
+    }
+
+    if (feature === FEATURE.ACLS) {
+        return { buildDirectory: path.join(BUILD_DIRECTORY, siteDomain, FEATURE.PERMISSION_GROUPS, FEATURE.ACLS) }
+    }
+
+    return { buildDirectory: path.join(BUILD_DIRECTORY, siteDomain, feature) }
 }
 
 const { sites, featureName, environment } = parseArguments({ args: process.argv, config: config.deploy })
