@@ -1,11 +1,16 @@
+/*
+ * Copyright: Copyright 2023 SAP SE or an SAP affiliate company and cdc-initializer contributors
+ * License: Apache-2.0
+ */
 import ToolkitSchema from '../sap-cdc-toolkit/copyConfig/schema/schema'
+import ToolkitSchemaOptions from '../sap-cdc-toolkit/copyConfig/schema/schemaOptions'
 import {BUILD_DIRECTORY, SRC_DIRECTORY} from '../constants.js'
 import fs from 'fs'
 import path from 'path'
 import {clearDirectoryContents} from "../utils/utils";
 import Feature from "./feature";
 
-class Schema {
+export default class Schema {
     #credentials
     static DATA_SCHEMA_FILE_NAME = 'data.json'
     static PROFILE_SCHEMA_FILE_NAME = 'profile.json'
@@ -16,7 +21,7 @@ class Schema {
     }
 
     getName() {
-        return 'schema'
+        return this.constructor.name
     }
 
     async init(apiKey, siteConfig, siteDomain, reset) {
@@ -41,6 +46,16 @@ class Schema {
         Feature.copyFileFromSrcToBuild(siteDomain, Schema.PROFILE_SCHEMA_FILE_NAME, this)
         Feature.copyFileFromSrcToBuild(siteDomain, Schema.SUBSCRIPTIONS_SCHEMA_FILE_NAME, this)
     }
-}
 
-export default Schema
+    async deploy(apiKey, siteConfig, siteDomain) {
+        const buildFeatureDirectory = path.join(BUILD_DIRECTORY, siteDomain, this.getName())
+        const toolkitSchema = new ToolkitSchema(this.#credentials, apiKey, siteConfig.dataCenter)
+
+        const payload = {
+            dataSchema: JSON.parse(fs.readFileSync(path.join(buildFeatureDirectory, Schema.DATA_SCHEMA_FILE_NAME), { encoding: 'utf8' })),
+            profileSchema: JSON.parse(fs.readFileSync(path.join(buildFeatureDirectory, Schema.PROFILE_SCHEMA_FILE_NAME), { encoding: 'utf8' })),
+            subscriptionsSchema: JSON.parse(fs.readFileSync(path.join(buildFeatureDirectory, Schema.SUBSCRIPTIONS_SCHEMA_FILE_NAME), { encoding: 'utf8' }))
+        }
+        await toolkitSchema.copySchema(apiKey, siteConfig, payload, new ToolkitSchemaOptions())
+    }
+}

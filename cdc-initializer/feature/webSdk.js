@@ -1,10 +1,15 @@
+/*
+ * Copyright: Copyright 2023 SAP SE or an SAP affiliate company and cdc-initializer contributors
+ * License: Apache-2.0
+ */
+import ToolkitWebSdk from '../sap-cdc-toolkit/copyConfig/websdk/websdk'
 import {BUILD_DIRECTORY, CDC_INITIALIZER_DIRECTORY, SRC_DIRECTORY} from '../constants.js'
 import fs from 'fs'
 import path from 'path'
 import {cleanJavaScriptModuleBoilerplateWebSdk, replaceFilenamesWithFileContents} from "../utils/utils";
 import Feature from "./feature";
 
-class WebSdk {
+export default class WebSdk {
     static #TEMPLATE_WEB_SDK_FILE = path.join(CDC_INITIALIZER_DIRECTORY, `/templates/defaultWebSdk.js`)
     #credentials
 
@@ -13,7 +18,7 @@ class WebSdk {
     }
 
     getName() {
-        return 'webSdk'
+        return this.constructor.name
     }
 
     async init(apiKey, siteConfig, siteDomain, reset) {
@@ -52,6 +57,22 @@ class WebSdk {
         // Write the result file
         fs.writeFileSync(path.join(BUILD_DIRECTORY, siteDomain, this.getName(), `${this.getName()}.js`), webSdkBundled)
     }
-}
 
-export default WebSdk
+    async deploy(apiKey, siteConfig, siteDomain) {
+        const buildBasePath = path.join(BUILD_DIRECTORY, siteDomain, this.getName())
+        const buildFileName = path.join(buildBasePath, `${this.getName()}.js`)
+        // Get bundled webSdk
+        const fileContent = fs.readFileSync(buildFileName, { encoding: 'utf8' })
+        if (!fileContent || !fileContent.length) {
+            throw new Error(`Invalid file: ${buildFileName}`)
+        }
+
+        // Update webSdk on gigya
+        const toolkitWebSdk = new ToolkitWebSdk(this.#credentials, apiKey, siteConfig.dataCenter)
+        siteConfig.globalConf = fileContent
+        const response = await toolkitWebSdk.set(apiKey, siteConfig, siteConfig.dataCenter)
+        if (response.errorCode) {
+            throw new Error(JSON.stringify(response))
+        }
+    }
+}

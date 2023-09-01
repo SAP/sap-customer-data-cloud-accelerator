@@ -1,11 +1,16 @@
+/*
+ * Copyright: Copyright 2023 SAP SE or an SAP affiliate company and cdc-initializer contributors
+ * License: Apache-2.0
+ */
 import ToolkitPolicies from '../sap-cdc-toolkit/copyConfig/policies/policies'
+import ToolkitPolicyOptions from "../sap-cdc-toolkit/copyConfig/policies/policyOptions";
 import {BUILD_DIRECTORY, SRC_DIRECTORY} from '../constants.js'
 import fs from 'fs'
 import path from 'path'
 import {clearDirectoryContents} from "../utils/utils";
 import Feature from "./feature";
 
-class Policies {
+export default class Policies {
     static POLICIES_FILE_NAME = 'policies.json'
     #credentials
 
@@ -14,7 +19,7 @@ class Policies {
     }
 
     getName() {
-        return 'policies'
+        return this.constructor.name
     }
 
     async init(apiKey, siteConfig, siteDomain, reset) {
@@ -35,6 +40,17 @@ class Policies {
         clearDirectoryContents(path.join(BUILD_DIRECTORY, siteDomain, this.getName()))
         Feature.copyFileFromSrcToBuild(siteDomain, Policies.POLICIES_FILE_NAME, this)
     }
-}
 
-export default Policies
+    async deploy(apiKey, siteConfig, siteDomain) {
+        const buildFeatureDirectory = path.join(BUILD_DIRECTORY, siteDomain, this.getName())
+        const toolkitPolicies = new ToolkitPolicies(this.#credentials, apiKey, siteConfig.dataCenter)
+
+        // Get file policies file
+        const policiesContent = JSON.parse(fs.readFileSync(path.join(buildFeatureDirectory, Policies.POLICIES_FILE_NAME), { encoding: 'utf8' }))
+
+        const response = await toolkitPolicies.copyPolicies(apiKey, siteConfig, policiesContent, new ToolkitPolicyOptions())
+        if (response.errorCode) {
+            throw new Error(JSON.stringify(response))
+        }
+    }
+}

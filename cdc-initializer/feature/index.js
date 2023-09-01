@@ -4,17 +4,13 @@
  */
 import 'dotenv/config'
 
-import { CONFIG_FILENAME } from '../constants.js'
-import { createRequire } from 'module'
-const require = createRequire(import.meta.url)
-const config = require(`../../${CONFIG_FILENAME}`)
-
-import { parseArguments } from '../utils/utils.js'
 import Feature from "./feature";
+import CLI from "./cli";
 
-const { phase, sites, featureName, environment } = parseArguments({ args: process.argv, config: config.source })
-const credentials = { userKey: process.env.USER_KEY, secret: process.env.SECRET_KEY }
+const cli = new CLI()
+const {phase, sites, featureName, environment} = cli.parseArguments(process.argv)
 
+const credentials = {userKey: process.env.USER_KEY, secret: process.env.SECRET_KEY}
 const feature = new Feature(credentials)
 switch(phase) {
     case 'init':
@@ -26,6 +22,11 @@ switch(phase) {
     case 'build':
         await feature.build(sites, featureName, environment)
         break;
+    case 'deploy':
+        await feature.deploy(sites, featureName, environment)
+        break;
     default:
         console.log(`Unknown phase ${phase}`)
 }
+
+
