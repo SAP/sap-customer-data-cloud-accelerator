@@ -21,48 +21,63 @@ import { initPolicies } from './initPolicies.js'
 
 const init = async ({ gigya, sites, featureName, environment, reset }) => {
     try {
-        console.log(`Init start${environment ? ` (${environment})` : ''}`)
+        const initMsg = environment ? `Init start (${environment})` : 'Init start'
+        console.log(initMsg)
 
-        if (!sites) {
-            if (environment) {
-                throw new Error(`No source sites to use for "${environment}" environment.`)
-            } else {
-                throw new Error(`No source sites to use.`)
-            }
-        }
+        handleNoSitesError(sites, environment)
 
-        // Create src/ directory if it doesn't exist
-        if (!fs.existsSync(SRC_DIRECTORY)) {
-            fs.mkdirSync(SRC_DIRECTORY)
-        }
+        ensureSrcDirectoryExists()
 
         for (const { apiKey, siteDomain = '' } of sites) {
-            // If apiKey has siteDomain, use the contents inside that directory for that site, else use the contents of the build/ directory
-            if (siteDomain) {
-                console.log(`\n${siteDomain} - ${apiKey}`)
-            } else {
-                console.log(`\n${apiKey}`)
-            }
+            logSiteDetails(siteDomain, apiKey)
 
-            // Get site config
             const siteConfig = await getSiteConfigRequest(gigya, { apiKey, includeGlobalConf: true })
             if (siteConfig.errorCode) {
                 throw new Error(JSON.stringify(siteConfig))
             }
+
             const { dataCenter } = siteConfig
 
-            if (FEATURE.WEB_SDK === featureName || !featureName) {
-                let args = {
-                    srcFile: path.join(SRC_DIRECTORY, siteDomain, FEATURE.WEB_SDK, `${FEATURE.WEB_SDK}.js`),
-                    srcDirectory: path.join(SRC_DIRECTORY, siteDomain, FEATURE.WEB_SDK),
-                    templateWebSdk: TEMPLATE_WEB_SDK_FILE,
-                    siteConfig,
-                }
-                await runWithProgressAsync({
-                    name: FEATURE.WEB_SDK,
-                    pathMustExist: SRC_DIRECTORY,
-                    run: async () => await initWebSdk({ gigya, apiKey, dataCenter, reset, ...args }),
-                })
+            await initializeFeature(FEATURE.WEB_SDK, featureName, initWebSdk, { gigya, apiKey, dataCenter, reset, siteDomain })
+            await initializeFeature(FEATURE.WEB_SCREEN_SETS, featureName, initWebScreenSets, { gigya, apiKey, dataCenter, reset, siteDomain })
+            await initializeFeature(FEATURE.POLICIES, featureName, initPolicies, { gigya, apiKey, dataCenter, reset, siteDomain })
+        }
+
+        const resultMsg = environment ? `Init result (${environment})` : 'Init result'
+        console.log(resultMsg + ': \x1b[32mSuccess\x1b[0m')
+    } catch (error) {
+        console.log('\x1b[31m%s\x1b[0m', `${String(error)}\n`)
+        const failMsg = environment ? `Init result (${environment})` : 'Init result'
+        console.log(failMsg + ': \x1b[31mFail\x1b[0m')
+    }
+}
+
+const handleNoSitesError = (sites, environment) => {
+    if (!sites) {
+        const errorMsg = environment ? `No source sites to use for "${environment}" environment.` : 'No source sites to use.'
+        throw new Error(errorMsg)
+    }
+}
+
+const ensureSrcDirectoryExists = () => {
+    if (!fs.existsSync(SRC_DIRECTORY)) {
+        fs.mkdirSync(SRC_DIRECTORY)
+    }
+}
+
+const logSiteDetails = (siteDomain, apiKey) => {
+    const logMsg = siteDomain ? `${siteDomain} - ${apiKey}` : `${apiKey}`
+    console.log('\n' + logMsg)
+}
+
+const initializeFeature = async (feature, featureName, initFunction, { gigya, apiKey, dataCenter, reset, siteDomain }) => {
+    if (feature === featureName || !featureName) {
+        let args
+        if (feature === FEATURE.WEB_SDK) {
+            args = {
+                srcFile: path.join(SRC_DIRECTORY, siteDomain, FEATURE.WEB_SDK, `${FEATURE.WEB_SDK}.js`),
+                srcDirectory: path.join(SRC_DIRECTORY, siteDomain, FEATURE.WEB_SDK),
+                templateWebSdk: TEMPLATE_WEB_SDK_FILE,
             }
 
             if (FEATURE.WEB_SCREEN_SETS === featureName || !featureName) {
@@ -91,10 +106,11 @@ const init = async ({ gigya, sites, featureName, environment, reset }) => {
             }
         }
 
-        console.log(`\nInit result${environment ? ` (${environment})` : ''}: \x1b[32m%s\x1b[0m\n`, `Success`)
-    } catch (error) {
-        console.log('\x1b[31m%s\x1b[0m', `${String(error)}\n`)
-        console.log(`Init result${environment ? ` (${environment})` : ''}: \x1b[31m%s\x1b[0m\n`, `Fail`)
+        await runWithProgressAsync({
+            name: feature,
+            pathMustExist: SRC_DIRECTORY,
+            run: async () => await initFunction({ gigya, apiKey, dataCenter, reset, ...args }),
+        })
     }
 }
 
