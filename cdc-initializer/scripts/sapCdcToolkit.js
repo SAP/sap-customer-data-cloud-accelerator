@@ -5,17 +5,28 @@ import { once } from 'events'
 import path from 'path';
 
 class SapCdcToolkit {
+    #TOOLKIT_SRC_CODE_FILE_PATH
     static #PROJECT_BASE_DIRECTORY = 'cdc-initializer'
     static #TOOLKIT_FOLDER = 'sap-cdc-toolkit'
     static #TOOLKIT_FOLDER_PATH = path.join(SapCdcToolkit.#PROJECT_BASE_DIRECTORY, SapCdcToolkit.#TOOLKIT_FOLDER)
     static #TOOLKIT_SRC_CODE_FILE = SapCdcToolkit.#TOOLKIT_FOLDER + '.zip'
-    static #TEMP_DIR = process.platform == "win32" ? process.env.TEMP : process.env.TMPDIR
-    static #TOOLKIT_SRC_CODE_FILE_PATH = path.join(SapCdcToolkit.#TEMP_DIR, SapCdcToolkit.#TOOLKIT_SRC_CODE_FILE)
+    //static #TEMP_DIR = process.platform == "win32" ? process.env.TEMP : process.env.TMPDIR
+    //static #TOOLKIT_SRC_CODE_FILE_PATH = path.join(SapCdcToolkit.#TEMP_DIR, SapCdcToolkit.#TOOLKIT_SRC_CODE_FILE)
 
-    #checkGitHubToken() {
-        if (process.env.GITHUB_TOKEN == undefined) {
-            throw new Error('Error: Missing value of environment variable GITHUB_TOKEN. Please set it before trying again.')
+    constructor() {
+        console.log(`process.platform=${process.platform}`)
+        console.log(`process.env.TEMP=${process.env.TEMP}`)
+        console.log(`process.env.TMPDIR=${process.env.TMPDIR}`)
+
+        let tempDir = process.platform == "win32" ? process.env.TEMP : process.env.TMPDIR
+        if(!tempDir) {
+            console.log(`tempDir1=${tempDir}`)
+            tempDir = "./temp/"
         }
+        console.log(`tempDir2=${tempDir}`)
+        this.#TOOLKIT_SRC_CODE_FILE_PATH = path.join(tempDir, SapCdcToolkit.#TOOLKIT_SRC_CODE_FILE)
+
+        console.log(`this.#TOOLKIT_SRC_CODE_FILE_PATH=${this.#TOOLKIT_SRC_CODE_FILE_PATH}`)
     }
 
     async #getLatestReleaseInformation() {
@@ -23,9 +34,6 @@ class SapCdcToolkit {
             const response = await axios({
                 method: "get",
                 url: 'https://api.github.com/repos/SAP/sap-customer-data-cloud-toolkit/releases/latest',
-                headers: {
-                    Authorization: `Bearer ${process.env.GITHUB_TOKEN}`
-                },
             });
             return response.data
         }
@@ -67,7 +75,7 @@ class SapCdcToolkit {
     }
 
     async #extractZipFileAndFilterContents() {
-        const filePath = SapCdcToolkit.#TOOLKIT_SRC_CODE_FILE_PATH
+        const filePath = this.#TOOLKIT_SRC_CODE_FILE_PATH
         if(!fs.existsSync(filePath)) {
             throw new Error(`Expected zip file ${filePath} do not exists. Aborting...`)
         }
@@ -98,14 +106,13 @@ class SapCdcToolkit {
     }
 
     #deleteTemporaryFiles() {
-        const filePath = SapCdcToolkit.#TOOLKIT_SRC_CODE_FILE_PATH
+        const filePath = this.#TOOLKIT_SRC_CODE_FILE_PATH
         console.log(`Deleting temporary file ${filePath}`)
         fs.rmSync(filePath)
     }
 
     async update() {
         try {
-            this.#checkGitHubToken()
             const releaseInfo = await this.#getLatestReleaseInformation()
             const srcCodeUrl = this.#getSrcCodeUrl(releaseInfo)
             await this.#downloadSrcCode(srcCodeUrl)
