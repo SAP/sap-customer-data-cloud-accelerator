@@ -5,7 +5,7 @@
     "main": "index.js",
     "type": "module",
     "scripts": {
-        "test": "CI=true jest --collect-coverage --coverage --watch=all --coverageDirectory=coverage/unit ./cdc-initializer",
+        "test": "CI=true npm run update-sap-cdc-toolkit && jest --collect-coverage --coverage --watch=all --coverageDirectory=coverage/unit ./cdc-initializer",
         "init-debug": "node --inspect-brk --loader ./cdc-initializer/scripts/extensionLoader.js cdc-initializer/init/index.js",
         "init": "node --loader ./cdc-initializer/scripts/extensionLoader.js cdc-initializer/init/index.js",
         "init-feature": "node --loader ./cdc-initializer/scripts/extensionLoader.js cdc-initializer/feature/index.js init",

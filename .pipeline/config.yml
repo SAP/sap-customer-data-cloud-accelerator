@@ -57,6 +57,5 @@ steps:
         failOnError: false
     npmExecuteScripts:
         runScripts:
-            - 'update-sap-cdc-toolkit'
             - test
         failOnError: true
