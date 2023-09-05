@@ -11,7 +11,7 @@ general:
     vaultServerUrl: 'https://vault.tools.sap'
     vaultNamespace: 'ies/hyperspace/pipelines'
     nativeBuild: true
-    nativeVoting: true
+    nativeVoting: false
     verbose: true
 stages:
     Central Build:
@@ -19,8 +19,8 @@ stages:
         sonarExecuteScan: true
         testsPublishResults: true
         sapCumulusUpload: true
-    Additional Unit Tests:
-        testsPublishResults: true
+    Pull-Request Voting:
+        npmExecuteScripts: true
 steps:
     artifactPrepareVersion:
         gitHttpsCredentialVaultSecretName: 'GROUP-SECRETS/sap-customer-data-cloud-accelerator-github'
@@ -56,4 +56,6 @@ steps:
     handlePipelineStepErrors:
         failOnError: false
     npmExecuteScripts:
-        npmRunScripts: [ test ]
+        runScripts:
+            - test
+        failOnError: true

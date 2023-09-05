@@ -9,9 +9,6 @@ void call(Map parameters) {
 
     if (env.BRANCH_NAME.startsWith('PR-'))
     {
-        echo "Start - npmExecuteScripts"
-        npmExecuteScripts script: parameters.script
-        echo "End - npmExecuteScripts"
         echo "Start - checkmarxExecuteScan"
         // this should be enabled later when starting fixing this issues
         checkmarxExecuteScan script: parameters.script
