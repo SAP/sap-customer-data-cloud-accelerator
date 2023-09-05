@@ -70,7 +70,7 @@ describe('Init schema test suite', () => {
 })
 
 describe('Build schema test suite', () => {
-    test('all schema files are build successfully', async () => {
+    test('all schema files are build successfully', () => {
         const srcFileContent = JSON.stringify({
             fields: {
                 phoneDataQualityStatus: {
@@ -92,7 +92,7 @@ describe('Build schema test suite', () => {
         fs.writeFileSync.mockReturnValue(undefined)
         fs.readFileSync.mockReturnValue(srcFileContent)
 
-        await schema.build(siteDomain)
+        schema.build(siteDomain)
 
         const buildDirectory = path.join(BUILD_DIRECTORY, siteDomain, schema.getName())
         expect(fs.existsSync).toHaveBeenCalledWith(buildDirectory)
