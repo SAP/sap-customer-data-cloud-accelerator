@@ -6,27 +6,33 @@ import path from 'path';
 
 class SapCdcToolkit {
     #TOOLKIT_SRC_CODE_FILE_PATH
-    static #PROJECT_BASE_DIRECTORY = 'cdc-initializer'
-    static #TOOLKIT_FOLDER = 'sap-cdc-toolkit'
+    #TOOLKIT_FOLDER_PATH
+    //static #PROJECT_BASE_DIRECTORY = 'cdc-initializer'
+    //static #TOOLKIT_FOLDER = 'sap-cdc-toolkit'
     //static #TOOLKIT_FOLDER_PATH = path.join(SapCdcToolkit.#PROJECT_BASE_DIRECTORY, SapCdcToolkit.#TOOLKIT_FOLDER)
-    static #TOOLKIT_FOLDER_PATH = 'cdc-initializer/sap-cdc-toolkit'
+    //static #TOOLKIT_FOLDER_PATH = 'cdc-initializer/sap-cdc-toolkit'
     //static #TOOLKIT_SRC_CODE_FILE = SapCdcToolkit.#TOOLKIT_FOLDER + '.zip'
-    static #TOOLKIT_SRC_CODE_FILE = 'sap-cdc-toolkit.zip'
+    //static #TOOLKIT_SRC_CODE_FILE = 'sap-cdc-toolkit.zip'
     //static #TEMP_DIR = process.platform == "win32" ? process.env.TEMP : process.env.TMPDIR
     //static #TOOLKIT_SRC_CODE_FILE_PATH = path.join(SapCdcToolkit.#TEMP_DIR, SapCdcToolkit.#TOOLKIT_SRC_CODE_FILE)
 
     constructor() {
+        const PROJECT_BASE_DIRECTORY = 'cdc-initializer'
+        const TOOLKIT_FOLDER = 'sap-cdc-toolkit'
+        const TOOLKIT_SRC_CODE_FILE = `${TOOLKIT_FOLDER}.zip`
+
         console.log(`process.platform=${process.platform}`)
         console.log(`process.env.TEMP=${process.env.TEMP}`)
         console.log(`process.env.TMPDIR=${process.env.TMPDIR}`)
 
         let tempDir = process.platform == "win32" ? process.env.TEMP : process.env.TMPDIR
         if(!tempDir) {
-            console.log(`tempDir1=${tempDir}`)
             tempDir = "./temp/"
+            fs.mkdirSync(tempDir, { recursive: true })
         }
         console.log(`tempDir2=${tempDir}`)
-        this.#TOOLKIT_SRC_CODE_FILE_PATH = path.join(tempDir, SapCdcToolkit.#TOOLKIT_SRC_CODE_FILE)
+        this.#TOOLKIT_SRC_CODE_FILE_PATH = path.join(tempDir, TOOLKIT_SRC_CODE_FILE)
+        this.#TOOLKIT_FOLDER_PATH = path.join(PROJECT_BASE_DIRECTORY, TOOLKIT_FOLDER)
 
         console.log(`this.#TOOLKIT_SRC_CODE_FILE_PATH=${this.#TOOLKIT_SRC_CODE_FILE_PATH}`)
     }
@@ -51,7 +57,7 @@ class SapCdcToolkit {
     }
 
     async #downloadSrcCode(srcCodeUrl) {
-        const destinationFile = SapCdcToolkit.#TOOLKIT_SRC_CODE_FILE_PATH
+        const destinationFile = this.#TOOLKIT_SRC_CODE_FILE_PATH
         console.log(`Downloading source code from ${srcCodeUrl} to ${destinationFile}`)
         try {
             const response = await axios({
@@ -81,7 +87,7 @@ class SapCdcToolkit {
         if(!fs.existsSync(filePath)) {
             throw new Error(`Expected zip file ${filePath} do not exists. Aborting...`)
         }
-        console.log(`Extracting ${filePath} to ${SapCdcToolkit.#TOOLKIT_FOLDER_PATH}`)
+        console.log(`Extracting ${filePath} to ${this.#TOOLKIT_FOLDER_PATH}`)
 
         const zipFile = await fs.promises.readFile(filePath)
         const zipFileContent = await new JSZip().loadAsync(zipFile)
@@ -96,13 +102,13 @@ class SapCdcToolkit {
             }
 
             if (zipFileContent.files[entry].dir) {
-                fs.mkdirSync(path.join(SapCdcToolkit.#TOOLKIT_FOLDER_PATH, entry.substring(baseFolderIndex)))
+                fs.mkdirSync(path.join(this.#TOOLKIT_FOLDER_PATH, entry.substring(baseFolderIndex)))
             } else {
                 if (entry.endsWith("est.js") || !entry.endsWith(".js")) {
                     continue
                 }
                 const text = await zipFileContent.file(entry).async("string")
-                await fs.promises.writeFile(path.join(SapCdcToolkit.#TOOLKIT_FOLDER_PATH, entry.substring(baseFolderIndex)), text)
+                await fs.promises.writeFile(path.join(this.#TOOLKIT_FOLDER_PATH, entry.substring(baseFolderIndex)), text)
             }
         }
     }
@@ -118,7 +124,7 @@ class SapCdcToolkit {
             const releaseInfo = await this.#getLatestReleaseInformation()
             const srcCodeUrl = this.#getSrcCodeUrl(releaseInfo)
             await this.#downloadSrcCode(srcCodeUrl)
-            await this.#createFolder(SapCdcToolkit.#TOOLKIT_FOLDER_PATH)
+            await this.#createFolder(this.#TOOLKIT_FOLDER_PATH)
             await this.#extractZipFileAndFilterContents()
             this.#deleteTemporaryFiles()
             this.verifyUpdateResult()
@@ -131,7 +137,7 @@ class SapCdcToolkit {
     verifyUpdateResult() {
         const TOOLKIT_MINIMUM_NUMBER_OF_FILES = 30
         let result = false
-        const numberOfFiles = this.#getAllFilesFromDirectoryRecursively(SapCdcToolkit.#TOOLKIT_FOLDER_PATH).length
+        const numberOfFiles = this.#getAllFilesFromDirectoryRecursively(this.#TOOLKIT_FOLDER_PATH).length
         if(numberOfFiles > TOOLKIT_MINIMUM_NUMBER_OF_FILES) {
             console.log("Toolkit source files updated successfully")
             result = true
