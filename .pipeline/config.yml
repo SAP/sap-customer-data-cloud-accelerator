@@ -1,63 +1,59 @@
 general:
-  buildTool: 'npm'
-  productiveBranch: 'main'
-  pipelineOptimization: false
-  gitHttpsCredentialsId: 'hyperspace-github-tools-sap-i545698'
-  vaultAppRoleTokenCredentialsId: 'vault-approle-role-id-3103-26268'
-  vaultAppRoleSecretTokenCredentialsId: 'vault-approle-secret-id-accessor-3103-26268'
-  vaultPath: 'piper/PIPELINE-GROUP-3103'
-  vaultBasePath: 'piper/PIPELINE-GROUP-3103'
-  vaultPipelineName: 'PIPELINE-26268'
-  vaultServerUrl: 'https://vault.tools.sap'
-  vaultNamespace: 'ies/hyperspace/pipelines'
-  nativeBuild: true
-  nativeVoting: true
-  verbose: true
-  npmExecuteScripts:
-    install: true
-    test: true
-  buildExecute:
-    npmInstall: true
-    npmRunScripts: [test]
+    buildTool: 'npm'
+    productiveBranch: 'main'
+    pipelineOptimization: false
+    gitHttpsCredentialsId: 'hyperspace-github-tools-sap-i545698'
+    vaultAppRoleTokenCredentialsId: 'vault-approle-role-id-3103-26268'
+    vaultAppRoleSecretTokenCredentialsId: 'vault-approle-secret-id-accessor-3103-26268'
+    vaultPath: 'piper/PIPELINE-GROUP-3103'
+    vaultBasePath: 'piper/PIPELINE-GROUP-3103'
+    vaultPipelineName: 'PIPELINE-26268'
+    vaultServerUrl: 'https://vault.tools.sap'
+    vaultNamespace: 'ies/hyperspace/pipelines'
+    nativeBuild: true
+    nativeVoting: true
+    verbose: true
+    npmExecuteScripts:
+        npmRunScripts: [test]
 stages:
-  Central Build:
-    hadolintExecute: false
-    sonarExecuteScan: true
-    testsPublishResults: true
-    sapCumulusUpload: true
-  Additional Unit Tests:
-    testsPublishResults: true
+    Central Build:
+        hadolintExecute: false
+        sonarExecuteScan: true
+        testsPublishResults: true
+        sapCumulusUpload: true
+    Additional Unit Tests:
+        testsPublishResults: true
 steps:
-  artifactPrepareVersion:
-    gitHttpsCredentialVaultSecretName: 'GROUP-SECRETS/sap-customer-data-cloud-accelerator-github'
-  executeBuild:
-    buildType: stage
-  testsPublishResults:
-    failOnError: true
-  sapCallStagingService:
-    url: 'https://staging.repositories.cloud.sap/stage/api'
-    profile: 'group-3103-default'
-  whitesourceExecuteScan:
-    whitesourceProductName: 'SHC - CXA CDC ACCELERATOR 1.0'
-    whitesourceProductToken: '87e71157f7ee4aa1849d05b68c774a887cd8cbcc857e4858a139c0c004ed0b91'
-    whitesourceUserTokenCredentialsId: 'hyperspace-whitesource-cxa-cdc-accelerator-1-0'
-  sapCheckPPMSCompliance:
-    ppmsCredentialsId: ''
-    ppmsID: '73554900100200022074'
-    uploadChangeRequest: true
-    whitesourceProductToken: '87e71157f7ee4aa1849d05b68c774a887cd8cbcc857e4858a139c0c004ed0b91'
-    whitesourceUserTokenCredentialsId: 'hyperspace-whitesource-cxa-cdc-accelerator-1-0'
-  sonarExecuteScan:
-    serverUrl: 'https://sonar.tools.sap'
-    sonarTokenCredentialsId: 'hyperspace-sonar-i545698'
-    sonarVaultSecretName: 'GROUP-SECRETS/sonar-cdc-sonar-token'
-    waitForQualityGate: true
-  checkmarxExecuteScan:
-    projectName: 'sap-customer-data-cloud-accelerator'
-    teamName: '/CxServer/SP/SAP/PI/SMEDevelopmentSupport/SMECoreB1Program'
-    preset: '100205' # https://github.wdf.sap.corp/pages/Security-Testing/doc/checkmarx/Presets/
-  sapCumulusUpload:
-    pipelineId: '696f688f-dfb9-4149-9532-ba2791daf458'
-    cumulusFileCredentialsId: 'hyperspace-cumulusupload-3103'
-  handlePipelineStepErrors:
-    failOnError: false
+    artifactPrepareVersion:
+        gitHttpsCredentialVaultSecretName: 'GROUP-SECRETS/sap-customer-data-cloud-accelerator-github'
+    executeBuild:
+        buildType: stage
+    testsPublishResults:
+        failOnError: true
+    sapCallStagingService:
+        url: 'https://staging.repositories.cloud.sap/stage/api'
+        profile: 'group-3103-default'
+    whitesourceExecuteScan:
+        whitesourceProductName: 'SHC - CXA CDC ACCELERATOR 1.0'
+        whitesourceProductToken: '87e71157f7ee4aa1849d05b68c774a887cd8cbcc857e4858a139c0c004ed0b91'
+        whitesourceUserTokenCredentialsId: 'hyperspace-whitesource-cxa-cdc-accelerator-1-0'
+    sapCheckPPMSCompliance:
+        ppmsCredentialsId: ''
+        ppmsID: '73554900100200022074'
+        uploadChangeRequest: true
+        whitesourceProductToken: '87e71157f7ee4aa1849d05b68c774a887cd8cbcc857e4858a139c0c004ed0b91'
+        whitesourceUserTokenCredentialsId: 'hyperspace-whitesource-cxa-cdc-accelerator-1-0'
+    sonarExecuteScan:
+        serverUrl: 'https://sonar.tools.sap'
+        sonarTokenCredentialsId: 'hyperspace-sonar-i545698'
+        sonarVaultSecretName: 'GROUP-SECRETS/sonar-cdc-sonar-token'
+        waitForQualityGate: true
+    checkmarxExecuteScan:
+        projectName: 'sap-customer-data-cloud-accelerator'
+        teamName: '/CxServer/SP/SAP/PI/SMEDevelopmentSupport/SMECoreB1Program'
+        preset: '100205' # https://github.wdf.sap.corp/pages/Security-Testing/doc/checkmarx/Presets/
+    sapCumulusUpload:
+        pipelineId: '696f688f-dfb9-4149-9532-ba2791daf458'
+        cumulusFileCredentialsId: 'hyperspace-cumulusupload-3103'
+    handlePipelineStepErrors:
+        failOnError: false
