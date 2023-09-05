@@ -28,6 +28,9 @@
         "testPathIgnorePatterns": [
             "<rootDir>/build/"
         ],
+        "coveragePathIgnorePatterns": [
+            "cdc-initializer/scripts/"
+        ],
         "testEnvironment": "jsdom"
     },
     "devDependencies": {

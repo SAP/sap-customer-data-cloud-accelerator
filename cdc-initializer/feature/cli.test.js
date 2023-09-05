@@ -3,7 +3,6 @@
  * License: Apache-2.0
  */
 import CLI from './cli'
-import { expectedGigyaResponseNok } from '../init/testCommon'
 
 describe('CLI test suite', () => {
     const cli = new CLI()
@@ -40,7 +39,6 @@ describe('CLI test suite', () => {
         expect(environment).toEqual(processArgv[4])
         const expectedSites = Array.isArray(config[processArgv[2]]) ? config[processArgv[2]] : [config[processArgv[2]]]
         expect(sites).toEqual(expectedSites)
-        // expect single call to websdk
     })
 
     test('parseArguments with phase init and feature name', async () => {

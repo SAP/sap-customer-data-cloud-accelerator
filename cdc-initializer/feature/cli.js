@@ -24,9 +24,7 @@ export default class CLI {
         if (!Array.isArray(configuration) && configuration.apiKey) {
             configuration = [configuration]
         }
-        if (Array.isArray(configuration)) {
-            sites = configuration
-        }
+        sites = configuration
 
         return { phase, sites, featureName, environment }
     }
