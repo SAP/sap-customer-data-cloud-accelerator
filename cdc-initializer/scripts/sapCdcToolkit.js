@@ -8,8 +8,10 @@ class SapCdcToolkit {
     #TOOLKIT_SRC_CODE_FILE_PATH
     static #PROJECT_BASE_DIRECTORY = 'cdc-initializer'
     static #TOOLKIT_FOLDER = 'sap-cdc-toolkit'
-    static #TOOLKIT_FOLDER_PATH = path.join(SapCdcToolkit.#PROJECT_BASE_DIRECTORY, SapCdcToolkit.#TOOLKIT_FOLDER)
-    static #TOOLKIT_SRC_CODE_FILE = SapCdcToolkit.#TOOLKIT_FOLDER + '.zip'
+    //static #TOOLKIT_FOLDER_PATH = path.join(SapCdcToolkit.#PROJECT_BASE_DIRECTORY, SapCdcToolkit.#TOOLKIT_FOLDER)
+    static #TOOLKIT_FOLDER_PATH = 'cdc-initializer/sap-cdc-toolkit'
+    //static #TOOLKIT_SRC_CODE_FILE = SapCdcToolkit.#TOOLKIT_FOLDER + '.zip'
+    static #TOOLKIT_SRC_CODE_FILE = 'sap-cdc-toolkit.zip'
     //static #TEMP_DIR = process.platform == "win32" ? process.env.TEMP : process.env.TMPDIR
     //static #TOOLKIT_SRC_CODE_FILE_PATH = path.join(SapCdcToolkit.#TEMP_DIR, SapCdcToolkit.#TOOLKIT_SRC_CODE_FILE)
 
