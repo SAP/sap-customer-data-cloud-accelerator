@@ -13,12 +13,20 @@ general:
   nativeBuild: true
   nativeVoting: true
   verbose: true
+  npmExecuteScripts:
+    install: true
+    test: true
+  buildExecute:
+    npmInstall: true
+    npmRunScripts: [test]
 stages:
   Central Build:
     hadolintExecute: false
     sonarExecuteScan: true
     testsPublishResults: true
     sapCumulusUpload: true
+  Additional Unit Tests:
+    testsPublishResults: true
 steps:
   artifactPrepareVersion:
     gitHttpsCredentialVaultSecretName: 'GROUP-SECRETS/sap-customer-data-cloud-accelerator-github'
