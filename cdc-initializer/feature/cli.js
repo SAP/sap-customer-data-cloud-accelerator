@@ -6,7 +6,7 @@ import 'dotenv/config'
 
 import { CONFIG_FILENAME } from '../constants.js'
 import { createRequire } from 'module'
-import {FEATURE_NAME_LIST} from "../constants"
+import { FEATURE_NAME_LIST } from '../constants'
 
 export default class CLI {
     parseArguments(args) {
@@ -37,7 +37,7 @@ export default class CLI {
 
     #getConfiguration = (phase, environment) => {
         const config = this.getConfigurationByEnvironment(environment)
-        switch(phase) {
+        switch (phase) {
             case 'init':
             case 'reset':
             case 'build':
@@ -45,7 +45,7 @@ export default class CLI {
             case 'deploy':
                 return config.deploy
             default:
-                throw new Error("Cannot find configuration")
+                throw new Error('Cannot find configuration')
         }
     }
 

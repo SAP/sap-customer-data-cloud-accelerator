@@ -4,29 +4,27 @@
  */
 import 'dotenv/config'
 
-import Feature from "./feature";
-import CLI from "./cli";
+import Feature from './feature'
+import CLI from './cli'
 
 const cli = new CLI()
-const {phase, sites, featureName, environment} = cli.parseArguments(process.argv)
+const { phase, sites, featureName, environment } = cli.parseArguments(process.argv)
 
-const credentials = {userKey: process.env.USER_KEY, secret: process.env.SECRET_KEY}
+const credentials = { userKey: process.env.USER_KEY, secret: process.env.SECRET_KEY }
 const feature = new Feature(credentials)
-switch(phase) {
+switch (phase) {
     case 'init':
         await feature.init(sites, featureName, environment, false)
-        break;
+        break
     case 'reset':
         await feature.reset(sites, featureName, environment)
-        break;
+        break
     case 'build':
         await feature.build(sites, featureName, environment)
-        break;
+        break
     case 'deploy':
         await feature.deploy(sites, featureName, environment)
-        break;
+        break
     default:
         console.log(`Unknown phase ${phase}`)
 }
-
-

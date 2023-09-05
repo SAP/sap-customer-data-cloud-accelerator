@@ -2,35 +2,35 @@
  * Copyright: Copyright 2023 SAP SE or an SAP affiliate company and cdc-initializer contributors
  * License: Apache-2.0
  */
-import CLI from "./cli"
+import CLI from './cli'
 
 describe('CLI test suite', () => {
     const cli = new CLI()
     const config = {
-        "source": [
-            { "apiKey": "4_Ch-q_qKrjBJ_-QBEfMPkKA", "siteDomain": "cdc-accelerator.parent.site-group.com" },
-            { "apiKey": "4_tqmAZeYVLPfPl9SYu_iFxA", "siteDomain": "cdc-accelerator.preferences-center.com" },
+        source: [
+            { apiKey: '4_Ch-q_qKrjBJ_-QBEfMPkKA', siteDomain: 'cdc-accelerator.parent.site-group.com' },
+            { apiKey: '4_tqmAZeYVLPfPl9SYu_iFxA', siteDomain: 'cdc-accelerator.preferences-center.com' },
         ],
-        "deploy": [
-            { "apiKey": "4_gxvAD6fBxrCScvH8bBm7Vw", "siteDomain": "cdc-accelerator.parent.site-group.com" }
-        ]
+        deploy: [{ apiKey: '4_gxvAD6fBxrCScvH8bBm7Vw', siteDomain: 'cdc-accelerator.parent.site-group.com' }],
     }
 
     beforeAll(() => {
-        jest.spyOn(CLI.prototype, 'getConfigurationByEnvironment').mockImplementation(() => { return config });
-    });
+        jest.spyOn(CLI.prototype, 'getConfigurationByEnvironment').mockImplementation(() => {
+            return config
+        })
+    })
 
     afterAll(() => {
-        jest.restoreAllMocks();
-    });
+        jest.restoreAllMocks()
+    })
 
     test('parseArguments with phase deploy and feature name', async () => {
         const processArgv = [
             'node',
             'cdc-initializer/feature/index.js',
-            'deploy',   // phase
-            'webSdk',   // feature name
-            'dev'       // environment
+            'deploy', // phase
+            'webSdk', // feature name
+            'dev', // environment
         ]
 
         const { phase, sites, featureName, environment } = cli.parseArguments(processArgv)
@@ -45,9 +45,9 @@ describe('CLI test suite', () => {
         const processArgv = [
             'node',
             'cdc-initializer/feature/index.js',
-            'init',     // phase
-            'webSdk',   // feature name
-            'dev'       // environment
+            'init', // phase
+            'webSdk', // feature name
+            'dev', // environment
         ]
         const { phase, sites, featureName, environment } = cli.parseArguments(processArgv)
         expect(phase).toEqual(processArgv[2])
@@ -60,8 +60,8 @@ describe('CLI test suite', () => {
         const processArgv = [
             'node',
             'cdc-initializer/feature/index.js',
-            'init',   // phase
-            'dev'     // environment
+            'init', // phase
+            'dev', // environment
         ]
         const { phase, sites, featureName, environment } = cli.parseArguments(processArgv)
         expect(phase).toEqual(processArgv[2])
