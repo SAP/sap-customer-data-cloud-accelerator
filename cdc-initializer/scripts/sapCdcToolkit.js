@@ -66,7 +66,7 @@ class SapCdcToolkit {
                 responseType: "stream",
                 headers: {
                     Accept: "application/octet-stream",
-                    Authorization: `Bearer ${process.env.GITHUB_TOKEN}`
+                    //Authorization: `Bearer ${process.env.GITHUB_TOKEN}`
                 },
             });
             const stream = response.data.pipe(fs.createWriteStream(destinationFile));
