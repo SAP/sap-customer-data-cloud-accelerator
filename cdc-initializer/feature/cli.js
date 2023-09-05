@@ -20,15 +20,11 @@ export default class CLI {
 
         let configuration = this.#getConfiguration(phase, environment)
         let sites
-        if (environment && Array.isArray(configuration)) {
-            sites = configuration
-        }
         // If source is object with single apiKey, convert to array
-        else if (!Array.isArray(configuration) && configuration.apiKey) {
+        if (!Array.isArray(configuration) && configuration.apiKey) {
             configuration = [configuration]
         }
-
-        if (!environment && Array.isArray(configuration)) {
+        if (Array.isArray(configuration)) {
             sites = configuration
         }
 

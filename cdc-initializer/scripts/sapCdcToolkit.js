@@ -1,51 +1,43 @@
 import axios from 'axios'
-import fs from "fs";
+import fs from 'fs'
 import JSZip from 'jszip'
 import { once } from 'events'
-import path from 'path';
+import path from 'path'
 
 class SapCdcToolkit {
     #TOOLKIT_SRC_CODE_FILE_PATH
     #TOOLKIT_FOLDER_PATH
-    //static #PROJECT_BASE_DIRECTORY = 'cdc-initializer'
-    //static #TOOLKIT_FOLDER = 'sap-cdc-toolkit'
+    static #PROJECT_BASE_DIRECTORY = 'cdc-initializer'
+    static #TOOLKIT_FOLDER = 'sap-cdc-toolkit'
     //static #TOOLKIT_FOLDER_PATH = path.join(SapCdcToolkit.#PROJECT_BASE_DIRECTORY, SapCdcToolkit.#TOOLKIT_FOLDER)
     //static #TOOLKIT_FOLDER_PATH = 'cdc-initializer/sap-cdc-toolkit'
-    //static #TOOLKIT_SRC_CODE_FILE = SapCdcToolkit.#TOOLKIT_FOLDER + '.zip'
+    static #TOOLKIT_SRC_CODE_FILE = `${SapCdcToolkit.#TOOLKIT_FOLDER}.zip`
     //static #TOOLKIT_SRC_CODE_FILE = 'sap-cdc-toolkit.zip'
     //static #TEMP_DIR = process.platform == "win32" ? process.env.TEMP : process.env.TMPDIR
     //static #TOOLKIT_SRC_CODE_FILE_PATH = path.join(SapCdcToolkit.#TEMP_DIR, SapCdcToolkit.#TOOLKIT_SRC_CODE_FILE)
 
     constructor() {
-        const PROJECT_BASE_DIRECTORY = 'cdc-initializer'
-        const TOOLKIT_FOLDER = 'sap-cdc-toolkit'
-        const TOOLKIT_SRC_CODE_FILE = `${TOOLKIT_FOLDER}.zip`
+        //const PROJECT_BASE_DIRECTORY = 'cdc-initializer'
+        //const TOOLKIT_FOLDER = 'sap-cdc-toolkit'
+        //const TOOLKIT_SRC_CODE_FILE = `${SapCdcToolkit.#TOOLKIT_FOLDER}.zip`
 
-        console.log(`process.platform=${process.platform}`)
-        console.log(`process.env.TEMP=${process.env.TEMP}`)
-        console.log(`process.env.TMPDIR=${process.env.TMPDIR}`)
-
-        let tempDir = process.platform == "win32" ? process.env.TEMP : process.env.TMPDIR
-        if(!tempDir) {
-            tempDir = "./temp/"
+        let tempDir = process.platform == 'win32' ? process.env.TEMP : process.env.TMPDIR
+        if (!tempDir) {
+            tempDir = './temp/'
             fs.mkdirSync(tempDir, { recursive: true })
         }
-        console.log(`tempDir2=${tempDir}`)
-        this.#TOOLKIT_SRC_CODE_FILE_PATH = path.join(tempDir, TOOLKIT_SRC_CODE_FILE)
-        this.#TOOLKIT_FOLDER_PATH = path.join(PROJECT_BASE_DIRECTORY, TOOLKIT_FOLDER)
-
-        console.log(`this.#TOOLKIT_SRC_CODE_FILE_PATH=${this.#TOOLKIT_SRC_CODE_FILE_PATH}`)
+        this.#TOOLKIT_SRC_CODE_FILE_PATH = path.join(tempDir, SapCdcToolkit.#TOOLKIT_SRC_CODE_FILE)
+        this.#TOOLKIT_FOLDER_PATH = path.join(SapCdcToolkit.#PROJECT_BASE_DIRECTORY, SapCdcToolkit.#TOOLKIT_FOLDER)
     }
 
     async #getLatestReleaseInformation() {
         try {
             const response = await axios({
-                method: "get",
+                method: 'get',
                 url: 'https://api.github.com/repos/SAP/sap-customer-data-cloud-toolkit/releases/latest',
-            });
+            })
             return response.data
-        }
-        catch(error) {
+        } catch (error) {
             console.log(error)
         }
     }
@@ -61,18 +53,16 @@ class SapCdcToolkit {
         console.log(`Downloading source code from ${srcCodeUrl} to ${destinationFile}`)
         try {
             const response = await axios({
-                method: "get",
+                method: 'get',
                 url: srcCodeUrl,
-                responseType: "stream",
+                responseType: 'stream',
                 headers: {
-                    Accept: "application/octet-stream",
-                    //Authorization: `Bearer ${process.env.GITHUB_TOKEN}`
+                    Accept: 'application/octet-stream',
                 },
-            });
-            const stream = response.data.pipe(fs.createWriteStream(destinationFile));
-            await once(stream, 'finish');
-        }
-        catch(error) {
+            })
+            const stream = response.data.pipe(fs.createWriteStream(destinationFile))
+            await once(stream, 'finish')
+        } catch (error) {
             console.log(error)
         }
     }
@@ -84,7 +74,7 @@ class SapCdcToolkit {
 
     async #extractZipFileAndFilterContents() {
         const filePath = this.#TOOLKIT_SRC_CODE_FILE_PATH
-        if(!fs.existsSync(filePath)) {
+        if (!fs.existsSync(filePath)) {
             throw new Error(`Expected zip file ${filePath} do not exists. Aborting...`)
         }
         console.log(`Extracting ${filePath} to ${this.#TOOLKIT_FOLDER_PATH}`)
@@ -92,11 +82,11 @@ class SapCdcToolkit {
         const zipFile = await fs.promises.readFile(filePath)
         const zipFileContent = await new JSZip().loadAsync(zipFile)
         let baseFolderIndex = 0
-        for(const entry of Object.keys(zipFileContent.files)) {
-            if(!entry.includes("src/services/")) {
+        for (const entry of Object.keys(zipFileContent.files)) {
+            if (!entry.includes('src/services/')) {
                 continue
             }
-            if(entry.endsWith("src/services/")) {
+            if (entry.endsWith('src/services/')) {
                 baseFolderIndex = entry.length - 1
                 continue
             }
@@ -104,10 +94,10 @@ class SapCdcToolkit {
             if (zipFileContent.files[entry].dir) {
                 fs.mkdirSync(path.join(this.#TOOLKIT_FOLDER_PATH, entry.substring(baseFolderIndex)))
             } else {
-                if (entry.endsWith("est.js") || !entry.endsWith(".js")) {
+                if (entry.endsWith('est.js') || !entry.endsWith('.js')) {
                     continue
                 }
-                const text = await zipFileContent.file(entry).async("string")
+                const text = await zipFileContent.file(entry).async('string')
                 await fs.promises.writeFile(path.join(this.#TOOLKIT_FOLDER_PATH, entry.substring(baseFolderIndex)), text)
             }
         }
@@ -128,8 +118,7 @@ class SapCdcToolkit {
             await this.#extractZipFileAndFilterContents()
             this.#deleteTemporaryFiles()
             this.verifyUpdateResult()
-        }
-        catch (error) {
+        } catch (error) {
             console.log(error.message)
         }
     }
@@ -138,29 +127,28 @@ class SapCdcToolkit {
         const TOOLKIT_MINIMUM_NUMBER_OF_FILES = 30
         let result = false
         const numberOfFiles = this.#getAllFilesFromDirectoryRecursively(this.#TOOLKIT_FOLDER_PATH).length
-        if(numberOfFiles > TOOLKIT_MINIMUM_NUMBER_OF_FILES) {
-            console.log("Toolkit source files updated successfully")
+        if (numberOfFiles > TOOLKIT_MINIMUM_NUMBER_OF_FILES) {
+            console.log('Toolkit source files updated successfully')
             result = true
-        }
-        else {
-            throw new Error("Error: Toolkit source files were NOT updated successfully")
+        } else {
+            throw new Error('Error: Toolkit source files were NOT updated successfully')
         }
         return result
     }
 
     #getAllFilesFromDirectoryRecursively(dirPath, files) {
-        const filesCurrentDir = fs.readdirSync(dirPath);
-        let allFiles = files || [];
+        const filesCurrentDir = fs.readdirSync(dirPath)
+        let allFiles = files || []
         for (const fileName of filesCurrentDir) {
-            const filePath = path.join(dirPath, fileName);
+            const filePath = path.join(dirPath, fileName)
 
             if (fs.statSync(filePath).isDirectory()) {
-                allFiles = this.#getAllFilesFromDirectoryRecursively(filePath, allFiles);
+                allFiles = this.#getAllFilesFromDirectoryRecursively(filePath, allFiles)
             } else {
-                allFiles.push(fileName);
+                allFiles.push(fileName)
             }
         }
-        return allFiles;
+        return allFiles
     }
 }
 
