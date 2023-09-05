@@ -13,8 +13,6 @@ general:
     nativeBuild: true
     nativeVoting: true
     verbose: true
-    npmExecuteScripts:
-        npmRunScripts: [test]
 stages:
     Central Build:
         hadolintExecute: false
@@ -57,3 +55,5 @@ steps:
         cumulusFileCredentialsId: 'hyperspace-cumulusupload-3103'
     handlePipelineStepErrors:
         failOnError: false
+    npmExecuteScripts:
+        npmRunScripts: [ test ]
