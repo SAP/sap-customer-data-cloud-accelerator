@@ -515,7 +515,8 @@ const getScreenSetEventsFromFile = async (filename) => {
 
     let screenSetEvents
     try {
-        screenSetEvents = eval('(' + screenJs + ')')
+        const func = new Function(screenJs)
+        screenSetEvents = func()
     } catch (error) {
         alert('Error loading local Screen-Set events from file: \n\n' + filename)
         screenSetEvents = {}
