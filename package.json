@@ -5,7 +5,7 @@
     "main": "index.js",
     "type": "module",
     "scripts": {
-        "test": "CI=true jest --collect-coverage --coverage --watch=all --coverageDirectory=coverage/unit ./cdc-initializer",
+        "test": "CI=true npm run update-sap-cdc-toolkit && jest --collect-coverage --coverage --watch=all --coverageDirectory=coverage/unit ./cdc-initializer",
         "init-debug": "node --inspect-brk --loader ./cdc-initializer/scripts/extensionLoader.js cdc-initializer/init/index.js",
         "init": "node --loader ./cdc-initializer/scripts/extensionLoader.js cdc-initializer/init/index.js",
         "init-feature": "node --loader ./cdc-initializer/scripts/extensionLoader.js cdc-initializer/feature/index.js init",
@@ -28,6 +28,9 @@
         "testPathIgnorePatterns": [
             "<rootDir>/build/"
         ],
+        "coveragePathIgnorePatterns": [
+            "cdc-initializer/scripts/"
+        ],
         "testEnvironment": "jsdom"
     },
     "devDependencies": {
@@ -35,6 +38,7 @@
         "@babel/core": "^7.21.8",
         "@babel/preset-env": "^7.21.5",
         "babel-cli": "^6.26.0",
+        "babel-plugin-transform-import-meta": "^2.2.1",
         "babel-preset-env": "^1.7.0",
         "jest": "^29.3.1",
         "jest-environment-jsdom": "^29.5.0",
@@ -44,8 +48,8 @@
     "dependencies": {
         "axios": "^1.2.3",
         "dotenv": "^16.0.3",
+        "jszip": "^3.10.1",
         "light-server": "^2.9.1",
-        "mustache": "^4.2.0",
-        "jszip": "^3.10.1"
+        "mustache": "^4.2.0"
     }
 }

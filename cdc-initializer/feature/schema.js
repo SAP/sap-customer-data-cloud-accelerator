@@ -4,11 +4,11 @@
  */
 import ToolkitSchema from '../sap-cdc-toolkit/copyConfig/schema/schema'
 import ToolkitSchemaOptions from '../sap-cdc-toolkit/copyConfig/schema/schemaOptions'
-import {BUILD_DIRECTORY, SRC_DIRECTORY} from '../constants.js'
+import { BUILD_DIRECTORY, SRC_DIRECTORY } from '../constants.js'
 import fs from 'fs'
 import path from 'path'
-import {clearDirectoryContents} from "../utils/utils";
-import Feature from "./feature";
+import { clearDirectoryContents } from '../utils/utils'
+import Feature from './feature'
 
 export default class Schema {
     #credentials
@@ -49,13 +49,18 @@ export default class Schema {
 
     async deploy(apiKey, siteConfig, siteDomain) {
         const buildFeatureDirectory = path.join(BUILD_DIRECTORY, siteDomain, this.getName())
-        const toolkitSchema = new ToolkitSchema(this.#credentials, apiKey, siteConfig.dataCenter)
+        const rawFile = fs.readFileSync(path.join(buildFeatureDirectory, Schema.DATA_SCHEMA_FILE_NAME), { encoding: 'utf8' })
 
         const payload = {
-            dataSchema: JSON.parse(fs.readFileSync(path.join(buildFeatureDirectory, Schema.DATA_SCHEMA_FILE_NAME), { encoding: 'utf8' })),
+            dataSchema: JSON.parse(rawFile),
             profileSchema: JSON.parse(fs.readFileSync(path.join(buildFeatureDirectory, Schema.PROFILE_SCHEMA_FILE_NAME), { encoding: 'utf8' })),
-            subscriptionsSchema: JSON.parse(fs.readFileSync(path.join(buildFeatureDirectory, Schema.SUBSCRIPTIONS_SCHEMA_FILE_NAME), { encoding: 'utf8' }))
+            subscriptionsSchema: JSON.parse(fs.readFileSync(path.join(buildFeatureDirectory, Schema.SUBSCRIPTIONS_SCHEMA_FILE_NAME), { encoding: 'utf8' })),
         }
-        await toolkitSchema.copySchema(apiKey, siteConfig, payload, new ToolkitSchemaOptions())
+        await this.deployUsingToolkit(apiKey, siteConfig, payload, new ToolkitSchemaOptions())
+    }
+
+    async deployUsingToolkit(apiKey, siteConfig, payload, options) {
+        const toolkitSchema = new ToolkitSchema(this.#credentials, apiKey, siteConfig.dataCenter)
+        await toolkitSchema.copySchema(apiKey, siteConfig, payload, options)
     }
 }

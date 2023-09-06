@@ -6,7 +6,7 @@ import 'dotenv/config'
 
 import { CONFIG_FILENAME } from '../constants.js'
 import { createRequire } from 'module'
-import {FEATURE_NAME_LIST} from "../constants"
+import { FEATURE_NAME_LIST } from '../constants'
 
 export default class CLI {
     parseArguments(args) {
@@ -20,24 +20,18 @@ export default class CLI {
 
         let configuration = this.#getConfiguration(phase, environment)
         let sites
-        if (environment && Array.isArray(configuration)) {
-            sites = configuration
-        }
         // If source is object with single apiKey, convert to array
-        else if (!Array.isArray(configuration) && configuration.apiKey) {
+        if (!Array.isArray(configuration) && configuration.apiKey) {
             configuration = [configuration]
         }
-
-        if (!environment && Array.isArray(configuration)) {
-            sites = configuration
-        }
+        sites = configuration
 
         return { phase, sites, featureName, environment }
     }
 
     #getConfiguration = (phase, environment) => {
         const config = this.getConfigurationByEnvironment(environment)
-        switch(phase) {
+        switch (phase) {
             case 'init':
             case 'reset':
             case 'build':
@@ -45,7 +39,7 @@ export default class CLI {
             case 'deploy':
                 return config.deploy
             default:
-                throw new Error("Cannot find configuration")
+                throw new Error('Cannot find configuration')
         }
     }
 

@@ -2,14 +2,14 @@
  * Copyright: Copyright 2023 SAP SE or an SAP affiliate company and cdc-initializer contributors
  * License: Apache-2.0
  */
-import fs from "fs";
-import path from "path";
-import readline from "readline";
-import SiteConfigurator from "../sap-cdc-toolkit/configurator/siteConfigurator";
-import {BUILD_DIRECTORY, FEATURE_NAME_LIST, SRC_DIRECTORY} from "../constants";
-import Schema from "./schema";
-import WebSdk from "./webSdk";
-import Policies from "./policies";
+import fs from 'fs'
+import path from 'path'
+import readline from 'readline'
+import SiteConfigurator from '../sap-cdc-toolkit/configurator/siteConfigurator'
+import { BUILD_DIRECTORY, FEATURE_NAME_LIST, SRC_DIRECTORY } from '../constants'
+import Schema from './schema'
+import WebSdk from './webSdk'
+import Policies from './policies'
 
 export default class Feature {
     #credentials
@@ -28,7 +28,7 @@ export default class Feature {
             console.log(`Init start${environmentInfo}`)
 
             if (!sites) {
-                let msg = "No source sites to use"
+                let msg = 'No source sites to use'
                 msg += environment ? ` for "${environment}" environment.` : '.'
                 throw new Error(msg)
             }
@@ -47,7 +47,7 @@ export default class Feature {
                 await this.#initFeatures(apiKey, siteConfig, siteDomain, featureName, reset)
             }
 
-            console.log("\n")
+            console.log('\n')
             this.#logResult(`Success`, environment)
         } catch (error) {
             console.log('\x1b[31m%s\x1b[0m', `${String(error)}\n`)
@@ -71,8 +71,8 @@ export default class Feature {
     }
 
     async #initFeatures(apiKey, siteConfig, siteDomain, featureName, reset) {
-        for(const feature of this.#features) {
-            if(featureName && !Feature.isEqualCaseInsensitive(featureName, feature.constructor.name)) {
+        for (const feature of this.#features) {
+            if (featureName && !Feature.isEqualCaseInsensitive(featureName, feature.constructor.name)) {
                 continue
             }
             if (fs.existsSync(SRC_DIRECTORY)) {
@@ -107,7 +107,7 @@ export default class Feature {
 
             // Loop all site directories and run build fuction for each
             for (const siteDomain of sites) {
-                if(!siteDomain) {
+                if (!siteDomain) {
                     continue
                 }
                 console.log(`\n${path.join(SRC_DIRECTORY, siteDomain)}`)
@@ -123,7 +123,7 @@ export default class Feature {
     }
 
     #buildFeatures(siteDomain) {
-        for(const feature of this.#features) {
+        for (const feature of this.#features) {
             const workingDir = path.join(SRC_DIRECTORY, siteDomain, feature.getName())
             if (fs.existsSync(workingDir)) {
                 process.stdout.write(`- ${feature.getName()}: `)
@@ -150,7 +150,7 @@ export default class Feature {
 
     static copyFileFromSrcToBuild(siteDomain, file, feature) {
         const srcBasePath = path.join(SRC_DIRECTORY, siteDomain, feature.getName())
-        let fileContent = JSON.parse(fs.readFileSync(path.join(srcBasePath, file), { encoding: 'utf8' }))
+        const fileContent = JSON.parse(fs.readFileSync(path.join(srcBasePath, file), { encoding: 'utf8' }))
         const buildBasePath = path.join(BUILD_DIRECTORY, siteDomain, feature.getName())
         fs.writeFileSync(path.join(buildBasePath, file), JSON.stringify(fileContent, null, 4))
     }
@@ -161,7 +161,7 @@ export default class Feature {
             console.log(`Deploy start${environmentInfo}`)
 
             if (!sites) {
-                let msg = "No deploy sites to use"
+                let msg = 'No deploy sites to use'
                 msg += environment ? ` for "${environment}" environment.` : '.'
                 throw new Error(msg)
             }
@@ -183,8 +183,8 @@ export default class Feature {
     }
 
     async #deployFeatures(apiKey, siteConfig, siteDomain, featureName) {
-        for(const feature of this.#features) {
-            if(featureName && !Feature.isEqualCaseInsensitive(featureName, feature.constructor.name)) {
+        for (const feature of this.#features) {
+            if (featureName && !Feature.isEqualCaseInsensitive(featureName, feature.constructor.name)) {
                 continue
             }
             const workingDir = path.join(BUILD_DIRECTORY, siteDomain, feature.getName())
@@ -201,6 +201,6 @@ export default class Feature {
     }
 
     static isEqualCaseInsensitive(str1, str2) {
-        return str1.localeCompare(str2, undefined, { sensitivity: 'base' }) === 0;
+        return str1.localeCompare(str2, undefined, { sensitivity: 'base' }) === 0
     }
 }
