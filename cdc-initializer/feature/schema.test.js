@@ -19,11 +19,22 @@ const schema = new Schema(credentials)
 
 describe('Init schema test suite', () => {
     test('all schema files are generated successfully', async () => {
-        await successfullTest(false, false)
-    })
+        axios.mockResolvedValueOnce({ data: expectedSchemaResponse })
 
-    test('all schema files are generated successfully with reset', async () => {
-        await successfullTest(true, true)
+        fs.existsSync.mockReturnValue(false)
+        fs.mkdirSync.mockReturnValue(undefined)
+        fs.writeFileSync.mockReturnValue(undefined)
+
+        await schema.init(apiKey, getSiteConfig, siteDomain)
+
+        const srcDirectory = path.join(SRC_DIRECTORY, siteDomain, schema.getName())
+        expect(fs.existsSync).toHaveBeenCalledWith(srcDirectory)
+        expect(fs.writeFileSync).toHaveBeenCalledWith(path.join(srcDirectory, Schema.DATA_SCHEMA_FILE_NAME), JSON.stringify(expectedSchemaResponse.dataSchema, null, 4))
+        expect(fs.writeFileSync).toHaveBeenCalledWith(path.join(srcDirectory, Schema.PROFILE_SCHEMA_FILE_NAME), JSON.stringify(expectedSchemaResponse.profileSchema, null, 4))
+        expect(fs.writeFileSync).toHaveBeenCalledWith(
+            path.join(srcDirectory, Schema.SUBSCRIPTIONS_SCHEMA_FILE_NAME),
+            JSON.stringify(expectedSchemaResponse.subscriptionsSchema, null, 4),
+        )
     })
 
     test('get schema failed', async () => {
@@ -45,27 +56,34 @@ describe('Init schema test suite', () => {
             ),
         )
     })
+})
 
-    async function successfullTest(reset, dirExists) {
-        axios.mockResolvedValueOnce({ data: expectedSchemaResponse })
+describe('Reset schema test suite', () => {
+    beforeEach(() => {
+        jest.restoreAllMocks()
+    })
 
+    test('reset with existing folder', () => {
+        testReset(true)
+    })
+
+    test('reset with non-existing folder', () => {
+        testReset(false)
+    })
+
+    function testReset(dirExists) {
         fs.existsSync.mockReturnValue(dirExists)
-        fs.mkdirSync.mockReturnValue(undefined)
-        fs.writeFileSync.mockReturnValue(undefined)
+        fs.rmSync.mockReturnValue(undefined)
 
-        await schema.init(apiKey, getSiteConfig, siteDomain, reset)
+        schema.reset(siteDomain)
 
-        const srcDirectory = path.join(SRC_DIRECTORY, siteDomain, schema.getName())
-        expect(fs.existsSync).toHaveBeenCalledWith(srcDirectory)
+        const featureDirectory = path.join(SRC_DIRECTORY, siteDomain, schema.getName())
+        expect(fs.existsSync).toHaveBeenCalledWith(featureDirectory)
         if (dirExists) {
-            expect(fs.rmSync).toHaveBeenCalledWith(srcDirectory, { force: true, recursive: true })
+            expect(fs.rmSync).toHaveBeenCalledWith(featureDirectory, { force: true, recursive: true })
+        } else {
+            expect(fs.rmSync).not.toHaveBeenCalled()
         }
-        expect(fs.writeFileSync).toHaveBeenCalledWith(path.join(srcDirectory, Schema.DATA_SCHEMA_FILE_NAME), JSON.stringify(expectedSchemaResponse.dataSchema, null, 4))
-        expect(fs.writeFileSync).toHaveBeenCalledWith(path.join(srcDirectory, Schema.PROFILE_SCHEMA_FILE_NAME), JSON.stringify(expectedSchemaResponse.profileSchema, null, 4))
-        expect(fs.writeFileSync).toHaveBeenCalledWith(
-            path.join(srcDirectory, Schema.SUBSCRIPTIONS_SCHEMA_FILE_NAME),
-            JSON.stringify(expectedSchemaResponse.subscriptionsSchema, null, 4),
-        )
     }
 })
 

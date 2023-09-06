@@ -22,7 +22,7 @@ export default class Feature {
         this.#features.push(new Policies(credentials))
     }
 
-    async init(sites, featureName, environment, reset) {
+    async init(sites, featureName, environment) {
         try {
             const environmentInfo = environment ? ` (${environment})` : ''
             console.log(`Init start${environmentInfo}`)
@@ -44,20 +44,20 @@ export default class Feature {
                 console.log(msg)
 
                 const siteConfig = await this.#getSiteConfig(apiKey)
-                await this.#initFeatures(apiKey, siteConfig, siteDomain, featureName, reset)
+                await this.#initFeatures(apiKey, siteConfig, siteDomain, featureName)
             }
 
             console.log('\n')
-            this.#logResult(`Success`, environment)
+            this.#logResult('Init', 'Success', environment)
         } catch (error) {
             console.log('\x1b[31m%s\x1b[0m', `${String(error)}\n`)
-            this.#logResult(`Fail`, environment)
+            this.#logResult('Init', 'Fail', environment)
         }
     }
 
-    #logResult(result, environment) {
+    #logResult(operation, result, environment) {
         const envMsg = environment ? ` (${environment})` : ''
-        const msg = `Init result${envMsg}: \x1b[31m%s\x1b[0m\n`
+        const msg = `${operation} result${envMsg}: \x1b[31m%s\x1b[0m\n`
         console.log(msg, result)
     }
 
@@ -70,14 +70,14 @@ export default class Feature {
         return siteConfig
     }
 
-    async #initFeatures(apiKey, siteConfig, siteDomain, featureName, reset) {
+    async #initFeatures(apiKey, siteConfig, siteDomain, featureName) {
         for (const feature of this.#features) {
             if (featureName && !Feature.isEqualCaseInsensitive(featureName, feature.constructor.name)) {
                 continue
             }
             if (fs.existsSync(SRC_DIRECTORY)) {
                 process.stdout.write(`- ${feature.getName()}: `)
-                await feature.init(apiKey, siteConfig, siteDomain, reset)
+                await feature.init(apiKey, siteConfig, siteDomain)
                 process.stdout.clearLine()
                 process.stdout.cursorTo(0)
                 console.log(`- ${feature.getName()}: \x1b[32m%s\x1b[0m`, `Done`)
@@ -87,15 +87,59 @@ export default class Feature {
         }
     }
 
-    async reset(sites, featureName, environment) {
+    resetConfirmation = (rl) => {
+        return new Promise((resolve, reject) => {
+            rl.question(`This will overwrite all files in your src/ directory, are you sure you want to continue? (Y/n)\n`, async (response) => {
+                rl.close()
+                resolve(response.toUpperCase() === 'Y' ? true : false)
+            })
+        })
+    }
+
+    async doReset(sites, featureName) {
+        try {
+            for (const { apiKey, siteDomain = '' } of sites) {
+                const msg = siteDomain ? `\n${siteDomain} - ${apiKey}` : `\n${apiKey}`
+                console.log(msg)
+                await this.#resetFeatures(siteDomain, featureName)
+            }
+            console.log('\n')
+            this.#logResult('Reset', 'Success')
+            return true
+        } catch (error) {
+            console.log('\x1b[31m%s\x1b[0m', `${String(error)}\n`)
+            this.#logResult('Reset', 'Fail')
+            return false
+        }
+    }
+
+    async reset(sites, featureName) {
+        console.log('\nReset start')
+
         // Get confirmation from user to replace existing directories
         const rl = readline.createInterface({ input: process.stdin, output: process.stdout })
-        return rl.question(`This will overwrite all files in your src/ directory, are you sure you want to continue? (Y/n)\n`, async (response) => {
-            rl.close()
-            if (response.toUpperCase() === 'Y') {
-                await this.init(sites, featureName, environment, true)
+        let confirmation = await this.resetConfirmation(rl)
+        if (confirmation) {
+            confirmation = await this.doReset(sites, featureName)
+        }
+        return confirmation
+    }
+
+    async #resetFeatures(siteDomain, featureName) {
+        for (const feature of this.#features) {
+            if (featureName && !Feature.isEqualCaseInsensitive(featureName, feature.constructor.name)) {
+                continue
             }
-        })
+            if (fs.existsSync(SRC_DIRECTORY)) {
+                process.stdout.write(`- ${feature.getName()}: `)
+                await feature.reset(siteDomain)
+                process.stdout.clearLine()
+                process.stdout.cursorTo(0)
+                console.log(`- ${feature.getName()}: \x1b[32m%s\x1b[0m`, `Done`)
+            } else {
+                console.log(`- ${feature.getName()}: %s`, `Skip`)
+            }
+        }
     }
 
     async build() {
@@ -137,15 +181,17 @@ export default class Feature {
         }
     }
 
-    static createFolder(srcDirectory, reset) {
-        if (fs.existsSync(srcDirectory)) {
-            if (!reset) {
-                throw new Error(`The "${srcDirectory}" directory already exists, to overwrite it's contents please use the option "reset" instead of "init"`)
-            }
-            // Remove existing src/schema directory if "reset" is enabled,
-            fs.rmSync(srcDirectory, { recursive: true, force: true })
+    static deleteFolder(folder) {
+        if (fs.existsSync(folder)) {
+            fs.rmSync(folder, { recursive: true, force: true })
         }
-        fs.mkdirSync(srcDirectory, { recursive: true })
+    }
+
+    static createFolder(folder) {
+        if (fs.existsSync(folder)) {
+            throw new Error(`The "${folder}" directory already exists, to overwrite it's contents please use the option "reset" instead of "init"`)
+        }
+        fs.mkdirSync(folder, { recursive: true })
     }
 
     static copyFileFromSrcToBuild(siteDomain, file, feature) {

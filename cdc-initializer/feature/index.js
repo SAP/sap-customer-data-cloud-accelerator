@@ -17,10 +17,13 @@ switch (phase) {
         await feature.init(sites, featureName, environment, false)
         break
     case 'reset':
-        await feature.reset(sites, featureName, environment)
+        const resetConfirmed = await feature.reset(sites, featureName)
+        if (resetConfirmed) {
+            await feature.init(sites, featureName, environment)
+        }
         break
     case 'build':
-        await feature.build(sites, featureName, environment)
+        await feature.build()
         break
     case 'deploy':
         await feature.deploy(sites, featureName, environment)
