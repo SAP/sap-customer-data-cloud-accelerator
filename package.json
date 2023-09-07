@@ -1,55 +1,55 @@
 {
-    "name": "cdc-initializer",
-    "version": "1.2.12",
-    "description": "",
-    "main": "index.js",
-    "type": "module",
-    "scripts": {
-        "test": "CI=true npm run update-sap-cdc-toolkit && jest --collect-coverage --coverage --watch=all --coverageDirectory=coverage/unit ./cdc-initializer",
-        "init-debug": "node --inspect-brk --loader ./cdc-initializer/scripts/extensionLoader.js cdc-initializer/init/index.js",
-        "init": "node --loader ./cdc-initializer/scripts/extensionLoader.js cdc-initializer/init/index.js",
-        "init-feature": "node --loader ./cdc-initializer/scripts/extensionLoader.js cdc-initializer/feature/index.js init",
-        "reset": "node --loader ./cdc-initializer/scripts/extensionLoader.js cdc-initializer/reset/reset.js",
-        "reset-feature": "node --loader ./cdc-initializer/scripts/extensionLoader.js cdc-initializer/feature/index.js reset",
-        "build": "babel --delete-dir-on-start src -d build && prettier --semi true --trailing-comma none --write build/**/*.js && node --loader ./cdc-initializer/scripts/extensionLoader.js cdc-initializer/build/build.js",
-        "build-feature": "babel --delete-dir-on-start src -d build && prettier --semi true --trailing-comma none --write build/**/*.js && node --loader ./cdc-initializer/scripts/extensionLoader.js cdc-initializer/feature/index.js build",
-        "deploy": "babel --delete-dir-on-start src -d build && prettier --semi true --trailing-comma none --write build/**/webScreenSets/**/*.js && node cdc-initializer/build/build.js && node cdc-initializer/deploy/deploy.js",
-        "deploy-feature": "babel --delete-dir-on-start src -d build && prettier --semi true --trailing-comma none --write build/**/webScreenSets/**/*.js && node --loader ./cdc-initializer/scripts/extensionLoader.js cdc-initializer/feature/index.js build && node --loader ./cdc-initializer/scripts/extensionLoader.js cdc-initializer/feature/index.js deploy",
-        "start": "babel --delete-dir-on-start src -d build && prettier --semi true --trailing-comma none --write build/**/webScreenSets/**/*.js && node cdc-initializer/build/build.js && light-server -c .lightserverrc",
-        "update-sap-cdc-toolkit": "node cdc-initializer/scripts/updateSapCdcToolkit.js"
-    },
-    "repository": {
-        "type": "git",
-        "url": "https://github.tools.sap/cx-hub-pt/cdc-initializer.git"
-    },
-    "author": "Luís Marques <l.marques@sap.com>",
-    "license": "ISC",
-    "jest": {
-        "testPathIgnorePatterns": [
-            "<rootDir>/build/"
-        ],
-        "coveragePathIgnorePatterns": [
-            "cdc-initializer/scripts/"
-        ],
-        "testEnvironment": "jsdom"
-    },
-    "devDependencies": {
-        "@babel/cli": "^7.21.5",
-        "@babel/core": "^7.21.8",
-        "@babel/preset-env": "^7.21.5",
-        "babel-cli": "^6.26.0",
-        "babel-plugin-transform-import-meta": "^2.2.1",
-        "babel-preset-env": "^1.7.0",
-        "jest": "^29.3.1",
-        "jest-environment-jsdom": "^29.5.0",
-        "jest-location-mock": "^1.0.9",
-        "prettier": "2.8.8"
-    },
-    "dependencies": {
-        "axios": "^1.2.3",
-        "dotenv": "^16.0.3",
-        "jszip": "^3.10.1",
-        "light-server": "^2.9.1",
-        "mustache": "^4.2.0"
-    }
+  "name": "cdc-initializer",
+  "version": "1.2.12-20230907112440+d021219acb19205faff9d6df6e3f7fa4c0025a74",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "CI=true npm run update-sap-cdc-toolkit \u0026\u0026 jest --collect-coverage --coverage --watch=all --coverageDirectory=coverage/unit ./cdc-initializer",
+    "init-debug": "node --inspect-brk --loader ./cdc-initializer/scripts/extensionLoader.js cdc-initializer/init/index.js",
+    "init": "node --loader ./cdc-initializer/scripts/extensionLoader.js cdc-initializer/init/index.js",
+    "init-feature": "node --loader ./cdc-initializer/scripts/extensionLoader.js cdc-initializer/feature/index.js init",
+    "reset": "node --loader ./cdc-initializer/scripts/extensionLoader.js cdc-initializer/reset/reset.js",
+    "reset-feature": "node --loader ./cdc-initializer/scripts/extensionLoader.js cdc-initializer/feature/index.js reset",
+    "build": "babel --delete-dir-on-start src -d build \u0026\u0026 prettier --semi true --trailing-comma none --write build/**/*.js \u0026\u0026 node --loader ./cdc-initializer/scripts/extensionLoader.js cdc-initializer/build/build.js",
+    "build-feature": "babel --delete-dir-on-start src -d build \u0026\u0026 prettier --semi true --trailing-comma none --write build/**/*.js \u0026\u0026 node --loader ./cdc-initializer/scripts/extensionLoader.js cdc-initializer/feature/index.js build",
+    "deploy": "babel --delete-dir-on-start src -d build \u0026\u0026 prettier --semi true --trailing-comma none --write build/**/webScreenSets/**/*.js \u0026\u0026 node cdc-initializer/build/build.js \u0026\u0026 node cdc-initializer/deploy/deploy.js",
+    "deploy-feature": "babel --delete-dir-on-start src -d build \u0026\u0026 prettier --semi true --trailing-comma none --write build/**/webScreenSets/**/*.js \u0026\u0026 node --loader ./cdc-initializer/scripts/extensionLoader.js cdc-initializer/feature/index.js build \u0026\u0026 node --loader ./cdc-initializer/scripts/extensionLoader.js cdc-initializer/feature/index.js deploy",
+    "start": "babel --delete-dir-on-start src -d build \u0026\u0026 prettier --semi true --trailing-comma none --write build/**/webScreenSets/**/*.js \u0026\u0026 node cdc-initializer/build/build.js \u0026\u0026 light-server -c .lightserverrc",
+    "update-sap-cdc-toolkit": "node cdc-initializer/scripts/updateSapCdcToolkit.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.tools.sap/cx-hub-pt/cdc-initializer.git"
+  },
+  "author": "Luís Marques \u003cl.marques@sap.com\u003e",
+  "license": "ISC",
+  "jest": {
+    "testPathIgnorePatterns": [
+      "\u003crootDir\u003e/build/"
+    ],
+    "coveragePathIgnorePatterns": [
+      "cdc-initializer/scripts/"
+    ],
+    "testEnvironment": "jsdom"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.21.5",
+    "@babel/core": "^7.21.8",
+    "@babel/preset-env": "^7.21.5",
+    "babel-cli": "^6.26.0",
+    "babel-plugin-transform-import-meta": "^2.2.1",
+    "babel-preset-env": "^1.7.0",
+    "jest": "^29.3.1",
+    "jest-environment-jsdom": "^29.5.0",
+    "jest-location-mock": "^1.0.9",
+    "prettier": "2.8.8"
+  },
+  "dependencies": {
+    "axios": "^1.2.3",
+    "dotenv": "^16.0.3",
+    "jszip": "^3.10.1",
+    "light-server": "^2.9.1",
+    "mustache": "^4.2.0"
+  }
 }
