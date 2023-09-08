@@ -50,7 +50,7 @@ export default class Feature {
             return true
         } catch (error) {
             console.log('\x1b[31m%s\x1b[0m', `${String(error)}\n`)
-            this.#logResult(phase, 'Fail', environment)
+            this.#logFailResult(phase, environment)
             return false
         }
     }
@@ -80,14 +80,22 @@ export default class Feature {
         }
 
         console.log('\n')
-        this.#logResult('Init', 'Success', environment)
+        this.#logSuccessResult('Init', environment)
         return true
     }
 
-    #logResult(operation, result, environment) {
+    #logResult(operation, result, color, environment) {
         const envMsg = environment ? ` (${environment})` : ''
-        const msg = `${operation} result${envMsg}: \x1b[31m%s\x1b[0m\n`
+        const msg = `${operation} result${envMsg}: \x1b[${color}m%s\x1b[0m\n`
         console.log(msg, result)
+    }
+
+    #logSuccessResult(operation, environment) {
+        this.#logResult(operation, 'Success', '32', environment)
+    }
+
+    #logFailResult(operation, environment) {
+        this.#logResult(operation, 'Fail', '31', environment)
     }
 
     async #getSiteConfig(apiKey) {
@@ -116,7 +124,7 @@ export default class Feature {
             await this.#executeOperationOnFeatures(featureName, SRC_DIRECTORY, { operation: 'reset', args: [siteDomain] })
         }
         console.log('\n')
-        this.#logResult('Reset', 'Success')
+        this.#logSuccessResult('Reset')
         return true
     }
 
@@ -145,7 +153,8 @@ export default class Feature {
             await this.#executeOperationOnFeatures(undefined, path.join(SRC_DIRECTORY, siteDomain), { operation: 'build', args: [siteDomain] })
         }
 
-        console.log('\nBuild result: \x1b[32m%s\x1b[0m\n', `Success`)
+        console.log('\n')
+        this.#logSuccessResult('Build')
         return true
     }
 
@@ -188,7 +197,8 @@ export default class Feature {
             await this.#executeOperationOnFeatures(featureName, path.join(BUILD_DIRECTORY, siteDomain), { operation: 'deploy', args: [apiKey, siteConfig, siteDomain] })
         }
 
-        console.log(`\nDeploy result${environment ? ` (${environment})` : ''}: \x1b[32m%s\x1b[0m\n`, `Success`)
+        console.log('\n')
+        this.#logSuccessResult('Deploy', environment)
         return true
     }
 

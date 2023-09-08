@@ -85,18 +85,18 @@ describe('Reset test suite', () => {
     test('Execute reset successfully', async () => {
         await executeResetTest(true)
     })
-})
 
-async function executeResetTest(resetUserResponse) {
-    jest.spyOn(feature, 'resetConfirmation').mockImplementationOnce(() => {
-        return resetUserResponse
-    })
-    const spyReset = jest.spyOn(feature, 'reset')
-    const spyInit = jest.spyOn(feature, 'init')
-    await feature.execute('reset', sites, undefined)
-    expect(spyReset.mock.calls.length).toBe(1)
-    expect(spyInit.mock.calls.length).toBe(resetUserResponse ? 1 : 0)
-}
+    async function executeResetTest(resetUserResponse) {
+        jest.spyOn(feature, 'resetConfirmation').mockImplementationOnce(() => {
+            return resetUserResponse
+        })
+        const spyReset = jest.spyOn(feature, 'reset')
+        const spyInit = jest.spyOn(feature, 'init')
+        await feature.execute('reset', sites, undefined)
+        expect(spyReset.mock.calls.length).toBe(1)
+        expect(spyInit.mock.calls.length).toBe(resetUserResponse ? 1 : 0)
+    }
+})
 
 async function executeTestAndCountCalls(phase, featureName) {
     let spyesTotalCalls = 0
