@@ -14,7 +14,7 @@
         "build": "babel --delete-dir-on-start src -d build && prettier --semi true --trailing-comma none --write build/**/*.js && node --loader ./cdc-initializer/scripts/extensionLoader.js cdc-initializer/build/build.js",
         "build-feature": "babel --delete-dir-on-start src -d build && prettier --semi true --trailing-comma none --write build/**/*.js && node --loader ./cdc-initializer/scripts/extensionLoader.js cdc-initializer/feature/index.js build",
         "deploy": "babel --delete-dir-on-start src -d build && prettier --semi true --trailing-comma none --write build/**/webScreenSets/**/*.js && node cdc-initializer/build/build.js && node cdc-initializer/deploy/deploy.js",
-        "deploy-feature": "npm run build-feature && prettier --semi true --trailing-comma none --write build/**/webScreenSets/**/*.js&& node --loader ./cdc-initializer/scripts/extensionLoader.js cdc-initializer/feature/index.js deploy",
+        "deploy-feature": "npm run build-feature && prettier --semi true --trailing-comma none --write build/**/webScreenSets/**/*.js && node --loader ./cdc-initializer/scripts/extensionLoader.js cdc-initializer/feature/index.js deploy",
         "start": "babel --delete-dir-on-start src -d build && prettier --semi true --trailing-comma none --write build/**/webScreenSets/**/*.js && node cdc-initializer/build/build.js && light-server -c .lightserverrc",
         "update-sap-cdc-toolkit": "node cdc-initializer/scripts/updateSapCdcToolkit.js"
     },
