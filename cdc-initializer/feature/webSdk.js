@@ -3,11 +3,11 @@
  * License: Apache-2.0
  */
 import ToolkitWebSdk from '../sap-cdc-toolkit/copyConfig/websdk/websdk'
-import {BUILD_DIRECTORY, CDC_INITIALIZER_DIRECTORY, SRC_DIRECTORY} from '../constants.js'
+import { BUILD_DIRECTORY, CDC_INITIALIZER_DIRECTORY, SRC_DIRECTORY } from '../constants.js'
 import fs from 'fs'
 import path from 'path'
-import {cleanJavaScriptModuleBoilerplateWebSdk, replaceFilenamesWithFileContents} from "../utils/utils";
-import Feature from "./feature";
+import { cleanJavaScriptModuleBoilerplateWebSdk, replaceFilenamesWithFileContents } from '../utils/utils'
+import Feature from './feature'
 
 export default class WebSdk {
     static #TEMPLATE_WEB_SDK_FILE = path.join(CDC_INITIALIZER_DIRECTORY, `/templates/defaultWebSdk.js`)
@@ -21,7 +21,7 @@ export default class WebSdk {
         return this.constructor.name
     }
 
-    async init(apiKey, siteConfig, siteDomain, reset) {
+    async init(apiKey, siteConfig, siteDomain) {
         let { globalConf: originalWebSdk } = siteConfig
 
         // If globalConf is empty, get default template
@@ -33,11 +33,15 @@ export default class WebSdk {
         const webSdk = `export default ${originalWebSdk}`
 
         const srcDirectory = path.join(SRC_DIRECTORY, siteDomain, this.getName())
-        Feature.createFolder(srcDirectory, reset)
+        Feature.createFolder(srcDirectory)
 
         // Create new webSdk file
         const fileName = path.join(srcDirectory, `${this.getName()}.js`)
         fs.writeFileSync(fileName, webSdk)
+    }
+
+    reset(siteDomain) {
+        Feature.deleteFolder(path.join(SRC_DIRECTORY, siteDomain, this.getName()))
     }
 
     build(siteDomain) {
@@ -46,7 +50,6 @@ export default class WebSdk {
 
         let webSdkContent = fs.readFileSync(buildFileName, { encoding: 'utf8' })
         webSdkContent = cleanJavaScriptModuleBoilerplateWebSdk(webSdkContent)
-
 
         // Find filenames and replace them with the contents of the file
         let webSdkBundled = replaceFilenamesWithFileContents(webSdkContent, buildBasePath).trim()

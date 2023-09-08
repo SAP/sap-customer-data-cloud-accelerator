@@ -3,12 +3,12 @@
  * License: Apache-2.0
  */
 import ToolkitPolicies from '../sap-cdc-toolkit/copyConfig/policies/policies'
-import ToolkitPolicyOptions from "../sap-cdc-toolkit/copyConfig/policies/policyOptions";
-import {BUILD_DIRECTORY, SRC_DIRECTORY} from '../constants.js'
+import ToolkitPolicyOptions from '../sap-cdc-toolkit/copyConfig/policies/policyOptions'
+import { BUILD_DIRECTORY, SRC_DIRECTORY } from '../constants.js'
 import fs from 'fs'
 import path from 'path'
-import {clearDirectoryContents} from "../utils/utils";
-import Feature from "./feature";
+import { clearDirectoryContents } from '../utils/utils'
+import Feature from './feature'
 
 export default class Policies {
     static POLICIES_FILE_NAME = 'policies.json'
@@ -22,7 +22,7 @@ export default class Policies {
         return this.constructor.name
     }
 
-    async init(apiKey, siteConfig, siteDomain, reset) {
+    async init(apiKey, siteConfig, siteDomain) {
         const toolkitPolicies = new ToolkitPolicies(this.#credentials, apiKey, siteConfig.dataCenter)
         const policiesResponse = await toolkitPolicies.get()
         if (policiesResponse.errorCode) {
@@ -30,10 +30,14 @@ export default class Policies {
         }
 
         const srcDirectory = path.join(SRC_DIRECTORY, siteDomain, this.getName())
-        Feature.createFolder(srcDirectory, reset)
+        Feature.createFolder(srcDirectory)
 
         // Create policy file
         fs.writeFileSync(path.join(srcDirectory, Policies.POLICIES_FILE_NAME), JSON.stringify(policiesResponse, null, 4))
+    }
+
+    reset(siteDomain) {
+        Feature.deleteFolder(path.join(SRC_DIRECTORY, siteDomain, this.getName()))
     }
 
     build(siteDomain) {

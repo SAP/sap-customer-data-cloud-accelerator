@@ -12,19 +12,4 @@ const { phase, sites, featureName, environment } = cli.parseArguments(process.ar
 
 const credentials = { userKey: process.env.USER_KEY, secret: process.env.SECRET_KEY }
 const feature = new Feature(credentials)
-switch (phase) {
-    case 'init':
-        await feature.init(sites, featureName, environment, false)
-        break
-    case 'reset':
-        await feature.reset(sites, featureName, environment)
-        break
-    case 'build':
-        await feature.build(sites, featureName, environment)
-        break
-    case 'deploy':
-        await feature.deploy(sites, featureName, environment)
-        break
-    default:
-        console.log(`Unknown phase ${phase}`)
-}
+await feature.execute(phase, sites, featureName, environment)

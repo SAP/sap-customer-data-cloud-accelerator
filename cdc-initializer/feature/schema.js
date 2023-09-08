@@ -24,7 +24,7 @@ export default class Schema {
         return this.constructor.name
     }
 
-    async init(apiKey, siteConfig, siteDomain, reset) {
+    async init(apiKey, siteConfig, siteDomain) {
         const toolkitSchema = new ToolkitSchema(this.#credentials, apiKey, siteConfig.dataCenter)
         const schemasResponse = await toolkitSchema.get()
         if (schemasResponse.errorCode) {
@@ -32,12 +32,16 @@ export default class Schema {
         }
 
         const srcDirectory = path.join(SRC_DIRECTORY, siteDomain, this.getName())
-        Feature.createFolder(srcDirectory, reset)
+        Feature.createFolder(srcDirectory)
 
         // Create files
         fs.writeFileSync(path.join(srcDirectory, Schema.DATA_SCHEMA_FILE_NAME), JSON.stringify(schemasResponse.dataSchema, null, 4))
         fs.writeFileSync(path.join(srcDirectory, Schema.PROFILE_SCHEMA_FILE_NAME), JSON.stringify(schemasResponse.profileSchema, null, 4))
         fs.writeFileSync(path.join(srcDirectory, Schema.SUBSCRIPTIONS_SCHEMA_FILE_NAME), JSON.stringify(schemasResponse.subscriptionsSchema, null, 4))
+    }
+
+    reset(siteDomain) {
+        Feature.deleteFolder(path.join(SRC_DIRECTORY, siteDomain, this.getName()))
     }
 
     build(siteDomain) {
