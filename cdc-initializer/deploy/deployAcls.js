@@ -1,7 +1,8 @@
 import fs from 'fs'
 import path from 'path'
 
-import { setAclRequest } from '../services/gigya/gigya.helpers.js'
+import { setAclRequest, getPartnerID } from '../services/gigya/gigya.helpers.js'
+import { getPartnerId } from '../utils/utils.js'
 
 const deployAcls = async ({ gigya, apiKey, dataCenter, buildDirectory }) => {
     const aclFiles = fs.readdirSync(buildDirectory)

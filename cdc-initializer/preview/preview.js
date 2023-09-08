@@ -188,19 +188,17 @@ const isSiteEnabled = ({ apiKey }) => {
 //
 
 const getScreenSetsID = (callback = () => {}) => {
-    console.log('getScreenSetsID called')
     gigya.accounts.getScreenSets({
         include: 'screenSetID,html,css,javascript,translations,metadata',
         callback: (res) => {
-            console.log('Received response:', res)
             return res.errorCode
                 ? callback([])
                 : callback(
                       res.screenSets.map((screenSet) => {
+                          // Get screens from designerHtml
                           let div = document.createElement('DIV')
                           div.innerHTML = screenSet.metadata.designerHtml
                           const screensID = Array.from(div.querySelectorAll('.gigya-screen-set > div')).map((screenHtml) => screenHtml.getAttribute('id'))
-                          console.log('Mapped screensID:', screensID)
                           return { screenSetID: screenSet.screenSetID, screensID }
                       }),
                   )
@@ -208,9 +206,8 @@ const getScreenSetsID = (callback = () => {}) => {
     })
 }
 
-const filterScreenSets = ({ screenSets, filterScreens }) => {
-    console.log('filterScreenSets called with:', screenSets, filterScreens)
-    const filtered = screenSets
+const filterScreenSets = ({ screenSets, filterScreens }) =>
+    screenSets
         .map(({ screenSetID, screensID }) => {
             screensID = screensID.filter((screenID) => {
                 return filterScreens.find((filter) => filter.screenSetID === screenSetID && filter.screenID === screenID)
@@ -218,13 +215,9 @@ const filterScreenSets = ({ screenSets, filterScreens }) => {
             return { screenSetID, screensID }
         })
         .filter((screenSet) => screenSet.screensID.length)
-    console.log('Filtered screen sets:', filtered)
-    return filtered
-}
 
-const groupScreenSets = (screenSets) => {
-    console.log('groupScreenSets called with:', screenSets)
-    const grouped = screenSets.reduce((result, screenSet) => {
+const groupScreenSets = (screenSets) =>
+    screenSets.reduce((result, screenSet) => {
         const groupID = screenSet.screenSetID.slice(0, screenSet.screenSetID.lastIndexOf('-'))
         if (!result[groupID]) {
             result[groupID] = []
@@ -232,140 +225,106 @@ const groupScreenSets = (screenSets) => {
         result[groupID].push(screenSet)
         return result
     }, {})
-    console.log('Grouped screen sets:', grouped)
-    return grouped
-}
-
-const getFilteredScreens = () => {
-    console.log('getFilteredScreens called')
-    let filterScreens = [...FILTER_SCREENS]
-    if (filterScreens[0]?.apiKey) {
-        const siteFilterScreens = filterScreens.find(({ apiKey }) => apiKey === gigya.apiKey)
-        if (!siteFilterScreens || typeof siteFilterScreens.screens === 'undefined') {
-            return []
-        }
-        if (!siteFilterScreens.screens?.length) {
-            return [{ screenSetID: 'none', screenID: 'none' }]
-        }
-        return siteFilterScreens.screens
-    }
-    console.log('Filtered screens:', filterScreens)
-    return filterScreens
-}
-
-const getGroupedScreenSets = (screenSets) => {
-    console.log('getGroupedScreenSets called with:', screenSets)
-    const grouped = groupScreenSets(screenSets)
-    console.log('Grouped:', grouped)
-    return grouped
-}
-
-const constructMenuTreeData = (groupedScreenSets) => {
-    console.log('constructMenuTreeData called with:', groupedScreenSets)
-    return Object.entries(groupedScreenSets).map(([groupName, screenSets]) => ({
-        text: groupName,
-        expanded: screenSets.find((screenSet) => screenSet.screenSetID === getHashParams().screenSetID),
-        nodes: screenSets.map((screenSet) => ({
-            text: screenSet.screenSetID,
-            expanded: screenSet.screenSetID === getHashParams().screenSetID && screenSet.screensID.find((screenID) => screenID === getHashParams().screenID),
-            nodes: screenSet.screensID.map((screensID) => ({
-                text: screensID,
-                class: `${PREVIEW_MENU_ITEM_CLASS} list-group-item-action`,
-                href: `#${createHash({
-                    apiKey: gigya.apiKey,
-                    screenSetID: screenSet.screenSetID,
-                    screenID: screensID,
-                })}`,
-            })),
-        })),
-    }))
-}
-
-const handleClickEvents = () => {
-    console.log('handleClickEvents called')
-    Array.from(document.querySelectorAll(`.${PREVIEW_MENU_ITEM_CLASS}`)).forEach((element) => {
-        element.addEventListener('click', (e) => {
-            const href = e.target.getAttribute('href')
-            console.log('Clicked href:', href)
-
-            if (href !== 'show-debug-ui' && href !== 'enable-event-logger' && href !== 'disable-event-logger' && href !== 'logout') {
-                const parts = href.split('#')[1].split('/')
-                const apiKey = parts[1] // Updated index
-                const screenSetID = parts[2] // Updated index
-                const screenID = parts[3] // Updated index
-
-                // No need to remove API key from screenSetID, it should already be correct
-                console.log('Showing screen set:', screenSetID, 'with start screen:', screenID)
-                gigya.accounts.showScreenSet({
-                    screenSet: screenSetID,
-                    startScreen: screenID,
-                    containerID: PREVIEW_CONTAINER_ID,
-                })
-            }
-
-            e.target.removeAttribute('href')
-            setTimeout(() => e.target.setAttribute('href', href), 0)
-            e.preventDefault()
-
-            if (href === 'show-debug-ui') {
-                gigya.showDebugUI()
-            } else if (href === 'enable-event-logger') {
-                gigya.logger.enable()
-                window.location.reload()
-            } else if (href === 'disable-event-logger') {
-                gigya.logger.disable()
-                window.location.reload()
-            } else if (href === 'logout') {
-                gigya.accounts.logout()
-            }
-        })
-    })
-}
-
-const renderMenu = (menuTreeData) => {
-    console.log('renderMenu called with:', menuTreeData)
-    const defaultMenuItems = [
-        {
-            text: 'Show Debug UI',
-            icon: 'fa fa-bug',
-            class: `${PREVIEW_MENU_ITEM_CLASS} list-group-item-action`,
-            href: 'show-debug-ui',
-        },
-        {
-            text: !gigya.logger.isEnabled ? 'Enable Event Logger' : 'Disable Event Logger',
-            icon: 'fa fa-terminal',
-            class: `${PREVIEW_MENU_ITEM_CLASS} list-group-item-action`,
-            href: !gigya.logger.isEnabled ? 'enable-event-logger' : 'disable-event-logger',
-        },
-        // ... any other default menu items you have
-    ]
-
-    $(`#${PREVIEW_MENU_ID}`)
-        .html('')
-        .bstreeview({
-            data: [...menuTreeData, ...defaultMenuItems],
-            expandIcon: 'fa fa-angle-down fa-fw',
-            collapseIcon: 'fa fa-angle-right fa-fw',
-            openNodeLinkOnNewTab: false,
-        })
-}
 
 const loadScreenSetsMenu = (callback = () => {}) => {
-    console.log('loadScreenSetsMenu called')
     getScreenSetsID((screenSets) => {
-        console.log('Received screen sets:', screenSets)
-        const filterScreens = getFilteredScreens()
-        if (filterScreens.length) {
-            screenSets = filterScreenSets({ screenSets, filterScreens })
+        if (FILTER_SCREENS?.length) {
+            let filterScreens = [...FILTER_SCREENS]
+
+            // If separating filters by apiKey, get this apiKey's filters
+            if (filterScreens[0].apiKey) {
+                const siteFilterScreens = filterScreens.find(({ apiKey }) => apiKey === gigya.apiKey)
+
+                if (!siteFilterScreens || typeof siteFilterScreens.screens === 'undefined') {
+                    filterScreens = []
+                } else if (!siteFilterScreens.screens || !siteFilterScreens.screens.length) {
+                    filterScreens = [{ screenSetID: 'none', screenID: 'none' }]
+                } else {
+                    filterScreens = siteFilterScreens.screens
+                }
+            }
+
+            if (filterScreens.length) {
+                screenSets = filterScreenSets({ screenSets, filterScreens })
+            }
         }
-        const groupedScreenSets = getGroupedScreenSets(screenSets)
-        const menuTreeData = constructMenuTreeData(groupedScreenSets)
 
-        // Render the menu
-        renderMenu(menuTreeData)
+        const groupedScreenSets = groupScreenSets(screenSets)
 
-        // Handle click events
-        handleClickEvents()
+        const menuTreeData = Object.entries(groupedScreenSets).map(([groupName, screenSets]) => ({
+            text: groupName,
+            expanded: screenSets.find((screenSet) => screenSet.screenSetID === getHashParams().screenSetID),
+            nodes: screenSets.map((screenSet) => ({
+                text: screenSet.screenSetID,
+                expanded: screenSet.screenSetID === getHashParams().screenSetID && screenSet.screensID.find((screenID) => screenID === getHashParams().screenID),
+                nodes: screenSet.screensID.map((screensID) => ({
+                    text: screensID,
+                    class: `${PREVIEW_MENU_ITEM_CLASS} list-group-item-action`,
+                    href: `#${createHash({ apiKey: gigya.apiKey, screenSetID: screenSet.screenSetID, screenID: screensID })}`,
+                })),
+            })),
+        }))
+
+        const defaultMenuItems = [
+            {
+                text: 'Logout',
+                icon: 'fa fa-right-from-bracket',
+                class: `${PREVIEW_MENU_ITEM_CLASS} list-group-item-action`,
+                href: 'logout',
+            },
+            {
+                text: 'Show Debug UI',
+                icon: 'fa fa-bug',
+                class: `${PREVIEW_MENU_ITEM_CLASS} list-group-item-action`,
+                href: 'show-debug-ui',
+            },
+            {
+                text: !gigya.logger.isEnabled ? 'Enable Event Logger' : 'Disable Event Logger',
+                icon: 'fa fa-terminal',
+                class: `${PREVIEW_MENU_ITEM_CLASS} list-group-item-action`,
+                href: !gigya.logger.isEnabled ? 'enable-event-logger' : 'disable-event-logger',
+            },
+        ]
+
+        $(`#${PREVIEW_MENU_ID}`)
+            .html('')
+            .bstreeview({
+                data: [...menuTreeData, ...defaultMenuItems],
+                expandIcon: 'fa fa-angle-down fa-fw',
+                collapseIcon: 'fa fa-angle-right fa-fw',
+                openNodeLinkOnNewTab: false,
+            })
+
+        Array.from(document.querySelectorAll(`.${PREVIEW_MENU_ITEM_CLASS}`)).forEach((element) => {
+            element.addEventListener('click', (e) => {
+                // Get href and remove it to prevent redirect (prevent treeview plugin behaviour)
+                const href = e.target.getAttribute('href')
+                if (href !== 'show-debug-ui' && href !== 'enable-event-logger' && href !== 'disable-event-logger' && href !== 'logout') {
+                    return false
+                }
+
+                e.target.removeAttribute('href')
+                setTimeout(() => e.target.setAttribute('href', href), 0)
+                e.preventDefault()
+
+                if (href === 'show-debug-ui') {
+                    gigya.showDebugUI()
+                } else if (href === 'enable-event-logger') {
+                    gigya.logger.enable()
+                    window.location.reload()
+                } else if (href === 'disable-event-logger') {
+                    gigya.logger.disable()
+                    window.location.reload()
+                } else if (href === 'logout') {
+                    gigya.accounts.logout()
+                } else {
+                    // const [screenSetID, screenID] = href.split('/')
+                    // gigya.accounts.showScreenSet({ screenSet: screenSetID, startScreen: screenID, containerID: PREVIEW_CONTAINER_ID })
+                }
+            })
+        })
+
+        callback()
     })
 }
 
@@ -373,73 +332,56 @@ const loadScreenSetsMenu = (callback = () => {}) => {
 // Navigation
 //
 
-const initNavigation = () => {
+initNavigation = () => {
     window.addEventListener('hashchange', () => processHashChange(getHashParams()))
     setTimeout(() => processHashChange(getHashParams()), 50)
 }
 
-const processHashChange = async (params) => {
-    handleApiKeyChange(params)
-    if (params.screenSetID && params.screenID) {
-        await handleScreenSetChange(params)
-    }
-}
-
-const handleApiKeyChange = (params) => {
+processHashChange = async (params) => {
+    // API Key changed
     if (gigya.apiKey !== params.apiKey) {
         window.location.reload()
     }
-}
 
-const handleScreenSetChange = async (params) => {
-    if (USE_LOCAL_SCREEN_SETS) {
-        await handleLocalScreenSets(params)
-    } else {
-        handleServerScreenSets(params)
+    // ScreenSet changed
+    if (params.screenSetID && params.screenID) {
+        // Load screen with events from local build/ file
+        if (USE_LOCAL_SCREEN_SETS) {
+            const screenSetEvents = await getScreenSetEvents(params)
+            gigya.accounts.showScreenSet({ ...screenSetEvents, screenSet: params.screenSetID, startScreen: params.screenID, containerID: PREVIEW_CONTAINER_ID })
+
+            // Load local css file
+            loadScreenSetCss(params)
+            // If any css file form gigya was loaded after, it will override the local css file
+            setTimeout(() => (document.querySelector('.cdc-initializer--css-link').nextSibling ? loadScreenSetCss(params) : false), 500)
+        }
+        // Load screen with events from cdc server
+        else {
+            gigya.accounts.showScreenSet({ screenSet: params.screenSetID, startScreen: params.screenID, containerID: PREVIEW_CONTAINER_ID })
+        }
+
+        if (!document.querySelector(`[href="${window.location.hash}"]`)) {
+            return
+        }
+
+        // Open screen set type menu if closed
+        const screenSetMenuElement = document.querySelector(`[href="${window.location.hash}"]`).closest('[role="group"]').previousElementSibling
+        const screenSetTypeMenuElement = screenSetMenuElement.closest('[role="group"]').previousElementSibling
+
+        if (!screenSetTypeMenuElement.nextElementSibling.classList.contains('show')) {
+            screenSetTypeMenuElement.click()
+        }
+        if (!screenSetMenuElement.nextElementSibling.classList.contains('show')) {
+            screenSetMenuElement.click()
+        }
+
+        // Remove active class from all menu items
+        document.querySelectorAll(`.${PREVIEW_MENU_ITEM_CLASS}`).forEach((element) => {
+            element.classList.remove('active')
+        })
+        // Add active class to current menu item
+        document.querySelector(`[href="${window.location.hash}"]`).classList.add('active')
     }
-    handleScreenSetMenu(params)
-}
-
-const handleLocalScreenSets = async (params) => {
-    const screenSetEvents = await getScreenSetEvents(params)
-    gigya.accounts.showScreenSet({
-        ...screenSetEvents,
-        screenSet: params.screenSetID,
-        startScreen: params.screenID,
-        containerID: PREVIEW_CONTAINER_ID,
-    })
-    loadScreenSetCss(params)
-    setTimeout(() => (document.querySelector('.cdc-initializer--css-link').nextSibling ? loadScreenSetCss(params) : false), 500)
-}
-
-const handleServerScreenSets = (params) => {
-    gigya.accounts.showScreenSet({
-        screenSet: params.screenSetID,
-        startScreen: params.screenID,
-        containerID: PREVIEW_CONTAINER_ID,
-    })
-}
-
-const handleScreenSetMenu = (params) => {
-    if (!document.querySelector(`[href="${window.location.hash}"]`)) {
-        return
-    }
-    // Open screen set type menu if closed
-    const screenSetMenuElement = document.querySelector(`[href="${window.location.hash}"]`).closest('[role="group"]').previousElementSibling
-    const screenSetTypeMenuElement = screenSetMenuElement.closest('[role="group"]').previousElementSibling
-
-    if (!screenSetTypeMenuElement.nextElementSibling.classList.contains('show')) {
-        screenSetTypeMenuElement.click()
-    }
-    if (!screenSetMenuElement.nextElementSibling.classList.contains('show')) {
-        screenSetMenuElement.click()
-    }
-    // Remove active class from all menu items
-    document.querySelectorAll(`.${PREVIEW_MENU_ITEM_CLASS}`).forEach((element) => {
-        element.classList.remove('active')
-    })
-    // Add active class to current menu item
-    document.querySelector(`[href="${window.location.hash}"]`).classList.add('active')
 }
 
 //
@@ -510,7 +452,7 @@ const getScreenSetEventsFromFile = async (filename) => {
         })
 
     // Remove comments and \n
-    screenJs = screenJs.replace(/(\/\*[\s\S]*?\*\/)|(([^\\:]|^)\/\/.*)/gm, '')
+    screenJs = screenJs.replace(/\/\*[\s\S]*?\*\/|([^\\:]|^)\/\/.*$/gm, '')
     screenJs = '' + screenJs.replaceAll('\n', '')
 
     let screenSetEvents

@@ -4,7 +4,9 @@
  */
 import fs from 'fs'
 import path from 'path'
+
 import { setPermissionRequest } from '../services/gigya/gigya.helpers.js'
+import { getPartnerId } from '../utils/utils.js'
 
 const deployPermissionGroups = async ({ gigya, apiKey, dataCenter, buildDirectory }) => {
     const filePath = path.join(buildDirectory, 'permissionGroups.json')
