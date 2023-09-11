@@ -17,11 +17,6 @@ void call(Map parameters) {
         whitesourceExecuteScan script: parameters.script
         echo "End - whitesourceExecuteScan"
     }
-//    else
-//    {
-//        // Execute original stage as defined in the template
-//        parameters.originalStage()
-//    }
     echo "End - Extension for stage: ${parameters.stageName}"
 }
 return this
