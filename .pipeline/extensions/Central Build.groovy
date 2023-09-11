@@ -1,6 +1,9 @@
 void call(Map parameters) {
     echo "Start - Extension for stage: ${parameters.stageName} and branch ${parameters.script.commonPipelineEnvironment.gitBranch}"
 
+    // Execute original stage as defined in the template
+    parameters.originalStage()
+
     //access config
     echo "Current stage config: ${parameters.config}"
 
