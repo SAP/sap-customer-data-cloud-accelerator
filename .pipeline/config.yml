@@ -11,7 +11,7 @@ general:
     vaultServerUrl: 'https://vault.tools.sap'
     vaultNamespace: 'ies/hyperspace/pipelines'
     nativeBuild: true
-    nativeVoting: false
+    nativeVoting: true
     verbose: true
 stages:
     Central Build:
@@ -19,7 +19,6 @@ stages:
         sonarExecuteScan: true
         testsPublishResults: true
         sapCumulusUpload: true
-    Pull-Request Voting:
         npmExecuteScripts: true
 steps:
     artifactPrepareVersion:
