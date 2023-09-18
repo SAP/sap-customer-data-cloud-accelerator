@@ -3,9 +3,25 @@
  * License: Apache-2.0
  */
 import CLI from './cli'
+import { getSiteFeature, credentials } from './test.common'
+import Accelerator from './accelerator'
+
+jest.mock('./accelerator')
 
 describe('CLI test suite', () => {
+    beforeAll(() => {
+        Accelerator.mockImplementation(() => {
+            return {
+                execute: () => {
+                    return true
+                },
+            }
+        })
+    })
+
     const cli = new CLI()
+    cli.siteFeature = getSiteFeature()
+
     const config = {
         source: [
             { apiKey: '4_Ch-q_qKrjBJ_-QBEfMPkKA', siteDomain: 'cdc-accelerator.parent.site-group.com' },
@@ -46,7 +62,7 @@ describe('CLI test suite', () => {
             'node',
             'cdc-initializer/feature/index.js',
             'init', // phase
-            'webSdk', // feature name
+            'WebSdk', // feature name
             'dev', // environment
         ]
         const { phase, sites, featureName, environment } = cli.parseArguments(processArgv)
@@ -90,5 +106,24 @@ describe('CLI test suite', () => {
             'unknown', // phase
         ]
         expect(() => cli.parseArguments(processArgv)).toThrow('Cannot find configuration')
+    })
+
+    test('main successfully', async () => {
+        const process = {
+            argv: [
+                'node',
+                'cdc-initializer/feature/index.js',
+                'init', // phase
+                'webSdk', // feature name
+                'dev', // environment
+            ],
+            env: {
+                USER_KEY: credentials.userKey,
+                SECRET_KEY: credentials.secret,
+            },
+        }
+
+        const result = await cli.main(process)
+        expect(result).toBeTruthy()
     })
 })

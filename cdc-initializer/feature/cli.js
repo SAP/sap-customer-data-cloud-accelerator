@@ -6,14 +6,31 @@ import 'dotenv/config'
 
 import { CONFIG_FILENAME } from '../constants.js'
 import { createRequire } from 'module'
-import { FEATURE_NAME_LIST } from '../constants'
+import Feature from './feature'
+import Schema from './schema'
+import WebSdk from './webSdk'
+import Policies from './policies'
+import PartnerFeature from './partnerFeature'
+import PermissionGroups from './permissionGroups'
+import Accelerator from './accelerator'
 
 export default class CLI {
+    siteFeature
+    partnerFeature
+
     parseArguments(args) {
         let [, , phase, featureName, environment] = args
 
+        if (!this.siteFeature || this.siteFeature.getFeatures().length === 0) {
+            throw new Error('No features registered, nothing to do!')
+        }
+
         // If no feature selected, deploy all features and the environment might be in the featureName variable
-        if (!FEATURE_NAME_LIST.includes(featureName)) {
+        if (
+            !this.siteFeature.getFeatures().find((element) => {
+                return Feature.isEqualCaseInsensitive(element.constructor.name, featureName)
+            })
+        ) {
             environment = featureName
             featureName = undefined
         }
@@ -46,5 +63,35 @@ export default class CLI {
     getConfigurationByEnvironment(environment) {
         const require = createRequire(import.meta.url)
         return require(`../../${CONFIG_FILENAME}`)
+    }
+
+    initSiteFeature(credentials) {
+        const siteFeature = new Feature(credentials)
+        siteFeature.register(new Schema(credentials))
+        siteFeature.register(new WebSdk(credentials))
+        siteFeature.register(new Policies(credentials))
+        return siteFeature
+    }
+
+    initPartnerFeature(credentials) {
+        const partnerFeature = new PartnerFeature(credentials)
+        partnerFeature.register(new PermissionGroups(credentials))
+        return partnerFeature
+    }
+
+    async main(process) {
+        try {
+            const credentials = { userKey: process.env.USER_KEY, secret: process.env.SECRET_KEY }
+            this.siteFeature = this.initSiteFeature(credentials)
+            this.partnerFeature = this.initPartnerFeature(credentials)
+
+            const { phase, sites, featureName, environment } = this.parseArguments(process.argv)
+
+            const accelerator = new Accelerator(this.siteFeature, this.partnerFeature)
+            return await accelerator.execute(phase, sites, featureName, environment)
+        } catch (error) {
+            console.log('\x1b[31m%s\x1b[0m', `${String(error)}\n`)
+            return false
+        }
     }
 }

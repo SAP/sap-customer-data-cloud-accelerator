@@ -4,20 +4,19 @@
  */
 import ToolkitSchema from '../sap-cdc-toolkit/copyConfig/schema/schema'
 import ToolkitSchemaOptions from '../sap-cdc-toolkit/copyConfig/schema/schemaOptions'
-import { BUILD_DIRECTORY, SRC_DIRECTORY } from '../constants.js'
 import fs from 'fs'
 import path from 'path'
 import { clearDirectoryContents } from '../utils/utils'
-import Feature from './feature'
+import SiteFeature from './feature'
+import FolderManager from './folderManager'
 
-export default class Schema {
-    #credentials
+export default class Schema extends SiteFeature {
     static DATA_SCHEMA_FILE_NAME = 'data.json'
     static PROFILE_SCHEMA_FILE_NAME = 'profile.json'
     static SUBSCRIPTIONS_SCHEMA_FILE_NAME = 'subscriptions.json'
 
     constructor(credentials) {
-        this.#credentials = credentials
+        super(credentials)
     }
 
     getName() {
@@ -25,34 +24,40 @@ export default class Schema {
     }
 
     async init(apiKey, siteConfig, siteDomain) {
-        const toolkitSchema = new ToolkitSchema(this.#credentials, apiKey, siteConfig.dataCenter)
+        const toolkitSchema = new ToolkitSchema(this.credentials, apiKey, siteConfig.dataCenter)
         const schemasResponse = await toolkitSchema.get()
         if (schemasResponse.errorCode) {
             throw new Error(JSON.stringify(schemasResponse))
         }
 
-        const srcDirectory = path.join(SRC_DIRECTORY, siteDomain, this.getName())
-        Feature.createFolder(srcDirectory)
+        const featureDirectory = path.join(await this.folderManager.getSiteFolder('init', apiKey), this.getName())
+        this.createDirectory(featureDirectory)
 
         // Create files
-        fs.writeFileSync(path.join(srcDirectory, Schema.DATA_SCHEMA_FILE_NAME), JSON.stringify(schemasResponse.dataSchema, null, 4))
-        fs.writeFileSync(path.join(srcDirectory, Schema.PROFILE_SCHEMA_FILE_NAME), JSON.stringify(schemasResponse.profileSchema, null, 4))
-        fs.writeFileSync(path.join(srcDirectory, Schema.SUBSCRIPTIONS_SCHEMA_FILE_NAME), JSON.stringify(schemasResponse.subscriptionsSchema, null, 4))
+        fs.writeFileSync(path.join(featureDirectory, Schema.DATA_SCHEMA_FILE_NAME), JSON.stringify(schemasResponse.dataSchema, null, 4))
+        fs.writeFileSync(path.join(featureDirectory, Schema.PROFILE_SCHEMA_FILE_NAME), JSON.stringify(schemasResponse.profileSchema, null, 4))
+        fs.writeFileSync(path.join(featureDirectory, Schema.SUBSCRIPTIONS_SCHEMA_FILE_NAME), JSON.stringify(schemasResponse.subscriptionsSchema, null, 4))
     }
 
-    reset(siteDomain) {
-        Feature.deleteFolder(path.join(SRC_DIRECTORY, siteDomain, this.getName()))
+    reset(siteDirectory) {
+        this.deleteDirectory(path.join(siteDirectory, this.getName()))
     }
 
-    build(siteDomain) {
-        clearDirectoryContents(path.join(BUILD_DIRECTORY, siteDomain, this.getName()))
-        Feature.copyFileFromSrcToBuild(siteDomain, Schema.DATA_SCHEMA_FILE_NAME, this)
-        Feature.copyFileFromSrcToBuild(siteDomain, Schema.PROFILE_SCHEMA_FILE_NAME, this)
-        Feature.copyFileFromSrcToBuild(siteDomain, Schema.SUBSCRIPTIONS_SCHEMA_FILE_NAME, this)
+    build(sitePath) {
+        let featurePath
+        if (sitePath.startsWith(FolderManager.BUILD_DIRECTORY)) {
+            featurePath = path.join(sitePath.replace(FolderManager.BUILD_DIRECTORY, FolderManager.SRC_DIRECTORY), this.getName())
+        } else {
+            featurePath = path.join(sitePath, this.getName())
+        }
+        clearDirectoryContents(featurePath.replace(FolderManager.SRC_DIRECTORY, FolderManager.BUILD_DIRECTORY))
+        this.copyFileFromSrcToBuild(featurePath, Schema.DATA_SCHEMA_FILE_NAME)
+        this.copyFileFromSrcToBuild(featurePath, Schema.PROFILE_SCHEMA_FILE_NAME)
+        this.copyFileFromSrcToBuild(featurePath, Schema.SUBSCRIPTIONS_SCHEMA_FILE_NAME)
     }
 
-    async deploy(apiKey, siteConfig, siteDomain) {
-        const buildFeatureDirectory = path.join(BUILD_DIRECTORY, siteDomain, this.getName())
+    async deploy(apiKey, siteConfig) {
+        const buildFeatureDirectory = path.join(await this.folderManager.getSiteFolder('deploy', apiKey), this.getName())
         const rawFile = fs.readFileSync(path.join(buildFeatureDirectory, Schema.DATA_SCHEMA_FILE_NAME), { encoding: 'utf8' })
 
         const payload = {
@@ -64,7 +69,7 @@ export default class Schema {
     }
 
     async deployUsingToolkit(apiKey, siteConfig, payload, options) {
-        const toolkitSchema = new ToolkitSchema(this.#credentials, apiKey, siteConfig.dataCenter)
+        const toolkitSchema = new ToolkitSchema(this.credentials, apiKey, siteConfig.dataCenter)
         await toolkitSchema.copySchema(apiKey, siteConfig, payload, options)
     }
 }
