@@ -6,6 +6,7 @@ import SiteFeature from './siteFeature'
 import Schema from './schema'
 import WebSdk from './webSdk'
 import Policies from './policies'
+import { sites } from './test.common'
 import { siteDirectory, siteBaseDirectory, getSiteFeature } from './test.common'
 
 jest.mock('axios')
@@ -13,10 +14,6 @@ jest.mock('fs')
 
 describe('Site features test suite', () => {
     const siteFeature = getSiteFeature()
-    const sites = [
-        { apiKey: '4_Ch-q_qKrjBJ_-QBEfMPkKA', siteDomain: 'cdc-accelerator.parent.site-group.com' },
-        { apiKey: '4_tqmAZeYVLPfPl9SYu_iFxA', siteDomain: 'cdc-accelerator.preferences-center.com' },
-    ]
     let siteFeatureSpy
 
     beforeEach(() => {

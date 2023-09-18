@@ -1,11 +1,11 @@
 import SiteFeature from './siteFeature'
 import PartnerFeature from './partnerFeature'
 import Accelerator from './accelerator'
+import { sites } from './test.common'
 
 export const siteFeatures = new SiteFeature({})
 export const partnerFeatures = new PartnerFeature({})
 export let accelerator = new Accelerator(siteFeatures, partnerFeatures)
-export const sites = [{ apiKey: '4_Eh-x_qKjjBJ_-QBEfMDABC', siteDomain: 'cdc-accelerator.parent.site-group.com' }]
 
 export const acceleratorCommonTests = (operation) => {
     describe(`Accelerator common tests for ${operation}`, () => {
