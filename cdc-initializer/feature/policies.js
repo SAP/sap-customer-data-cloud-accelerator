@@ -7,7 +7,7 @@ import ToolkitPolicyOptions from '../sap-cdc-toolkit/copyConfig/policies/policyO
 import fs from 'fs'
 import path from 'path'
 import { clearDirectoryContents } from '../utils/utils'
-import SiteFeature from './feature'
+import SiteFeature from './siteFeature'
 import FolderManager from './folderManager'
 
 export default class Policies extends SiteFeature {

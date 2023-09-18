@@ -1,6 +1,6 @@
 import path from 'path'
 import FolderManager from './folderManager'
-import SiteFeature from './feature'
+import SiteFeature from './siteFeature'
 import Schema from './schema'
 import WebSdk from './webSdk'
 import Policies from './policies'

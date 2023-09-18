@@ -7,7 +7,7 @@ import ToolkitSchemaOptions from '../sap-cdc-toolkit/copyConfig/schema/schemaOpt
 import fs from 'fs'
 import path from 'path'
 import { clearDirectoryContents } from '../utils/utils'
-import SiteFeature from './feature'
+import SiteFeature from './siteFeature'
 import FolderManager from './folderManager'
 
 export default class Schema extends SiteFeature {

@@ -7,7 +7,7 @@ import { CDC_INITIALIZER_DIRECTORY } from '../constants.js'
 import fs from 'fs'
 import path from 'path'
 import { cleanJavaScriptModuleBoilerplateWebSdk, replaceFilenamesWithFileContents } from '../utils/utils'
-import SiteFeature from './feature'
+import SiteFeature from './siteFeature'
 
 export default class WebSdk extends SiteFeature {
     static #TEMPLATE_WEB_SDK_FILE = path.join(CDC_INITIALIZER_DIRECTORY, `/templates/defaultWebSdk.js`)

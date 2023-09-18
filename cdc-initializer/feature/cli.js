@@ -6,7 +6,7 @@ import 'dotenv/config'
 
 import { CONFIG_FILENAME } from '../constants.js'
 import { createRequire } from 'module'
-import Feature from './feature'
+import Feature from './siteFeature'
 import Schema from './schema'
 import WebSdk from './webSdk'
 import Policies from './policies'

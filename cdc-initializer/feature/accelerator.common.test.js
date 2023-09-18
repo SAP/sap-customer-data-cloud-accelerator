@@ -1,4 +1,4 @@
-import SiteFeature from './feature'
+import SiteFeature from './siteFeature'
 import PartnerFeature from './partnerFeature'
 import Accelerator from './accelerator'
 
