@@ -1,0 +1,202 @@
+{
+    "fields": {
+        "felix_byDirectMail": {
+            "email": {
+                "required": false,
+                "type": "subscription",
+                "writeAccess": "clientModify",
+                "doubleOptIn": false,
+                "description": "Felix::I want to receive Felix news by direct mail",
+                "enableConditionalDoubleOptIn": false,
+                "relatedConsentIds": []
+            }
+        },
+        "felix_byEmail": {
+            "email": {
+                "required": false,
+                "type": "subscription",
+                "writeAccess": "clientModify",
+                "doubleOptIn": false,
+                "description": "Felix::I want to receive Felix news by email",
+                "enableConditionalDoubleOptIn": false,
+                "relatedConsentIds": []
+            }
+        },
+        "felix_bySMS": {
+            "email": {
+                "required": false,
+                "type": "subscription",
+                "writeAccess": "clientModify",
+                "doubleOptIn": false,
+                "description": "Felix::I want to receive Felix news by sms",
+                "enableConditionalDoubleOptIn": false,
+                "relatedConsentIds": []
+            }
+        },
+        "nescafe_byDirectMail": {
+            "email": {
+                "required": false,
+                "type": "subscription",
+                "writeAccess": "clientModify",
+                "doubleOptIn": false,
+                "description": "Nescafe::I want to receive Nescafe news by direct mail",
+                "enableConditionalDoubleOptIn": false,
+                "relatedConsentIds": []
+            }
+        },
+        "nescafe_byEmail": {
+            "email": {
+                "required": false,
+                "type": "subscription",
+                "writeAccess": "clientModify",
+                "doubleOptIn": false,
+                "description": "Nescafe::I want to receive Nescafe news by email",
+                "enableConditionalDoubleOptIn": false,
+                "relatedConsentIds": []
+            }
+        },
+        "nescafe_bySMS": {
+            "email": {
+                "required": false,
+                "type": "subscription",
+                "writeAccess": "clientModify",
+                "doubleOptIn": false,
+                "description": "Nescafe::I want to receive Nescafe news by sms",
+                "enableConditionalDoubleOptIn": false,
+                "relatedConsentIds": []
+            }
+        },
+        "purina_byDirectMail": {
+            "email": {
+                "required": false,
+                "type": "subscription",
+                "writeAccess": "clientModify",
+                "doubleOptIn": false,
+                "description": "Purina::I want to receive Purina news by direct mail",
+                "enableConditionalDoubleOptIn": false,
+                "relatedConsentIds": []
+            }
+        },
+        "purina_byEmail": {
+            "email": {
+                "required": false,
+                "type": "subscription",
+                "writeAccess": "clientModify",
+                "doubleOptIn": false,
+                "description": "Purina::I want to receive Purina news by email",
+                "enableConditionalDoubleOptIn": false,
+                "relatedConsentIds": []
+            }
+        },
+        "purina_bySMS": {
+            "email": {
+                "required": false,
+                "type": "subscription",
+                "writeAccess": "clientModify",
+                "doubleOptIn": false,
+                "description": "Purina::I want to receive Purina news by SMS",
+                "enableConditionalDoubleOptIn": false,
+                "relatedConsentIds": []
+            }
+        },
+        "sandboxFelix_SBmktemail": {
+            "email": {
+                "required": false,
+                "type": "subscription",
+                "writeAccess": "clientModify",
+                "doubleOptIn": false,
+                "description": "Felix::I want to receive Felix news by email",
+                "enableConditionalDoubleOptIn": false,
+                "relatedConsentIds": []
+            }
+        },
+        "sandboxFelix_SBmktphone": {
+            "email": {
+                "required": false,
+                "type": "subscription",
+                "writeAccess": "clientModify",
+                "doubleOptIn": false,
+                "description": "Felix::I want to receive Felix news by phone",
+                "enableConditionalDoubleOptIn": false,
+                "relatedConsentIds": []
+            }
+        },
+        "sandboxFelix_SBmktsms": {
+            "email": {
+                "required": false,
+                "type": "subscription",
+                "writeAccess": "clientModify",
+                "doubleOptIn": false,
+                "description": "Felix::I want to receive Felix news by sms",
+                "enableConditionalDoubleOptIn": false,
+                "relatedConsentIds": []
+            }
+        },
+        "sandboxNescafe_SBmktemail": {
+            "email": {
+                "required": false,
+                "type": "subscription",
+                "writeAccess": "clientModify",
+                "doubleOptIn": false,
+                "description": "Nescafe::I want to receive Nescafe news by email",
+                "enableConditionalDoubleOptIn": false,
+                "relatedConsentIds": []
+            }
+        },
+        "sandboxNescafe_SBmktphone": {
+            "email": {
+                "required": false,
+                "type": "subscription",
+                "writeAccess": "clientModify",
+                "doubleOptIn": false,
+                "description": "Nescafe::I want to receive Nescafe news by phone",
+                "enableConditionalDoubleOptIn": false,
+                "relatedConsentIds": []
+            }
+        },
+        "sandboxNescafe_SBmktsms": {
+            "email": {
+                "required": false,
+                "type": "subscription",
+                "writeAccess": "clientModify",
+                "doubleOptIn": false,
+                "description": "Nescafe::I want to receive Nescafe news by sms",
+                "enableConditionalDoubleOptIn": false,
+                "relatedConsentIds": []
+            }
+        },
+        "sandboxPurina_SBmktemail": {
+            "email": {
+                "required": false,
+                "type": "subscription",
+                "writeAccess": "clientModify",
+                "doubleOptIn": false,
+                "description": "Purina::I want to receive Purina news by email",
+                "enableConditionalDoubleOptIn": false,
+                "relatedConsentIds": []
+            }
+        },
+        "sandboxPurina_SBmktphone": {
+            "email": {
+                "required": false,
+                "type": "subscription",
+                "writeAccess": "clientModify",
+                "doubleOptIn": false,
+                "description": "Purina::I want to receive Purina news by phone",
+                "enableConditionalDoubleOptIn": false,
+                "relatedConsentIds": []
+            }
+        },
+        "sandboxPurina_SBmktsms": {
+            "email": {
+                "required": false,
+                "type": "subscription",
+                "writeAccess": "clientModify",
+                "doubleOptIn": false,
+                "description": "Purina::I want to receive Purina news by sms",
+                "enableConditionalDoubleOptIn": false,
+                "relatedConsentIds": []
+            }
+        }
+    }
+}
