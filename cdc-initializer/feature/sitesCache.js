@@ -14,7 +14,6 @@ export default class SitesCache {
     }
 
     async #init() {
-        console.log('bms: ------------- Reading all sites ------------------')
         const parallelRequestsAllowed = 5
         const siteFinderPaginated = new SiteFinderPaginated(this.#credentials, parallelRequestsAllowed)
         let response = await siteFinderPaginated.getFirstPage()

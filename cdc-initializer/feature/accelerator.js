@@ -92,8 +92,12 @@ export default class Accelerator {
     async #build(featureName) {
         console.log('\nBuild start')
 
-        await this.siteFeatures.build(featureName)
-        await this.partnerFeatures.build()
+        if (this.#existsFeature(this.siteFeatures, featureName)) {
+            await this.siteFeatures.build(featureName)
+        }
+        if (this.#existsFeature(this.partnerFeatures, featureName)) {
+            await this.partnerFeatures.build(featureName)
+        }
 
         console.log('\n')
         this.#logSuccessResult('Build')
@@ -109,8 +113,12 @@ export default class Accelerator {
             throw new Error(msg)
         }
 
-        await this.siteFeatures.deploy(sites, featureName)
-        await this.partnerFeatures.deploy(sites)
+        if (this.#existsFeature(this.siteFeatures, featureName)) {
+            await this.siteFeatures.deploy(sites, featureName)
+        }
+        if (this.#existsFeature(this.partnerFeatures, featureName)) {
+            await this.partnerFeatures.deploy(sites, featureName)
+        }
 
         console.log('\n')
         this.#logSuccessResult('Deploy', environment)

@@ -61,6 +61,32 @@ export const acceleratorCommonTests = (operation) => {
             expect(siteFeatureSpy.mock.calls.length).toBe(0)
             expect(partnerFeatureSpy.mock.calls.length).toBe(0)
         })
+
+        test(`${operation} site feature executed successfully`, async () => {
+            const siteFeatureSpy = jest.spyOn(siteFeatures, operation).mockImplementation(async () => {
+                return true
+            })
+            const partnerFeatureSpy = jest.spyOn(partnerFeatures, operation).mockImplementation(async () => {
+                return true
+            })
+            const result = await accelerator.execute(operation, sites, siteFeatures.getFeatures()[0].constructor.name, undefined)
+            expect(result).toBeTruthy()
+            expect(siteFeatureSpy.mock.calls.length).toBe(1)
+            expect(partnerFeatureSpy.mock.calls.length).toBe(0)
+        })
+
+        test(`${operation} parent feature executed successfully`, async () => {
+            const siteFeatureSpy = jest.spyOn(siteFeatures, operation).mockImplementation(async () => {
+                return true
+            })
+            const partnerFeatureSpy = jest.spyOn(partnerFeatures, operation).mockImplementation(async () => {
+                return true
+            })
+            const result = await accelerator.execute(operation, sites, partnerFeatures.getFeatures()[0].constructor.name, undefined)
+            expect(result).toBeTruthy()
+            expect(siteFeatureSpy.mock.calls.length).toBe(0)
+            expect(partnerFeatureSpy.mock.calls.length).toBe(1)
+        })
     })
 }
 
