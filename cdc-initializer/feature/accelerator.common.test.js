@@ -1,10 +1,8 @@
-import SiteFeature from './siteFeature'
-import PartnerFeature from './partnerFeature'
 import Accelerator from './accelerator'
-import { sites } from './test.common'
+import { getPartnerFeature, getSiteFeature, sites } from './test.common'
 
-export const siteFeatures = new SiteFeature({})
-export const partnerFeatures = new PartnerFeature({})
+export const siteFeatures = getSiteFeature()
+export const partnerFeatures = getPartnerFeature()
 export let accelerator = new Accelerator(siteFeatures, partnerFeatures)
 
 export const acceleratorCommonTests = (operation) => {

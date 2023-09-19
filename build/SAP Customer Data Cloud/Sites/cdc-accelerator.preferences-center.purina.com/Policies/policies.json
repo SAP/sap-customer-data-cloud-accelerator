@@ -171,10 +171,5 @@
         "emailTemplates": {
             "en": "<html xmlns=\"http://www.w3.org/1999/xhtml\">\r\n    <head>\r\n\t\t<META name=\"from\"    content=\"Name <noreply@YOUR-SITE.com>\" />\r\n\t\t<META name=\"subject\" content=\"Account Verification\" />\r\n    </head>\r\n    <body style=\"font-family: Arial; font-size: 13px; line-height: 16px;\">\r\n        <div style=\"background: url('https://cdns.gigya.com/site/images/email/background.png') repeat-x; width: 720px; padding:13px 0; margin:0 auto;\">\r\n            <div style=\"background: #fff; border-radius: 3px; margin: 0 auto; width: 693px; \">\r\n                <div style=\"padding:30px 30px 29px;margin: 0px auto;\">\r\n\t\t            <p>Hello,</p>\r\n\t\t            <p>Your code is : $code </p>\r\n                </div>\r\n            </div>\r\n        </div>\r\n    </body>\r\n</html>\r\n\r\n\r\n"
         }
-    },
-    "statusCode": 200,
-    "errorCode": 0,
-    "statusReason": "OK",
-    "callId": "a4de72be6c7b4703a64f8c07bfcbdcdd",
-    "time": "2023-09-18T09:51:44.279Z"
+    }
 }

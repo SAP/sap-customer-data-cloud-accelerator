@@ -23,14 +23,14 @@ export default class Schema extends SiteFeature {
         return this.constructor.name
     }
 
-    async init(apiKey, siteConfig, siteDomain) {
+    async init(apiKey, siteConfig, siteDirectory) {
         const toolkitSchema = new ToolkitSchema(this.credentials, apiKey, siteConfig.dataCenter)
         const schemasResponse = await toolkitSchema.get()
         if (schemasResponse.errorCode) {
             throw new Error(JSON.stringify(schemasResponse))
         }
 
-        const featureDirectory = path.join(await this.folderManager.getSiteFolder('init', apiKey), this.getName())
+        const featureDirectory = path.join(siteDirectory, this.getName())
         this.createDirectory(featureDirectory)
 
         // Create files
@@ -52,8 +52,8 @@ export default class Schema extends SiteFeature {
         this.copyFileFromSrcToBuild(srcFeaturePath, Schema.SUBSCRIPTIONS_SCHEMA_FILE_NAME)
     }
 
-    async deploy(apiKey, siteConfig) {
-        const buildFeatureDirectory = path.join(await this.folderManager.getSiteFolder('deploy', apiKey), this.getName())
+    async deploy(apiKey, siteConfig, siteDirectory) {
+        const buildFeatureDirectory = path.join(siteDirectory, this.getName())
         const rawFile = fs.readFileSync(path.join(buildFeatureDirectory, Schema.DATA_SCHEMA_FILE_NAME), { encoding: 'utf8' })
 
         const payload = {

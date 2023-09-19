@@ -30,7 +30,7 @@ export default class FolderManager {
     }
 
     async getPartnerFolder(operation, apiKey) {
-        const info = await this.sitesCache.getSiteInfo(apiKey)
+        const info = await this.getSiteInfo(apiKey)
         const baseFolder = FolderManager.getBaseFolder(operation)
         return path.join(baseFolder, info.partnerName)
     }
@@ -40,8 +40,12 @@ export default class FolderManager {
     }
 
     async getSiteFolder(operation, apiKey) {
-        const info = await this.sitesCache.getSiteInfo(apiKey)
+        const info = await this.getSiteInfo(apiKey)
         const baseFolder = FolderManager.getBaseFolder(operation)
         return path.join(baseFolder, info.partnerName, FolderManager.SITES_DIRECTORY, info.baseDomain)
+    }
+
+    async getSiteInfo(apiKey) {
+        return this.sitesCache.getSiteInfo(apiKey)
     }
 }

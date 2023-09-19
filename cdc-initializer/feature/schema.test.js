@@ -12,13 +12,9 @@ jest.mock('fs')
 
 describe('Schema test suite', () => {
     const schema = new Schema(credentials)
-    let siteFeatureSpy
 
     beforeEach(() => {
         jest.clearAllMocks()
-        siteFeatureSpy = jest.spyOn(schema.folderManager, 'getSiteFolder').mockImplementation(async () => {
-            return srcSiteDirectory
-        })
     })
 
     describe('Init test suite', () => {
@@ -29,9 +25,8 @@ describe('Schema test suite', () => {
             fs.mkdirSync.mockReturnValue(undefined)
             fs.writeFileSync.mockReturnValue(undefined)
 
-            await schema.init(apiKey, getSiteConfig, siteDomain)
+            await schema.init(apiKey, getSiteConfig, srcSiteDirectory)
 
-            expect(siteFeatureSpy.mock.calls.length).toBe(1)
             const srcDirectory = path.join(srcSiteDirectory, schema.getName())
             expect(fs.existsSync).toHaveBeenCalledWith(srcDirectory)
             expect(fs.writeFileSync).toHaveBeenCalledWith(path.join(srcDirectory, Schema.DATA_SCHEMA_FILE_NAME), JSON.stringify(expectedSchemaResponse.dataSchema, null, 4))
@@ -51,7 +46,7 @@ describe('Schema test suite', () => {
             axios.mockResolvedValueOnce({ data: expectedSchemaResponse })
 
             fs.existsSync.mockReturnValue(true)
-            await expect(schema.init(apiKey, getSiteConfig, siteDomain, false)).rejects.toEqual(
+            await expect(schema.init(apiKey, getSiteConfig, srcSiteDirectory, false)).rejects.toEqual(
                 new Error(
                     `The "${path.join(srcSiteDirectory, schema.getName())}" directory already exists, to overwrite its contents please use the option "reset" instead of "init"`,
                 ),
@@ -121,7 +116,7 @@ describe('Schema test suite', () => {
                 subscriptionsSchema: JSON.parse(srcFileContent),
             }
             let spy = jest.spyOn(schema, 'deployUsingToolkit')
-            await schema.deploy(apiKey, getSiteConfig)
+            await schema.deploy(apiKey, getSiteConfig, srcSiteDirectory)
             expect(spy.mock.calls.length).toBe(1)
             expect(spy).toHaveBeenNthCalledWith(1, apiKey, getSiteConfig, payload, new ToolkitSchemaOptions())
         })

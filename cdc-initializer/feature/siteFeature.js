@@ -2,10 +2,7 @@
  * Copyright: Copyright 2023 SAP SE or an SAP affiliate company and cdc-initializer contributors
  * License: Apache-2.0
  */
-import fs from 'fs'
-import path from 'path'
 import SiteConfigurator from '../sap-cdc-toolkit/configurator/siteConfigurator'
-import FolderManager from './folderManager'
 import Feature from './feature'
 
 export default class SiteFeature extends Feature {
@@ -32,7 +29,8 @@ export default class SiteFeature extends Feature {
             console.log(msg)
 
             const siteConfig = await this.#getSiteConfig(apiKey)
-            await this.executeOperationOnFeature(this.#features, featureName, baseFolder, { operation: 'init', args: [apiKey, siteConfig, siteDomain] })
+            const siteFolder = await this.folderManager.getSiteFolder('init', apiKey)
+            await this.executeOperationOnFeature(this.#features, featureName, baseFolder, { operation: 'init', args: [apiKey, siteConfig, siteFolder] })
         }
         return true
     }
@@ -67,18 +65,6 @@ export default class SiteFeature extends Feature {
         return true
     }
 
-    deleteDirectory(directory) {
-        if (fs.existsSync(directory)) {
-            fs.rmSync(directory, { recursive: true, force: true })
-        }
-    }
-
-    copyFileFromSrcToBuild(featurePath, file) {
-        const fileContent = JSON.parse(fs.readFileSync(path.join(featurePath, file), { encoding: 'utf8' }))
-        const buildBasePath = featurePath.replace(FolderManager.SRC_DIRECTORY, FolderManager.BUILD_DIRECTORY)
-        fs.writeFileSync(path.join(buildBasePath, file), JSON.stringify(fileContent, null, 4))
-    }
-
     async deploy(sites, featureName) {
         for (const { apiKey, siteDomain = '' } of sites) {
             // If apiKey has siteDomain, use the contents inside that directory for that site, else use the contents of the build/ directory
@@ -87,7 +73,7 @@ export default class SiteFeature extends Feature {
 
             const siteFolder = await this.folderManager.getSiteFolder('deploy', apiKey)
             const siteConfig = await this.#getSiteConfig(apiKey)
-            await this.executeOperationOnFeature(this.#features, featureName, siteFolder, { operation: 'deploy', args: [apiKey, siteConfig, siteDomain] })
+            await this.executeOperationOnFeature(this.#features, featureName, siteFolder, { operation: 'deploy', args: [apiKey, siteConfig, siteFolder] })
         }
         return true
     }

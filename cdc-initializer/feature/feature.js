@@ -29,8 +29,20 @@ export default class Feature {
         fs.mkdirSync(directory, { recursive: true })
     }
 
+    deleteDirectory(directory) {
+        if (fs.existsSync(directory)) {
+            fs.rmSync(directory, { recursive: true, force: true })
+        }
+    }
+
     static isEqualCaseInsensitive(str1, str2) {
         return str1.localeCompare(str2, undefined, { sensitivity: 'base' }) === 0
+    }
+
+    copyFileFromSrcToBuild(featurePath, file) {
+        const fileContent = JSON.parse(fs.readFileSync(path.join(featurePath, file), { encoding: 'utf8' }))
+        const buildBasePath = featurePath.replace(FolderManager.SRC_DIRECTORY, FolderManager.BUILD_DIRECTORY)
+        fs.writeFileSync(path.join(buildBasePath, file), JSON.stringify(fileContent, null, 4))
     }
 
     async executeOperationOnFeature(features, featureName, directory, runnable) {

@@ -20,7 +20,7 @@ export default class WebSdk extends SiteFeature {
         return this.constructor.name
     }
 
-    async init(apiKey, siteConfig, siteDomain) {
+    async init(apiKey, siteConfig, siteDirectory) {
         let { globalConf: originalWebSdk } = siteConfig
 
         // If globalConf is empty, get default template
@@ -31,7 +31,7 @@ export default class WebSdk extends SiteFeature {
         // Wrap javascript in "module"
         const webSdk = `export default ${originalWebSdk}`
 
-        const featureDirectory = path.join(await this.folderManager.getSiteFolder('init', apiKey), this.getName())
+        const featureDirectory = path.join(siteDirectory, this.getName())
         this.createDirectory(featureDirectory)
 
         // Create new webSdk file
@@ -60,8 +60,8 @@ export default class WebSdk extends SiteFeature {
         fs.writeFileSync(buildFileName, webSdkBundled)
     }
 
-    async deploy(apiKey, siteConfig, siteDomain) {
-        const buildFeatureDirectory = path.join(await this.folderManager.getSiteFolder('deploy', apiKey), this.getName())
+    async deploy(apiKey, siteConfig, siteDirectory) {
+        const buildFeatureDirectory = path.join(siteDirectory, this.getName())
         const buildFileName = path.join(buildFeatureDirectory, `${this.getName()}.js`)
         // Get bundled webSdk
         const fileContent = fs.readFileSync(buildFileName, { encoding: 'utf8' })

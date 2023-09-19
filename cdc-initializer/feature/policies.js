@@ -21,17 +21,18 @@ export default class Policies extends SiteFeature {
         return this.constructor.name
     }
 
-    async init(apiKey, siteConfig, siteDomain) {
+    async init(apiKey, siteConfig, siteDirectory) {
         const toolkitPolicies = new ToolkitPolicies(this.credentials, apiKey, siteConfig.dataCenter)
         const policiesResponse = await toolkitPolicies.get()
         if (policiesResponse.errorCode) {
             throw new Error(JSON.stringify(policiesResponse))
         }
 
-        const featureDirectory = path.join(await this.folderManager.getSiteFolder('init', apiKey), this.getName())
+        const featureDirectory = path.join(siteDirectory, this.getName())
         this.createDirectory(featureDirectory)
 
         // Create policy file
+        this.removeResponseStatusFields(policiesResponse)
         fs.writeFileSync(path.join(featureDirectory, Policies.POLICIES_FILE_NAME), JSON.stringify(policiesResponse, null, 4))
     }
 
@@ -46,8 +47,8 @@ export default class Policies extends SiteFeature {
         this.copyFileFromSrcToBuild(srcFeaturePath, Policies.POLICIES_FILE_NAME)
     }
 
-    async deploy(apiKey, siteConfig) {
-        const buildFeatureDirectory = path.join(await this.folderManager.getSiteFolder('deploy', apiKey), this.getName())
+    async deploy(apiKey, siteConfig, siteDirectory) {
+        const buildFeatureDirectory = path.join(siteDirectory, this.getName())
         const toolkitPolicies = new ToolkitPolicies(this.credentials, apiKey, siteConfig.dataCenter)
 
         // Get file policies file
@@ -57,5 +58,13 @@ export default class Policies extends SiteFeature {
         if (response.errorCode) {
             throw new Error(JSON.stringify(response))
         }
+    }
+
+    removeResponseStatusFields(policiesResponse) {
+        delete policiesResponse.statusCode
+        delete policiesResponse.errorCode
+        delete policiesResponse.statusReason
+        delete policiesResponse.callId
+        delete policiesResponse.time
     }
 }

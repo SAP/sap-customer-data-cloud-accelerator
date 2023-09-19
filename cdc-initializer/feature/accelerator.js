@@ -1,4 +1,5 @@
 import readline from 'readline'
+import Feature from './feature'
 
 export default class Accelerator {
     siteFeatures
@@ -45,8 +46,12 @@ export default class Accelerator {
             throw new Error(msg)
         }
 
-        await this.siteFeatures.init(sites, featureName)
-        await this.partnerFeatures.init(sites, featureName)
+        if (this.#existsFeature(this.siteFeatures, featureName)) {
+            await this.siteFeatures.init(sites, featureName)
+        }
+        if (this.#existsFeature(this.partnerFeatures, featureName)) {
+            await this.partnerFeatures.init(sites, featureName)
+        }
 
         console.log('\n')
         this.#logSuccessResult('Init', environment)
@@ -59,8 +64,12 @@ export default class Accelerator {
         // Get confirmation from user to replace existing directories
         let confirmation = await this.resetConfirmation()
         if (confirmation) {
-            result = await this.siteFeatures.reset(sites, featureName)
-            result = await this.partnerFeatures.reset(sites, featureName)
+            if (this.#existsFeature(this.siteFeatures, featureName)) {
+                result = await this.siteFeatures.reset(sites, featureName)
+            }
+            if (this.#existsFeature(this.partnerFeatures, featureName)) {
+                result = await this.partnerFeatures.reset(sites, featureName)
+            }
         }
         console.log('\n')
         this.#logSuccessResult('Reset')
@@ -119,5 +128,17 @@ export default class Accelerator {
         const envMsg = environment ? ` (${environment})` : ''
         const msg = `${operation} result${envMsg}: \x1b[${color}m%s\x1b[0m\n`
         console.log(msg, result)
+    }
+
+    #existsFeature(typeFeatures, featureName) {
+        if (!featureName) {
+            return true
+        }
+        for (const feature of typeFeatures.getFeatures()) {
+            if (Feature.isEqualCaseInsensitive(feature.constructor.name, featureName)) {
+                return true
+            }
+        }
+        return false
     }
 }

@@ -14,27 +14,22 @@ export default class PermissionGroups extends PartnerFeature {
     }
 
     async init(directory) {
-        console.log(`${this.getName()} called to work on directory ${directory}`)
         const featureDirectory = path.join(directory, this.getName())
         this.createDirectory(featureDirectory)
-        // Create files
+        // Create file
         fs.writeFileSync(path.join(featureDirectory, 'permissionGroups.json'), JSON.stringify({ key: 'dummy' }, null, 4))
     }
 
     reset(directory) {
-        console.log(`${this.getName()} called to work on directory ${directory}`)
         this.deleteDirectory(path.join(directory, this.getName()))
     }
 
     build(directory) {
-        console.log(`${this.getName()} called to work on directory ${directory}`)
         const buildFeaturePath = path.join(directory, this.getName())
         clearDirectoryContents(buildFeaturePath)
         const srcFeaturePath = buildFeaturePath.replace(FolderManager.BUILD_DIRECTORY, FolderManager.SRC_DIRECTORY)
         this.copyFileFromSrcToBuild(srcFeaturePath, 'permissionGroups.json')
     }
 
-    async deploy(directory) {
-        console.log(`${this.getName()} called to work on directory ${directory}`)
-    }
+    async deploy(directory) {}
 }

@@ -13,8 +13,8 @@ export const credentials = {
 }
 export const siteDomain = 'domain.test.com'
 export const apiKey = 'apiKey'
-export const partnerId = 'partnerId'
-export const siteBaseDirectory = path.join(FolderManager.SRC_DIRECTORY, partnerId, FolderManager.SITES_DIRECTORY)
+export const partnerIds = ['partnerId1', 'partnerId2']
+export const siteBaseDirectory = path.join(FolderManager.SRC_DIRECTORY, partnerIds[0], FolderManager.SITES_DIRECTORY)
 export const srcSiteDirectory = path.join(siteBaseDirectory, siteDomain)
 export const buildSiteDirectory = srcSiteDirectory.replace(FolderManager.SRC_DIRECTORY, FolderManager.BUILD_DIRECTORY)
 export const sites = [

@@ -196,10 +196,5 @@
         "emailTemplates": {
             "en": "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n    <head>\n\t\t<META name=\"from\"    content=\"Name <ciammailing@ciam.nestle.com>\" />\n\t\t<META name=\"subject\" content=\"Account Verification\" />\n    </head>\n    <body style=\"font-family: Arial; font-size: 13px; line-height: 16px;\">\n        <div style=\"background: url('https://cdns.gigya.com/site/images/email/background.png') repeat-x; width: 720px; padding:13px 0; margin:0 auto;\">\n            <div style=\"background: #fff; border-radius: 3px; margin: 0 auto; width: 693px; \">\n                <div style=\"padding:30px 30px 29px;margin: 0px auto;\">\n\t\t            <p>Hello,</p>\n\t\t            <p>Your code is : $code </p>\n                </div>\n            </div>\n        </div>\n    </body>\n</html>\n\n\n"
         }
-    },
-    "statusCode": 200,
-    "errorCode": 0,
-    "statusReason": "OK",
-    "callId": "5f38f5578a344dc7b15a44e9442a7755",
-    "time": "2023-09-18T09:51:42.444Z"
+    }
 }
