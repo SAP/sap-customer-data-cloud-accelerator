@@ -5,7 +5,7 @@ import axios from 'axios'
 import path from 'path'
 import ToolkitSchemaOptions from '../sap-cdc-toolkit/copyConfig/schema/schemaOptions'
 import FolderManager from './folderManager'
-import { credentials, siteDomain, apiKey, siteDirectory } from './test.common'
+import { credentials, siteDomain, apiKey, srcSiteDirectory } from './test.common'
 
 jest.mock('axios')
 jest.mock('fs')
@@ -15,9 +15,9 @@ describe('Schema test suite', () => {
     let siteFeatureSpy
 
     beforeEach(() => {
-        jest.restoreAllMocks()
+        jest.clearAllMocks()
         siteFeatureSpy = jest.spyOn(schema.folderManager, 'getSiteFolder').mockImplementation(async () => {
-            return siteDirectory
+            return srcSiteDirectory
         })
     })
 
@@ -32,7 +32,7 @@ describe('Schema test suite', () => {
             await schema.init(apiKey, getSiteConfig, siteDomain)
 
             expect(siteFeatureSpy.mock.calls.length).toBe(1)
-            const srcDirectory = path.join(siteDirectory, schema.getName())
+            const srcDirectory = path.join(srcSiteDirectory, schema.getName())
             expect(fs.existsSync).toHaveBeenCalledWith(srcDirectory)
             expect(fs.writeFileSync).toHaveBeenCalledWith(path.join(srcDirectory, Schema.DATA_SCHEMA_FILE_NAME), JSON.stringify(expectedSchemaResponse.dataSchema, null, 4))
             expect(fs.writeFileSync).toHaveBeenCalledWith(path.join(srcDirectory, Schema.PROFILE_SCHEMA_FILE_NAME), JSON.stringify(expectedSchemaResponse.profileSchema, null, 4))
@@ -53,7 +53,7 @@ describe('Schema test suite', () => {
             fs.existsSync.mockReturnValue(true)
             await expect(schema.init(apiKey, getSiteConfig, siteDomain, false)).rejects.toEqual(
                 new Error(
-                    `The "${path.join(siteDirectory, schema.getName())}" directory already exists, to overwrite its contents please use the option "reset" instead of "init"`,
+                    `The "${path.join(srcSiteDirectory, schema.getName())}" directory already exists, to overwrite its contents please use the option "reset" instead of "init"`,
                 ),
             )
         })
@@ -72,9 +72,9 @@ describe('Schema test suite', () => {
             fs.existsSync.mockReturnValue(dirExists)
             fs.rmSync.mockReturnValue(undefined)
 
-            schema.reset(siteDirectory)
+            schema.reset(srcSiteDirectory)
 
-            const featureDirectory = path.join(siteDirectory, schema.getName())
+            const featureDirectory = path.join(srcSiteDirectory, schema.getName())
             expect(fs.existsSync).toHaveBeenCalledWith(featureDirectory)
             if (dirExists) {
                 expect(fs.rmSync).toHaveBeenCalledWith(featureDirectory, { force: true, recursive: true })
@@ -94,9 +94,10 @@ describe('Schema test suite', () => {
             fs.writeFileSync.mockReturnValue(undefined)
             fs.readFileSync.mockReturnValue(srcFileContent)
 
-            schema.build(siteDirectory)
+            // for the build method it is passed the build path
+            schema.build(srcSiteDirectory.replace(FolderManager.SRC_DIRECTORY, FolderManager.BUILD_DIRECTORY))
 
-            const buildFeatureDirectory = path.join(siteDirectory.replace(FolderManager.SRC_DIRECTORY, FolderManager.BUILD_DIRECTORY), schema.getName())
+            const buildFeatureDirectory = path.join(srcSiteDirectory.replace(FolderManager.SRC_DIRECTORY, FolderManager.BUILD_DIRECTORY), schema.getName())
             expect(fs.existsSync).toHaveBeenCalledWith(buildFeatureDirectory)
             if (dirExists) {
                 expect(fs.rmSync).toHaveBeenCalledWith(buildFeatureDirectory, { force: true, recursive: true })

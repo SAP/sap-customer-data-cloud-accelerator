@@ -46,7 +46,7 @@ export default class Accelerator {
         }
 
         await this.siteFeatures.init(sites, featureName)
-        await this.partnerFeatures.init(sites)
+        await this.partnerFeatures.init(sites, featureName)
 
         console.log('\n')
         this.#logSuccessResult('Init', environment)

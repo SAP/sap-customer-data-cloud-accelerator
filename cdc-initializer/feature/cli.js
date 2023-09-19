@@ -6,13 +6,14 @@ import 'dotenv/config'
 
 import { CONFIG_FILENAME } from '../constants.js'
 import { createRequire } from 'module'
-import Feature from './siteFeature'
+import SiteFeature from './siteFeature'
 import Schema from './schema'
 import WebSdk from './webSdk'
 import Policies from './policies'
 import PartnerFeature from './partnerFeature'
 import PermissionGroups from './permissionGroups'
 import Accelerator from './accelerator'
+import Feature from './feature'
 
 export default class CLI {
     siteFeature
@@ -21,16 +22,12 @@ export default class CLI {
     parseArguments(args) {
         let [, , phase, featureName, environment] = args
 
-        if (!this.siteFeature || this.siteFeature.getFeatures().length === 0) {
+        if (!this.#areFeaturesRegistered()) {
             throw new Error('No features registered, nothing to do!')
         }
 
         // If no feature selected, deploy all features and the environment might be in the featureName variable
-        if (
-            !this.siteFeature.getFeatures().find((element) => {
-                return Feature.isEqualCaseInsensitive(element.constructor.name, featureName)
-            })
-        ) {
+        if (!this.#featureExists(featureName)) {
             environment = featureName
             featureName = undefined
         }
@@ -44,6 +41,20 @@ export default class CLI {
         sites = configuration
 
         return { phase, sites, featureName, environment }
+    }
+
+    #areFeaturesRegistered() {
+        return (this.siteFeature && this.siteFeature.getFeatures().length > 0) || (this.partnerFeature && this.partnerFeature.getFeatures().length > 0)
+    }
+
+    #featureNameExists(typeFeature, featureName) {
+        return typeFeature.getFeatures().find((element) => {
+            return Feature.isEqualCaseInsensitive(element.constructor.name, featureName)
+        })
+    }
+
+    #featureExists(featureName) {
+        return this.#featureNameExists(this.siteFeature, featureName) || this.#featureNameExists(this.partnerFeature, featureName)
     }
 
     #getConfiguration = (phase, environment) => {
@@ -66,7 +77,7 @@ export default class CLI {
     }
 
     initSiteFeature(credentials) {
-        const siteFeature = new Feature(credentials)
+        const siteFeature = new SiteFeature(credentials)
         siteFeature.register(new Schema(credentials))
         siteFeature.register(new WebSdk(credentials))
         siteFeature.register(new Policies(credentials))

@@ -44,16 +44,12 @@ export default class Schema extends SiteFeature {
     }
 
     build(sitePath) {
-        let featurePath
-        if (sitePath.startsWith(FolderManager.BUILD_DIRECTORY)) {
-            featurePath = path.join(sitePath.replace(FolderManager.BUILD_DIRECTORY, FolderManager.SRC_DIRECTORY), this.getName())
-        } else {
-            featurePath = path.join(sitePath, this.getName())
-        }
-        clearDirectoryContents(featurePath.replace(FolderManager.SRC_DIRECTORY, FolderManager.BUILD_DIRECTORY))
-        this.copyFileFromSrcToBuild(featurePath, Schema.DATA_SCHEMA_FILE_NAME)
-        this.copyFileFromSrcToBuild(featurePath, Schema.PROFILE_SCHEMA_FILE_NAME)
-        this.copyFileFromSrcToBuild(featurePath, Schema.SUBSCRIPTIONS_SCHEMA_FILE_NAME)
+        const buildFeaturePath = path.join(sitePath, this.getName())
+        clearDirectoryContents(buildFeaturePath)
+        const srcFeaturePath = buildFeaturePath.replace(FolderManager.BUILD_DIRECTORY, FolderManager.SRC_DIRECTORY)
+        this.copyFileFromSrcToBuild(srcFeaturePath, Schema.DATA_SCHEMA_FILE_NAME)
+        this.copyFileFromSrcToBuild(srcFeaturePath, Schema.PROFILE_SCHEMA_FILE_NAME)
+        this.copyFileFromSrcToBuild(srcFeaturePath, Schema.SUBSCRIPTIONS_SCHEMA_FILE_NAME)
     }
 
     async deploy(apiKey, siteConfig) {

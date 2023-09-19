@@ -11,14 +11,14 @@ export default class FolderManager {
         this.sitesCache = new SitesCache(credentials)
     }
 
-    #getBaseFolder(operation) {
+    static getBaseFolder(operation) {
         let baseFolder
         switch (operation) {
             case 'init':
             case 'reset':
-            case 'build':
                 baseFolder = FolderManager.SRC_DIRECTORY
                 break
+            case 'build':
             case 'deploy':
                 baseFolder = FolderManager.BUILD_DIRECTORY
                 break
@@ -31,7 +31,7 @@ export default class FolderManager {
 
     async getPartnerFolder(operation, apiKey) {
         const info = await this.sitesCache.getSiteInfo(apiKey)
-        const baseFolder = this.#getBaseFolder(operation)
+        const baseFolder = FolderManager.getBaseFolder(operation)
         return path.join(baseFolder, info.partnerName)
     }
 
@@ -41,7 +41,7 @@ export default class FolderManager {
 
     async getSiteFolder(operation, apiKey) {
         const info = await this.sitesCache.getSiteInfo(apiKey)
-        const baseFolder = this.#getBaseFolder(operation)
+        const baseFolder = FolderManager.getBaseFolder(operation)
         return path.join(baseFolder, info.partnerName, FolderManager.SITES_DIRECTORY, info.baseDomain)
     }
 }

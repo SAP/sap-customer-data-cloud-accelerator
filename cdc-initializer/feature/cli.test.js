@@ -3,8 +3,10 @@
  * License: Apache-2.0
  */
 import CLI from './cli'
-import { getSiteFeature, credentials } from './test.common'
+import { getSiteFeature, credentials, sites } from './test.common'
 import Accelerator from './accelerator'
+import SiteFeature from './siteFeature'
+import PartnerFeature from './partnerFeature'
 
 jest.mock('./accelerator')
 
@@ -20,20 +22,18 @@ describe('CLI test suite', () => {
     })
 
     const cli = new CLI()
-    cli.siteFeature = getSiteFeature()
 
     const config = {
-        source: [
-            { apiKey: '4_Ch-q_qKrjBJ_-QBEfMPkKA', siteDomain: 'cdc-accelerator.parent.site-group.com' },
-            { apiKey: '4_tqmAZeYVLPfPl9SYu_iFxA', siteDomain: 'cdc-accelerator.preferences-center.com' },
-        ],
-        deploy: { apiKey: '4_gxvAD6fBxrCScvH8bBm7Vw', siteDomain: 'cdc-accelerator.parent.site-group.com' },
+        source: sites,
+        deploy: { apiKey: '1_Eh-x_qKjjBJ_-QBEfMDABC', siteDomain: 'cdc-accelerator.parent.site-group.com' },
     }
 
     beforeAll(() => {
         jest.spyOn(CLI.prototype, 'getConfigurationByEnvironment').mockImplementation(() => {
             return config
         })
+        cli.siteFeature = getSiteFeature()
+        cli.partnerFeature = new PartnerFeature(credentials)
     })
 
     afterAll(() => {
@@ -106,6 +106,22 @@ describe('CLI test suite', () => {
             'unknown', // phase
         ]
         expect(() => cli.parseArguments(processArgv)).toThrow('Cannot find configuration')
+    })
+
+    test('parseArguments with no features', async () => {
+        const processArgv = [
+            'node',
+            'cdc-initializer/feature/index.js',
+            'unknown', // phase
+        ]
+        try {
+            cli.siteFeature = undefined
+            expect(() => cli.parseArguments(processArgv)).toThrow('No features registered, nothing to do!')
+            cli.siteFeature = new SiteFeature(credentials)
+            expect(() => cli.parseArguments(processArgv)).toThrow('No features registered, nothing to do!')
+        } finally {
+            cli.siteFeature = getSiteFeature()
+        }
     })
 
     test('main successfully', async () => {
