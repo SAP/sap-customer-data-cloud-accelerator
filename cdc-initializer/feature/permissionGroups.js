@@ -31,5 +31,7 @@ export default class PermissionGroups extends PartnerFeature {
         this.copyFileFromSrcToBuild(srcFeaturePath, 'permissionGroups.json')
     }
 
-    async deploy(directory) {}
+    async deploy(directory) {
+        console.log('deploy called')
+    }
 }
