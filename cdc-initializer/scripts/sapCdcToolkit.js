@@ -108,7 +108,9 @@ class SapCdcToolkit {
             await this.#createFolder(this.#TOOLKIT_FOLDER_PATH)
             await this.#extractZipFileAndFilterContents()
             this.#deleteTemporaryFiles()
+            console.log("Starting listing extracted files")
             this.verifyUpdateResult()
+            console.log("End of listing extracted files")
         } catch (error) {
             console.log(error.message)
         }
@@ -132,6 +134,7 @@ class SapCdcToolkit {
         let allFiles = files || []
         for (const fileName of filesCurrentDir) {
             const filePath = path.join(dirPath, fileName)
+            console.log(filePath)
 
             if (fs.statSync(filePath).isDirectory()) {
                 allFiles = this.#getAllFilesFromDirectoryRecursively(filePath, allFiles)
