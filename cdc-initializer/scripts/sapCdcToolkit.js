@@ -114,12 +114,13 @@ class SapCdcToolkit {
 
 
             console.log('file cdc-initializer/sap-cdc-toolkit/github/client.js exists?', fs.existsSync('cdc-initializer/sap-cdc-toolkit/github/client.js'))
+            console.log('file cdc-initializer/sap-cdc-toolkit/search/siteFinderPaginated.js exists?', fs.existsSync('cdc-initializer/sap-cdc-toolkit/search/siteFinderPaginated.js'))
 
             try {
                 console.log('Current directory: ' + process.cwd());
-                console.log("Start of listing workspace files")
-                this.#getAllFilesFromDirectoryRecursively('/jenkinsdata/cx-servicesautomation/sap-customer-data-cloud-accelerator/PR-19/workspace')
-                console.log("End of listing workspace files")
+                console.log("Start of listing workspace2 files")
+                this.#getAllFilesFromDirectoryRecursively('/home/jenkins/agent/workspace/mer-data-cloud-accelerator_PR-19')
+                console.log("End of listing workspace2 files")
             }
             catch(error) {
                 console.log(error)
@@ -128,14 +129,6 @@ class SapCdcToolkit {
                 console.log("Start of listing workspace2 files")
                 this.#getAllFilesFromDirectoryRecursively('.')
                 console.log("End of listing workspace2 files")
-            }
-            catch(error) {
-                console.log(error)
-            }
-            try {
-                console.log("Start of listing workspace3 files")
-                this.#getAllFilesFromDirectoryRecursively('/jenkinsdata/cx-servicesautomation/sap-customer-data-cloud-accelerator/PR-19/workspace')
-                console.log("End of listing workspace3 files")
             }
             catch(error) {
                 console.log(error)
