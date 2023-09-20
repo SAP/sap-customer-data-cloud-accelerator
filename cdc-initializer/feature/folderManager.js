@@ -7,6 +7,7 @@ export default class FolderManager {
 
     constructor(credentials) {
         //this.sitesCache = new SitesCache(credentials)
+        console.log('Current directory2: ' + process.cwd());
     }
 
     static getBaseFolder(operation) {
