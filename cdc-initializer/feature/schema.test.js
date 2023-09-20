@@ -4,7 +4,7 @@ import Schema from './schema.js'
 import axios from 'axios'
 import path from 'path'
 import ToolkitSchemaOptions from '../sap-cdc-toolkit/copyConfig/schema/schemaOptions.js'
-import FolderManager from './folderManager.js'
+import { SRC_DIRECTORY, BUILD_DIRECTORY } from './constants'
 import { credentials, siteDomain, apiKey, srcSiteDirectory } from './test.common.js'
 
 jest.mock('axios')
@@ -90,9 +90,9 @@ describe('Schema test suite', () => {
             fs.readFileSync.mockReturnValue(srcFileContent)
 
             // for the build method it is passed the build path
-            schema.build(srcSiteDirectory.replace(FolderManager.SRC_DIRECTORY, FolderManager.BUILD_DIRECTORY))
+            schema.build(srcSiteDirectory.replace(SRC_DIRECTORY, BUILD_DIRECTORY))
 
-            const buildFeatureDirectory = path.join(srcSiteDirectory.replace(FolderManager.SRC_DIRECTORY, FolderManager.BUILD_DIRECTORY), schema.getName())
+            const buildFeatureDirectory = path.join(srcSiteDirectory.replace(SRC_DIRECTORY, BUILD_DIRECTORY), schema.getName())
             expect(fs.existsSync).toHaveBeenCalledWith(buildFeatureDirectory)
             if (dirExists) {
                 expect(fs.rmSync).toHaveBeenCalledWith(buildFeatureDirectory, { force: true, recursive: true })

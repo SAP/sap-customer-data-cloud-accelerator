@@ -4,7 +4,7 @@
  */
 import 'dotenv/config'
 
-import { CONFIG_FILENAME } from '../constants.js'
+import { CONFIG_FILENAME } from './constants.js'
 import { createRequire } from 'module'
 import SiteFeature from './siteFeature.js'
 import Schema from './schema.js'

@@ -5,8 +5,17 @@ import axios from 'axios'
 import Schema from './schema.js'
 import WebSdk from './webSdk.js'
 import Policies from './policies.js'
-import { sites, srcSiteDirectory, siteBaseDirectory, getSiteFeature, spyAllFeaturesMethod } from './test.common.js'
+import {
+    sites,
+    srcSiteDirectory,
+    siteBaseDirectory,
+    getSiteFeature,
+    spyAllFeaturesMethod,
+    siteDomain, partnerIds, buildSiteDirectory
+} from './test.common.js'
 import Feature from './feature.js'
+import FolderManager from "./folderManager";
+import {SITES_DIRECTORY} from "./constants";
 
 jest.mock('axios')
 jest.mock('fs')
@@ -77,9 +86,9 @@ describe('Site features test suite', () => {
         test('Build all features executed successfully', async () => {
             const getFilesSpy = jest.spyOn(siteFeature, 'getFiles').mockImplementation(async () => {
                 return [
-                    path.join('/root/', srcSiteDirectory, 'Schema', 'data.json'),
-                    path.join('/root/', srcSiteDirectory, 'WebSdk', 'webSdk.js'),
-                    '/root/src/partnerId/siteDomain/Sites/WebSdk/webSdk.js',
+                    path.join('/root/', buildSiteDirectory, 'Schema', 'data.json'),
+                    path.join('/root/', buildSiteDirectory, 'WebSdk', 'webSdk.js'),
+                    `/root/build/${partnerIds[1]}/Sites/siteDomain/WebSdk/webSdk.js`,
                     '/root/anyDirectory/Schema/data.json',
                 ]
             })
@@ -137,11 +146,16 @@ describe('Site features test suite', () => {
             result = await siteFeature[operation](sites, featureName, undefined)
         }
         expect(result).toBeTruthy()
+
+        //let directoryIndex = 2
+        //if (operation === 'build' || operation === 'reset') {
+        //    directoryIndex = 0
+        //}
         for (const spy of spies) {
             if (!featureName || (spy.mock.instances.length > 0 && Feature.isEqualCaseInsensitive(spy.mock.instances[0].constructor.name, featureName))) {
                 spyesTotalCalls += spy.mock.calls.length
                 //for(let i = 0 ; i < spy.mock.calls.length ; ++i) {
-                //    expect(spy.mock.calls[i][0]).toEqual(path.join(FolderManager.getBaseFolder(operation), partnerId, FolderManager.SITES_DIRECTORY, siteDomain))
+                //    expect(spy.mock.calls[i][directoryIndex]).toEqual(path.join(FolderManager.getBaseFolder(operation), partnerIds[0], SITES_DIRECTORY, siteDomain))
                 //}
             } else {
                 expect(spy.mock.calls.length).toBe(0)

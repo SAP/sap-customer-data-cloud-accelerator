@@ -8,7 +8,7 @@ import fs from 'fs'
 import path from 'path'
 import { clearDirectoryContents } from '../utils/utils.js'
 import SiteFeature from './siteFeature.js'
-import FolderManager from './folderManager.js'
+import { SRC_DIRECTORY, BUILD_DIRECTORY } from './constants.js'
 
 export default class Policies extends SiteFeature {
     static POLICIES_FILE_NAME = 'policies.json'
@@ -43,7 +43,7 @@ export default class Policies extends SiteFeature {
     build(sitePath) {
         const buildFeaturePath = path.join(sitePath, this.getName())
         clearDirectoryContents(buildFeaturePath)
-        const srcFeaturePath = buildFeaturePath.replace(FolderManager.BUILD_DIRECTORY, FolderManager.SRC_DIRECTORY)
+        const srcFeaturePath = buildFeaturePath.replace(BUILD_DIRECTORY, SRC_DIRECTORY)
         this.copyFileFromSrcToBuild(srcFeaturePath, Policies.POLICIES_FILE_NAME)
     }
 

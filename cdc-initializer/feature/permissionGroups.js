@@ -2,7 +2,7 @@ import PartnerFeature from './partnerFeature.js'
 import path from 'path'
 import fs from 'fs'
 import { clearDirectoryContents } from '../utils/utils.js'
-import FolderManager from './folderManager.js'
+import { SRC_DIRECTORY, BUILD_DIRECTORY } from './constants.js'
 
 export default class PermissionGroups extends PartnerFeature {
     constructor(credentials) {
@@ -27,7 +27,7 @@ export default class PermissionGroups extends PartnerFeature {
     build(directory) {
         const buildFeaturePath = path.join(directory, this.getName())
         clearDirectoryContents(buildFeaturePath)
-        const srcFeaturePath = buildFeaturePath.replace(FolderManager.BUILD_DIRECTORY, FolderManager.SRC_DIRECTORY)
+        const srcFeaturePath = buildFeaturePath.replace(BUILD_DIRECTORY, SRC_DIRECTORY)
         this.copyFileFromSrcToBuild(srcFeaturePath, 'permissionGroups.json')
     }
 

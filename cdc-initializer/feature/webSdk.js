@@ -3,7 +3,7 @@
  * License: Apache-2.0
  */
 import ToolkitWebSdk from '../sap-cdc-toolkit/copyConfig/websdk/websdk.js'
-import { CDC_INITIALIZER_DIRECTORY } from '../constants.js'
+import { CDC_INITIALIZER_DIRECTORY } from './constants.js'
 import fs from 'fs'
 import path from 'path'
 import { cleanJavaScriptModuleBoilerplateWebSdk, replaceFilenamesWithFileContents } from '../utils/utils.js'

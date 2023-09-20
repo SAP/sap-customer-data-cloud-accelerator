@@ -3,8 +3,8 @@
  * License: Apache-2.0
  */
 import Feature from './feature.js'
-import FolderManager from './folderManager.js'
 import path from 'path'
+import { SITES_DIRECTORY } from './constants.js'
 
 export default class PartnerFeature extends Feature {
     #features = []
@@ -74,7 +74,7 @@ export default class PartnerFeature extends Feature {
     }
 
     static getPartnerPath(sitePath) {
-        const endIdx = sitePath.indexOf(path.join('/', FolderManager.SITES_DIRECTORY))
+        const endIdx = sitePath.indexOf(path.join('/', SITES_DIRECTORY))
         if (endIdx < 0) {
             throw new Error(`Unexpected site path ${sitePath}`)
         }

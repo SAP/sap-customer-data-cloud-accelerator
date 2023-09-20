@@ -5,6 +5,7 @@ import axios from 'axios'
 import { apiKey, partnerIds, siteDomain, sites, spyAllFeaturesMethod, getPartnerFeature, buildSiteDirectory } from './test.common.js'
 import FolderManager from './folderManager.js'
 import Feature from './feature.js'
+import { SITES_DIRECTORY } from './constants.js'
 
 jest.mock('axios')
 jest.mock('fs')
@@ -160,10 +161,10 @@ describe('Partner features test suite', () => {
 
         jest.spyOn(partnerFeature.folderManager, 'getSiteBaseFolder')
             .mockImplementationOnce(async () => {
-                return path.join(FolderManager.getBaseFolder(operation), partnerIds[0], FolderManager.SITES_DIRECTORY, siteDomain)
+                return path.join(FolderManager.getBaseFolder(operation), partnerIds[0], SITES_DIRECTORY, siteDomain)
             })
             .mockImplementationOnce(async () => {
-                return path.join(FolderManager.getBaseFolder(operation), partnerIds[1], FolderManager.SITES_DIRECTORY, siteDomain)
+                return path.join(FolderManager.getBaseFolder(operation), partnerIds[1], SITES_DIRECTORY, siteDomain)
             })
     }
 })

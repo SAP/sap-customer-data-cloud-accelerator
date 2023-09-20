@@ -1,10 +1,8 @@
 import SitesCache from './sitesCache.js'
 import path from 'path'
+import { SRC_DIRECTORY, BUILD_DIRECTORY, SITES_DIRECTORY } from './constants.js'
 
 export default class FolderManager {
-    static SRC_DIRECTORY = 'src/'
-    static BUILD_DIRECTORY = 'build/'
-    static SITES_DIRECTORY = 'Sites/'
     sitesCache
 
     constructor(credentials) {
@@ -16,11 +14,11 @@ export default class FolderManager {
         switch (operation) {
             case 'init':
             case 'reset':
-                baseFolder = FolderManager.SRC_DIRECTORY
+                baseFolder = SRC_DIRECTORY
                 break
             case 'build':
             case 'deploy':
-                baseFolder = FolderManager.BUILD_DIRECTORY
+                baseFolder = BUILD_DIRECTORY
                 break
             default:
                 baseFolder = ''
@@ -36,13 +34,13 @@ export default class FolderManager {
     }
 
     async getSiteBaseFolder(operation, apiKey) {
-        return path.join(await this.getPartnerFolder(operation, apiKey), FolderManager.SITES_DIRECTORY)
+        return path.join(await this.getPartnerFolder(operation, apiKey), SITES_DIRECTORY)
     }
 
     async getSiteFolder(operation, apiKey) {
         const info = await this.getSiteInfo(apiKey)
         const baseFolder = FolderManager.getBaseFolder(operation)
-        return path.join(baseFolder, info.partnerName, FolderManager.SITES_DIRECTORY, info.baseDomain)
+        return path.join(baseFolder, info.partnerName, SITES_DIRECTORY, info.baseDomain)
     }
 
     async getSiteInfo(apiKey) {

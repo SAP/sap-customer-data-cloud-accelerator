@@ -3,6 +3,7 @@
  * License: Apache-2.0
  */
 import FolderManager from './folderManager.js'
+import { SRC_DIRECTORY, BUILD_DIRECTORY, SITES_DIRECTORY } from './constants.js'
 import fs from 'fs'
 import readline from 'readline'
 import path from 'path'
@@ -41,7 +42,7 @@ export default class Feature {
 
     copyFileFromSrcToBuild(featurePath, file) {
         const fileContent = JSON.parse(fs.readFileSync(path.join(featurePath, file), { encoding: 'utf8' }))
-        const buildBasePath = featurePath.replace(FolderManager.SRC_DIRECTORY, FolderManager.BUILD_DIRECTORY)
+        const buildBasePath = featurePath.replace(SRC_DIRECTORY, BUILD_DIRECTORY)
         fs.writeFileSync(path.join(buildBasePath, file), JSON.stringify(fileContent, null, 4))
     }
 
@@ -65,13 +66,13 @@ export default class Feature {
 
     #calculateWorkingDirectory(directory, feature) {
         let workingDirectory = directory
-        if (!workingDirectory.endsWith(FolderManager.SITES_DIRECTORY)) {
+        if (!workingDirectory.endsWith(SITES_DIRECTORY)) {
             workingDirectory = path.join(directory, feature.getName())
         }
         if (fs.existsSync(workingDirectory)) {
             return workingDirectory
-        } else if (directory.startsWith(FolderManager.BUILD_DIRECTORY)) {
-            const srcWorkingDirectory = workingDirectory.replace(FolderManager.BUILD_DIRECTORY, FolderManager.SRC_DIRECTORY)
+        } else if (directory.startsWith(BUILD_DIRECTORY)) {
+            const srcWorkingDirectory = workingDirectory.replace(BUILD_DIRECTORY, SRC_DIRECTORY)
             if (fs.existsSync(srcWorkingDirectory)) {
                 return srcWorkingDirectory
             }
@@ -91,13 +92,13 @@ export default class Feature {
     }
 
     async getAllLocalSitePaths() {
-        const paths = await this.getFiles(FolderManager.BUILD_DIRECTORY)
+        const paths = await this.getFiles(BUILD_DIRECTORY)
         const sites = new Set()
         for (const path of paths) {
-            const baseIdx = path.indexOf(FolderManager.BUILD_DIRECTORY)
-            let startIdx = path.indexOf(FolderManager.SITES_DIRECTORY)
+            const baseIdx = path.indexOf(BUILD_DIRECTORY)
+            let startIdx = path.indexOf(SITES_DIRECTORY)
             if (startIdx > -1) {
-                startIdx += FolderManager.SITES_DIRECTORY.length
+                startIdx += SITES_DIRECTORY.length
                 const endIdx = path.indexOf('/', startIdx)
                 if (endIdx > -1) {
                     sites.add(path.substring(baseIdx, endIdx))
