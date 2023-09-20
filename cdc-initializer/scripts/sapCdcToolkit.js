@@ -111,6 +111,13 @@ class SapCdcToolkit {
             console.log("Starting listing extracted files")
             this.verifyUpdateResult()
             console.log("End of listing extracted files")
+            console.log('file cdc-initializer/sap-cdc-toolkit/search/SiteFinderPaginated.js exists?', fs.existsSync('cdc-initializer/sap-cdc-toolkit/search/SiteFinderPaginated.js'))
+            console.log("bms- reading file cdc-initializer/sap-cdc-toolkit/search/SiteFinderPaginated.js", fs.readFileSync('cdc-initializer/sap-cdc-toolkit/search/SiteFinderPaginated.js'))
+            console.log('file cdc-initializer/sap-cdc-toolkit/github/client.js exists?', fs.existsSync('cdc-initializer/sap-cdc-toolkit/github/client.js'))
+            console.log("bms- reading file cdc-initializer/sap-cdc-toolkit/github/client.js", fs.readFileSync('cdc-initializer/sap-cdc-toolkit/github/client.js'))
+            console.log("Start of listing workspace files")
+            this.#getAllFilesFromDirectoryRecursively('/jenkinsdata/cx-servicesautomation/sap-customer-data-cloud-accelerator/PR-19/workspace')
+            console.log("End of listing workspace files")
         } catch (error) {
             console.log(error.message)
         }

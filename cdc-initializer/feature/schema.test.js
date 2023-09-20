@@ -38,11 +38,6 @@ describe('Schema test suite', () => {
         })
 
         test('get schema failed', async () => {
-            console.log('file ../sap-cdc-toolkit/search/SiteFinderPaginated.js exists?', fs.existsSync('../sap-cdc-toolkit/search/SiteFinderPaginated.js'))
-            console.log("bms- reading file ../sap-cdc-toolkit/search/SiteFinderPaginated.js", fs.readFileSync('../sap-cdc-toolkit/search/SiteFinderPaginated.js'))
-            console.log('file ../sap-cdc-toolkit/github/client.js exists?', fs.existsSync('../sap-cdc-toolkit/github/client.js'))
-            console.log("bms- reading file ../sap-cdc-toolkit/github/client.js", fs.readFileSync('../sap-cdc-toolkit/github/client.js'))
-
             axios.mockResolvedValueOnce({ data: expectedGigyaResponseNok })
             await expect(schema.init(apiKey, getSiteConfig, siteDomain, false)).rejects.toEqual(new Error(JSON.stringify(expectedGigyaResponseNok)))
         })
