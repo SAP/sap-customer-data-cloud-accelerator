@@ -2,7 +2,7 @@
  * Copyright: Copyright 2023 SAP SE or an SAP affiliate company and cdc-initializer contributors
  * License: Apache-2.0
  */
-import FolderManager from './folderManager'
+import FolderManager from './folderManager.js'
 import fs from 'fs'
 import readline from 'readline'
 import path from 'path'

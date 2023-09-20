@@ -1,4 +1,4 @@
-import SapCdcToolkit from './sapCdcToolkit'
+import SapCdcToolkit from './sapCdcToolkit.js'
 
 const toolkit = new SapCdcToolkit()
 try {

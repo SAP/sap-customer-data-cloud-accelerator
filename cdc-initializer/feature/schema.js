@@ -2,13 +2,13 @@
  * Copyright: Copyright 2023 SAP SE or an SAP affiliate company and cdc-initializer contributors
  * License: Apache-2.0
  */
-import ToolkitSchema from '../sap-cdc-toolkit/copyConfig/schema/schema'
-import ToolkitSchemaOptions from '../sap-cdc-toolkit/copyConfig/schema/schemaOptions'
+import ToolkitSchema from '../sap-cdc-toolkit/copyConfig/schema/schema.js'
+import ToolkitSchemaOptions from '../sap-cdc-toolkit/copyConfig/schema/schemaOptions.js'
 import fs from 'fs'
 import path from 'path'
-import { clearDirectoryContents } from '../utils/utils'
-import SiteFeature from './siteFeature'
-import FolderManager from './folderManager'
+import { clearDirectoryContents } from '../utils/utils.js'
+import SiteFeature from './siteFeature.js'
+import FolderManager from './folderManager.js'
 
 export default class Schema extends SiteFeature {
     static DATA_SCHEMA_FILE_NAME = 'data.json'

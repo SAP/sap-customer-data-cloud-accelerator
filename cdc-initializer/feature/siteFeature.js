@@ -2,8 +2,8 @@
  * Copyright: Copyright 2023 SAP SE or an SAP affiliate company and cdc-initializer contributors
  * License: Apache-2.0
  */
-import SiteConfigurator from '../sap-cdc-toolkit/configurator/siteConfigurator'
-import Feature from './feature'
+import SiteConfigurator from '../sap-cdc-toolkit/configurator/siteConfigurator.js'
+import Feature from './feature.js'
 
 export default class SiteFeature extends Feature {
     #features = []

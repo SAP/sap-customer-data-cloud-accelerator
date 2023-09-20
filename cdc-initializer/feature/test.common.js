@@ -1,11 +1,11 @@
 import path from 'path'
-import FolderManager from './folderManager'
-import SiteFeature from './siteFeature'
-import Schema from './schema'
-import WebSdk from './webSdk'
-import Policies from './policies'
-import PartnerFeature from './partnerFeature'
-import PermissionGroups from './permissionGroups'
+import FolderManager from './folderManager.js'
+import SiteFeature from './siteFeature.js'
+import Schema from './schema.js'
+import WebSdk from './webSdk.js'
+import Policies from './policies.js'
+import PartnerFeature from './partnerFeature.js'
+import PermissionGroups from './permissionGroups.js'
 
 export const credentials = {
     userKey: 'userKey',

@@ -1,5 +1,5 @@
-import Accelerator from './accelerator'
-import { getPartnerFeature, getSiteFeature, sites } from './test.common'
+import Accelerator from './accelerator.js'
+import { getPartnerFeature, getSiteFeature, sites } from './test.common.js'
 
 export const siteFeatures = getSiteFeature()
 export const partnerFeatures = getPartnerFeature()

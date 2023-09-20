@@ -1,4 +1,4 @@
-import { sites } from './test.common'
+import { sites } from './test.common.js'
 import { acceleratorCommonTests, accelerator, siteFeatures, partnerFeatures } from './accelerator.common.test.js'
 
 describe('Accelerator test suite', () => {

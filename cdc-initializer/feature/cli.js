@@ -6,14 +6,14 @@ import 'dotenv/config'
 
 import { CONFIG_FILENAME } from '../constants.js'
 import { createRequire } from 'module'
-import SiteFeature from './siteFeature'
-import Schema from './schema'
-import WebSdk from './webSdk'
-import Policies from './policies'
-import PartnerFeature from './partnerFeature'
-import PermissionGroups from './permissionGroups'
-import Accelerator from './accelerator'
-import Feature from './feature'
+import SiteFeature from './siteFeature.js'
+import Schema from './schema.js'
+import WebSdk from './webSdk.js'
+import Policies from './policies.js'
+import PartnerFeature from './partnerFeature.js'
+import PermissionGroups from './permissionGroups.js'
+import Accelerator from './accelerator.js'
+import Feature from './feature.js'
 
 export default class CLI {
     siteFeature

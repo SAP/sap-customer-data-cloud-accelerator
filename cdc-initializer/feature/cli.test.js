@@ -2,13 +2,13 @@
  * Copyright: Copyright 2023 SAP SE or an SAP affiliate company and cdc-initializer contributors
  * License: Apache-2.0
  */
-import CLI from './cli'
-import { getSiteFeature, credentials, sites } from './test.common'
-import Accelerator from './accelerator'
-import SiteFeature from './siteFeature'
-import PartnerFeature from './partnerFeature'
+import CLI from './cli.js'
+import { getSiteFeature, credentials, sites } from './test.common.js'
+import Accelerator from './accelerator.js'
+import SiteFeature from './siteFeature.js'
+import PartnerFeature from './partnerFeature.js'
 
-jest.mock('./accelerator')
+jest.mock('./accelerator.js')
 
 describe('CLI test suite', () => {
     beforeAll(() => {

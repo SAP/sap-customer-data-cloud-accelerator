@@ -2,12 +2,12 @@
  * Copyright: Copyright 2023 SAP SE or an SAP affiliate company and cdc-initializer contributors
  * License: Apache-2.0
  */
-import ToolkitWebSdk from '../sap-cdc-toolkit/copyConfig/websdk/websdk'
+import ToolkitWebSdk from '../sap-cdc-toolkit/copyConfig/websdk/websdk.js'
 import { CDC_INITIALIZER_DIRECTORY } from '../constants.js'
 import fs from 'fs'
 import path from 'path'
-import { cleanJavaScriptModuleBoilerplateWebSdk, replaceFilenamesWithFileContents } from '../utils/utils'
-import SiteFeature from './siteFeature'
+import { cleanJavaScriptModuleBoilerplateWebSdk, replaceFilenamesWithFileContents } from '../utils/utils.js'
+import SiteFeature from './siteFeature.js'
 
 export default class WebSdk extends SiteFeature {
     static #TEMPLATE_WEB_SDK_FILE = path.join(CDC_INITIALIZER_DIRECTORY, `/templates/defaultWebSdk.js`)

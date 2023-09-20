@@ -2,8 +2,8 @@
  * Copyright: Copyright 2023 SAP SE or an SAP affiliate company and cdc-initializer contributors
  * License: Apache-2.0
  */
-import Feature from './feature'
-import FolderManager from './folderManager'
+import Feature from './feature.js'
+import FolderManager from './folderManager.js'
 import path from 'path'
 
 export default class PartnerFeature extends Feature {

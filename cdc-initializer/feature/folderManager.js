@@ -1,4 +1,4 @@
-import SitesCache from './sitesCache'
+import SitesCache from './sitesCache.js'
 import path from 'path'
 
 export default class FolderManager {

@@ -1,5 +1,5 @@
 import readline from 'readline'
-import Feature from './feature'
+import Feature from './feature.js'
 
 export default class Accelerator {
     siteFeatures

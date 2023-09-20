@@ -1,10 +1,10 @@
-import { getSiteConfig } from '../init/testCommon'
+import { getSiteConfig } from '../init/testCommon.js'
 import fs from 'fs'
 import path from 'path'
 import axios from 'axios'
-import { apiKey, partnerIds, siteDomain, sites, spyAllFeaturesMethod, getPartnerFeature, buildSiteDirectory } from './test.common'
-import FolderManager from './folderManager'
-import Feature from './feature'
+import { apiKey, partnerIds, siteDomain, sites, spyAllFeaturesMethod, getPartnerFeature, buildSiteDirectory } from './test.common.js'
+import FolderManager from './folderManager.js'
+import Feature from './feature.js'
 
 jest.mock('axios')
 jest.mock('fs')

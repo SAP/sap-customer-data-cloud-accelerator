@@ -1,8 +1,8 @@
-import PartnerFeature from './partnerFeature'
+import PartnerFeature from './partnerFeature.js'
 import path from 'path'
 import fs from 'fs'
-import { clearDirectoryContents } from '../utils/utils'
-import FolderManager from './folderManager'
+import { clearDirectoryContents } from '../utils/utils.js'
+import FolderManager from './folderManager.js'
 
 export default class PermissionGroups extends PartnerFeature {
     constructor(credentials) {

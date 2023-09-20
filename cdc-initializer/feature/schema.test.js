@@ -1,11 +1,11 @@
-import { expectedGigyaResponseNok, expectedSchemaResponse, getSiteConfig } from '../init/testCommon'
+import { expectedGigyaResponseNok, expectedSchemaResponse, getSiteConfig } from '../init/testCommon.js'
 import fs from 'fs'
-import Schema from './schema'
+import Schema from './schema.js'
 import axios from 'axios'
 import path from 'path'
-import ToolkitSchemaOptions from '../sap-cdc-toolkit/copyConfig/schema/schemaOptions'
-import FolderManager from './folderManager'
-import { credentials, siteDomain, apiKey, srcSiteDirectory } from './test.common'
+import ToolkitSchemaOptions from '../sap-cdc-toolkit/copyConfig/schema/schemaOptions.js'
+import FolderManager from './folderManager.js'
+import { credentials, siteDomain, apiKey, srcSiteDirectory } from './test.common.js'
 
 jest.mock('axios')
 jest.mock('fs')
