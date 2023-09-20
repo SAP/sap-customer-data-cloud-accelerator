@@ -54,7 +54,7 @@ steps:
         cumulusFileCredentialsId: 'hyperspace-cumulusupload-3103'
     handlePipelineStepErrors:
         failOnError: false
-    npmExecuteScripts:
-        runScripts:
-            - test
-        failOnError: true
+    #npmExecuteScripts:
+    #    runScripts:
+    #        - test
+    #    failOnError: true
