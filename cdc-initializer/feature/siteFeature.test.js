@@ -1,21 +1,14 @@
-import { expectedGigyaResponseNok, getSiteConfig } from '../init/testCommon.js'
+import { expectedGigyaResponseNok, getSiteConfig } from './test.gigyaResponses'
 import fs from 'fs'
 import path from 'path'
 import axios from 'axios'
 import Schema from './schema.js'
 import WebSdk from './webSdk.js'
 import Policies from './policies.js'
-import {
-    sites,
-    srcSiteDirectory,
-    siteBaseDirectory,
-    getSiteFeature,
-    spyAllFeaturesMethod,
-    siteDomain, partnerIds, buildSiteDirectory
-} from './test.common.js'
+import { sites, srcSiteDirectory, siteBaseDirectory, getSiteFeature, spyAllFeaturesMethod, siteDomain, partnerIds, buildSiteDirectory } from './test.common.js'
 import Feature from './feature.js'
-import FolderManager from "./folderManager";
-import {SITES_DIRECTORY} from "./constants";
+import FolderManager from './folderManager'
+import { SITES_DIRECTORY } from './constants'
 
 jest.mock('axios')
 jest.mock('fs')

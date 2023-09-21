@@ -1,4 +1,4 @@
-import { getSiteConfig } from '../init/testCommon.js'
+import { getSiteConfig } from './test.gigyaResponses'
 import fs from 'fs'
 import path from 'path'
 import axios from 'axios'

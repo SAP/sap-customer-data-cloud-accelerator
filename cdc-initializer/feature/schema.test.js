@@ -1,4 +1,4 @@
-import { expectedGigyaResponseNok, expectedSchemaResponse, getSiteConfig } from '../init/testCommon.js'
+import { expectedGigyaResponseNok, expectedSchemaResponse, getSiteConfig } from './test.gigyaResponses'
 import fs from 'fs'
 import Schema from './schema.js'
 import axios from 'axios'
