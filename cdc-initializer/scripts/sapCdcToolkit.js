@@ -119,14 +119,6 @@ class SapCdcToolkit {
             try {
                 console.log('Current directory: ' + process.cwd());
                 console.log("Start of listing workspace2 files")
-                this.#getAllFilesFromDirectoryRecursively('/home/jenkins/agent/workspace/mer-data-cloud-accelerator_PR-19')
-                console.log("End of listing workspace2 files")
-            }
-            catch(error) {
-                console.log(error)
-            }
-            try {
-                console.log("Start of listing workspace2 files")
                 this.#getAllFilesFromDirectoryRecursively('.')
                 console.log("End of listing workspace2 files")
             }

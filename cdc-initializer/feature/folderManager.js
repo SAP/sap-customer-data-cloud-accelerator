@@ -1,4 +1,4 @@
-//import SitesCache from './sitesCache.js'
+import SitesCache from './sitesCache.js'
 import path from 'path'
 import { SRC_DIRECTORY, BUILD_DIRECTORY, SITES_DIRECTORY } from './constants.js'
 
@@ -6,7 +6,7 @@ export default class FolderManager {
     sitesCache
 
     constructor(credentials) {
-        //this.sitesCache = new SitesCache(credentials)
+        this.sitesCache = new SitesCache(credentials)
         console.log('Current directory2: ' + process.cwd());
     }
 
