@@ -108,24 +108,7 @@ class SapCdcToolkit {
             await this.#createFolder(this.#TOOLKIT_FOLDER_PATH)
             await this.#extractZipFileAndFilterContents()
             this.#deleteTemporaryFiles()
-            console.log("Starting listing extracted files")
             this.verifyUpdateResult()
-            console.log("End of listing extracted files")
-
-
-            console.log('file cdc-initializer/sap-cdc-toolkit/github/client.js exists?', fs.existsSync('cdc-initializer/sap-cdc-toolkit/github/client.js'))
-            console.log('file cdc-initializer/sap-cdc-toolkit/search/siteFinderPaginated.js exists?', fs.existsSync('cdc-initializer/sap-cdc-toolkit/search/siteFinderPaginated.js'))
-
-            try {
-                console.log('Current directory: ' + process.cwd());
-                console.log("Start of listing workspace2 files")
-                this.#getAllFilesFromDirectoryRecursively('.')
-                console.log("End of listing workspace2 files")
-            }
-            catch(error) {
-                console.log(error)
-            }
-
         } catch (error) {
             console.log(error.message)
         }
@@ -149,7 +132,6 @@ class SapCdcToolkit {
         let allFiles = files || []
         for (const fileName of filesCurrentDir) {
             const filePath = path.join(dirPath, fileName)
-            console.log(filePath)
 
             if (fs.statSync(filePath).isDirectory()) {
                 allFiles = this.#getAllFilesFromDirectoryRecursively(filePath, allFiles)

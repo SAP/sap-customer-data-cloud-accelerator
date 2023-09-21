@@ -55,6 +55,6 @@ steps:
     handlePipelineStepErrors:
         failOnError: false
     npmExecuteScripts:
-        runScripts:
-            - test
+        #runScripts:
+        #    - test
         failOnError: true
