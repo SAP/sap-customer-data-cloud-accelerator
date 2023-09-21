@@ -1,5 +1,5 @@
 import path from 'path'
-import { SRC_DIRECTORY, BUILD_DIRECTORY, SITES_DIRECTORY } from './constants'
+import { SRC_DIRECTORY, BUILD_DIRECTORY, SITES_DIRECTORY } from './constants.js'
 import SiteFeature from './siteFeature.js'
 import Schema from './schema.js'
 import WebSdk from './webSdk.js'

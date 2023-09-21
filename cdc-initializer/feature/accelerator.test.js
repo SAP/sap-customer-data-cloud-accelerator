@@ -1,6 +1,6 @@
 import { sites } from './test.common.js'
 import { acceleratorCommonTests, accelerator, siteFeatures, partnerFeatures } from './accelerator.common.test.js'
-import { Operations } from './constants'
+import { Operations } from './constants.js'
 
 describe('Accelerator test suite', () => {
     const noError = -1

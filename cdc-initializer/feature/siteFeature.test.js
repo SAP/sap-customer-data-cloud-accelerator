@@ -8,7 +8,7 @@ import Policies from './policies.js'
 import { sites, srcSiteDirectory, siteBaseDirectory, getSiteFeature, spyAllFeaturesMethod, siteDomain, partnerIds, buildSiteDirectory } from './test.common.js'
 import Feature from './feature.js'
 import FolderManager from './folderManager'
-import { Operations, SITES_DIRECTORY } from './constants'
+import { Operations, SITES_DIRECTORY } from './constants.js'
 
 jest.mock('axios')
 jest.mock('fs')

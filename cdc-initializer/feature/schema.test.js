@@ -4,7 +4,7 @@ import Schema from './schema.js'
 import axios from 'axios'
 import path from 'path'
 import ToolkitSchemaOptions from '../sap-cdc-toolkit/copyConfig/schema/schemaOptions.js'
-import { SRC_DIRECTORY, BUILD_DIRECTORY } from './constants'
+import { SRC_DIRECTORY, BUILD_DIRECTORY } from './constants.js'
 import { credentials, siteDomain, apiKey, srcSiteDirectory } from './test.common.js'
 
 jest.mock('axios')

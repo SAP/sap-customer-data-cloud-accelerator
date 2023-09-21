@@ -4,7 +4,7 @@
  */
 import SiteConfigurator from '../sap-cdc-toolkit/configurator/siteConfigurator.js'
 import Feature from './feature.js'
-import { Operations } from './constants'
+import { Operations } from './constants.js'
 
 export default class SiteFeature extends Feature {
     #features = []

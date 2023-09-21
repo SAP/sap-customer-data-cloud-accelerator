@@ -1,6 +1,6 @@
 import readline from 'readline'
 import Feature from './feature.js'
-import { Operations } from './constants'
+import { Operations } from './constants.js'
 
 export default class Accelerator {
     siteFeatures

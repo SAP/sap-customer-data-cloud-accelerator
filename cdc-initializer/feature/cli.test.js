@@ -7,7 +7,7 @@ import { getSiteFeature, credentials, sites } from './test.common.js'
 import Accelerator from './accelerator.js'
 import SiteFeature from './siteFeature.js'
 import PartnerFeature from './partnerFeature.js'
-import { Operations } from './constants'
+import { Operations } from './constants.js'
 
 jest.mock('./accelerator.js')
 
