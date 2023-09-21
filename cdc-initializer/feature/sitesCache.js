@@ -2,8 +2,7 @@
  * Copyright: Copyright 2023 SAP SE or an SAP affiliate company and cdc-initializer contributors
  * License: Apache-2.0
  */
-//import SiteFinderPaginated from '../sap-cdc-toolkit/search/SiteFinderPaginated.js'
-import SiteFinderPaginated from 'cdc-initializer/sap-cdc-toolkit/search/SiteFinderPaginated.js'
+import SiteFinderPaginated from '../sap-cdc-toolkit/search/siteFinderPaginated.js'
 
 export default class SitesCache {
     #credentials
