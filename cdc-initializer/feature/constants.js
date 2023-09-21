@@ -9,3 +9,5 @@ export const SITES_DIRECTORY = 'Sites/'
 
 export const CDC_INITIALIZER_DIRECTORY = 'cdc-initializer/'
 export const CONFIG_FILENAME = 'cdc-initializer.json'
+
+export const Operations = { init: 'init', reset: 'reset', build: 'build', deploy: 'deploy' }

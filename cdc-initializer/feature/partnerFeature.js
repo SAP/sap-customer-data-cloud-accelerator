@@ -4,7 +4,7 @@
  */
 import Feature from './feature.js'
 import path from 'path'
-import { SITES_DIRECTORY } from './constants.js'
+import { Operations, SITES_DIRECTORY } from './constants.js'
 
 export default class PartnerFeature extends Feature {
     #features = []
@@ -31,10 +31,10 @@ export default class PartnerFeature extends Feature {
             processedPartners.add(siteInfo.partnerName)
 
             console.log(`\n${siteInfo.partnerName} - ${apiKey}`)
-            const partnerDirectory = await this.folderManager.getPartnerFolder('init', apiKey)
+            const partnerDirectory = await this.folderManager.getPartnerFolder(Operations.init, apiKey)
             this.createDirectoryIfNotExists(partnerDirectory)
-            const baseDirectory = await this.folderManager.getSiteBaseFolder('init', apiKey)
-            await this.executeOperationOnFeature(this.#features, featureName, baseDirectory, { operation: 'init', args: [partnerDirectory] })
+            const baseDirectory = await this.folderManager.getSiteBaseFolder(Operations.init, apiKey)
+            await this.executeOperationOnFeature(this.#features, featureName, baseDirectory, { operation: Operations.init, args: [partnerDirectory] })
         }
         return true
     }
@@ -49,9 +49,9 @@ export default class PartnerFeature extends Feature {
             processedPartners.add(siteInfo.partnerName)
 
             console.log(`\n${siteInfo.partnerName} - ${apiKey}`)
-            const partnerDirectory = await this.folderManager.getPartnerFolder('reset', apiKey)
-            const baseDirectory = await this.folderManager.getSiteBaseFolder('reset', apiKey)
-            await this.executeOperationOnFeature(this.#features, featureName, baseDirectory, { operation: 'reset', args: [partnerDirectory] })
+            const partnerDirectory = await this.folderManager.getPartnerFolder(Operations.reset, apiKey)
+            const baseDirectory = await this.folderManager.getSiteBaseFolder(Operations.reset, apiKey)
+            await this.executeOperationOnFeature(this.#features, featureName, baseDirectory, { operation: Operations.reset, args: [partnerDirectory] })
         }
         return true
     }
@@ -68,7 +68,7 @@ export default class PartnerFeature extends Feature {
             processedPartners.add(partnerPath)
 
             console.log(`\n${partnerPath}`)
-            await this.executeOperationOnFeature(this.#features, featureName, partnerPath, { operation: 'build', args: [partnerPath] })
+            await this.executeOperationOnFeature(this.#features, featureName, partnerPath, { operation: Operations.build, args: [partnerPath] })
         }
         return true
     }
@@ -91,9 +91,9 @@ export default class PartnerFeature extends Feature {
             processedPartners.add(siteInfo.partnerName)
 
             console.log(`\n${siteInfo.partnerName} - ${apiKey}`)
-            const baseDirectory = await this.folderManager.getPartnerFolder('deploy', apiKey)
+            const baseDirectory = await this.folderManager.getPartnerFolder(Operations.deploy, apiKey)
             this.createDirectoryIfNotExists(baseDirectory)
-            await this.executeOperationOnFeature(this.#features, featureName, baseDirectory, { operation: 'deploy', args: [baseDirectory] })
+            await this.executeOperationOnFeature(this.#features, featureName, baseDirectory, { operation: Operations.deploy, args: [baseDirectory] })
         }
         return true
     }

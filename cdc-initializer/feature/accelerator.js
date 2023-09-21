@@ -1,5 +1,6 @@
 import readline from 'readline'
 import Feature from './feature.js'
+import { Operations } from './constants'
 
 export default class Accelerator {
     siteFeatures
@@ -13,16 +14,16 @@ export default class Accelerator {
     async execute(operation, sites, featureName, environment) {
         try {
             switch (operation) {
-                case 'init':
+                case Operations.init:
                     await this.#init(sites, featureName, environment)
                     break
-                case 'reset':
+                case Operations.reset:
                     await this.#reset(sites, featureName)
                     break
-                case 'build':
+                case Operations.build:
                     await this.#build(featureName)
                     break
-                case 'deploy':
+                case Operations.deploy:
                     await this.#deploy(sites, featureName, environment)
                     break
                 default:
@@ -38,7 +39,7 @@ export default class Accelerator {
 
     async #init(sites, featureName, environment) {
         const environmentInfo = environment ? ` (${environment})` : ''
-        console.log(`Init start${environmentInfo}`)
+        console.log(`${Operations.init} start${environmentInfo}`)
 
         if (!sites || !sites.length) {
             let msg = 'No source sites to use'
@@ -54,11 +55,11 @@ export default class Accelerator {
         }
 
         console.log('\n')
-        this.#logSuccessResult('Init', environment)
+        this.#logSuccessResult(Operations.init, environment)
     }
 
     async #reset(sites, featureName, environment) {
-        console.log('\nReset start')
+        console.log(`\n${Operations.reset} start`)
 
         let result = false
         // Get confirmation from user to replace existing directories
@@ -72,7 +73,7 @@ export default class Accelerator {
             }
         }
         console.log('\n')
-        this.#logSuccessResult('Reset')
+        this.#logSuccessResult(Operations.reset)
 
         if (result) {
             await this.#init(sites, featureName, environment)
@@ -90,7 +91,7 @@ export default class Accelerator {
     }
 
     async #build(featureName) {
-        console.log('\nBuild start')
+        console.log(`\n${Operations.build} start`)
 
         if (this.#existsFeature(this.siteFeatures, featureName)) {
             await this.siteFeatures.build(featureName)
@@ -100,12 +101,12 @@ export default class Accelerator {
         }
 
         console.log('\n')
-        this.#logSuccessResult('Build')
+        this.#logSuccessResult(Operations.build)
     }
 
     async #deploy(sites, featureName, environment) {
         const environmentInfo = environment ? ` (${environment})` : ''
-        console.log(`\nDeploy start${environmentInfo}`)
+        console.log(`\n${Operations.deploy} start${environmentInfo}`)
 
         if (!sites || !sites.length) {
             let msg = 'No deploy sites to use'
@@ -121,7 +122,7 @@ export default class Accelerator {
         }
 
         console.log('\n')
-        this.#logSuccessResult('Deploy', environment)
+        this.#logSuccessResult(Operations.deploy, environment)
     }
 
     #logFailResult(operation, environment) {

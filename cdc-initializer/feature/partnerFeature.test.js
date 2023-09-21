@@ -5,7 +5,7 @@ import axios from 'axios'
 import { apiKey, partnerIds, siteDomain, sites, spyAllFeaturesMethod, getPartnerFeature, buildSiteDirectory } from './test.common.js'
 import FolderManager from './folderManager.js'
 import Feature from './feature.js'
-import { SITES_DIRECTORY } from './constants.js'
+import { Operations, SITES_DIRECTORY } from './constants.js'
 
 jest.mock('axios')
 jest.mock('fs')
@@ -39,7 +39,7 @@ describe('Partner features test suite', () => {
     })
 
     describe('Init test suite', () => {
-        const operation = 'init'
+        const operation = Operations.init
         beforeEach(() => {
             mockFolderManager(operation)
         })
@@ -61,7 +61,7 @@ describe('Partner features test suite', () => {
     })
 
     describe('Reset test suite', () => {
-        const operation = 'reset'
+        const operation = Operations.reset
         beforeEach(() => {
             mockFolderManager(operation)
         })
@@ -78,7 +78,7 @@ describe('Partner features test suite', () => {
     })
 
     describe('Build test suite', () => {
-        const operation = 'build'
+        const operation = Operations.build
         beforeEach(() => {
             mockFolderManager(operation)
         })
@@ -100,7 +100,7 @@ describe('Partner features test suite', () => {
     })
 
     describe('Deploy test suite', () => {
-        const operation = 'deploy'
+        const operation = Operations.deploy
         beforeEach(() => {
             mockFolderManager(operation)
         })
@@ -131,7 +131,7 @@ describe('Partner features test suite', () => {
 
         const spies = spyAllFeaturesMethod(partnerFeature, operation)
         let result
-        if (operation === 'build') {
+        if (operation === Operations.build) {
             result = await partnerFeature[operation](featureName)
         } else {
             result = await partnerFeature[operation](sites, featureName, undefined)

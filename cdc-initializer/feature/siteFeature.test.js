@@ -8,7 +8,7 @@ import Policies from './policies.js'
 import { sites, srcSiteDirectory, siteBaseDirectory, getSiteFeature, spyAllFeaturesMethod, siteDomain, partnerIds, buildSiteDirectory } from './test.common.js'
 import Feature from './feature.js'
 import FolderManager from './folderManager'
-import { SITES_DIRECTORY } from './constants'
+import { Operations, SITES_DIRECTORY } from './constants'
 
 jest.mock('axios')
 jest.mock('fs')
@@ -29,7 +29,7 @@ describe('Site features test suite', () => {
     })
 
     describe('Init test suite', () => {
-        const operation = 'init'
+        const operation = Operations.init
 
         test(`${operation} all features executed successfully`, async () => {
             const spyesTotalCalls = await executeTestAndCountCalls(operation, undefined)
@@ -60,7 +60,7 @@ describe('Site features test suite', () => {
     })
 
     describe('Reset test suite', () => {
-        const operation = 'reset'
+        const operation = Operations.reset
 
         test(`${operation} all features executed successfully`, async () => {
             const spyesTotalCalls = await executeTestAndCountCalls(operation, undefined)
@@ -74,9 +74,9 @@ describe('Site features test suite', () => {
     })
 
     describe('Build test suite', () => {
-        const operation = 'build'
+        const operation = Operations.build
 
-        test('Build all features executed successfully', async () => {
+        test(`${operation} all features executed successfully`, async () => {
             const getFilesSpy = jest.spyOn(siteFeature, 'getFiles').mockImplementation(async () => {
                 return [
                     path.join('/root/', buildSiteDirectory, 'Schema', 'data.json'),
@@ -93,24 +93,24 @@ describe('Site features test suite', () => {
     })
 
     describe('Deploy test suite', () => {
-        const operation = 'deploy'
+        const operation = Operations.deploy
 
-        test('Deploy all features executed successfully', async () => {
+        test(`${operation} all features executed successfully`, async () => {
             const spyesTotalCalls = await executeTestAndCountCalls(operation, undefined)
             expect(spyesTotalCalls).toBe(siteFeature.getFeatures().length * sites.length)
         })
 
-        test('Deploy schema feature executed successfully', async () => {
+        test(`${operation} schema feature executed successfully`, async () => {
             const spyesTotalCalls = await executeTestAndCountCalls(operation, 'Schema')
             expect(spyesTotalCalls).toBe(1 * sites.length)
         })
 
-        test('Deploy websdk feature executed successfully', async () => {
+        test(`${operation} websdk feature executed successfully`, async () => {
             const spyesTotalCalls = await executeTestAndCountCalls(operation, 'WebSdk')
             expect(spyesTotalCalls).toBe(1 * sites.length)
         })
 
-        test('Deploy policies feature executed successfully', async () => {
+        test(`${operation} policies feature executed successfully`, async () => {
             const spyesTotalCalls = await executeTestAndCountCalls(operation, 'Policies')
             expect(spyesTotalCalls).toBe(1 * sites.length)
         })
@@ -133,7 +133,7 @@ describe('Site features test suite', () => {
 
         const spies = spyAllFeaturesMethod(siteFeature, operation)
         let result
-        if (operation === 'build') {
+        if (operation === Operations.build) {
             result = await siteFeature[operation](featureName)
         } else {
             result = await siteFeature[operation](sites, featureName, undefined)

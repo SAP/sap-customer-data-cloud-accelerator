@@ -1,6 +1,6 @@
 import SitesCache from './sitesCache.js'
 import path from 'path'
-import { SRC_DIRECTORY, BUILD_DIRECTORY, SITES_DIRECTORY } from './constants.js'
+import { SRC_DIRECTORY, BUILD_DIRECTORY, SITES_DIRECTORY, Operations } from './constants.js'
 
 export default class FolderManager {
     sitesCache
@@ -12,12 +12,12 @@ export default class FolderManager {
     static getBaseFolder(operation) {
         let baseFolder
         switch (operation) {
-            case 'init':
-            case 'reset':
+            case Operations.init:
+            case Operations.reset:
                 baseFolder = SRC_DIRECTORY
                 break
-            case 'build':
-            case 'deploy':
+            case Operations.build:
+            case Operations.deploy:
                 baseFolder = BUILD_DIRECTORY
                 break
             default:

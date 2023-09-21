@@ -1,5 +1,6 @@
 import { sites } from './test.common.js'
 import { acceleratorCommonTests, accelerator, siteFeatures, partnerFeatures } from './accelerator.common.test.js'
+import { Operations } from './constants'
 
 describe('Accelerator test suite', () => {
     const noError = -1
@@ -10,7 +11,7 @@ describe('Accelerator test suite', () => {
     })
 
     describe('Reset test suite', () => {
-        let operation = 'reset'
+        let operation = Operations.reset
 
         test(`${operation} all features executed successfully`, async () => {
             const { siteFeatureInitSpy, siteFeatureResetSpy, partnerFeatureResetSpy, partnerFeatureInitSpy } = mockResetTypeFeatures(operation, noError, resetConfirmation)
@@ -91,9 +92,9 @@ describe('Accelerator test suite', () => {
     })
 
     describe('Other operations test suite', () => {
-        acceleratorCommonTests('init')
-        acceleratorCommonTests('build')
-        acceleratorCommonTests('deploy')
+        acceleratorCommonTests(Operations.init)
+        acceleratorCommonTests(Operations.build)
+        acceleratorCommonTests(Operations.deploy)
 
         let operation = 'unknown'
         test(`${operation} operation not exists`, async () => {
@@ -112,10 +113,10 @@ describe('Accelerator test suite', () => {
         const partnerFeatureResetSpy = jest.spyOn(partnerFeatures, operation).mockImplementation(async () => {
             return implementMock(errorIndex, 1)
         })
-        const siteFeatureInitSpy = jest.spyOn(siteFeatures, 'init').mockImplementation(async () => {
+        const siteFeatureInitSpy = jest.spyOn(siteFeatures, Operations.init).mockImplementation(async () => {
             return implementMock(errorIndex, 2)
         })
-        const partnerFeatureInitSpy = jest.spyOn(partnerFeatures, 'init').mockImplementation(async () => {
+        const partnerFeatureInitSpy = jest.spyOn(partnerFeatures, Operations.init).mockImplementation(async () => {
             return implementMock(errorIndex, 3)
         })
         return { siteFeatureInitSpy, siteFeatureResetSpy, partnerFeatureResetSpy, partnerFeatureInitSpy }

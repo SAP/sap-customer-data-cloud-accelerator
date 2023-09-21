@@ -7,6 +7,7 @@ import { getSiteFeature, credentials, sites } from './test.common.js'
 import Accelerator from './accelerator.js'
 import SiteFeature from './siteFeature.js'
 import PartnerFeature from './partnerFeature.js'
+import { Operations } from './constants'
 
 jest.mock('./accelerator.js')
 
@@ -44,7 +45,7 @@ describe('CLI test suite', () => {
         const processArgv = [
             'node',
             'cdc-initializer/feature/index.js',
-            'deploy', // phase
+            Operations.deploy, // phase
             'webSdk', // feature name
             'dev', // environment
         ]
@@ -61,7 +62,7 @@ describe('CLI test suite', () => {
         const processArgv = [
             'node',
             'cdc-initializer/feature/index.js',
-            'init', // phase
+            Operations.init, // phase
             'WebSdk', // feature name
             'dev', // environment
         ]
@@ -76,7 +77,7 @@ describe('CLI test suite', () => {
         const processArgv = [
             'node',
             'cdc-initializer/feature/index.js',
-            'init', // phase
+            Operations.init, // phase
             'dev', // environment
         ]
         const { phase, sites, featureName, environment } = cli.parseArguments(processArgv)
@@ -90,7 +91,7 @@ describe('CLI test suite', () => {
         const processArgv = [
             'node',
             'cdc-initializer/feature/index.js',
-            'init', // phase
+            Operations.init, // phase
         ]
         const { phase, sites, featureName, environment } = cli.parseArguments(processArgv)
         expect(phase).toEqual(processArgv[2])
@@ -129,7 +130,7 @@ describe('CLI test suite', () => {
             argv: [
                 'node',
                 'cdc-initializer/feature/index.js',
-                'init', // phase
+                Operations.init, // phase
                 'webSdk', // feature name
                 'dev', // environment
             ],

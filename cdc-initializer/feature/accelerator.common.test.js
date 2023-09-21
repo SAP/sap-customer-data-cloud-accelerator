@@ -1,5 +1,6 @@
 import Accelerator from './accelerator.js'
 import { getPartnerFeature, getSiteFeature, sites } from './test.common.js'
+import { Operations } from './constants'
 
 export const siteFeatures = getSiteFeature()
 export const partnerFeatures = getPartnerFeature()
@@ -47,7 +48,7 @@ export const acceleratorCommonTests = (operation) => {
         })
 
         test(`${operation} all features with no sites`, async () => {
-            if (operation === 'build') {
+            if (operation === Operations.build) {
                 return
             }
             const siteFeatureSpy = jest.spyOn(siteFeatures, operation).mockImplementation(async () => {
