@@ -47,11 +47,11 @@ export default class Accelerator {
             throw new Error(msg)
         }
 
-        if (this.#existsFeature(this.siteFeatures, featureName)) {
-            await this.siteFeatures.init(sites, featureName)
-        }
         if (this.#existsFeature(this.partnerFeatures, featureName)) {
             await this.partnerFeatures.init(sites, featureName)
+        }
+        if (this.#existsFeature(this.siteFeatures, featureName)) {
+            await this.siteFeatures.init(sites, featureName)
         }
 
         console.log('\n')
@@ -65,11 +65,11 @@ export default class Accelerator {
         // Get confirmation from user to replace existing directories
         let confirmation = await this.resetConfirmation()
         if (confirmation) {
-            if (this.#existsFeature(this.siteFeatures, featureName)) {
-                result = await this.siteFeatures.reset(sites, featureName)
-            }
             if (this.#existsFeature(this.partnerFeatures, featureName)) {
                 result = await this.partnerFeatures.reset(sites, featureName)
+            }
+            if (this.#existsFeature(this.siteFeatures, featureName)) {
+                result = await this.siteFeatures.reset(sites, featureName)
             }
         }
         console.log('\n')
@@ -93,11 +93,11 @@ export default class Accelerator {
     async #build(featureName) {
         console.log(`\n${Operations.build} start`)
 
-        if (this.#existsFeature(this.siteFeatures, featureName)) {
-            await this.siteFeatures.build(featureName)
-        }
         if (this.#existsFeature(this.partnerFeatures, featureName)) {
             await this.partnerFeatures.build(featureName)
+        }
+        if (this.#existsFeature(this.siteFeatures, featureName)) {
+            await this.siteFeatures.build(featureName)
         }
 
         console.log('\n')
@@ -114,11 +114,11 @@ export default class Accelerator {
             throw new Error(msg)
         }
 
-        if (this.#existsFeature(this.siteFeatures, featureName)) {
-            await this.siteFeatures.deploy(sites, featureName)
-        }
         if (this.#existsFeature(this.partnerFeatures, featureName)) {
             await this.partnerFeatures.deploy(sites, featureName)
+        }
+        if (this.#existsFeature(this.siteFeatures, featureName)) {
+            await this.siteFeatures.deploy(sites, featureName)
         }
 
         console.log('\n')

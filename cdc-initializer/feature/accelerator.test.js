@@ -41,7 +41,7 @@ describe('Accelerator test suite', () => {
             const result = await accelerator.execute(operation, [], undefined, undefined)
             expect(result).toBeFalsy()
             expect(siteFeatureResetSpy.mock.calls.length).toBe(1)
-            expect(partnerFeatureResetSpy.mock.calls.length).toBe(0)
+            expect(partnerFeatureResetSpy.mock.calls.length).toBe(1)
             expect(siteFeatureInitSpy.mock.calls.length).toBe(0)
             expect(partnerFeatureInitSpy.mock.calls.length).toBe(0)
         })
@@ -51,7 +51,7 @@ describe('Accelerator test suite', () => {
 
             const result = await accelerator.execute(operation, [], undefined, undefined)
             expect(result).toBeFalsy()
-            expect(siteFeatureResetSpy.mock.calls.length).toBe(1)
+            expect(siteFeatureResetSpy.mock.calls.length).toBe(0)
             expect(partnerFeatureResetSpy.mock.calls.length).toBe(1)
             expect(siteFeatureInitSpy.mock.calls.length).toBe(0)
             expect(partnerFeatureInitSpy.mock.calls.length).toBe(0)
@@ -65,7 +65,7 @@ describe('Accelerator test suite', () => {
             expect(siteFeatureResetSpy.mock.calls.length).toBe(1)
             expect(partnerFeatureResetSpy.mock.calls.length).toBe(1)
             expect(siteFeatureInitSpy.mock.calls.length).toBe(1)
-            expect(partnerFeatureInitSpy.mock.calls.length).toBe(0)
+            expect(partnerFeatureInitSpy.mock.calls.length).toBe(1)
         })
 
         test(`${operation} then init partner feature executed unsuccessfully`, async () => {
@@ -75,7 +75,7 @@ describe('Accelerator test suite', () => {
             expect(result).toBeFalsy()
             expect(siteFeatureResetSpy.mock.calls.length).toBe(1)
             expect(partnerFeatureResetSpy.mock.calls.length).toBe(1)
-            expect(siteFeatureInitSpy.mock.calls.length).toBe(1)
+            expect(siteFeatureInitSpy.mock.calls.length).toBe(0)
             expect(partnerFeatureInitSpy.mock.calls.length).toBe(1)
         })
 

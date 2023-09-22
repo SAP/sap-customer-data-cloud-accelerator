@@ -30,7 +30,7 @@ export const acceleratorCommonTests = (operation) => {
             })
             const result = await accelerator.execute(operation, sites, undefined, undefined)
             expect(result).toBeFalsy()
-            expect(siteFeatureSpy.mock.calls.length).toBe(1)
+            expect(siteFeatureSpy.mock.calls.length).toBe(0)
             expect(partnerFeatureSpy.mock.calls.length).toBe(1)
         })
 
@@ -44,7 +44,7 @@ export const acceleratorCommonTests = (operation) => {
             const result = await accelerator.execute(operation, sites, undefined, undefined)
             expect(result).toBeFalsy()
             expect(siteFeatureSpy.mock.calls.length).toBe(1)
-            expect(partnerFeatureSpy.mock.calls.length).toBe(0)
+            expect(partnerFeatureSpy.mock.calls.length).toBe(1)
         })
 
         test(`${operation} all features with no sites`, async () => {
