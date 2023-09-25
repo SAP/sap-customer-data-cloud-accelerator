@@ -3,7 +3,7 @@
  * License: Apache-2.0
  */
 import CLI from './cli.js'
-import { getSiteFeature, credentials, sites } from './test.common.js'
+import { getSiteFeature, credentials, config } from './test.common.js'
 import Accelerator from './accelerator.js'
 import SiteFeature from './siteFeature.js'
 import PartnerFeature from './partnerFeature.js'
@@ -23,11 +23,6 @@ describe('CLI test suite', () => {
     })
 
     const cli = new CLI()
-
-    const config = {
-        source: sites,
-        deploy: { apiKey: '1_Eh-x_qKjjBJ_-QBEfMDABC', siteDomain: 'cdc-accelerator.parent.site-group.com' },
-    }
 
     beforeAll(() => {
         jest.spyOn(CLI.prototype, 'getConfigurationByEnvironment').mockImplementation(() => {

@@ -5,6 +5,8 @@
 import Feature from './feature.js'
 import path from 'path'
 import { Operations, SITES_DIRECTORY } from './constants.js'
+import FolderManager from './folderManager.js'
+import SitesCache from './sitesCache.js'
 
 export default class PartnerFeature extends Feature {
     #features = []
@@ -22,41 +24,44 @@ export default class PartnerFeature extends Feature {
     }
 
     async init(sites, featureName) {
+        await SitesCache.init(this.credentials)
         const processedPartners = new Set()
         for (const { apiKey } of sites) {
-            const siteInfo = await this.folderManager.getSiteInfo(apiKey)
+            const siteInfo = await FolderManager.getSiteInfo(apiKey)
             if (processedPartners.has(siteInfo.partnerName)) {
                 continue
             }
             processedPartners.add(siteInfo.partnerName)
 
             console.log(`\n${siteInfo.partnerName} - ${apiKey}`)
-            const partnerDirectory = await this.folderManager.getPartnerFolder(Operations.init, apiKey)
+            const partnerDirectory = await FolderManager.getPartnerFolder(Operations.init, apiKey)
             this.createDirectoryIfNotExists(partnerDirectory)
-            const baseDirectory = await this.folderManager.getSiteBaseFolder(Operations.init, apiKey)
+            const baseDirectory = await FolderManager.getSiteBaseFolder(Operations.init, apiKey)
             await this.executeOperationOnFeature(this.#features, featureName, baseDirectory, { operation: Operations.init, args: [partnerDirectory] })
         }
         return true
     }
 
     async reset(sites, featureName) {
+        await SitesCache.load()
         const processedPartners = new Set()
         for (const { apiKey } of sites) {
-            const siteInfo = await this.folderManager.getSiteInfo(apiKey)
+            const siteInfo = await FolderManager.getSiteInfo(apiKey)
             if (processedPartners.has(siteInfo.partnerName)) {
                 continue
             }
             processedPartners.add(siteInfo.partnerName)
 
             console.log(`\n${siteInfo.partnerName} - ${apiKey}`)
-            const partnerDirectory = await this.folderManager.getPartnerFolder(Operations.reset, apiKey)
-            const baseDirectory = await this.folderManager.getSiteBaseFolder(Operations.reset, apiKey)
+            const partnerDirectory = await FolderManager.getPartnerFolder(Operations.reset, apiKey)
+            const baseDirectory = await FolderManager.getSiteBaseFolder(Operations.reset, apiKey)
             await this.executeOperationOnFeature(this.#features, featureName, baseDirectory, { operation: Operations.reset, args: [partnerDirectory] })
         }
         return true
     }
 
     async build(featureName) {
+        await SitesCache.load()
         const processedPartners = new Set()
         // Get all directories in src/ that are not features and check if they have features inside
         const sitePaths = await this.getAllLocalSitePaths()
@@ -82,16 +87,17 @@ export default class PartnerFeature extends Feature {
     }
 
     async deploy(sites, featureName) {
+        await SitesCache.load()
         const processedPartners = new Set()
         for (const { apiKey } of sites) {
-            const siteInfo = await this.folderManager.getSiteInfo(apiKey)
+            const siteInfo = await FolderManager.getSiteInfo(apiKey)
             if (processedPartners.has(siteInfo.partnerName)) {
                 continue
             }
             processedPartners.add(siteInfo.partnerName)
 
             console.log(`\n${siteInfo.partnerName} - ${apiKey}`)
-            const baseDirectory = await this.folderManager.getPartnerFolder(Operations.deploy, apiKey)
+            const baseDirectory = await FolderManager.getPartnerFolder(Operations.deploy, apiKey)
             this.createDirectoryIfNotExists(baseDirectory)
             await this.executeOperationOnFeature(this.#features, featureName, baseDirectory, { operation: Operations.deploy, args: [baseDirectory] })
         }

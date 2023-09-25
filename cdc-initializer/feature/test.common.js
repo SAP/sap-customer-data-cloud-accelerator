@@ -21,6 +21,11 @@ export const sites = [
     { apiKey: '1_Eh-x_qKjjBJ_-QBEfMDABC', siteDomain: 'cdc-accelerator.parent.site-group.com' },
     { apiKey: '2_Eh-x_qKjjBJ_-QBEfMDABC', siteDomain: 'cdc-accelerator.preferences-center.com' },
 ]
+export const config = {
+    source: sites,
+    deploy: { apiKey: sites[1].apiKey, siteDomain: sites[1].siteDomain },
+    cache: {}
+}
 
 export function getSiteFeature() {
     const siteFeature = new SiteFeature(credentials)

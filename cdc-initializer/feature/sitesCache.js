@@ -3,39 +3,56 @@
  * License: Apache-2.0
  */
 import SiteFinderPaginated from '../sap-cdc-toolkit/search/siteFinderPaginated.js'
+import { CONFIG_FILENAME, Operations } from './constants.js'
+import fs from 'fs'
+import path from 'path'
 
 export default class SitesCache {
-    #credentials
     static cache = []
-    static lastSiteCache = {}
 
-    constructor(credentials) {
-        this.#credentials = credentials
-    }
-
-    async #init() {
-        const parallelRequestsAllowed = 5
-        const siteFinderPaginated = new SiteFinderPaginated(this.#credentials, parallelRequestsAllowed)
+    static async init(credentials) {
+        if (SitesCache.cache.length > 0) {
+            return
+        }
+        const parallelRequestsAllowed = 9999999999
+        const configSites = SitesCache.#readAllSitesFromConfiguration()
+        const siteFinderPaginated = new SiteFinderPaginated(credentials, parallelRequestsAllowed)
         let response = await siteFinderPaginated.getFirstPage()
-        SitesCache.cache.push(...response)
+        SitesCache.cache.push(...response.filter((r) => configSites.find((s) => s.apiKey === r.apiKey)))
         while ((response = await siteFinderPaginated.getNextPage()) !== undefined) {
-            SitesCache.cache.push(...response)
+            SitesCache.cache.push(...response.filter((r) => configSites.find((s) => s.apiKey === r.apiKey)))
         }
+        SitesCache.#writeCacheToFile()
     }
 
-    static #cacheIsEmpty() {
-        return SitesCache.cache.length === 0
+    static #readAllSitesFromConfiguration() {
+        const configuration = SitesCache.getConfiguration()
+        const sourceSites = new Set(configuration.source)
+        const deploySites = Array.isArray(configuration.deploy) ? configuration.deploy : [configuration.deploy]
+        deploySites.forEach((item) => sourceSites.add(item))
+        return Array.from(sourceSites)
     }
 
-    async getSiteInfo(siteKey) {
-        if (siteKey === SitesCache.lastSiteCache.apiKey) {
-            return SitesCache.lastSiteCache
+    static load() {
+        const config = SitesCache.getConfiguration()
+        if (!config?.cache) {
+            throw new Error(`Cannot load accelerator cache. Please execute operation ${Operations.init} to create it.`)
         }
-        if (SitesCache.#cacheIsEmpty()) {
-            await this.#init()
-        }
-        const info = SitesCache.cache.find(({ apiKey }) => apiKey === siteKey)
-        SitesCache.lastSiteCache = info
-        return info
+        SitesCache.cache = Array.isArray(config.cache) ? config.cache : [config.cache]
+    }
+
+    static getConfiguration() {
+        return JSON.parse(fs.readFileSync(CONFIG_FILENAME, { encoding: 'utf8' }))
+    }
+
+    static getSiteInfo(_apiKey) {
+        return SitesCache.cache.find(({ apiKey }) => apiKey === _apiKey)
+    }
+
+    static #writeCacheToFile() {
+        const configFilePath = path.join('..', '..', CONFIG_FILENAME)
+        const configContent = JSON.parse(fs.readFileSync(configFilePath, { encoding: 'utf8' }))
+        configContent['cache'] = SitesCache.cache
+        fs.writeFileSync(configFilePath, JSON.stringify(configContent, null, 4))
     }
 }

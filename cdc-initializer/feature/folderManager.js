@@ -3,12 +3,6 @@ import path from 'path'
 import { SRC_DIRECTORY, BUILD_DIRECTORY, SITES_DIRECTORY, Operations } from './constants.js'
 
 export default class FolderManager {
-    sitesCache
-
-    constructor(credentials) {
-        this.sitesCache = new SitesCache(credentials)
-    }
-
     static getBaseFolder(operation) {
         let baseFolder
         switch (operation) {
@@ -27,23 +21,27 @@ export default class FolderManager {
         return baseFolder
     }
 
-    async getPartnerFolder(operation, apiKey) {
-        const info = await this.getSiteInfo(apiKey)
+    static getPartnerFolder(operation, apiKey) {
+        const info = SitesCache.getSiteInfo(apiKey)
         const baseFolder = FolderManager.getBaseFolder(operation)
         return path.join(baseFolder, info.partnerName)
     }
 
-    async getSiteBaseFolder(operation, apiKey) {
-        return path.join(await this.getPartnerFolder(operation, apiKey), SITES_DIRECTORY)
+    static getSiteBaseFolder(operation, apiKey) {
+        return path.join(FolderManager.getPartnerFolder(operation, apiKey), SITES_DIRECTORY)
     }
 
-    async getSiteFolder(operation, apiKey) {
-        const info = await this.getSiteInfo(apiKey)
+    static getSiteFolder(operation, apiKey) {
+        const info = SitesCache.getSiteInfo(apiKey)
         const baseFolder = FolderManager.getBaseFolder(operation)
         return path.join(baseFolder, info.partnerName, SITES_DIRECTORY, info.baseDomain)
     }
 
-    async getSiteInfo(apiKey) {
-        return this.sitesCache.getSiteInfo(apiKey)
+    static getSiteInfo(apiKey) {
+        return SitesCache.getSiteInfo(apiKey)
+    }
+
+    static async init(credentials) {
+        return SitesCache.init(credentials)
     }
 }

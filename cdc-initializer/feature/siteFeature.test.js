@@ -5,13 +5,22 @@ import axios from 'axios'
 import Schema from './schema.js'
 import WebSdk from './webSdk.js'
 import Policies from './policies.js'
-import { sites, srcSiteDirectory, siteBaseDirectory, getSiteFeature, spyAllFeaturesMethod, siteDomain, partnerIds, buildSiteDirectory } from './test.common.js'
+import {
+    sites,
+    srcSiteDirectory,
+    siteBaseDirectory,
+    getSiteFeature,
+    spyAllFeaturesMethod,
+    partnerIds,
+    buildSiteDirectory,
+} from './test.common.js'
 import Feature from './feature.js'
-import FolderManager from './folderManager'
-import { Operations, SITES_DIRECTORY } from './constants.js'
+import FolderManager from './folderManager.js'
+import { Operations } from './constants.js'
 
 jest.mock('axios')
 jest.mock('fs')
+jest.mock('./sitesCache.js')
 
 describe('Site features test suite', () => {
     const siteFeature = getSiteFeature()
@@ -20,10 +29,10 @@ describe('Site features test suite', () => {
         jest.restoreAllMocks()
         jest.clearAllMocks()
 
-        jest.spyOn(siteFeature.folderManager, 'getSiteFolder').mockImplementation(async () => {
+        jest.spyOn(FolderManager, 'getSiteFolder').mockImplementation(async () => {
             return srcSiteDirectory
         })
-        jest.spyOn(siteFeature.folderManager, 'getSiteBaseFolder').mockImplementation(async () => {
+        jest.spyOn(FolderManager, 'getSiteBaseFolder').mockImplementation(async () => {
             return siteBaseDirectory
         })
     })

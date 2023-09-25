@@ -2,7 +2,6 @@
  * Copyright: Copyright 2023 SAP SE or an SAP affiliate company and cdc-initializer contributors
  * License: Apache-2.0
  */
-import FolderManager from './folderManager.js'
 import { SRC_DIRECTORY, BUILD_DIRECTORY, SITES_DIRECTORY } from './constants.js'
 import fs from 'fs'
 import readline from 'readline'
@@ -10,11 +9,9 @@ import path from 'path'
 
 export default class Feature {
     credentials
-    folderManager
 
     constructor(credentials) {
         this.credentials = credentials
-        this.folderManager = new FolderManager(this.credentials)
     }
 
     createDirectoryIfNotExists(directory) {

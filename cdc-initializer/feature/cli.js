@@ -14,6 +14,7 @@ import PartnerFeature from './partnerFeature.js'
 import PermissionGroups from './permissionGroups.js'
 import Accelerator from './accelerator.js'
 import Feature from './feature.js'
+import fs from 'fs'
 
 export default class CLI {
     siteFeature
@@ -72,8 +73,7 @@ export default class CLI {
     }
 
     getConfigurationByEnvironment(environment) {
-        const require = createRequire(import.meta.url)
-        return require(`../../${CONFIG_FILENAME}`)
+        return JSON.parse(fs.readFileSync(CONFIG_FILENAME, { encoding: 'utf8' }))
     }
 
     initSiteFeature(credentials) {

@@ -9,6 +9,7 @@ import { Operations, SITES_DIRECTORY } from './constants.js'
 
 jest.mock('axios')
 jest.mock('fs')
+jest.mock('./sitesCache.js')
 
 describe('Partner features test suite', () => {
     const partnerFeature = getPartnerFeature()
@@ -17,7 +18,7 @@ describe('Partner features test suite', () => {
         jest.restoreAllMocks()
         jest.clearAllMocks()
 
-        jest.spyOn(partnerFeature.folderManager, 'getSiteInfo')
+        jest.spyOn(FolderManager, 'getSiteInfo')
             .mockImplementationOnce(async () => {
                 return {
                     apiKey: apiKey,
@@ -151,7 +152,7 @@ describe('Partner features test suite', () => {
     }
 
     function mockFolderManager(operation) {
-        jest.spyOn(partnerFeature.folderManager, 'getPartnerFolder')
+        jest.spyOn(FolderManager, 'getPartnerFolder')
             .mockImplementationOnce(async () => {
                 return path.join(FolderManager.getBaseFolder(operation), partnerIds[0])
             })
@@ -159,7 +160,8 @@ describe('Partner features test suite', () => {
                 return path.join(FolderManager.getBaseFolder(operation), partnerIds[1])
             })
 
-        jest.spyOn(partnerFeature.folderManager, 'getSiteBaseFolder')
+        //jest.spyOn(partnerFeature.folderManager, 'getSiteBaseFolder')
+        jest.spyOn(FolderManager, 'getSiteBaseFolder')
             .mockImplementationOnce(async () => {
                 return path.join(FolderManager.getBaseFolder(operation), partnerIds[0], SITES_DIRECTORY, siteDomain)
             })
