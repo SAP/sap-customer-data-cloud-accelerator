@@ -5,7 +5,6 @@
 import SiteFinderPaginated from '../sap-cdc-toolkit/search/siteFinderPaginated.js'
 import { CONFIG_FILENAME, Operations } from './constants.js'
 import fs from 'fs'
-import path from 'path'
 
 export default class SitesCache {
     static cache = []
@@ -50,7 +49,7 @@ export default class SitesCache {
     }
 
     static #writeCacheToFile() {
-        const configFilePath = path.join('..', '..', CONFIG_FILENAME)
+        const configFilePath = CONFIG_FILENAME
         const configContent = JSON.parse(fs.readFileSync(configFilePath, { encoding: 'utf8' }))
         configContent['cache'] = SitesCache.cache
         fs.writeFileSync(configFilePath, JSON.stringify(configContent, null, 4))

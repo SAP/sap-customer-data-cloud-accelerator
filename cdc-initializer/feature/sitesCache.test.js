@@ -2,7 +2,6 @@ import { apiKey, credentials, partnerIds, siteDomain, sites, config } from './te
 import SitesCache from './sitesCache.js'
 import SiteFinderPaginated from '../sap-cdc-toolkit/search/siteFinderPaginated.js'
 import fs from 'fs'
-import path from 'path'
 import { CONFIG_FILENAME } from './constants'
 
 jest.mock('../sap-cdc-toolkit/search/siteFinderPaginated.js')
@@ -53,7 +52,7 @@ describe('SitesCache test suite', () => {
         expect(getNextPageSpy).toHaveBeenCalled()
         const configContent = config
         configContent.cache = [expectedSite0Info, expectedSite1Info]
-        expect(fs.writeFileSync).toHaveBeenCalledWith(path.join('..', '..', CONFIG_FILENAME), JSON.stringify(configContent, null, 4))
+        expect(fs.writeFileSync).toHaveBeenCalledWith(CONFIG_FILENAME, JSON.stringify(configContent, null, 4))
     })
 
     test('cache must be loaded from file single record', async () => {
