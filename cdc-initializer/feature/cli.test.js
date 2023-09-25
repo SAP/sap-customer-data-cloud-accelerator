@@ -41,70 +41,70 @@ describe('CLI test suite', () => {
         jest.restoreAllMocks()
     })
 
-    test('parseArguments with phase deploy and feature name', async () => {
+    test('parseArguments with operation deploy and feature name', async () => {
         const processArgv = [
             'node',
             'cdc-initializer/feature/index.js',
-            Operations.deploy, // phase
+            Operations.deploy, // operation
             'webSdk', // feature name
             'dev', // environment
         ]
 
-        const { phase, sites, featureName, environment } = cli.parseArguments(processArgv)
-        expect(phase).toEqual(processArgv[2])
+        const { operation, sites, featureName, environment } = cli.parseArguments(processArgv)
+        expect(operation).toEqual(processArgv[2])
         expect(featureName).toEqual(processArgv[3])
         expect(environment).toEqual(processArgv[4])
         const expectedSites = Array.isArray(config[processArgv[2]]) ? config[processArgv[2]] : [config[processArgv[2]]]
         expect(sites).toEqual(expectedSites)
     })
 
-    test('parseArguments with phase init and feature name', async () => {
+    test('parseArguments with operation init and feature name', async () => {
         const processArgv = [
             'node',
             'cdc-initializer/feature/index.js',
-            Operations.init, // phase
+            Operations.init, // operation
             'WebSdk', // feature name
             'dev', // environment
         ]
-        const { phase, sites, featureName, environment } = cli.parseArguments(processArgv)
-        expect(phase).toEqual(processArgv[2])
+        const { operation, sites, featureName, environment } = cli.parseArguments(processArgv)
+        expect(operation).toEqual(processArgv[2])
         expect(featureName).toEqual(processArgv[3])
         expect(environment).toEqual(processArgv[4])
         expect(sites).toEqual(config.source)
     })
 
-    test('parseArguments with phase init and environment', async () => {
+    test('parseArguments with operation init and environment', async () => {
         const processArgv = [
             'node',
             'cdc-initializer/feature/index.js',
-            Operations.init, // phase
+            Operations.init, // operation
             'dev', // environment
         ]
-        const { phase, sites, featureName, environment } = cli.parseArguments(processArgv)
-        expect(phase).toEqual(processArgv[2])
+        const { operation, sites, featureName, environment } = cli.parseArguments(processArgv)
+        expect(operation).toEqual(processArgv[2])
         expect(featureName).toBeUndefined()
         expect(environment).toEqual(processArgv[3])
         expect(sites).toEqual(config.source)
     })
 
-    test('parseArguments with phase init', async () => {
+    test('parseArguments with operation init', async () => {
         const processArgv = [
             'node',
             'cdc-initializer/feature/index.js',
-            Operations.init, // phase
+            Operations.init, // operation
         ]
-        const { phase, sites, featureName, environment } = cli.parseArguments(processArgv)
-        expect(phase).toEqual(processArgv[2])
+        const { operation, sites, featureName, environment } = cli.parseArguments(processArgv)
+        expect(operation).toEqual(processArgv[2])
         expect(featureName).toBeUndefined()
         expect(environment).toBeUndefined()
         expect(sites).toEqual(config.source)
     })
 
-    test('parseArguments with unknown phase', async () => {
+    test('parseArguments with unknown operation', async () => {
         const processArgv = [
             'node',
             'cdc-initializer/feature/index.js',
-            'unknown', // phase
+            'unknown', // operation
         ]
         expect(() => cli.parseArguments(processArgv)).toThrow('Cannot find configuration')
     })
@@ -113,7 +113,7 @@ describe('CLI test suite', () => {
         const processArgv = [
             'node',
             'cdc-initializer/feature/index.js',
-            'unknown', // phase
+            'unknown', // operation
         ]
         try {
             cli.siteFeature = undefined
@@ -130,7 +130,7 @@ describe('CLI test suite', () => {
             argv: [
                 'node',
                 'cdc-initializer/feature/index.js',
-                Operations.init, // phase
+                Operations.init, // operation
                 'webSdk', // feature name
                 'dev', // environment
             ],

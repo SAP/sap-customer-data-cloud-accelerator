@@ -20,7 +20,7 @@ export default class CLI {
     partnerFeature
 
     parseArguments(args) {
-        let [, , phase, featureName, environment] = args
+        let [, , operation, featureName, environment] = args
 
         if (!this.#areFeaturesRegistered()) {
             throw new Error('No features registered, nothing to do!')
@@ -32,7 +32,7 @@ export default class CLI {
             featureName = undefined
         }
 
-        let configuration = this.#getConfiguration(phase, environment)
+        let configuration = this.#getConfiguration(operation, environment)
         let sites
         // If source is object with single apiKey, convert to array
         if (!Array.isArray(configuration) && configuration.apiKey) {
@@ -40,7 +40,7 @@ export default class CLI {
         }
         sites = configuration
 
-        return { phase, sites, featureName, environment }
+        return { operation, sites, featureName, environment }
     }
 
     #areFeaturesRegistered() {
@@ -57,9 +57,9 @@ export default class CLI {
         return this.#featureNameExists(this.siteFeature, featureName) || this.#featureNameExists(this.partnerFeature, featureName)
     }
 
-    #getConfiguration = (phase, environment) => {
+    #getConfiguration = (operation, environment) => {
         const config = this.getConfigurationByEnvironment(environment)
-        switch (phase) {
+        switch (operation) {
             case Operations.init:
             case Operations.reset:
             case Operations.build:
@@ -96,10 +96,10 @@ export default class CLI {
             this.siteFeature = this.initSiteFeature(credentials)
             this.partnerFeature = this.initPartnerFeature(credentials)
 
-            const { phase, sites, featureName, environment } = this.parseArguments(process.argv)
+            const { operation, sites, featureName, environment } = this.parseArguments(process.argv)
 
             const accelerator = new Accelerator(this.siteFeature, this.partnerFeature)
-            return await accelerator.execute(phase, sites, featureName, environment)
+            return await accelerator.execute(operation, sites, featureName, environment)
         } catch (error) {
             console.log('\x1b[31m%s\x1b[0m', `${String(error)}\n`)
             return false
