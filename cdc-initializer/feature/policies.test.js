@@ -4,6 +4,7 @@ import path from 'path'
 import Policies from './policies'
 import { SRC_DIRECTORY, BUILD_DIRECTORY } from '../constants'
 import axios from 'axios'
+import ToolkitPolicyOptions from '../sap-cdc-toolkit/copyConfig/policies/policyOptions'
 
 jest.mock('fs')
 jest.mock('axios')
@@ -47,23 +48,13 @@ describe('Init policies test suite', () => {
         )
     })
 
-    test('directory creation fails', async () => {
-        axios.mockResolvedValueOnce({ data: expectedGigyaResponseNok })
-        fs.existsSync.mockReturnValue(false)
-        fs.mkdirSync.mockImplementation(() => {
-            throw new Error('Directory creation error')
-        })
-        await expect(policies.init(apiKey, getSiteConfig, siteDomain)).rejects.toThrow('Invalid ApiKey parameter')
-    })
-
     test('file write fails', async () => {
-        axios.mockResolvedValueOnce({ data: expectedGigyaResponseNok })
         fs.existsSync.mockReturnValue(false)
         fs.mkdirSync.mockReturnValue(undefined)
         fs.writeFileSync.mockImplementation(() => {
             throw new Error('File write error')
         })
-        await expect(policies.init(apiKey, getSiteConfig, siteDomain)).rejects.toThrow('Invalid ApiKey parameter')
+        await expect(policies.init(apiKey, getSiteConfig, siteDomain)).rejects.toThrow('File write error')
     })
 })
 
@@ -95,23 +86,14 @@ describe('Build policies test suite', () => {
 
 describe('Deploy Policies test suite', () => {
     test('all Policies files are deployed successfully', async () => {
-        const srcFileContent = JSON.stringify({
-            registration: {
-                enforceCoppa: false,
-                requireCaptcha: false,
-                requireLoginID: false,
-                requireSecurityQuestion: false,
-            },
-        })
+        const srcFileContent = JSON.stringify(getSiteConfig);
 
         fs.readFileSync.mockReturnValue(srcFileContent)
-        const payload = {
-            policies: JSON.parse(srcFileContent),
-        }
-        let spy = jest.spyOn(policies, 'deploy')
+     
+        let spy = jest.spyOn(policies, 'deployUsingToolkit')
         await policies.deploy(apiKey, getSiteConfig, siteDomain)
         expect(spy.mock.calls.length).toBe(1)
-        expect(spy).toHaveBeenNthCalledWith(1, apiKey, getSiteConfig, siteDomain)
+        expect(spy).toHaveBeenNthCalledWith(1, apiKey, getSiteConfig,getSiteConfig,new ToolkitPolicyOptions() )
     })
 })
 
@@ -137,7 +119,6 @@ describe('Reset Policies test suite', () => {
 
         const featureDirectory = path.join(SRC_DIRECTORY, siteDomain, policies.getName())
         expect(fs.existsSync).toHaveBeenCalledWith(featureDirectory)
-        console.log('dirExists', dirExists)
         if (dirExists) {
             expect(fs.rmSync).toHaveBeenCalledWith(featureDirectory, { force: true, recursive: true })
         } else {

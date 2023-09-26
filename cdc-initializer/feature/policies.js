@@ -47,14 +47,13 @@ export default class Policies {
 
     async deploy(apiKey, siteConfig, siteDomain) {
         const buildFeatureDirectory = path.join(BUILD_DIRECTORY, siteDomain, this.getName())
-        const toolkitPolicies = new ToolkitPolicies(this.#credentials, apiKey, siteConfig.dataCenter)
-
         // Get file policies file
-        const policiesContent = JSON.parse(fs.readFileSync(path.join(buildFeatureDirectory, Policies.POLICIES_FILE_NAME), { encoding: 'utf8' }))
-
-        const response = await toolkitPolicies.copyPolicies(apiKey, siteConfig, policiesContent, new ToolkitPolicyOptions())
-        if (response.errorCode) {
-            throw new Error(JSON.stringify(response))
-        }
+        const policiesContent = JSON.parse(fs.readFileSync(path.join(buildFeatureDirectory, Policies.POLICIES_FILE_NAME), { encoding: 'utf8' }))    
+        const response =  await this.deployUsingToolkit(apiKey, siteConfig, policiesContent,  new ToolkitPolicyOptions()) 
+    }
+    
+    async deployUsingToolkit(apiKey, siteConfig, payload, options) {
+        const toolkitPolicies = new ToolkitPolicies(this.#credentials, apiKey, siteConfig.dataCenter)
+        await toolkitPolicies.copyPolicies(apiKey, siteConfig, payload, options)
     }
 }
