@@ -2,42 +2,42 @@
 
 ## Table of contents
 
-- [Customer Data Cloud Initializer](#customer-data-cloud-initializer)
-  - [Table of contents](#table-of-contents)
-  - [Description ](#description-)
-  - [Architecture](#architecture)
-  - [Configuration ](#configuration-)
-    - [User Credentials ](#user-credentials-)
-  - [Working with a single environment ](#working-with-a-single-environment-)
-    - [Configuration file ](#configuration-file-)
-    - [Usage ](#usage-)
-      - [Install necessary packages ](#install-necessary-packages-)
-      - [Get initial configuration from the source apiKey ](#get-initial-configuration-from-the-source-apikey-)
-      - [Replace existing files with the code from the origin apiKey ](#replace-existing-files-with-the-code-from-the-origin-apikey-)
-      - [Start local development server ](#start-local-development-server-)
-      - [Run tests ](#run-tests-)
-      - [Build Web Sdk and Screen-sets ](#build-web-sdk-and-screen-sets-)
-      - [Build and Deploy Web Sdk and Screen-sets to the configured API Keys ](#build-and-deploy-web-sdk-and-screen-sets-to-the-configured-api-keys-)
-  - [Working with multiple environments ](#working-with-multiple-environments-)
-    - [Configuration File ](#configuration-file--1)
-    - [Usage ](#usage--1)
-      - [Install necessary packages ](#install-necessary-packages--1)
-      - [Get initial configuration from the source apiKey ](#get-initial-configuration-from-the-source-apikey--1)
-      - [Replace existing files with the code from the origin apiKey ](#replace-existing-files-with-the-code-from-the-origin-apikey--1)
-      - [Start local development server ](#start-local-development-server--1)
-      - [Run tests ](#run-tests--1)
-      - [Build Web Sdk and Screen-sets ](#build-web-sdk-and-screen-sets--1)
-      - [Build and Deploy Web Sdk and Screen-sets to the configured API Keys ](#build-and-deploy-web-sdk-and-screen-sets-to-the-configured-api-keys--1)
-  - [Features ](#features-)
-    - [Local Live Preview ](#local-live-preview-)
-      - [Web Screen-Sets ](#web-screen-sets-)
-      - [E-mail templates ](#e-mail-templates-)
-    - [Web Sdk ](#web-sdk-)
-    - [Web ScreenSets ](#web-screensets-)
-    - [E-mail Templates ](#e-mail-templates--1)
-    - [Policies ](#policies-)
-    - [Schema ](#schema-)
-    - [Consent Statements ](#consent-statements-)
+-   [Customer Data Cloud accelerator](#customer-data-cloud-accelerator)
+    -   [Table of contents](#table-of-contents)
+    -   [Description ](#description-)
+    -   [Architecture](#architecture)
+    -   [Configuration ](#configuration-)
+        -   [User Credentials ](#user-credentials-)
+    -   [Working with a single environment ](#working-with-a-single-environment-)
+        -   [Configuration file ](#configuration-file-)
+        -   [Usage ](#usage-)
+            -   [Install necessary packages ](#install-necessary-packages-)
+            -   [Get initial configuration from the source apiKey ](#get-initial-configuration-from-the-source-apikey-)
+            -   [Replace existing files with the code from the origin apiKey ](#replace-existing-files-with-the-code-from-the-origin-apikey-)
+            -   [Start local development server ](#start-local-development-server-)
+            -   [Run tests ](#run-tests-)
+            -   [Build Web Sdk and Screen-sets ](#build-web-sdk-and-screen-sets-)
+            -   [Build and Deploy Web Sdk and Screen-sets to the configured API Keys ](#build-and-deploy-web-sdk-and-screen-sets-to-the-configured-api-keys-)
+    -   [Working with multiple environments ](#working-with-multiple-environments-)
+        -   [Configuration File ](#configuration-file--1)
+        -   [Usage ](#usage--1)
+            -   [Install necessary packages ](#install-necessary-packages--1)
+            -   [Get initial configuration from the source apiKey ](#get-initial-configuration-from-the-source-apikey--1)
+            -   [Replace existing files with the code from the origin apiKey ](#replace-existing-files-with-the-code-from-the-origin-apikey--1)
+            -   [Start local development server ](#start-local-development-server--1)
+            -   [Run tests ](#run-tests--1)
+            -   [Build Web Sdk and Screen-sets ](#build-web-sdk-and-screen-sets--1)
+            -   [Build and Deploy Web Sdk and Screen-sets to the configured API Keys ](#build-and-deploy-web-sdk-and-screen-sets-to-the-configured-api-keys--1)
+    -   [Features ](#features-)
+        -   [Local Live Preview ](#local-live-preview-)
+            -   [Web Screen-Sets ](#web-screen-sets-)
+            -   [E-mail templates ](#e-mail-templates-)
+        -   [Web Sdk ](#web-sdk-)
+        -   [Web ScreenSets ](#web-screensets-)
+        -   [E-mail Templates ](#e-mail-templates--1)
+        -   [Policies ](#policies-)
+        -   [Schema ](#schema-)
+        -   [Consent Statements ](#consent-statements-)
 
 ## Description <a id="description"></a>
 
@@ -48,7 +48,6 @@ This is CDC project structure that offers quality control tools to help develop 
 -   **Prettier**: Formats the code with a standardized syntax and tabulation
 -   **Git**: Code history version control
 -   Multiple scripts to help you `init` and quicky `deploy` the code to the CDC apiKeys
-
 
 ## Architecture
 
@@ -69,7 +68,7 @@ SECRET_KEY="ex: XXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 
 ### Configuration file <a id="single-environment-configuration-file"></a>
 
-Create the file `cdc-initializer.json` in the main directory and add the `source` site or sites you want to get the initial configuration from and to `deploy` to:
+Create the file `cdc-accelerator.json` in the main directory and add the `source` site or sites you want to get the initial configuration from and to `deploy` to:
 
 ```sh
 {
@@ -132,7 +131,7 @@ npm run deploy
 
 ### Configuration File <a id="multiple-environments-configuration-file"></a>
 
-Create the file `cdc-initializer.json` in the main directory and add the `source` site or sites you want to get the initial configuration from and to `deploy` to:
+Create the file `cdc-accelerator.json` in the main directory and add the `source` site or sites you want to get the initial configuration from and to `deploy` to:
 
 ```sh
 {
