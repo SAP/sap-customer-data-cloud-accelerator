@@ -1,5 +1,5 @@
 /*
- * Copyright: Copyright 2023 SAP SE or an SAP affiliate company and cdc-initializer contributors
+ * Copyright: Copyright 2023 SAP SE or an SAP affiliate company and cdc-accelerator contributors
  * License: Apache-2.0
  */
 
@@ -7,7 +7,8 @@ export const SRC_DIRECTORY = 'src/'
 export const BUILD_DIRECTORY = 'build/'
 export const SITES_DIRECTORY = 'Sites/'
 
-export const CDC_INITIALIZER_DIRECTORY = 'cdc-initializer/'
-export const CONFIG_FILENAME = 'cdc-initializer.json'
+const PROJECT_NAME = 'cdc-accelerator'
+export const CDC_INITIALIZER_DIRECTORY = `${PROJECT_NAME}/`
+export const CONFIG_FILENAME = `${PROJECT_NAME}.json`
 
 export const Operations = { init: 'init', reset: 'reset', build: 'build', deploy: 'deploy' }

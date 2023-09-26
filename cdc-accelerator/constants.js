@@ -4,8 +4,8 @@
  */
 import path from 'path'
 
-const CDC_INITIALIZER_DIRECTORY = 'cdc-initializer/'
-const CONFIG_FILENAME = 'cdc-initializer.json'
+const CDC_INITIALIZER_DIRECTORY = 'cdc-accelerator/'
+const CONFIG_FILENAME = 'cdc-accelerator.json'
 const FEATURE = {
     WEB_SDK: 'webSdk',
     WEB_SCREEN_SETS: 'webScreenSets',
