@@ -70,12 +70,16 @@ export default class WebSdk {
             throw new Error(`Invalid file: ${buildFileName}`)
         }
 
+     const response = await this.deployUsingToolkit(apiKey,siteConfig,fileContent)
         // Update webSdk on gigya
-        const toolkitWebSdk = new ToolkitWebSdk(this.#credentials, apiKey, siteConfig.dataCenter)
-        siteConfig.globalConf = fileContent
-        const response = await toolkitWebSdk.set(apiKey, siteConfig, siteConfig.dataCenter)
         if (response.errorCode) {
             throw new Error(JSON.stringify(response))
         }
     }
+    async deployUsingToolkit(apiKey,siteConfig,fileContent){
+        const toolkitWebSdk = new ToolkitWebSdk(this.#credentials, apiKey, siteConfig.dataCenter)
+        siteConfig.globalConf = fileContent
+        return await toolkitWebSdk.set(apiKey, siteConfig, siteConfig.dataCenter)
+    }
+
 }
