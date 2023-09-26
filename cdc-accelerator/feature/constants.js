@@ -8,7 +8,7 @@ export const BUILD_DIRECTORY = 'build/'
 export const SITES_DIRECTORY = 'Sites/'
 
 const PROJECT_NAME = 'cdc-accelerator'
-export const CDC_INITIALIZER_DIRECTORY = `${PROJECT_NAME}/`
+export const CDC_ACCELERATOR_DIRECTORY = `${PROJECT_NAME}/`
 export const CONFIG_FILENAME = `${PROJECT_NAME}.json`
 
 export const Operations = { init: 'init', reset: 'reset', build: 'build', deploy: 'deploy' }
