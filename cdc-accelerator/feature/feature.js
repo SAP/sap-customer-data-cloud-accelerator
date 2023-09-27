@@ -1,5 +1,5 @@
 /*
- * Copyright: Copyright 2023 SAP SE or an SAP affiliate company and cdc-initializer contributors
+ * Copyright: Copyright 2023 SAP SE or an SAP affiliate company and cdc-accelerator contributors
  * License: Apache-2.0
  */
 import { SRC_DIRECTORY, BUILD_DIRECTORY, SITES_DIRECTORY } from './constants.js'

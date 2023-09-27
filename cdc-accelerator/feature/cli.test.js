@@ -1,5 +1,5 @@
 /*
- * Copyright: Copyright 2023 SAP SE or an SAP affiliate company and cdc-initializer contributors
+ * Copyright: Copyright 2023 SAP SE or an SAP affiliate company and cdc-accelerator contributors
  * License: Apache-2.0
  */
 import CLI from './cli.js'
@@ -12,6 +12,7 @@ import { Operations } from './constants.js'
 jest.mock('./accelerator.js')
 
 describe('CLI test suite', () => {
+    const processExecutable = 'cdc-accelerator/feature/index.js'
     beforeAll(() => {
         Accelerator.mockImplementation(() => {
             return {
@@ -39,7 +40,7 @@ describe('CLI test suite', () => {
     test('parseArguments with operation deploy and feature name', async () => {
         const processArgv = [
             'node',
-            'cdc-initializer/feature/index.js',
+            processExecutable,
             Operations.deploy, // operation
             'webSdk', // feature name
             'dev', // environment
@@ -56,7 +57,7 @@ describe('CLI test suite', () => {
     test('parseArguments with operation init and feature name', async () => {
         const processArgv = [
             'node',
-            'cdc-initializer/feature/index.js',
+            processExecutable,
             Operations.init, // operation
             'WebSdk', // feature name
             'dev', // environment
@@ -71,7 +72,7 @@ describe('CLI test suite', () => {
     test('parseArguments with operation init and environment', async () => {
         const processArgv = [
             'node',
-            'cdc-initializer/feature/index.js',
+            processExecutable,
             Operations.init, // operation
             'dev', // environment
         ]
@@ -85,7 +86,7 @@ describe('CLI test suite', () => {
     test('parseArguments with operation init', async () => {
         const processArgv = [
             'node',
-            'cdc-initializer/feature/index.js',
+            processExecutable,
             Operations.init, // operation
         ]
         const { operation, sites, featureName, environment } = cli.parseArguments(processArgv)
@@ -98,7 +99,7 @@ describe('CLI test suite', () => {
     test('parseArguments with unknown operation', async () => {
         const processArgv = [
             'node',
-            'cdc-initializer/feature/index.js',
+            processExecutable,
             'unknown', // operation
         ]
         expect(() => cli.parseArguments(processArgv)).toThrow('Cannot find configuration')
@@ -107,7 +108,7 @@ describe('CLI test suite', () => {
     test('parseArguments with no features', async () => {
         const processArgv = [
             'node',
-            'cdc-initializer/feature/index.js',
+            processExecutable,
             'unknown', // operation
         ]
         try {
@@ -124,7 +125,7 @@ describe('CLI test suite', () => {
         const process = {
             argv: [
                 'node',
-                'cdc-initializer/feature/index.js',
+                processExecutable,
                 Operations.init, // operation
                 'webSdk', // feature name
                 'dev', // environment

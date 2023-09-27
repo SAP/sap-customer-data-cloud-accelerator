@@ -1,11 +1,11 @@
 /*
- * Copyright: Copyright 2023 SAP SE or an SAP affiliate company and cdc-initializer contributors
+ * Copyright: Copyright 2023 SAP SE or an SAP affiliate company and cdc-accelerator contributors
  * License: Apache-2.0
  */
 // Needs to be implemented: Make this file a class
 
 const GIGYA_API_URL = 'https://cdns.gigya.com/js/gigya.js'
-const CONFIG_FILE = '../cdc-initializer.json'
+const CONFIG_FILE = '../cdc-accelerator.json'
 
 const BUILD_DIRECTORY = '../build/'
 

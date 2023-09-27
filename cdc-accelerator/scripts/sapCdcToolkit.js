@@ -7,7 +7,7 @@ import path from 'path'
 class SapCdcToolkit {
     #TOOLKIT_SRC_CODE_FILE_PATH
     #TOOLKIT_FOLDER_PATH
-    static #PROJECT_BASE_DIRECTORY = 'cdc-initializer'
+    static #PROJECT_BASE_DIRECTORY = 'cdc-accelerator'
     static #TOOLKIT_FOLDER = 'sap-cdc-toolkit'
     static #TOOLKIT_SRC_CODE_FILE = `${SapCdcToolkit.#TOOLKIT_FOLDER}.zip`
 
