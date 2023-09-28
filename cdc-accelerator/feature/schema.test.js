@@ -116,7 +116,7 @@ describe('Schema test suite', () => {
                 profileSchema: JSON.parse(srcFileContent),
                 subscriptionsSchema: JSON.parse(srcFileContent),
             }
-            let spy = jest.spyOn(schema, 'deployUsingToolkit').mockReturnValue([])
+            let spy = jest.spyOn(schema, 'deployUsingToolkit')
             await schema.deploy(apiKey, getSiteConfig, srcSiteDirectory)
             expect(spy.mock.calls.length).toBe(1)
             expect(spy).toHaveBeenNthCalledWith(1, apiKey, getSiteConfig, payload, new ToolkitSchemaOptions())
