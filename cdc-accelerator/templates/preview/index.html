@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Preview</title>
+
+        <!-- Preview -->
+        <link href="../cdc-accelerator/preview/preview.css" rel="stylesheet" />
+        <script src="../cdc-accelerator/preview/preview.js"></script>
+        <script>
+            // Show only the necessary screens for this demo
+            const filterScreens = []
+
+            preview({
+                origin: 'deploy', // 'source' or 'deploy'
+                useLocalWebSdk: true, // For development use "true", to test the online version use "false" (it takes time to clear the cached online version)
+                useLocalScreenSets: true, // Use local screensets js code from build/ folder
+                filterScreens, // Show only the necessary screens for this demo
+            })
+        </script>
+        <!-- /Preview -->
+    </head>
+
+    <body>
+        <div id="cdc-initializer--preview">
+            <div id="cdc-initializer--preview-menu">
+                <div id="cdc-initializer--select-api-key-container" class="list-group">
+                    <select id="cdc-initializer--select-api-key" class="form-select form-select-lg" aria-label="Select API key"></select>
+                </div>
+                <div id="cdc-initializer--preview-menu-container" class="list-group">
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden"></span>
+                    </div>
+                </div>
+            </div>
+            <div id="cdc-initializer--preview-container"></div>
+        </div>
+
+        <!-- Menu -->
+        <link href="../cdc-accelerator/preview/plugins/bootstrap-5.3.0-alpha1/css/bootstrap.min.css" rel="stylesheet" />
+        <link href="../cdc-accelerator/preview/plugins/fontawesome-free-6.3.0/css/all.css" rel="stylesheet" />
+        <link href="../cdc-accelerator/preview/plugins/bs5treeview/css/bstreeview.css" rel="stylesheet" />
+        <script src="../cdc-accelerator/preview/plugins/jquery/jquery-3.6.3.min.js"></script>
+        <script src="../cdc-accelerator/preview/plugins/bootstrap-5.3.0-alpha1/js/bootstrap.bundle.min.js"></script>
+        <script src="../cdc-accelerator/preview/plugins/bs5treeview/js/bstreeview.js"></script>
+        <!--  Menu -->
+    </body>
+</html>

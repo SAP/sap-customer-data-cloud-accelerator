@@ -114,8 +114,8 @@ dist
 # development time ignore rules
 src/*
 build/*
-cdc-initializer/sap-cdc-toolkit/*
-cdc-initializer.json
+cdc-accelerator/sap-cdc-toolkit/*
+cdc-accelerator.json
 client.test.js
 
 /cypress/videos
