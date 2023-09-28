@@ -5,7 +5,7 @@
     "main": "index.js",
     "type": "module",
     "scripts": {
-        "test": "set CI=true && npm run update-sap-cdc-toolkit && jest --collect-coverage --coverage --watch=all --coverageDirectory=coverage/unit ./cdc-accelerator",
+        "test": "CI=true npm run update-sap-cdc-toolkit && jest --collect-coverage --coverage --watch=all --coverageDirectory=coverage/unit ./cdc-accelerator",
         "init": "node cdc-accelerator/init/index.js",
         "init-feature": "node cdc-accelerator/feature/index.js init",
         "reset": "node cdc-accelerator/reset/reset.js",
