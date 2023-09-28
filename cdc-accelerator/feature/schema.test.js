@@ -1,4 +1,4 @@
-import { expectedGigyaResponseNok, expectedSchemaResponse, getSiteConfig } from './test.gigyaResponses'
+import { expectedGigyaResponseNok, expectedSchemaResponse,expectedGigyaResponseOk, getSiteConfig } from './test.gigyaResponses'
 import fs from 'fs'
 import Schema from './schema.js'
 import axios from 'axios'
@@ -108,6 +108,7 @@ describe('Schema test suite', () => {
 
     describe('Deploy test suite', () => {
         test('all schema files are deployed successfully', async () => {
+            axios.mockResolvedValueOnce({ data: expectedSchemaResponse }).mockResolvedValue({ data: expectedGigyaResponseOk })
             const srcFileContent = JSON.stringify(expectedSchemaResponse.dataSchema)
             fs.readFileSync.mockReturnValue(srcFileContent)
             const payload = {
@@ -115,7 +116,7 @@ describe('Schema test suite', () => {
                 profileSchema: JSON.parse(srcFileContent),
                 subscriptionsSchema: JSON.parse(srcFileContent),
             }
-            let spy = jest.spyOn(schema, 'deployUsingToolkit')
+            let spy = jest.spyOn(schema, 'deployUsingToolkit').mockReturnValue([])
             await schema.deploy(apiKey, getSiteConfig, srcSiteDirectory)
             expect(spy.mock.calls.length).toBe(1)
             expect(spy).toHaveBeenNthCalledWith(1, apiKey, getSiteConfig, payload, new ToolkitSchemaOptions())
