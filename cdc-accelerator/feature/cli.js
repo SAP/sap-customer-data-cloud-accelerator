@@ -5,11 +5,11 @@
 import 'dotenv/config'
 
 import { CONFIG_FILENAME, Operations } from './constants.js'
-import { createRequire } from 'module'
 import SiteFeature from './siteFeature.js'
 import Schema from './schema.js'
 import WebSdk from './webSdk.js'
 import Policies from './policies.js'
+import WebScreenSets from './webScreenSets.js'
 import PartnerFeature from './partnerFeature.js'
 import PermissionGroups from './permissionGroups.js'
 import Accelerator from './accelerator.js'
@@ -81,6 +81,7 @@ export default class CLI {
         siteFeature.register(new Schema(credentials))
         siteFeature.register(new WebSdk(credentials))
         siteFeature.register(new Policies(credentials))
+        siteFeature.register(new WebScreenSets(credentials))
         return siteFeature
     }
 
