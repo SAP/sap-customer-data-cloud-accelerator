@@ -4,9 +4,8 @@ import fs from 'fs';
 import WebSdk from './webSdk'; 
 import axios from 'axios'
 import path from 'path';
-import { SRC_DIRECTORY,BUILD_DIRECTORY } from '../constants'
-
-import { credentials, siteDomain, apiKey, srcSiteDirectory } from './test.common.js'
+import { SRC_DIRECTORY,BUILD_DIRECTORY } from '../constants.js'
+import { credentials, apiKey, srcSiteDirectory } from './test.common.js'
 
 jest.mock('axios')
 jest.mock('fs');

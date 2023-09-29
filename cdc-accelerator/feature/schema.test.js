@@ -1,4 +1,4 @@
-import { expectedGigyaResponseNok, expectedSchemaResponse, getSiteConfig } from './test.gigyaResponses'
+import { expectedGigyaResponseNok, expectedSchemaResponse,expectedGigyaResponseOk, getSiteConfig } from './test.gigyaResponses'
 import fs from 'fs'
 import Schema from './schema.js'
 import axios from 'axios'
@@ -108,6 +108,7 @@ describe('Schema test suite', () => {
 
     describe('Deploy test suite', () => {
         test('all schema files are deployed successfully', async () => {
+            axios.mockResolvedValueOnce({ data: expectedSchemaResponse }).mockResolvedValue({ data: expectedGigyaResponseOk })
             const srcFileContent = JSON.stringify(expectedSchemaResponse.dataSchema)
             fs.readFileSync.mockReturnValue(srcFileContent)
             const payload = {
