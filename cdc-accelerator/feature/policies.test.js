@@ -1,10 +1,10 @@
-import { getSiteConfig, expectedGigyaResponseNok, expectedPoliciesResponse,expectedGigyaResponseOk } from './test.gigyaResponses'
+import { getSiteConfig, expectedGigyaResponseNok, expectedPoliciesResponse,expectedGigyaResponseOk } from './test.gigyaResponses.js'
 import fs from 'fs'
 import path from 'path'
-import Policies from './policies'
-import { SRC_DIRECTORY, BUILD_DIRECTORY } from '../constants'
+import Policies from './policies.js'
+import { SRC_DIRECTORY, BUILD_DIRECTORY } from './constants.js'
 import axios from 'axios'
-import ToolkitPolicyOptions from '../sap-cdc-toolkit/copyConfig/policies/policyOptions'
+import ToolkitPolicyOptions from '../sap-cdc-toolkit/copyConfig/policies/policyOptions.js'
 import { credentials, siteDomain, apiKey, srcSiteDirectory } from './test.common.js'
 jest.mock('fs')
 jest.mock('axios')
@@ -42,13 +42,13 @@ describe('Init policies test suite', () => {
     })
 
     test('file write fails', async () => {
-        axios.mockResolvedValueOnce({ data: expectedGigyaResponseNok })
+        axios.mockResolvedValueOnce({ data: expectedGigyaResponseOk })
         fs.existsSync.mockReturnValue(false)
         fs.mkdirSync.mockReturnValue(undefined)
         fs.writeFileSync.mockImplementation(() => {
             throw new Error('File write error')
         })
-        await expect(policies.init(apiKey, getSiteConfig, siteDomain)).rejects.toThrow(JSON.stringify(expectedGigyaResponseNok))
+        await expect(policies.init(apiKey, getSiteConfig, siteDomain)).rejects.toThrow('File write error')
     })
 })
 
@@ -80,16 +80,15 @@ describe('Build policies test suite', () => {
 
 describe('Deploy Policies test suite', () => {
     test('all Policies files are deployed successfully', async () => {
-        axios.mockResolvedValueOnce({ data: expectedPoliciesResponse }).mockResolvedValue({ data: expectedGigyaResponseOk })
-        const srcFileContent = JSON.stringify(getSiteConfig);
-
+        axios.mockResolvedValue({ data: expectedGigyaResponseOk })
+        const srcFileContent = JSON.stringify({ data:'Testing'});
         fs.readFileSync.mockReturnValue(srcFileContent)
-     
         let spy = jest.spyOn(policies, 'deployUsingToolkit')
-        await policies.deploy(apiKey, getSiteConfig, srcSiteDirectory)
+        await policies.deploy(apiKey, getSiteConfig, siteDomain)
         expect(spy.mock.calls.length).toBe(1)
-        expect(spy).toHaveBeenNthCalledWith(1, apiKey, getSiteConfig,getSiteConfig,new ToolkitPolicyOptions() )
+        expect(spy).toHaveBeenNthCalledWith(1, apiKey, getSiteConfig, JSON.parse(srcFileContent),new ToolkitPolicyOptions() )
     })
+  
 })
 
 describe('Reset Policies test suite', () => {
