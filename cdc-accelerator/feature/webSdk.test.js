@@ -1,5 +1,5 @@
 // Import necessary modules and the WebSdk class
-import {expectedGlobalConf, getSiteConfig,expectedGigyaResponseOk } from './test.gigyaResponses'
+import {expectedGlobalConf, getSiteConfig,expectedGigyaResponseOk,expectedGigyaResponseNok } from './test.gigyaResponses'
 import fs from 'fs';
 import WebSdk from './webSdk'; 
 import axios from 'axios'
@@ -24,17 +24,17 @@ describe('Init webSdk test suite', () => {
   it('all webSdk files are generated successfully', async () => {
   axios.mockResolvedValueOnce({ data: expectedGlobalConf })
 
-  fs.existsSync.mockReturnValue(false)
-  fs.readFileSync.mockReturnValue(expectedGlobalConf)
-  fs.mkdirSync.mockReturnValue(undefined)
-  fs.writeFileSync.mockReturnValue(undefined)
+    fs.existsSync.mockReturnValue(false)
+    fs.readFileSync.mockReturnValue(expectedGlobalConf)
+    fs.mkdirSync.mockReturnValue(undefined)
+    fs.writeFileSync.mockReturnValue(undefined)
 
-  await webSdkInstance.init(apiKey, expectedGlobalConf, srcSiteDirectory);
-  const srcDirectory = path.join(srcSiteDirectory, webSdkInstance.getName())
+    await webSdkInstance.init(apiKey, expectedGlobalConf, srcSiteDirectory);
+    const srcDirectory = path.join(srcSiteDirectory, webSdkInstance.getName())
 
-  const writeFile = path.join(srcSiteDirectory,webSdkInstance.getName(), `${webSdkInstance.getName()}.js`)
-  expect(fs.existsSync).toHaveBeenCalledWith(srcDirectory)
-  expect(fs.writeFileSync).toHaveBeenCalledWith(writeFile, `export default ${expectedGlobalConf}`)
+    const writeFile = path.join(srcSiteDirectory,webSdkInstance.getName(), `${webSdkInstance.getName()}.js`)
+    expect(fs.existsSync).toHaveBeenCalledWith(srcDirectory)
+    expect(fs.writeFileSync).toHaveBeenCalledWith(writeFile, `export default ${expectedGlobalConf}`)
 
   });
 
@@ -48,8 +48,7 @@ describe('Init webSdk test suite', () => {
     
     expect(fs.existsSync).toHaveBeenCalledWith(srcDirectory)
     expect(fs.writeFileSync).toHaveBeenCalledWith(writeFile, `export default ${siteConfig}`)
-  })
-  
+  }) 
 });
 
 describe('Reset WebSdk test suite', () => {
@@ -86,7 +85,7 @@ describe('Reset WebSdk test suite', () => {
 
 describe('Build webSdk test suite', () => {
   test ('all webSdk files are build successfully', () => {
-      const srcFileContent = JSON.stringify({
+    const srcFileContent = JSON.stringify({
           enabledProviders: '*',
           lang: 'en',
           customEventMap: './test.js',
@@ -97,7 +96,6 @@ describe('Build webSdk test suite', () => {
       
       })
 
-    //export default no inicio e esperar no fim se ja não tenha
     const fileContent = `export Default ${srcFileContent}`
     const dirExists = true
     fs.existsSync.mockReturnValue(dirExists)
@@ -118,14 +116,20 @@ describe('Build webSdk test suite', () => {
 })
 
 
-  describe('Deploy webSdk test suite', () => {
-    test('all webSdk files are deployed successfully', async () => {
-      axios.mockResolvedValueOnce({ data: expectedGigyaResponseOk })
-      const srcFileContent =getSiteConfig.globalConf
-      fs.readFileSync.mockReturnValue(srcFileContent)
-      let spy = jest.spyOn(webSdkInstance, 'deployUsingToolkit')
-      await webSdkInstance.deploy(apiKey, getSiteConfig, srcSiteDirectory)
-      expect(spy.mock.calls.length).toBe(1)
-      expect(spy).toHaveBeenNthCalledWith(1, apiKey, getSiteConfig, srcFileContent)
-      })
+describe('Deploy webSdk test suite', () => {
+  test('all webSdk files are deployed successfully', async () => {
+    axios.mockResolvedValue({ data: expectedGigyaResponseOk })
+    const srcFileContent = JSON.stringify({ data:'Testing'});
+    fs.readFileSync.mockReturnValue(srcFileContent)
+    let spy = jest.spyOn(webSdkInstance, 'deployUsingToolkit')
+    await webSdkInstance.deploy(apiKey, getSiteConfig, srcSiteDirectory)
+    expect(spy.mock.calls.length).toBe(1)
+    expect(spy).toHaveBeenNthCalledWith(1, apiKey, getSiteConfig, srcFileContent)
+    })
+  test('webSdk deploy should fail', async () => {
+    axios.mockResolvedValueOnce({ data: expectedGigyaResponseNok })
+    const srcFileContent = JSON.stringify({ data:'Testing'});
+    fs.readFileSync.mockReturnValue(srcFileContent)
+    await expect(webSdkInstance.deploy(apiKey, getSiteConfig, srcSiteDirectory)).rejects.toEqual(new Error(JSON.stringify(expectedGigyaResponseNok)))
+          })
 })
