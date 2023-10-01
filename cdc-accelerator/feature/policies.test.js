@@ -48,7 +48,7 @@ describe('Init policies test suite', () => {
         fs.writeFileSync.mockImplementation(() => {
             throw new Error('File write error')
         })
-        await expect(policies.init(apiKey, getSiteConfig, siteDomain)).rejects.toThrow('File write error')
+        await expect(policies.init(apiKey, getSiteConfig, srcSiteDirectory)).rejects.toThrow('File write error')
     })
 })
 
@@ -84,11 +84,29 @@ describe('Deploy Policies test suite', () => {
         const srcFileContent = JSON.stringify({ data:'Testing'});
         fs.readFileSync.mockReturnValue(srcFileContent)
         let spy = jest.spyOn(policies, 'deployUsingToolkit')
-        await policies.deploy(apiKey, getSiteConfig, siteDomain)
+        await policies.deploy(apiKey, getSiteConfig, srcSiteDirectory)
         expect(spy.mock.calls.length).toBe(1)
         expect(spy).toHaveBeenNthCalledWith(1, apiKey, getSiteConfig, JSON.parse(srcFileContent),new ToolkitPolicyOptions() )
     })
-  
+    test('Deploy errorCode response', async () => {
+        axios.mockResolvedValue({data: expectedGigyaResponseNok} )
+        const srcFileContent = JSON.stringify({
+            callId: 'callId',
+            errorCode: 400093,
+            errorDetails: "MESSAGE",
+            errorMessage: "MESSAGE",
+            apiVersion: 2,
+            statusCode: 400,
+            statusReason: 'Bad Request',
+            time: Date.now(),
+        });
+        // console.log("FILE CONTENT",srcFileContent)
+        // console.log("FILE CONTENT",expectedPoliciesResponse)
+        fs.readFileSync.mockReturnValue(srcFileContent);
+    
+        // Use await to wait for the async function to complete
+        await expect(policies.deploy(apiKey, getSiteConfig, srcSiteDirectory,false)).rejects.toEqual(new Error(JSON.stringify(expectedGigyaResponseNok)));
+      })
 })
 
 describe('Reset Policies test suite', () => {

@@ -50,7 +50,10 @@ export default class Policies extends SiteFeature {
         const buildFeatureDirectory = path.join(siteDirectory, this.getName())
         // Get file policies file
         const policiesContent = JSON.parse(fs.readFileSync(path.join(buildFeatureDirectory, Policies.POLICIES_FILE_NAME), { encoding: 'utf8' }))    
-        await this.deployUsingToolkit(apiKey, siteConfig, policiesContent,  new ToolkitPolicyOptions()) 
+        const response = await this.deployUsingToolkit(apiKey, siteConfig, policiesContent,  new ToolkitPolicyOptions()) 
+        if (response.errorCode) {
+            throw new Error(JSON.stringify(response))
+        }
     }
     
     async deployUsingToolkit(apiKey, siteConfig, payload, options) {
