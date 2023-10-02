@@ -1,5 +1,5 @@
 // Import necessary modules and the WebSdk class
-import {expectedGlobalConf, getSiteConfig,expectedGigyaResponseOk,expectedGigyaResponseNok } from './test.gigyaResponses'
+import { expectedGlobalConf, getSiteConfig,expectedGigyaResponseOk,expectedGigyaResponseNok } from './test.gigyaResponses'
 import fs from 'fs';
 import WebSdk from './webSdk'; 
 import axios from 'axios'
