@@ -134,7 +134,7 @@ describe('Site features test suite', () => {
 
     async function executeTestAndCountCalls(operation, featureName) {
         let spyesTotalCalls = 0
-        axios.mockResolvedValueOnce({ data: getSiteConfig })
+        axios.mockResolvedValue({ data: getSiteConfig })
 
         fs.existsSync.mockReturnValue(true)
         fs.mkdirSync.mockReturnValue(undefined)
