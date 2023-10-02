@@ -6,6 +6,7 @@
     "type": "module",
     "scripts": {
         "test": "CI=true npm run update-sap-cdc-toolkit && jest --collect-coverage --coverage --watch=all --coverageDirectory=coverage/unit ./cdc-accelerator",
+        "test-feature": "CI=true jest --collect-coverage --coverage --watch=all --coverageDirectory=coverage/unit ./cdc-accelerator",
         "init": "node cdc-accelerator/init/index.js",
         "init-feature": "node cdc-accelerator/feature/index.js init",
         "reset": "node cdc-accelerator/reset/reset.js",
@@ -22,8 +23,12 @@
         "type": "git",
         "url": "https://github.com/SAP/sap-customer-data-cloud-accelerator.git"
     },
-    "author": "Luís Marques <l.marques@sap.com>",
-    "license": "ISC",
+    "contributors": [
+        "Bruno Santos",
+        "Guilherme Lopes",
+        "Luís Marques",
+        "Ricardo Gaião"
+    ],
     "jest": {
         "testPathIgnorePatterns": [
             "<rootDir>/build/"

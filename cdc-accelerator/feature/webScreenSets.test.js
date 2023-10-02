@@ -1,4 +1,4 @@
-import { apiKey, credentials, siteDomain, srcSiteDirectory } from './test.common.js'
+import { apiKey, buildSiteDirectory, credentials, siteDomain, srcSiteDirectory } from './test.common.js'
 import axios from 'axios'
 import { expectedGigyaResponseNok, getExpectedScreenSetResponse, getSiteConfig } from './test.gigyaResponses.js'
 import fs from 'fs'
@@ -66,66 +66,6 @@ describe('WebScreenSets test suite', () => {
                 ),
             )
         })
-        /*
-        test('Single screen set file are generated successfully using javascript template, no custom css', async () => {
-            const screenSetIdFilter = 'Default-LinkAccounts'
-            const mockedResponse = getExpectedScreenSetResponse(screenSetIdFilter)
-            axios.mockResolvedValueOnce({data: mockedResponse})
-
-            const existsSyncSpy = jest.spyOn(fs, 'existsSync').mockReturnValue(false)
-            fs.mkdirSync.mockReturnValue(undefined)
-            fs.writeFileSync.mockReturnValue(undefined)
-            const defaultScreenSetJavascript = "{"+
-                "onError: function (event) {"+
-                    "return 'default template'"+
-                "}"+
-            "}"
-            const readFileSyncSpy = jest.spyOn(fs, 'readFileSync').mockReturnValue(defaultScreenSetJavascript)
-            //fs.readFileSync.mockReturnValue(defaultScreenSetJavascript)
-
-            await webScreenSets.init(apiKey, getSiteConfig, srcSiteDirectory)
-
-            const srcDirectory = path.join(srcSiteDirectory, webScreenSets.getName())
-            const screenSetDirectory = path.join(srcDirectory, screenSetIdFilter)
-
-            expect(existsSyncSpy.mock.calls.length).toBe(2)
-            expect(readFileSyncSpy.mock.calls.length).toBe(1)
-            expect(fs.existsSync).toHaveBeenCalledWith(srcDirectory)
-            expect(fs.existsSync).toHaveBeenCalledWith(screenSetDirectory)
-            expect(fs.writeFileSync).toHaveBeenCalledWith(path.join(screenSetDirectory, `${screenSetIdFilter}.js`), `export default ${defaultScreenSetJavascript};\n`)
-            expect(fs.writeFileSync).toHaveBeenCalledWith(path.join(screenSetDirectory, `${screenSetIdFilter}.default.css`), mockedResponse.screenSets[0].css)
-            expect(fs.writeFileSync).toHaveBeenCalledWith(path.join(screenSetDirectory, `${screenSetIdFilter}.custom.css`), "")
-        })
-
-        test('Single screen set file are generated successfully using javascript, no custom css', async () => {
-            const screenSetIdFilter = 'Default-LinkAccounts'
-            const mockedResponse = getExpectedScreenSetResponse(screenSetIdFilter)
-            const defaultScreenSetJavascript = "{ javascript code here }"
-            mockedResponse.screenSets[0].javascript = defaultScreenSetJavascript
-            axios.mockResolvedValueOnce({data: mockedResponse})
-
-            const existsSyncSpy = jest.spyOn(fs, 'existsSync').mockReturnValue(false)
-            fs.mkdirSync.mockReturnValue(undefined)
-            fs.writeFileSync.mockReturnValue(undefined)
-
-            const readFileSyncSpy = jest.spyOn(fs, 'readFileSync').mockReturnValue(defaultScreenSetJavascript)
-            //fs.readFileSync.mockReturnValue(defaultScreenSetJavascript)
-
-            await webScreenSets.init(apiKey, getSiteConfig, srcSiteDirectory)
-
-            const srcDirectory = path.join(srcSiteDirectory, webScreenSets.getName())
-            const screenSetDirectory = path.join(srcDirectory, screenSetIdFilter)
-
-            expect(existsSyncSpy.mock.calls.length).toBe(2)
-            expect(readFileSyncSpy.mock.calls.length).toBe(0)
-            expect(fs.existsSync).toHaveBeenCalledWith(srcDirectory)
-            expect(fs.existsSync).toHaveBeenCalledWith(screenSetDirectory)
-            expect(fs.writeFileSync).toHaveBeenCalledWith(path.join(screenSetDirectory, `${screenSetIdFilter}.js`), `export default ${defaultScreenSetJavascript};\n`)
-            expect(fs.writeFileSync).toHaveBeenCalledWith(path.join(screenSetDirectory, `${screenSetIdFilter}.default.css`), mockedResponse.screenSets[0].css)
-            expect(fs.writeFileSync).toHaveBeenCalledWith(path.join(screenSetDirectory, `${screenSetIdFilter}.custom.css`), "")
-        })
-
- */
 
         test('get screen set failed', async () => {
             axios.mockResolvedValueOnce({ data: expectedGigyaResponseNok })
@@ -203,4 +143,43 @@ describe('WebScreenSets test suite', () => {
             }
         }
     })
+
+    describe('Build test suite', () => {
+        test('javascript file generated', async () => {
+            const screenSetIdFilter = 'Default-LinkAccounts'
+            const mockedResponse = getExpectedScreenSetResponse(screenSetIdFilter)
+            axios.mockResolvedValueOnce({ data: mockedResponse })
+
+            jest.spyOn(fs, 'existsSync').mockReturnValue(false)
+            fs.readdirSync
+                .mockReturnValueOnce([screenSetIdFilter, 'file.js'])
+                .mockReturnValueOnce([`${screenSetIdFilter}.js`, 'file.js'])
+                .mockReturnValueOnce([`${screenSetIdFilter}.js`, 'file.js'])
+            jest.spyOn(fs, 'lstatSync')
+                .mockReturnValueOnce({
+                    isDirectory: function () {
+                        return true
+                    },
+                })
+                .mockReturnValueOnce({
+                    isDirectory: function () {
+                        return false
+                    },
+                })
+
+            const file = 'var _default = {' + `import module1 from '${screenSetIdFilter}File2.js'` + 'export default {' + '    func1: function (event) {}' + '};'
+            const expectedFile = '{' + "import module1 from 'Default-LinkAccountsFile2.js'" + 'export default {' + '    func1: function (event) {}' + '}'
+
+            fs.existsSync.mockReturnValue(true)
+            const cssDefault = 'css default content'
+            const cssCustom = 'css custom content'
+            fs.readFileSync.mockReturnValueOnce(file).mockReturnValueOnce(cssDefault).mockReturnValueOnce(cssCustom)
+
+            await webScreenSets.build(buildSiteDirectory)
+            const expectedCss = `${cssDefault}\n\n${WebScreenSets.TEMPLATE_SCREEN_SET_CSS_CUSTOM_CODE_SEPARATOR_START}\n\n${cssCustom}\n\n${WebScreenSets.TEMPLATE_SCREEN_SET_CSS_CUSTOM_CODE_SEPARATOR_END}\n`
+            expect(fs.writeFileSync).toHaveBeenNthCalledWith(1, path.join(buildSiteDirectory, webScreenSets.getName(), screenSetIdFilter, `${screenSetIdFilter}.js`), expectedFile)
+            expect(fs.writeFileSync).toHaveBeenNthCalledWith(2, path.join(buildSiteDirectory, webScreenSets.getName(), screenSetIdFilter, `${screenSetIdFilter}.css`), expectedCss)
+        })
+    })
 })
+

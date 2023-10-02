@@ -9,7 +9,6 @@ import path from 'path'
 import SiteFeature from './siteFeature.js'
 import { BUILD_DIRECTORY, CDC_ACCELERATOR_DIRECTORY, SRC_DIRECTORY } from './constants.js'
 import { bundleInlineImportScripts, cleanJavaScriptModuleBoilerplateScreenSetEvents, processMainScriptInlineImports } from '../utils/utils.js'
-import { TEMPLATE_SCREEN_SET_CSS_CUSTOM_CODE_SEPARATOR_END, TEMPLATE_SCREEN_SET_CSS_CUSTOM_CODE_SEPARATOR_START } from '../constants.js'
 
 export default class WebScreenSets extends SiteFeature {
     static TEMPLATE_SCREEN_SET_JAVASCRIPT_FILE = path.join(CDC_ACCELERATOR_DIRECTORY, `/templates/defaultScreenSetJavaScript.js`)
@@ -105,7 +104,6 @@ export default class WebScreenSets extends SiteFeature {
 
     build(sitePath) {
         const buildFeaturePath = path.join(sitePath, this.getName())
-        console.log(buildFeaturePath)
         //this.clearDirectoryContents(buildFeaturePath)
 
         fs.readdirSync(buildFeaturePath).forEach((screenSetID) => {
@@ -155,12 +153,12 @@ export default class WebScreenSets extends SiteFeature {
 
     #buildHtmlFiles(buildScreenSetPath, screenSetID) {
         // Get html files from src/ because they are not compiled by babel
-        const htmlBuildFilename = path.join(buildScreenSetPath, `${screenSetID}.html`)
-        const htmlSrcFilename = path.join(buildScreenSetPath.replace(BUILD_DIRECTORY, SRC_DIRECTORY), `${screenSetID}.html`)
-        const html = !fs.existsSync(htmlSrcFilename) ? '' : fs.readFileSync(htmlSrcFilename, { encoding: 'utf8' })
-        if (html) {
-            fs.writeFileSync(htmlBuildFilename, html)
-        }
+        // const htmlBuildFilename = path.join(buildScreenSetPath, `${screenSetID}.html`)
+        // const htmlSrcFilename = path.join(buildScreenSetPath.replace(BUILD_DIRECTORY, SRC_DIRECTORY), `${screenSetID}.html`)
+        // const html = !fs.existsSync(htmlSrcFilename) ? '' : fs.readFileSync(htmlSrcFilename, { encoding: 'utf8' })
+        // if (html) {
+        //     fs.writeFileSync(htmlBuildFilename, html)
+        // }
     }
 
     #buildCssFiles(buildScreenSetPath, screenSetID) {
@@ -176,7 +174,7 @@ export default class WebScreenSets extends SiteFeature {
         const cssFilename = path.join(buildScreenSetPath, `${screenSetID}.css`)
         const css = !cssCustom
             ? cssDefault
-            : `${cssDefault}\n\n${TEMPLATE_SCREEN_SET_CSS_CUSTOM_CODE_SEPARATOR_START}\n\n${cssCustom}\n\n${TEMPLATE_SCREEN_SET_CSS_CUSTOM_CODE_SEPARATOR_END}\n`
+            : `${cssDefault}\n\n${WebScreenSets.TEMPLATE_SCREEN_SET_CSS_CUSTOM_CODE_SEPARATOR_START}\n\n${cssCustom}\n\n${WebScreenSets.TEMPLATE_SCREEN_SET_CSS_CUSTOM_CODE_SEPARATOR_END}\n`
         if (css) {
             fs.writeFileSync(cssFilename, css)
         }
