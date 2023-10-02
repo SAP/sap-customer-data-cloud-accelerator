@@ -1,4 +1,4 @@
-import { getSiteConfig, expectedGigyaResponseNok, expectedPoliciesResponse,expectedGigyaResponseOk } from './test.gigyaResponses.js'
+import { getSiteConfig, expectedGigyaResponseNok, expectedPoliciesResponse, expectedGigyaResponseOk } from './test.gigyaResponses.js'
 import fs from 'fs'
 import path from 'path'
 import Policies from './policies.js'
@@ -33,10 +33,7 @@ describe('Init policies test suite', () => {
         fs.existsSync.mockReturnValue(true)
         await expect(policies.init(apiKey, getSiteConfig, srcSiteDirectory, false)).rejects.toEqual(
             new Error(
-                `The "${path.join(
-                    srcSiteDirectory,
-                    policies.getName(),
-                )}" directory already exists, to overwrite its contents please use the option "reset" instead of "init"`,
+                `The "${path.join(srcSiteDirectory, policies.getName())}" directory already exists, to overwrite its contents please use the option "reset" instead of "init"`,
             ),
         )
     })
@@ -81,24 +78,23 @@ describe('Build policies test suite', () => {
 describe('Deploy Policies test suite', () => {
     test('all Policies files are deployed successfully', async () => {
         axios.mockResolvedValue({ data: expectedGigyaResponseOk })
-        const srcFileContent = JSON.stringify({ data:'Testing'});
+        const srcFileContent = JSON.stringify({ data: 'Testing' })
         fs.readFileSync.mockReturnValue(srcFileContent)
         let spy = jest.spyOn(policies, 'deployUsingToolkit')
         await policies.deploy(apiKey, getSiteConfig, srcSiteDirectory)
         expect(spy.mock.calls.length).toBe(1)
-        expect(spy).toHaveBeenNthCalledWith(1, apiKey, getSiteConfig, JSON.parse(srcFileContent),new ToolkitPolicyOptions() )
+        expect(spy).toHaveBeenNthCalledWith(1, apiKey, getSiteConfig, JSON.parse(srcFileContent), new ToolkitPolicyOptions())
     })
     test('Deploy errorCode response', async () => {
         axios.mockResolvedValueOnce({ data: expectedGigyaResponseNok })
-        const srcFileContent = [{callId:"callId","errorCode":400093,"errorDetails":"Invalid ApiKey parameter","errorMessage":"Invalid ApiKey parameter","apiVersion":2,"statusCode":400,"statusReason":"Bad Request","time":1696239146680}]
+        const srcFileContent = JSON.stringify(expectedPoliciesResponse)
         fs.readFileSync.mockReturnValue(srcFileContent)
-        await expect(policies.deploy(apiKey, getSiteConfig, srcSiteDirectory,false)).rejects.toEqual(new Error(JSON.stringify(expectedGigyaResponseNok)));
-      })
+        await expect(policies.deploy(apiKey, getSiteConfig, srcSiteDirectory, false)).rejects.toEqual(new Error(JSON.stringify(expectedGigyaResponseNok)))
+    })
 })
 
 describe('Reset Policies test suite', () => {
     beforeEach(() => {
-        
         jest.clearAllMocks()
     })
 
