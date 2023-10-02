@@ -39,7 +39,7 @@ describe('Schema test suite', () => {
 
         test('get schema failed', async () => {
             axios.mockResolvedValueOnce({ data: expectedGigyaResponseNok })
-            await expect(schema.init(apiKey, getSiteConfig, siteDomain, false)).rejects.toEqual(new Error(JSON.stringify(expectedGigyaResponseNok)))
+            await expect(schema.init(apiKey, getSiteConfig, siteDomain)).rejects.toEqual(new Error(JSON.stringify(expectedGigyaResponseNok)))
         })
 
         test('feature directory already exists', async () => {
@@ -108,18 +108,33 @@ describe('Schema test suite', () => {
 
     describe('Deploy test suite', () => {
         test('all schema files are deployed successfully', async () => {
-            axios.mockResolvedValueOnce({ data: expectedSchemaResponse }).mockResolvedValue({ data: expectedGigyaResponseOk })
-            const srcFileContent = JSON.stringify(expectedSchemaResponse.dataSchema)
-            fs.readFileSync.mockReturnValue(srcFileContent)
+            await testDeploy(expectedGigyaResponseOk)
+        })
+
+        test('all schema files are deployed unsuccessfully', async () => {
+            await testDeploy(expectedGigyaResponseNok)
+        })
+
+        async function testDeploy(serverResponse) {
+            axios.mockResolvedValueOnce({ data: expectedSchemaResponse }).mockResolvedValue({ data: serverResponse })
+            fs.readFileSync
+                .mockReturnValueOnce(JSON.stringify(expectedSchemaResponse.dataSchema))
+                .mockReturnValueOnce(JSON.stringify(expectedSchemaResponse.profileSchema))
+                .mockReturnValueOnce(JSON.stringify(expectedSchemaResponse.subscriptionsSchema))
             const payload = {
-                dataSchema: JSON.parse(srcFileContent),
-                profileSchema: JSON.parse(srcFileContent),
-                subscriptionsSchema: JSON.parse(srcFileContent),
+                dataSchema: expectedSchemaResponse.dataSchema,
+                profileSchema: expectedSchemaResponse.profileSchema,
+                subscriptionsSchema: expectedSchemaResponse.subscriptionsSchema,
             }
             let spy = jest.spyOn(schema, 'deployUsingToolkit')
-            await schema.deploy(apiKey, getSiteConfig, srcSiteDirectory)
+            if (serverResponse.statusCode === 200) {
+                const response = await schema.deploy(apiKey, getSiteConfig, srcSiteDirectory)
+                expect(response.length).toEqual(3)
+            } else {
+                await expect(schema.deploy(apiKey, getSiteConfig, siteDomain)).rejects.toThrow(Error)
+            }
             expect(spy.mock.calls.length).toBe(1)
             expect(spy).toHaveBeenNthCalledWith(1, apiKey, getSiteConfig, payload, new ToolkitSchemaOptions())
-        })
+        }
     })
 })

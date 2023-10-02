@@ -60,11 +60,18 @@ export default class Schema extends SiteFeature {
             profileSchema: JSON.parse(fs.readFileSync(path.join(buildFeatureDirectory, Schema.PROFILE_SCHEMA_FILE_NAME), { encoding: 'utf8' })),
             subscriptionsSchema: JSON.parse(fs.readFileSync(path.join(buildFeatureDirectory, Schema.SUBSCRIPTIONS_SCHEMA_FILE_NAME), { encoding: 'utf8' })),
         }
-        return this.deployUsingToolkit(apiKey, siteConfig, payload, new ToolkitSchemaOptions())
+        const response = await this.deployUsingToolkit(apiKey, siteConfig, payload, new ToolkitSchemaOptions())
+        const isAnyError = response.some((res) => {
+            return res.errorCode
+        })
+        if (isAnyError) {
+            throw new Error(JSON.stringify(response))
+        }
+        return response
     }
 
     async deployUsingToolkit(apiKey, siteConfig, payload, options) {
         const toolkitSchema = new ToolkitSchema(this.credentials, apiKey, siteConfig.dataCenter)
-        return toolkitSchema.copySchema(apiKey, siteConfig, payload, options)
+        return await toolkitSchema.copySchema(apiKey, siteConfig, payload, options)
     }
 }
