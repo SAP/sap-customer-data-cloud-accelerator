@@ -90,7 +90,7 @@ describe('Deploy Policies test suite', () => {
     })
     test('Deploy errorCode response', async () => {
         axios.mockResolvedValueOnce({ data: expectedGigyaResponseNok })
-        const srcFileContent = JSON.stringify({ data:'Testing'});
+        const srcFileContent = [{callId:"callId","errorCode":400093,"errorDetails":"Invalid ApiKey parameter","errorMessage":"Invalid ApiKey parameter","apiVersion":2,"statusCode":400,"statusReason":"Bad Request","time":1696239146680}]
         fs.readFileSync.mockReturnValue(srcFileContent)
         await expect(policies.deploy(apiKey, getSiteConfig, srcSiteDirectory,false)).rejects.toEqual(new Error(JSON.stringify(expectedGigyaResponseNok)));
       })
