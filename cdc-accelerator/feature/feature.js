@@ -33,6 +33,11 @@ export default class Feature {
         }
     }
 
+    clearDirectoryContents(directory) {
+        this.deleteDirectory(directory)
+        fs.mkdirSync(directory, { recursive: true })
+    }
+
     static isEqualCaseInsensitive(str1, str2) {
         return str1.localeCompare(str2, undefined, { sensitivity: 'base' }) === 0
     }

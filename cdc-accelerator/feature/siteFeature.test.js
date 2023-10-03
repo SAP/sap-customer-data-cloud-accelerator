@@ -1,19 +1,11 @@
-import { expectedGigyaResponseNok, getSiteConfig } from './test.gigyaResponses'
+import { expectedGigyaResponseNok, getSiteConfig } from './test.gigyaResponses.js'
 import fs from 'fs'
 import path from 'path'
 import axios from 'axios'
 import Schema from './schema.js'
 import WebSdk from './webSdk.js'
 import Policies from './policies.js'
-import {
-    sites,
-    srcSiteDirectory,
-    siteBaseDirectory,
-    getSiteFeature,
-    spyAllFeaturesMethod,
-    partnerIds,
-    buildSiteDirectory,
-} from './test.common.js'
+import { sites, srcSiteDirectory, siteBaseDirectory, getSiteFeature, spyAllFeaturesMethod, partnerIds, buildSiteDirectory } from './test.common.js'
 import Feature from './feature.js'
 import FolderManager from './folderManager.js'
 import { Operations } from './constants.js'
