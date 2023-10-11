@@ -184,12 +184,13 @@ export default class WebScreenSets extends SiteFeature {
         const dataCenter = siteConfig.dataCenter
         const screenSetResponse = await this.#getScreenSets(apiKey, dataCenter)
         const { screenSets: originalScreenSets } = screenSetResponse
+        const featureDirectory = path.join(siteDirectory, this.getName())
 
         return Promise.all(
-            fs.readdirSync(siteDirectory).map(async (screenSetID) => {
+            fs.readdirSync(featureDirectory).map(async (screenSetID) => {
                 // Get compiled files
                 let data = { screenSetID: screenSetID }
-                const file = path.join(siteDirectory, screenSetID, screenSetID)
+                const file = path.join(featureDirectory, screenSetID, screenSetID)
                 data.javascript = this.#buildPayload(`${file}.js`)
                 data.css = this.#buildPayload(`${file}.css`)
 
