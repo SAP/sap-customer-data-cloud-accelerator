@@ -6,7 +6,6 @@ import ToolkitScreenSet from '../sap-cdc-toolkit/copyConfig/screenset/screenset.
 import fs from 'fs'
 import path from 'path'
 import SiteFeature from './siteFeature.js'
-import Response from './response.js'
 import { BUILD_DIRECTORY, CDC_ACCELERATOR_DIRECTORY, SRC_DIRECTORY } from './constants.js'
 import { bundleInlineImportScripts, cleanJavaScriptModuleBoilerplateScreenSetEvents, processMainScriptInlineImports } from '../utils/utils.js'
 
@@ -197,12 +196,13 @@ export default class WebScreenSets extends SiteFeature {
                 const originalScreenSet = originalScreenSets.find((screenSet) => screenSet.screenSetID === screenSetID)
                 // Check if it's a valid screen-set directory
                 if (!originalScreenSet) {
-                    return Response.createWarningResponse(`ScreenSet ${screenSetID} do not exists on site ${apiKey}`)
+                    console.log(`ScreenSet ${screenSetID} do not exists on site ${apiKey}`)
+                    return true
                 }
 
                 // because html is required, get it using request
                 if (!originalScreenSet.html) {
-                    return Response.createErrorResponse(`Original ScreenSet ${screenSetID} do not contains html on site ${apiKey}`)
+                    throw new Error(`Original ScreenSet ${screenSetID} do not contains html on site ${apiKey}: ${JSON.stringify(originalScreenSet)}`)
                 }
                 data.html = originalScreenSet.html
                 return this.deployUsingToolkit(apiKey, dataCenter, data)

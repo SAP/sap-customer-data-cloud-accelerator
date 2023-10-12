@@ -5,7 +5,6 @@ import fs from 'fs'
 import path from 'path'
 import WebScreenSets from './webScreenSets.js'
 import { Operations } from './constants'
-import Response from './response.js'
 
 jest.mock('axios')
 jest.mock('fs')
@@ -59,18 +58,6 @@ describe('WebScreenSets test suite', () => {
 
         test('no screen sets', async () => {
             await testNoScreenSets(Operations.init)
-            /*
-            const mockedResponse = getExpectedScreenSetResponse('Default-LinkAccounts')
-            mockedResponse.screenSets = []
-            axios.mockResolvedValueOnce({ data: mockedResponse })
-
-            await expect(webScreenSets.init(apiKey, getSiteConfig, srcSiteDirectory, false)).rejects.toEqual(
-                new Error(
-                    'There are no screenSets in this site. Please navigate to the UI Builder in the browser to automatically generate the default screenSets, then try again.',
-                ),
-            )
-            
-             */
         })
 
         test('get screen set failed', async () => {
@@ -170,7 +157,7 @@ describe('WebScreenSets test suite', () => {
             const response = await webScreenSets.deploy(apiKey, getSiteConfig, buildSiteDirectory)
             expect(response).toBeDefined()
             expect(response.length).toBe(1)
-            expect(response[0]).toStrictEqual(Response.createWarningResponse(`ScreenSet notExists do not exists on site ${apiKey}`))
+            expect(response[0]).toBeTruthy()
         })
 
         test('original screen set do not have html', async () => {
@@ -181,10 +168,11 @@ describe('WebScreenSets test suite', () => {
             fs.existsSync.mockReturnValue(false)
             fs.readdirSync.mockReturnValueOnce([screenSetIdFilter])
 
-            const response = await webScreenSets.deploy(apiKey, getSiteConfig, buildSiteDirectory)
-            expect(response).toBeDefined()
-            expect(response.length).toBe(1)
-            expect(response[0]).toStrictEqual(Response.createErrorResponse(`Original ScreenSet ${screenSetIdFilter} do not contains html on site ${apiKey}`))
+            const expectedError = JSON.parse(JSON.stringify(screenSetTemplate))
+            expectedError.html = ''
+            await expect(webScreenSets.deploy(apiKey, getSiteConfig, buildSiteDirectory)).rejects.toEqual(
+                new Error(`Original ScreenSet ${screenSetIdFilter} do not contains html on site ${apiKey}: ${JSON.stringify(expectedError)}`),
+            )
         })
 
         test('2 screen sets, one do not have html', async () => {
@@ -194,13 +182,14 @@ describe('WebScreenSets test suite', () => {
             mockedResponse.screenSets.push(screenSetTemplate)
             axios.mockResolvedValueOnce({ data: mockedResponse }).mockResolvedValue({ data: expectedGigyaResponseOk })
             fs.existsSync.mockReturnValue(false)
-            fs.readdirSync.mockReturnValueOnce([screenSetIdFilter, screenSetIds[0]])
+            fs.readdirSync.mockReturnValueOnce([screenSetIds[0], screenSetIdFilter])
 
-            const response = await webScreenSets.deploy(apiKey, getSiteConfig, buildSiteDirectory)
-            expect(response).toBeDefined()
-            expect(response.length).toBe(2)
-            expect(response[0]).toStrictEqual(Response.createErrorResponse(`Original ScreenSet ${screenSetIdFilter} do not contains html on site ${apiKey}`))
-            expect(response[1]).toStrictEqual(expectedGigyaResponseOk)
+            const expectedError = JSON.parse(JSON.stringify(screenSetTemplate))
+            expectedError.html = ''
+            expectedError.screenSetID = screenSetIdFilter
+            await expect(webScreenSets.deploy(apiKey, getSiteConfig, buildSiteDirectory)).rejects.toEqual(
+                new Error(`Original ScreenSet ${screenSetIdFilter} do not contains html on site ${apiKey}: ${JSON.stringify(expectedError)}`),
+            )
         })
 
         test('screen sets successfully with js and css', async () => {
