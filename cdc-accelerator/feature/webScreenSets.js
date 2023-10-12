@@ -3,7 +3,6 @@
  * License: Apache-2.0
  */
 import ToolkitScreenSet from '../sap-cdc-toolkit/copyConfig/screenset/screenset.js'
-import ToolkitScreenSetOptions from '../sap-cdc-toolkit/copyConfig/screenset/screensetOptions.js'
 import fs from 'fs'
 import path from 'path'
 import SiteFeature from './siteFeature.js'
@@ -24,25 +23,25 @@ export default class WebScreenSets extends SiteFeature {
     }
 
     async init(apiKey, siteConfig, siteDirectory) {
-        const toolkitScreenSet = new ToolkitScreenSet(this.credentials, apiKey, siteConfig.dataCenter)
+        const screenSetResponse = await this.#getScreenSets(apiKey, siteConfig.dataCenter)
+        const featureDirectory = path.join(siteDirectory, this.getName())
+        this.createDirectory(featureDirectory)
+
+        this.#initFiles(featureDirectory, screenSetResponse.screenSets)
+    }
+
+    async #getScreenSets(apiKey, dataCenter) {
+        const toolkitScreenSet = new ToolkitScreenSet(this.credentials, apiKey, dataCenter)
         const screenSetResponse = await toolkitScreenSet.get()
         if (screenSetResponse.errorCode) {
             throw new Error(JSON.stringify(screenSetResponse))
         }
         if (!screenSetResponse.screenSets.length) {
-            // console.log(
-            //     '\x1b[33m%s\x1b[0m',
-            //     `There are no screenSets in this site. It this is a parent site, please navigate to the UI Builder in the browser to automatically generate the default screenSets, then try again.`,
-            // )
             throw new Error(
                 'There are no screenSets in this site. Please navigate to the UI Builder in the browser to automatically generate the default screenSets, then try again.',
             )
         }
-
-        const featureDirectory = path.join(siteDirectory, this.getName())
-        this.createDirectory(featureDirectory)
-
-        this.#initFiles(featureDirectory, screenSetResponse.screenSets)
+        return screenSetResponse
     }
 
     #initFiles(featureDirectory, screenSets) {
@@ -180,5 +179,44 @@ export default class WebScreenSets extends SiteFeature {
         }
     }
 
-    async deploy(apiKey, siteConfig, siteDirectory) {}
+    async deploy(apiKey, siteConfig, siteDirectory) {
+        const dataCenter = siteConfig.dataCenter
+        const screenSetResponse = await this.#getScreenSets(apiKey, dataCenter)
+        const { screenSets: originalScreenSets } = screenSetResponse
+        const featureDirectory = path.join(siteDirectory, this.getName())
+
+        return Promise.all(
+            fs.readdirSync(featureDirectory).map(async (screenSetID) => {
+                // Get compiled files
+                let data = { screenSetID: screenSetID }
+                const file = path.join(featureDirectory, screenSetID, screenSetID)
+                data.javascript = this.#buildPayload(`${file}.js`)
+                data.css = this.#buildPayload(`${file}.css`)
+
+                const originalScreenSet = originalScreenSets.find((screenSet) => screenSet.screenSetID === screenSetID)
+                // Check if it's a valid screen-set directory
+                if (!originalScreenSet) {
+                    //console.log(`The directory "${screenSetID}/" was ignored because it does not exists on the site`)
+                    return true
+                }
+
+                // because html is required, get it using request
+                if (!originalScreenSet.html) {
+                    throw new Error(`Original ScreenSet ${screenSetID} do not contains html on site ${apiKey}: ${JSON.stringify(originalScreenSet)}`)
+                }
+                data.html = originalScreenSet.html
+                return this.deployUsingToolkit(apiKey, dataCenter, data)
+            }),
+        )
+    }
+
+    #buildPayload(file) {
+        const content = !fs.existsSync(file) ? '' : fs.readFileSync(file, { encoding: 'utf8' })
+        return content ? content : undefined
+    }
+
+    async deployUsingToolkit(apiKey, dataCenter, payload) {
+        const toolkitScreenSet = new ToolkitScreenSet(this.credentials, apiKey, dataCenter)
+        return toolkitScreenSet.set(apiKey, dataCenter, payload)
+    }
 }

@@ -374,7 +374,7 @@ export const expectedGigyaResponseNok = {
     time: Date.now(),
 }
 
-const screenSetTemplate = {
+export const screenSetTemplate = {
     screenSetID: 'Default-LinkAccounts',
     html: '<div class="gigya-screen-set" id="Default-LinkAccounts" data-on-pending-registration-screen="Default-RegistrationLogin/gigya-complete-registration-screen"/>',
     css: '.gigya-screen-caption{font-family:arial;padding-left:11px;line-height:40px}.gigya-screen,.gigya-screen *{margin:0 auto;padding:0;border:none;color:inherit;',
@@ -397,6 +397,17 @@ const screenSetTemplate = {
     compressionType: 1,
 }
 
+export const screenSetIds = [
+    'Default-LinkAccounts',
+    'Default-LiteRegistration',
+    'Default-OrganizationRegistration',
+    'Default-PasswordlessLogin',
+    'Default-ProfileUpdate',
+    'Default-ReAuthentication',
+    'Default-RegistrationLogin',
+    'Default-Subscriptions',
+]
+
 export function getExpectedScreenSetResponse(screenSetIdFilter) {
     const response = {
         callId: '5a4395b432794df383c2a35740ae90b0',
@@ -407,16 +418,6 @@ export function getExpectedScreenSetResponse(screenSetIdFilter) {
         time: '2023-02-23T16:19:57.815Z',
         screenSets: [],
     }
-    const screenSetIds = [
-        'Default-LinkAccounts',
-        'Default-LiteRegistration',
-        'Default-OrganizationRegistration',
-        'Default-PasswordlessLogin',
-        'Default-ProfileUpdate',
-        'Default-ReAuthentication',
-        'Default-RegistrationLogin',
-        'Default-Subscriptions',
-    ]
 
     for (const id of screenSetIds) {
         if (!screenSetIdFilter || screenSetIdFilter === id) {
