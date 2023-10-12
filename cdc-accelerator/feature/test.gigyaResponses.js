@@ -427,3 +427,32 @@ export function getExpectedScreenSetResponse(screenSetIdFilter) {
     }
     return response
 }
+
+export const expectedPermissionGroupsResponse = {
+    callId: '143306dc47dc43ed96126dfecb025252',
+    errorCode: 0,
+    apiVersion: 2,
+    statusCode: 200,
+    statusReason: 'OK',
+    time: '2023-10-11T14:56:02.645Z',
+    groups: {
+        alexTestAdminPermissionGroup: {
+            aclID: 'alexTestAdminPermissionGroup',
+            scope: {
+                allowPartners: ['_owner'],
+                allowSites: [],
+            },
+            users: ['ANHZHhdHWtKD'],
+            description: '',
+        },
+        cdc_toolbox_e2e_test: {
+            aclID: 'cdc_toolbox_e2e_test',
+            scope: {
+                allowPartners: ['_owner'],
+                allowSites: ['4_BaJ2eJU0tORSo6-t0fPGhQ', '4__d8l3To6jD2TWe02Q7VxKg', '4_odQU7bKHKf1a6k9VzP9U1Q'],
+            },
+            users: ['AEOt9tr7uRTZ'],
+            description: 'Used in CDC Toolbox e2e tests',
+        },
+    },
+}
