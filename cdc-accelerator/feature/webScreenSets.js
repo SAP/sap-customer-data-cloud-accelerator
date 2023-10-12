@@ -196,7 +196,7 @@ export default class WebScreenSets extends SiteFeature {
                 const originalScreenSet = originalScreenSets.find((screenSet) => screenSet.screenSetID === screenSetID)
                 // Check if it's a valid screen-set directory
                 if (!originalScreenSet) {
-                    console.log(`ScreenSet ${screenSetID} do not exists on site ${apiKey}`)
+                    //console.log(`The directory "${screenSetID}/" was ignored because it does not exists on the site`)
                     return true
                 }
 
