@@ -31,7 +31,7 @@ export default class PermissionGroups extends PartnerFeature {
         }
 
         // Create permissionGroups file
-        fs.writeFileSync(path.join(featureDirectory, PermissionGroups.PERMISSIONGROUP_FILE_NAME), JSON.stringify(permissionGroupsRes, null, 4))
+        fs.writeFileSync(path.join(featureDirectory, PermissionGroups.PERMISSIONGROUP_FILE_NAME), JSON.stringify(permissionGroupsRes['groups'], null, 4))
     }
 
     reset(directory) {
