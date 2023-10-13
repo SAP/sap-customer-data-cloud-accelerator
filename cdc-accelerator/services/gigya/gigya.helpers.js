@@ -74,11 +74,6 @@ const getPartnerID = async (gigya, { ...props }) => {
     return response.data
 }
 
-const getGroups = async (gigya, { dataCenter, ...props }) => {
-    const url = `https://admin.${dataCenter}.gigya.com/admin.getGroups`
-    const response = await gigya.request(url, { ...props }).catch((error) => error)
-    return response.data
-}
 export {
     getSiteConfigRequest,
     setSiteConfigRequest,
@@ -92,5 +87,4 @@ export {
     setAclRequest,
     setPermissionRequest,
     getPartnerID,
-    getGroups,
 }
