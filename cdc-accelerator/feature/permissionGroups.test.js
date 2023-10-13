@@ -17,13 +17,13 @@ describe('Permission Groups test suite', () => {
     describe('Init test suit', () => {
         test('All permission groups files are generated sucessfully', async () => {
             axios.mockResolvedValueOnce({ data: expectedPermissionGroupsResponse })
-            const getPartnerId = {
+            const getSiteInfo = {
                 partnerId: 123123,
             }
             fs.existsSync.mockReturnValue(false)
             fs.mkdirSync.mockReturnValue(undefined)
             fs.writeFileSync.mockReturnValue(undefined)
-            await permissionGroups.init(getPartnerId, partnerBaseDirector)
+            await permissionGroups.init(getSiteInfo, partnerBaseDirector)
             const srcDirectory = path.join(partnerBaseDirector, permissionGroups.getName())
             expect(fs.existsSync).toHaveBeenCalledWith(srcDirectory)
             expect(fs.writeFileSync).toHaveBeenCalledWith(
@@ -32,19 +32,19 @@ describe('Permission Groups test suite', () => {
             )
         })
         test('get permission groups failed', async () => {
-            const getPartnerId = {
+            const getSiteInfo = {
                 partnerId: 123123,
             }
             axios.mockResolvedValueOnce({ data: expectedGigyaResponseNok })
-            await expect(permissionGroups.init(getPartnerId, partnerBaseDirector)).rejects.toEqual(new Error(JSON.stringify(expectedGigyaResponseNok)))
+            await expect(permissionGroups.init(getSiteInfo, partnerBaseDirector)).rejects.toEqual(new Error(JSON.stringify(expectedGigyaResponseNok)))
         })
         test('feature directory already exists', async () => {
-            const getPartnerId = {
+            const getSiteInfo = {
                 partnerId: 123123,
             }
             axios.mockResolvedValueOnce({ data: expectedPermissionGroupsResponse })
             fs.existsSync.mockReturnValue(true)
-            await expect(permissionGroups.init(getPartnerId, partnerBaseDirector)).rejects.toEqual(
+            await expect(permissionGroups.init(getSiteInfo, partnerBaseDirector)).rejects.toEqual(
                 new Error(
                     `The "${path.join(
                         partnerBaseDirector,
@@ -54,7 +54,7 @@ describe('Permission Groups test suite', () => {
             )
         })
         test('file write fails', async () => {
-            const getPartnerId = {
+            const getSiteInfo = {
                 partnerId: 123123,
             }
             axios.mockResolvedValueOnce({ data: expectedGigyaResponseOk })
@@ -63,7 +63,7 @@ describe('Permission Groups test suite', () => {
             fs.writeFileSync.mockImplementation(() => {
                 throw new Error('File write error')
             })
-            await expect(permissionGroups.init(getPartnerId, partnerBaseDirector)).rejects.toThrow('File write error')
+            await expect(permissionGroups.init(getSiteInfo, partnerBaseDirector)).rejects.toThrow('File write error')
         })
     })
 })
