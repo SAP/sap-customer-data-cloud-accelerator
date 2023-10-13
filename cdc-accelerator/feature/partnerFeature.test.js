@@ -124,6 +124,7 @@ describe('Partner features test suite', () => {
 
     async function executeTestAndCountCalls(operation, featureName) {
         let spyesTotalCalls = 0
+
         axios.mockResolvedValueOnce({ data: getSiteConfig })
 
         fs.existsSync.mockReturnValue(true)
@@ -142,7 +143,7 @@ describe('Partner features test suite', () => {
             if (!featureName || (spy.mock.instances.length > 0 && Feature.isEqualCaseInsensitive(spy.mock.instances[0].constructor.name, featureName))) {
                 spyesTotalCalls += spy.mock.calls.length
                 for (let i = 0; i < spy.mock.calls.length; ++i) {
-                    expect(spy.mock.calls[i][0]).toEqual(path.join(FolderManager.getBaseFolder(operation), partnerIds[i]))
+                    expect(spy.mock.calls[i][1]).toEqual(path.join(FolderManager.getBaseFolder(operation), partnerIds[i]))
                 }
             } else {
                 expect(spy.mock.calls.length).toBe(0)

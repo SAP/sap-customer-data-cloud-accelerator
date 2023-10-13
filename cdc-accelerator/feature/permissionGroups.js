@@ -3,8 +3,9 @@ import path from 'path'
 import fs from 'fs'
 import { clearDirectoryContents } from '../utils/utils.js'
 import { SRC_DIRECTORY, BUILD_DIRECTORY } from './constants.js'
-
+import client from '../../cdc-accelerator/sap-cdc-toolkit/gigya/client.js'
 export default class PermissionGroups extends PartnerFeature {
+    static PERMISSIONGROUP_FILE_NAME = 'permissionGroups.json'
     constructor(credentials) {
         super(credentials)
     }
@@ -13,11 +14,24 @@ export default class PermissionGroups extends PartnerFeature {
         return this.constructor.name
     }
 
-    async init(directory) {
-        const featureDirectory = path.join(directory, this.getName())
+    async init(siteInfo, partnerDirectory) {
+        if (!siteInfo['partnerId']) {
+            console.error(`Failed to retrieve partnerID for apiKey "${siteInfo['apiKey']}"`)
+            throw new Error(JSON.stringify(siteInfo['partnerId']))
+        }
+
+        const featureDirectory = path.join(partnerDirectory, this.getName())
         this.createDirectory(featureDirectory)
-        // Create file
-        fs.writeFileSync(path.join(featureDirectory, 'permissionGroups.json'), JSON.stringify({ key: 'dummy' }, null, 4))
+
+        // Get permission groups
+        const permissionGroupsRes = await this.getPermissionGroups(siteInfo['dataCenter'], siteInfo['partnerId'], this.credentials)
+
+        if (permissionGroupsRes.errorCode) {
+            throw new Error(JSON.stringify(permissionGroupsRes))
+        }
+
+        // Create permissionGroups file
+        fs.writeFileSync(path.join(featureDirectory, PermissionGroups.PERMISSIONGROUP_FILE_NAME), JSON.stringify(permissionGroupsRes['groups'], null, 4))
     }
 
     reset(directory) {
@@ -33,5 +47,18 @@ export default class PermissionGroups extends PartnerFeature {
 
     async deploy(directory) {
         console.log('deploy called')
+    }
+    async getPermissionGroups(dataCenter, partnerID, credentials) {
+        const url = `https://admin.${dataCenter}.gigya.com/admin.getGroups`
+        const response = await client.post(url, this.#setPermissionGroupsParameters(partnerID, credentials.userKey, credentials.secret)).catch((error) => error)
+        return response.data
+    }
+
+    #setPermissionGroupsParameters(partnerID, userKey, secret) {
+        const parameters = Object.assign({})
+        parameters.userKey = userKey
+        parameters.secret = secret
+        parameters.partnerID = partnerID
+        return parameters
     }
 }

@@ -14,6 +14,7 @@ export const credentials = {
 export const siteDomain = 'domain.test.com'
 export const apiKey = 'apiKey'
 export const partnerIds = ['partnerId1', 'partnerId2']
+export const partnerBaseDirector = path.join(SRC_DIRECTORY, partnerIds[0])
 export const siteBaseDirectory = path.join(SRC_DIRECTORY, partnerIds[0], SITES_DIRECTORY)
 export const srcSiteDirectory = path.join(siteBaseDirectory, siteDomain)
 export const buildSiteDirectory = srcSiteDirectory.replace(SRC_DIRECTORY, BUILD_DIRECTORY)
@@ -24,7 +25,7 @@ export const sites = [
 export const config = {
     source: sites,
     deploy: { apiKey: sites[1].apiKey, siteDomain: sites[1].siteDomain },
-    cache: {}
+    cache: {},
 }
 
 export function getSiteFeature() {
