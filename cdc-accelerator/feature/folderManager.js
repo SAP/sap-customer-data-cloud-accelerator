@@ -40,8 +40,4 @@ export default class FolderManager {
     static getSiteInfo(apiKey) {
         return SitesCache.getSiteInfo(apiKey)
     }
-
-    static async init(credentials) {
-        return SitesCache.init(credentials)
-    }
 }

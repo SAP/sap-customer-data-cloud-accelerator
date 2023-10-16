@@ -32,12 +32,17 @@ export default class SitesCache {
         return Array.from(sourceSites)
     }
 
-    static load() {
+    static async load(credentials) {
         const config = SitesCache.getConfiguration()
         if (!config?.cache) {
-            throw new Error(`Cannot load accelerator cache. Please execute operation ${Operations.init} to create it.`)
+            if (credentials) {
+                await SitesCache.init(credentials)
+            } else {
+                throw new Error(`Cannot load accelerator cache. Please execute operation ${Operations.init} or ${Operations.reset} to create it.`)
+            }
+        } else {
+            SitesCache.cache = Array.isArray(config.cache) ? config.cache : [config.cache]
         }
-        SitesCache.cache = Array.isArray(config.cache) ? config.cache : [config.cache]
     }
 
     static getConfiguration() {
