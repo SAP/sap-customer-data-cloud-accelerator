@@ -14,7 +14,7 @@ export default class PermissionGroups extends PartnerFeature {
         return this.constructor.name
     }
 
-    async init(siteInfo, partnerDirectory) {
+    async init(partnerDirectory, siteInfo) {
         if (!siteInfo['partnerId']) {
             console.error(`Failed to retrieve partnerID for apiKey "${siteInfo['apiKey']}"`)
             throw new Error(JSON.stringify(siteInfo['partnerId']))

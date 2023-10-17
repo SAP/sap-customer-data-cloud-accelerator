@@ -62,7 +62,7 @@ describe('SitesCache test suite', () => {
             }
         })
         expect(SitesCache.cache).toEqual([])
-        SitesCache.load()
+        await SitesCache.load(credentials)
         expect(SitesCache.cache.length).toBe(1)
         expect(SitesCache.cache).toStrictEqual([expectedSite0Info])
     })
@@ -75,15 +75,22 @@ describe('SitesCache test suite', () => {
             return config
         })
         expect(SitesCache.cache).toEqual([])
-        SitesCache.load()
+        await SitesCache.load(credentials)
         expect(SitesCache.cache.length).toBe(2)
         expect(SitesCache.cache).toStrictEqual([expectedSite0Info, expectedAnotherSiteInfo])
     })
 
     test('cache do not exists on file', async () => {
-        jest.spyOn(SitesCache, 'getConfiguration').mockImplementation(() => {
-            return {}
-        })
-        expect(() => SitesCache.load()).toThrow(Error)
+        jest.spyOn(SitesCache, 'getConfiguration').mockReturnValueOnce({})
+        await expect(() => SitesCache.load()).rejects.toThrow(Error)
+    })
+
+    test('cache do not exists on file but is recreated', async () => {
+        jest.spyOn(SiteFinderPaginated.prototype, 'getFirstPage').mockReturnValue([expectedSite0Info, expectedSite1Info])
+        jest.spyOn(SiteFinderPaginated.prototype, 'getNextPage').mockReturnValueOnce([expectedAnotherSiteInfo]).mockReturnValueOnce(undefined)
+        expect(SitesCache.cache.length).toBe(0)
+        jest.spyOn(SitesCache, 'getConfiguration').mockReturnValueOnce({}).mockReturnValueOnce(config)
+        await SitesCache.load(credentials)
+        expect(SitesCache.cache.length).toBe(2)
     })
 })

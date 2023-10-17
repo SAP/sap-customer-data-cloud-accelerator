@@ -37,13 +37,13 @@ export default class PartnerFeature extends Feature {
             const partnerDirectory = await FolderManager.getPartnerFolder(Operations.init, apiKey)
             this.createDirectoryIfNotExists(partnerDirectory)
             const baseDirectory = await FolderManager.getSiteBaseFolder(Operations.init, apiKey)
-            await this.executeOperationOnFeature(this.#features, featureName, baseDirectory, { operation: Operations.init, args: [siteInfo, partnerDirectory] })
+            await this.executeOperationOnFeature(this.#features, featureName, baseDirectory, { operation: Operations.init, args: [partnerDirectory, siteInfo] })
         }
         return true
     }
 
     async reset(sites, featureName) {
-        SitesCache.load()
+        await SitesCache.load(this.credentials)
         const processedPartners = new Set()
         for (const { apiKey } of sites) {
             const siteInfo = await FolderManager.getSiteInfo(apiKey)
@@ -61,7 +61,7 @@ export default class PartnerFeature extends Feature {
     }
 
     async build(featureName) {
-        SitesCache.load()
+        await SitesCache.load()
         const processedPartners = new Set()
         // Get all directories in src/ that are not features and check if they have features inside
         const sitePaths = await this.getAllLocalSitePaths()
@@ -87,7 +87,7 @@ export default class PartnerFeature extends Feature {
     }
 
     async deploy(sites, featureName) {
-        SitesCache.load()
+        await SitesCache.load()
         const processedPartners = new Set()
         for (const { apiKey } of sites) {
             const siteInfo = await FolderManager.getSiteInfo(apiKey)

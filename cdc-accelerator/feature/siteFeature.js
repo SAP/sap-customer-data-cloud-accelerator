@@ -49,7 +49,7 @@ export default class SiteFeature extends Feature {
     }
 
     async reset(sites, featureName) {
-        SitesCache.load()
+        await SitesCache.load(this.credentials)
         for (const { apiKey, siteDomain = '' } of sites) {
             const baseFolder = await FolderManager.getSiteBaseFolder(Operations.reset, apiKey)
             const siteFolder = await FolderManager.getSiteFolder(Operations.reset, apiKey)
@@ -61,7 +61,7 @@ export default class SiteFeature extends Feature {
     }
 
     async build(featureName) {
-        SitesCache.load()
+        await SitesCache.load()
         // Get all directories in src/ that are not features and check if they have features inside (Also '' to check the src/ directory itself)
         const sitePaths = await this.getAllLocalSitePaths()
         for (const sitePath of sitePaths) {
@@ -72,7 +72,7 @@ export default class SiteFeature extends Feature {
     }
 
     async deploy(sites, featureName) {
-        SitesCache.load()
+        await SitesCache.load()
         for (const { apiKey, siteDomain = '' } of sites) {
             // If apiKey has siteDomain, use the contents inside that directory for that site, else use the contents of the build/ directory
             const msg = siteDomain ? `\n${siteDomain} - ${apiKey}` : `\n${apiKey}`
