@@ -22,7 +22,9 @@ export default class CLI {
 
     parseArguments(args) {
         let [, , operation, featureName, environment] = args
-
+        if (args.length !== 5) {
+            throw new Error('Incorrect number of arguments. Usage: [operation] [featureName] [environment]')
+        }
         if (!this.#areFeaturesRegistered()) {
             throw new Error('No features registered, nothing to do!')
         }

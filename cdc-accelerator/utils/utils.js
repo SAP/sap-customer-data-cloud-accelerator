@@ -10,6 +10,12 @@ import { getPartnerID } from '../services/gigya/gigya.helpers.js'
 
 const parseArguments = ({ args, config }) => {
     let [, , featureName, environment] = args
+    if (args.length !== 4) {
+        throw new Error('Incorrect number of arguments. Usage: [operation] [featureName] [environment]')
+    }
+    if (!featureName || !environment) {
+        console.log('undefined args')
+    }
 
     // If no feature selected, deploy all features and the environment might be in the featureName variable
     if (!FEATURE_NAME_LIST.includes(featureName)) {
