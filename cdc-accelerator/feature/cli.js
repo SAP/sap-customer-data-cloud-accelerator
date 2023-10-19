@@ -15,6 +15,7 @@ import PermissionGroups from './permissionGroups.js'
 import Accelerator from './accelerator.js'
 import Feature from './feature.js'
 import fs from 'fs'
+import EmailTemplates from './emailTemplates.js'
 
 export default class CLI {
     siteFeature
@@ -82,6 +83,7 @@ export default class CLI {
         siteFeature.register(new WebSdk(credentials))
         siteFeature.register(new Policies(credentials))
         siteFeature.register(new WebScreenSets(credentials))
+        siteFeature.register(new EmailTemplates(credentials))
         return siteFeature
     }
 
