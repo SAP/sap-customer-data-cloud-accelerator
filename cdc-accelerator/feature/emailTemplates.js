@@ -6,6 +6,7 @@ import ToolkitEmail from '../sap-cdc-toolkit/copyConfig/emails/emailConfiguratio
 import ToolkitEmailOptions from '../sap-cdc-toolkit/copyConfig/emails/emailOptions.js'
 import fs from 'fs'
 import path from 'path'
+import Mustache from 'mustache'
 import SiteFeature from './siteFeature.js'
 
 export default class EmailTemplates extends SiteFeature {
@@ -128,7 +129,25 @@ export default class EmailTemplates extends SiteFeature {
         this.deleteDirectory(path.join(siteDirectory, this.getName()))
     }
 
-    build(sitePath) {}
+    build(siteDirectory) {
+        const buildFeaturePath = path.join(siteDirectory, this.getName())
+        const buildTemplatesPath = path.join(buildFeaturePath, EmailTemplates.FOLDER_TEMPLATES)
+        const buildLocalesPath = path.join(buildFeaturePath, EmailTemplates.FOLDER_LOCALES)
+
+        fs.readdirSync(buildTemplatesPath).forEach((templateFile) => {
+            const htmlFilePath = path.join(buildTemplatesPath, templateFile)
+            const templateName = path.parse(templateFile).name
+            const outputDirectory = path.join(buildFeaturePath, templateName)
+            this.createDirectoryIfNotExists(outputDirectory)
+            const htmlTemplate = fs.readFileSync(htmlFilePath, { encoding: 'utf8' })
+            fs.readdirSync(path.join(buildLocalesPath, templateName)).forEach((localeFile) => {
+                const localeData = fs.readFileSync(path.join(buildLocalesPath, templateName, localeFile), { encoding: 'utf8' })
+                const renderedHtml = Mustache.render(htmlTemplate, localeData)
+                const language = path.parse(localeFile).name
+                fs.writeFileSync(path.join(outputDirectory, `${templateName}-${language}${path.extname(templateFile)}`), renderedHtml)
+            })
+        })
+    }
 
     async deploy(apiKey, siteConfig, siteDirectory) {
         const payload = {}

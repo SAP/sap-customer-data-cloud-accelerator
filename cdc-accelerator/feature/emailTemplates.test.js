@@ -1,10 +1,11 @@
-import { expectedGigyaResponseNok, getSiteConfig } from './test.gigyaResponses.js'
+import { expectedGigyaResponseNok, getExpectedScreenSetResponse, getSiteConfig } from './test.gigyaResponses.js'
 import { emailsExpectedResponse, emailTemplate, getEmailsExpectedResponseWithMinimumTemplates } from './test.gigyaResponses.emails.js'
 import fs from 'fs'
 import EmailTemplates from './emailTemplates.js'
 import axios from 'axios'
 import path from 'path'
-import { credentials, siteDomain, apiKey, srcSiteDirectory } from './test.common.js'
+import { credentials, siteDomain, apiKey, srcSiteDirectory, buildSiteDirectory } from './test.common.js'
+import WebScreenSets from './webScreenSets'
 
 jest.mock('axios')
 jest.mock('fs')
@@ -68,6 +69,123 @@ describe('Email templates test suite', () => {
                         emailTemplates.getName(),
                     )}" directory already exists, to overwrite its contents please use the option "reset" instead of "init"`,
                 ),
+            )
+        })
+    })
+
+    describe('Build test suite', () => {
+        test('all email templates generated successfully', async () => {
+            const screenSetIdFilter = 'Default-LinkAccounts'
+            const mockedResponse = emailsExpectedResponse
+            axios.mockResolvedValueOnce({ data: mockedResponse })
+
+            const templateName1 = 'magicLink'
+            const templateName2 = 'passwordReset'
+            const templateFileExtension = '.html'
+            fs.readdirSync
+                .mockReturnValueOnce([`${templateName1}${templateFileExtension}`, `${templateName2}${templateFileExtension}`])
+                .mockReturnValueOnce(['en.json'])
+                .mockReturnValueOnce(['en.json', 'pt.json'])
+
+            const magicLinkTemplate = emailTemplate
+            const magicLinkLocaleEn = '{}'
+            const passwordResetTemplate =
+                '<html>' +
+                '<head>' +
+                '<meta name="subject" content="{{SUBJECT}}" />' +
+                '</head>' +
+                '<body>' +
+                '{{GREETING}} <b>$firstName $lastName</b>,<br /><br />\n' +
+                '{{PLEASE_CLICK_THE_LINK_TO_RESET_PASSWORD}} <br />\n' +
+                '<a href="$pwResetLink">{{RESET_PASSWORD_LINK}}</a\n>' +
+                '<br /><br />\n' +
+                '{{THIS_LINK_WILL_BE_ACTIVE_FOR_24_HOURS}}\n' +
+                '<br /><br />\n' +
+                '{{{LINK_YOU_CAN_ACCESS_THE_PREFERENCES_CENTER_TO_UPDATE_YOUR_DETAILS}}}<br /><br />\n' +
+                '{{BEST_REGARDS}},<br />\n' +
+                '{{CUSTOMER}}' +
+                '</body>' +
+                '</html>'
+            const passwordResetLocaleEn =
+                '{\n' +
+                '    "SUBJECT": "Password reset",\n' +
+                '    "GREETING": "Hi",\n' +
+                '    "PLEASE_CLICK_THE_LINK_TO_RESET_PASSWORD": "Please click the link to reset your password:",\n' +
+                '    "RESET_PASSWORD_LINK": "Reset Password Link",\n' +
+                '    "THIS_LINK_WILL_BE_ACTIVE_FOR_24_HOURS": "This link will be active for 24 hours.",\n' +
+                '    "LINK_YOU_CAN_ACCESS_THE_PREFERENCES_CENTER_TO_UPDATE_YOUR_DETAILS": "At any time, <a href=\\"https://au-test.factory.com/en/preferences-center-1\\">Preference Center</a> to update your details.",\n' +
+                '    "BEST_REGARDS": "Best regards",\n' +
+                '    "CUSTOMER": "Customer1"\n' +
+                '}\n'
+            const passwordResetLocalePt =
+                '{\n' +
+                '    "SUBJECT": "Password reset",\n' +
+                '    "GREETING": "Ola",\n' +
+                '    "PLEASE_CLICK_THE_LINK_TO_RESET_PASSWORD": "Por favor carrega no link para fazer reset à tua password:",\n' +
+                '    "RESET_PASSWORD_LINK": "Link para Reset Password",\n' +
+                '    "THIS_LINK_WILL_BE_ACTIVE_FOR_24_HOURS": "Este link estará activo durante 24 horas.",\n' +
+                '    "LINK_YOU_CAN_ACCESS_THE_PREFERENCES_CENTER_TO_UPDATE_YOUR_DETAILS": "Em qualquer altura, <a href=\\"https://au-test.factory.com/en/preferences-center-1\\">Preference Center</a> para actualizar os teus detalhes.",\n' +
+                '    "BEST_REGARDS": "Cumprimentos",\n' +
+                '    "CUSTOMER": "Cliente1"\n' +
+                '}\n'
+            const passwordResetRenderedEn =
+                '<html>' +
+                '<head>' +
+                '<meta name="subject" content="Password reset" />' +
+                '</head>' +
+                '<body>' +
+                'Hi <b>$firstName $lastName</b>,<br /><br />\n' +
+                'Please click the link to reset your password: <br />\n' +
+                '<a href="$pwResetLink">Reset Password Link</a\n>' +
+                '<br /><br />\n' +
+                'This link will be active for 24 hours.\n' +
+                '<br /><br />\n' +
+                'At any time, <a href=\\"https://au-test.factory.com/en/preferences-center-1\\">Preference Center</a> to update your details.<br /><br />\n' +
+                'Best regards,<br />\n' +
+                'Customer1' +
+                '</body>' +
+                '</html>'
+            const passwordResetRenderedPt =
+                '<html>' +
+                '<head>' +
+                '<meta name="subject" content="Password reset" />' +
+                '</head>' +
+                '<body>' +
+                'Ola <b>$firstName $lastName</b>,<br /><br />\n' +
+                'Por favor carrega no link para fazer reset à tua password: <br />\n' +
+                '<a href="$pwResetLink">Link para Reset Password</a\n>' +
+                '<br /><br />\n' +
+                'Este link estará activo durante 24 horas.\n' +
+                '<br /><br />\n' +
+                'Em qualquer altura, <a href=\\"https://au-test.factory.com/en/preferences-center-1\\">Preference Center</a> para actualizar os teus detalhes.<br /><br />\n' +
+                'Cumprimentos,<br />\n' +
+                'Cliente1' +
+                '</body>' +
+                '</html>'
+            fs.existsSync.mockReturnValue(true)
+            fs.readFileSync
+                .mockReturnValueOnce(magicLinkTemplate)
+                .mockReturnValueOnce(magicLinkLocaleEn)
+                .mockReturnValueOnce(passwordResetTemplate)
+                .mockReturnValueOnce(passwordResetLocaleEn)
+                .mockReturnValueOnce(passwordResetLocalePt)
+
+            await emailTemplates.build(buildSiteDirectory)
+            expect(fs.writeFileSync.mock.calls.length).toBe(3)
+            expect(fs.writeFileSync).toHaveBeenNthCalledWith(
+                1,
+                path.join(buildSiteDirectory, emailTemplates.getName(), templateName1, `${templateName1}-en${templateFileExtension}`),
+                emailTemplate,
+            )
+            expect(fs.writeFileSync).toHaveBeenNthCalledWith(
+                2,
+                path.join(buildSiteDirectory, emailTemplates.getName(), templateName2, `${templateName2}-en${templateFileExtension}`),
+                passwordResetRenderedEn,
+            )
+            expect(fs.writeFileSync).toHaveBeenNthCalledWith(
+                3,
+                path.join(buildSiteDirectory, emailTemplates.getName(), templateName2, `${templateName2}-pt${templateFileExtension}`),
+                passwordResetRenderedPt,
             )
         })
     })
