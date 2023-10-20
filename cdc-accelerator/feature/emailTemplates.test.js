@@ -173,9 +173,7 @@ describe('Email templates test suite', () => {
             'Cliente1' +
             '</body>' +
             '</html>'
-        test('all email templates generated successfully', async () => {
-            axios.mockResolvedValueOnce({ data: emailsExpectedResponse })
-
+        test('two email templates generated successfully', async () => {
             const templateName1 = 'magicLink'
             const templateName2 = 'passwordReset'
             const templateFileExtension = '.html'
