@@ -8,6 +8,7 @@ import fs from 'fs'
 import path from 'path'
 import Mustache from 'mustache'
 import SiteFeature from './siteFeature.js'
+import { BUILD_DIRECTORY, SRC_DIRECTORY } from './constants.js'
 
 export default class EmailTemplates extends SiteFeature {
     static FOLDER_LOCALES = 'locales'
@@ -130,17 +131,18 @@ export default class EmailTemplates extends SiteFeature {
     }
 
     build(siteDirectory) {
+        const srcFeaturePath = path.join(siteDirectory.replace(BUILD_DIRECTORY, SRC_DIRECTORY), this.getName())
+        const srcTemplatesPath = path.join(srcFeaturePath, EmailTemplates.FOLDER_TEMPLATES)
+        const srcLocalesPath = path.join(srcFeaturePath, EmailTemplates.FOLDER_LOCALES)
         const buildFeaturePath = path.join(siteDirectory, this.getName())
-        const buildTemplatesPath = path.join(buildFeaturePath, EmailTemplates.FOLDER_TEMPLATES)
-        const buildLocalesPath = path.join(buildFeaturePath, EmailTemplates.FOLDER_LOCALES)
 
-        fs.readdirSync(buildTemplatesPath).forEach((templateFile) => {
+        fs.readdirSync(srcTemplatesPath).forEach((templateFile) => {
             const templateName = path.parse(templateFile).name
             const outputDirectory = path.join(buildFeaturePath, templateName)
             this.createDirectoryIfNotExists(outputDirectory)
-            const htmlTemplate = fs.readFileSync(path.join(buildTemplatesPath, templateFile), { encoding: 'utf8' })
-            fs.readdirSync(path.join(buildLocalesPath, templateName)).forEach((localeFile) => {
-                const localeData = fs.readFileSync(path.join(buildLocalesPath, templateName, localeFile), { encoding: 'utf8' })
+            const htmlTemplate = fs.readFileSync(path.join(srcTemplatesPath, templateFile), { encoding: 'utf8' })
+            fs.readdirSync(path.join(srcLocalesPath, templateName)).forEach((localeFile) => {
+                const localeData = fs.readFileSync(path.join(srcLocalesPath, templateName, localeFile), { encoding: 'utf8' })
                 const renderedHtml = Mustache.render(htmlTemplate, JSON.parse(localeData.toString()))
                 const language = path.parse(localeFile).name
                 fs.writeFileSync(path.join(outputDirectory, `${templateName}-${language}${path.extname(templateFile)}`), renderedHtml)
