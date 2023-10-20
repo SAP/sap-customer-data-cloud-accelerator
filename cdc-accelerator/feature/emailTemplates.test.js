@@ -1,4 +1,4 @@
-import { expectedGigyaResponseNok, getExpectedScreenSetResponse, getSiteConfig } from './test.gigyaResponses.js'
+import { expectedGigyaResponseNok, getSiteConfig } from './test.gigyaResponses.js'
 import { emailsExpectedResponse, emailTemplate, getEmailsExpectedResponseWithMinimumTemplates } from './test.gigyaResponses.emails.js'
 import fs from 'fs'
 import EmailTemplates from './emailTemplates.js'
