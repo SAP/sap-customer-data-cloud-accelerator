@@ -1,13 +1,71 @@
 {
     "source": [
-        { "apiKey": "4_Ch-q_qKrjBJ_-QBEfMPkKA", "siteDomain": "cdc-accelerator.parent.site-group.com" },
-        { "apiKey": "4_tqmAZeYVLPfPl9SYu_iFxA", "siteDomain": "cdc-accelerator.preferences-center.com" },
-        { "apiKey": "4_G9hcFjoYwj860VKK2eCILA", "siteDomain": "cdc-accelerator.preferences-center.felix.com" },
-        { "apiKey": "4_51rYFDhKRgNJdru9HSz0JA", "siteDomain": "cdc-accelerator.preferences-center.nescafe.com" },
-        { "apiKey": "4_9XTXgPYTsS8EJ8ohejOCZw", "siteDomain": "cdc-accelerator.preferences-center.purina.com" }
+        {
+            "apiKey": "4_Ch-q_qKrjBJ_-QBEfMPkKA",
+            "siteDomain": "cdc-accelerator.parent.site-group.com"
+        },
+        {
+            "apiKey": "4_tqmAZeYVLPfPl9SYu_iFxA",
+            "siteDomain": "cdc-accelerator.preferences-center.com"
+        },
+        {
+            "apiKey": "4_G9hcFjoYwj860VKK2eCILA",
+            "siteDomain": "cdc-accelerator.preferences-center.felix.com"
+        },
+        {
+            "apiKey": "4_51rYFDhKRgNJdru9HSz0JA",
+            "siteDomain": "cdc-accelerator.preferences-center.nescafe.com"
+        },
+        {
+            "apiKey": "4_9XTXgPYTsS8EJ8ohejOCZw",
+            "siteDomain": "cdc-accelerator.preferences-center.purina.com"
+        }
     ],
     "deploy": [
-        { "apiKey": "4_Ch-q_qKrjBJ_-QBEfMPkKA", "siteDomain": "cdc-accelerator.parent.site-group.com" },
-        { "apiKey": "4_tqmAZeYVLPfPl9SYu_iFxA", "siteDomain": "cdc-accelerator.preferences-center.com" }
+        {
+            "apiKey": "4_Ch-q_qKrjBJ_-QBEfMPkKA",
+            "siteDomain": "cdc-accelerator.parent.site-group.com"
+        },
+        {
+            "apiKey": "4_tqmAZeYVLPfPl9SYu_iFxA",
+            "siteDomain": "cdc-accelerator.preferences-center.com"
+        }
+    ],
+    "cache": [
+        {
+            "apiKey": "4_51rYFDhKRgNJdru9HSz0JA",
+            "baseDomain": "cdc-accelerator.preferences-center.nescafe.com",
+            "dataCenter": "eu1",
+            "partnerId": 79597568,
+            "partnerName": "SAP Customer Data Cloud"
+        },
+        {
+            "apiKey": "4_9XTXgPYTsS8EJ8ohejOCZw",
+            "baseDomain": "cdc-accelerator.preferences-center.purina.com",
+            "dataCenter": "eu1",
+            "partnerId": 79597568,
+            "partnerName": "SAP Customer Data Cloud"
+        },
+        {
+            "apiKey": "4_tqmAZeYVLPfPl9SYu_iFxA",
+            "baseDomain": "cdc-accelerator.preferences-center.com",
+            "dataCenter": "eu1",
+            "partnerId": 79597568,
+            "partnerName": "SAP Customer Data Cloud"
+        },
+        {
+            "apiKey": "4_Ch-q_qKrjBJ_-QBEfMPkKA",
+            "baseDomain": "cdc-accelerator.parent.site-group.com",
+            "dataCenter": "eu1",
+            "partnerId": 79597568,
+            "partnerName": "SAP Customer Data Cloud"
+        },
+        {
+            "apiKey": "4_G9hcFjoYwj860VKK2eCILA",
+            "baseDomain": "cdc-accelerator.preferences-center.felix.com",
+            "dataCenter": "eu1",
+            "partnerId": 79597568,
+            "partnerName": "SAP Customer Data Cloud"
+        }
     ]
 }

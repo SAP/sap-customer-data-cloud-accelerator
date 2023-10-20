@@ -1,8 +1,6 @@
-export default "use strict";Object.defineProperty(exports, "__esModule", { value: true });exports["default"] = void 0;{
+export default {
   // Called when an error occurs.
-  onError: function(event) {
-    return true;
-  },
+  onError: function(event) {},
 
   // Called before validation of the form.
   onBeforeValidation: function(event) {},
