@@ -142,7 +142,7 @@ export default class EmailTemplates extends SiteFeature {
             const htmlTemplate = fs.readFileSync(htmlFilePath, { encoding: 'utf8' })
             fs.readdirSync(path.join(buildLocalesPath, templateName)).forEach((localeFile) => {
                 const localeData = fs.readFileSync(path.join(buildLocalesPath, templateName, localeFile), { encoding: 'utf8' })
-                const renderedHtml = Mustache.render(htmlTemplate, localeData)
+                const renderedHtml = Mustache.render(htmlTemplate, JSON.parse(localeData.toString()))
                 const language = path.parse(localeFile).name
                 fs.writeFileSync(path.join(outputDirectory, `${templateName}-${language}${path.extname(templateFile)}`), renderedHtml)
             })
