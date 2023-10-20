@@ -68,7 +68,7 @@ export default class Feature {
 
     #calculateWorkingDirectory(directory, feature) {
         let workingDirectory = directory
-        if (!workingDirectory.endsWith(SITES_DIRECTORY)) {
+        if (!workingDirectory.endsWith(path.join(SITES_DIRECTORY, ''))) {
             workingDirectory = path.join(directory, feature.getName())
         }
         if (fs.existsSync(workingDirectory)) {

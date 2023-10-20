@@ -5,7 +5,7 @@
 
 export const SRC_DIRECTORY = 'src/'
 export const BUILD_DIRECTORY = 'build/'
-export const SITES_DIRECTORY = 'Sites/'
+export const SITES_DIRECTORY = 'Sites'
 
 const PROJECT_NAME = 'cdc-accelerator'
 export const CDC_ACCELERATOR_DIRECTORY = `${PROJECT_NAME}/`
