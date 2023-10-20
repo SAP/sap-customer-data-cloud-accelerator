@@ -11,7 +11,7 @@ describe('End to end test suite', () => {
     })
 
     function executeTest(operation) {
-        const result = execSync(`npm run ${operation}-feature`, { stdio: 'pipe' })
+        const result = execSync(`npm run ${operation}`, { stdio: 'pipe' })
         const resultStr = result.toString()
         console.log(resultStr)
         const matched = resultStr.match(/Fail|Error/)
