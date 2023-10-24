@@ -12,6 +12,20 @@ jest.mock('axios')
 const policies = new Policies(credentials)
 
 describe('Init policies test suite', () => {
+    test('policies file does not contain unwanted fields', async () => {
+        axios.mockResolvedValueOnce({ data: expectedPoliciesResponse })
+
+        let writtenData
+        fs.writeFileSync.mockImplementation((_, data) => {
+            writtenData = JSON.parse(data)
+            console.log(writtenData)
+        })
+
+        await policies.init(apiKey, getSiteConfig, srcSiteDirectory)
+        expect(writtenData.passwordReset.emailTemplates).toBeUndefined()
+        expect(writtenData.preferencesCenter.emailTemplates).toBeUndefined()
+    })
+
     test('policies file is generated successfully', async () => {
         axios.mockResolvedValueOnce({ data: expectedPoliciesResponse })
         fs.existsSync.mockReturnValue(false)

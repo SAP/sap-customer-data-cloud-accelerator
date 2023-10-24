@@ -4,6 +4,7 @@
  */
 import ToolkitPolicies from '../sap-cdc-toolkit/copyConfig/policies/policies.js'
 import ToolkitPolicyOptions from '../sap-cdc-toolkit/copyConfig/policies/policyOptions.js'
+import { removePropertyFromObjectCascading } from '../sap-cdc-toolkit/copyConfig/objectHelper.js'
 import fs from 'fs'
 import path from 'path'
 import { clearDirectoryContents } from '../utils/utils.js'
@@ -28,6 +29,8 @@ export default class Policies extends SiteFeature {
             throw new Error(JSON.stringify(policiesResponse))
         }
 
+        removePropertyFromObjectCascading(policiesResponse, 'confirmationEmailTemplates')
+        removePropertyFromObjectCascading(policiesResponse, 'emailTemplates')
         const featureDirectory = path.join(siteDirectory, this.getName())
         this.createDirectory(featureDirectory)
 
