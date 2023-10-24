@@ -9,6 +9,7 @@ import path from 'path'
 import Mustache from 'mustache'
 import SiteFeature from './siteFeature.js'
 import { BUILD_DIRECTORY, SRC_DIRECTORY } from './constants.js'
+import EmailTemplateNameTranslator from '../sap-cdc-toolkit/emails/emailTemplateNameTranslator.js'
 
 export default class EmailTemplates extends SiteFeature {
     static FOLDER_LOCALES = 'locales'
@@ -153,12 +154,21 @@ export default class EmailTemplates extends SiteFeature {
     async deploy(apiKey, siteConfig, siteDirectory) {
         const buildFeatureDirectory = path.join(siteDirectory, this.getName())
         const payload = {}
+        const emailOptions = new ToolkitEmailOptions()
+        const emailNameTranslator = new EmailTemplateNameTranslator()
         fs.readdirSync(buildFeatureDirectory).forEach((templateName) => {
-            const templatePayload = this.#generateEmailTemplatePayload(path.join(buildFeatureDirectory, templateName), templateName)
-            this.#mergePayloads(payload, templatePayload)
+            if (!this.#emailTemplateShouldBeIgnored(templateName)) {
+                const templatePayload = this.#generateEmailTemplatePayload(path.join(buildFeatureDirectory, templateName), templateName)
+                this.#mergePayloads(payload, templatePayload)
+                emailOptions.options.branches.push({
+                    id: templateName,
+                    name: emailNameTranslator.translateInternalName(templateName),
+                    value: true,
+                })
+            }
         })
 
-        const response = await this.deployUsingToolkit(apiKey, siteConfig, payload, new ToolkitEmailOptions())
+        const response = await this.deployUsingToolkit(apiKey, siteConfig, payload, emailOptions)
         const isAnyError = response.some((res) => {
             return res.errorCode !== 0
         })
@@ -166,6 +176,10 @@ export default class EmailTemplates extends SiteFeature {
             throw new Error(JSON.stringify(response))
         }
         return response
+    }
+
+    #emailTemplateShouldBeIgnored(templateName) {
+        return templateName === 'unknownLocationNotification' || templateName === 'passwordResetNotification'
     }
 
     #generateEmailTemplatePayload(buildTemplateDirectory, templateName) {

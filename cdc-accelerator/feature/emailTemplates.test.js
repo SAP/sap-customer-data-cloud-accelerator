@@ -6,6 +6,7 @@ import axios from 'axios'
 import path from 'path'
 import { credentials, siteDomain, apiKey, srcSiteDirectory, buildSiteDirectory } from './test.common.js'
 import ToolkitEmailOptions from '../sap-cdc-toolkit/copyConfig/emails/emailOptions.js'
+import EmailTemplateNameTranslator from '../sap-cdc-toolkit/emails/emailTemplateNameTranslator.js'
 
 jest.mock('axios')
 jest.mock('fs')
@@ -221,8 +222,9 @@ describe('Email templates test suite', () => {
         })
 
         async function testDeploy(serverResponse) {
+            const templatesToTest = ['magicLink', 'welcomeEmailTemplates', 'accountDeletedEmailTemplates', 'doubleOptIn', 'twoFactorAuth', 'unknownLocationNotification']
             fs.readdirSync
-                .mockReturnValueOnce(['magicLink', 'welcomeEmailTemplates', 'accountDeletedEmailTemplates', 'doubleOptIn', 'twoFactorAuth'])
+                .mockReturnValueOnce(templatesToTest)
                 .mockReturnValueOnce(['magicLink-en.html', 'magicLink-pt.html'])
                 .mockReturnValueOnce(['welcomeEmailTemplates-en.html'])
                 .mockReturnValueOnce(['accountDeletedEmailTemplates-pt-br.html'])
@@ -271,7 +273,16 @@ describe('Email templates test suite', () => {
                 await expect(emailTemplates.deploy(apiKey, getSiteConfig, buildSiteDirectory)).rejects.toThrow(Error)
             }
             expect(spy.mock.calls.length).toBe(1)
-            expect(spy).toHaveBeenNthCalledWith(1, apiKey, getSiteConfig, payload, new ToolkitEmailOptions())
+            const emailOptions = new ToolkitEmailOptions()
+            const emailNameTranslator = new EmailTemplateNameTranslator()
+            for (const templateToTest of templatesToTest.slice(0, templatesToTest.length - 1)) {
+                emailOptions.options.branches.push({
+                    id: templateToTest,
+                    name: emailNameTranslator.translateInternalName(templateToTest),
+                    value: true,
+                })
+            }
+            expect(spy).toHaveBeenNthCalledWith(1, apiKey, getSiteConfig, payload, emailOptions)
         }
     })
 })
