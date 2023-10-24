@@ -2,10 +2,10 @@
  * Copyright: Copyright 2023 SAP SE or an SAP affiliate company and cdc-accelerator contributors
  * License: Apache-2.0
  */
-
-export const SRC_DIRECTORY = 'src/'
-export const BUILD_DIRECTORY = 'build/'
-export const SITES_DIRECTORY = 'Sites/'
+import path from 'path'
+export const SRC_DIRECTORY = 'src' + path.sep
+export const BUILD_DIRECTORY = 'build' + path.sep
+export const SITES_DIRECTORY = 'Sites' + path.sep
 
 const PROJECT_NAME = 'cdc-accelerator'
 export const CDC_ACCELERATOR_DIRECTORY = `${PROJECT_NAME}/`

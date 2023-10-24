@@ -68,12 +68,12 @@ export default class Feature {
 
     #calculateWorkingDirectory(directory, feature) {
         let workingDirectory = directory
-        if (!workingDirectory.endsWith(SITES_DIRECTORY)) {
+        if (!workingDirectory.endsWith(path.join(SITES_DIRECTORY, ''))) {
             workingDirectory = path.join(directory, feature.getName())
         }
         if (fs.existsSync(workingDirectory)) {
             return workingDirectory
-        } else if (directory.startsWith(BUILD_DIRECTORY)) {
+        } else if (directory.startsWith(path.join(BUILD_DIRECTORY, ''))) {
             const srcWorkingDirectory = workingDirectory.replace(BUILD_DIRECTORY, SRC_DIRECTORY)
             if (fs.existsSync(srcWorkingDirectory)) {
                 return srcWorkingDirectory
@@ -95,13 +95,14 @@ export default class Feature {
 
     async getAllLocalSitePaths() {
         const paths = await this.getFiles(BUILD_DIRECTORY)
+        const pathSep = path.sep
         const sites = new Set()
         for (const path of paths) {
             const baseIdx = path.indexOf(BUILD_DIRECTORY)
             let startIdx = path.indexOf(SITES_DIRECTORY)
             if (startIdx > -1) {
                 startIdx += SITES_DIRECTORY.length
-                const endIdx = path.indexOf('/', startIdx)
+                const endIdx = path.indexOf(pathSep, startIdx)
                 if (endIdx > -1) {
                     sites.add(path.substring(baseIdx, endIdx))
                 }
