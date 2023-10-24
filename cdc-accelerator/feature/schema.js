@@ -62,7 +62,7 @@ export default class Schema extends SiteFeature {
         }
         const response = await this.deployUsingToolkit(apiKey, siteConfig, payload, new ToolkitSchemaOptions())
         const isAnyError = response.some((res) => {
-            return res.errorCode
+            return res.errorCode !== 0
         })
         if (isAnyError) {
             throw new Error(JSON.stringify(response))
