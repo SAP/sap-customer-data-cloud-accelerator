@@ -95,13 +95,14 @@ export default class Feature {
 
     async getAllLocalSitePaths() {
         const paths = await this.getFiles(BUILD_DIRECTORY)
+        const pathSep = path.sep
         const sites = new Set()
         for (const path of paths) {
             const baseIdx = path.indexOf(BUILD_DIRECTORY)
             let startIdx = path.indexOf(SITES_DIRECTORY)
             if (startIdx > -1) {
                 startIdx += SITES_DIRECTORY.length
-                const endIdx = path.indexOf('/', startIdx)
+                const endIdx = path.indexOf(pathSep, startIdx)
                 if (endIdx > -1) {
                     sites.add(path.substring(baseIdx, endIdx))
                 }
