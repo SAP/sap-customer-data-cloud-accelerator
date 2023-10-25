@@ -10,7 +10,7 @@ import { cleanJavaScriptModuleBoilerplateWebSdk, replaceFilenamesWithFileContent
 import SiteFeature from './siteFeature.js'
 
 export default class WebSdk extends SiteFeature {
-    static #TEMPLATE_WEB_SDK_FILE = path.join(CDC_ACCELERATOR_DIRECTORY, `/templates/defaultWebSdk.js`)
+    static #TEMPLATE_WEB_SDK_FILE = path.join(CDC_ACCELERATOR_DIRECTORY, 'templates', 'defaultWebSdk.js')
 
     constructor(credentials) {
         super(credentials)
@@ -22,7 +22,6 @@ export default class WebSdk extends SiteFeature {
 
     async init(apiKey, siteConfig, siteDirectory) {
         let { globalConf: originalWebSdk } = siteConfig
-
         // If globalConf is empty, get default template
         if (!originalWebSdk) {
             originalWebSdk = fs.readFileSync(`${WebSdk.#TEMPLATE_WEB_SDK_FILE}`, { encoding: 'utf8' })
@@ -30,7 +29,6 @@ export default class WebSdk extends SiteFeature {
 
         // Wrap javascript in "module"
         const webSdk = `export default ${originalWebSdk}`
-
         const featureDirectory = path.join(siteDirectory, this.getName())
         this.createDirectory(featureDirectory)
 
@@ -69,16 +67,15 @@ export default class WebSdk extends SiteFeature {
             throw new Error(`Invalid file: ${buildFileName}`)
         }
 
-        const response = await this.deployUsingToolkit(apiKey,siteConfig,fileContent)
+        const response = await this.deployUsingToolkit(apiKey, siteConfig, fileContent)
         // Update webSdk on gigya
         if (response.errorCode) {
             throw new Error(JSON.stringify(response))
         }
     }
-    async deployUsingToolkit(apiKey,siteConfig,fileContent){
+    async deployUsingToolkit(apiKey, siteConfig, fileContent) {
         const toolkitWebSdk = new ToolkitWebSdk(this.credentials, apiKey, siteConfig.dataCenter)
         siteConfig.globalConf = fileContent
         return await toolkitWebSdk.set(apiKey, siteConfig, siteConfig.dataCenter)
     }
-
 }
