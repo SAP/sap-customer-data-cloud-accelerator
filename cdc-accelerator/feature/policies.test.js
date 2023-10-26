@@ -5,6 +5,7 @@ import Policies from './policies.js'
 import { SRC_DIRECTORY, BUILD_DIRECTORY } from './constants.js'
 import axios from 'axios'
 import ToolkitPolicyOptions from '../sap-cdc-toolkit/copyConfig/policies/policyOptions.js'
+import { removePropertyFromObjectCascading } from '../sap-cdc-toolkit/copyConfig/objectHelper.js'
 import { credentials, siteDomain, apiKey, srcSiteDirectory } from './test.common.js'
 jest.mock('fs')
 jest.mock('axios')
@@ -13,17 +14,25 @@ const policies = new Policies(credentials)
 
 describe('Init policies test suite', () => {
     test('policies file does not contain unwanted fields', async () => {
+        function cloneWithoutEmailTemplates(original) {
+            const cloned = JSON.parse(JSON.stringify(original))
+            delete cloned.emailVerification.emailTemplates
+            delete cloned.doubleOptIn.emailTemplates
+            delete cloned.passwordReset.emailTemplates
+            delete cloned.twoFactorAuth.emailProvider.emailTemplates
+            delete cloned.preferencesCenter.emailTemplates
+            delete cloned.codeVerification.emailTemplates
+            delete cloned.doubleOptIn.confirmationEmailTemplates
+            return cloned
+        }
         axios.mockResolvedValueOnce({ data: expectedPoliciesResponse })
 
-        let writtenData
-        fs.writeFileSync.mockImplementation((_, data) => {
-            writtenData = JSON.parse(data)
-            console.log(writtenData)
-        })
-
         await policies.init(apiKey, getSiteConfig, srcSiteDirectory)
-        expect(writtenData.passwordReset.emailTemplates).toBeUndefined()
-        expect(writtenData.preferencesCenter.emailTemplates).toBeUndefined()
+
+        const expectedOutput = cloneWithoutEmailTemplates(expectedPoliciesResponse)
+        const expectedPath = path.join(srcSiteDirectory, 'Policies', 'policies.json')
+
+        expect(fs.writeFileSync).toHaveBeenCalledWith(expectedPath, JSON.stringify(expectedOutput, null, 4))
     })
 
     test('policies file is generated successfully', async () => {
