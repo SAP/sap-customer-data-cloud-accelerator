@@ -1,0 +1,709 @@
+{
+    "alexTestAdminPermissionGroup": {
+        "aclID": "alexTestAdminPermissionGroup",
+        "scope": {
+            "allowPartners": [
+                "_owner"
+            ],
+            "allowSites": []
+        },
+        "users": [
+            "ANHZHhdHWtKD"
+        ],
+        "description": ""
+    },
+    "cdc_toolbox_e2e_test": {
+        "aclID": "cdc_toolbox_e2e_test",
+        "scope": {
+            "allowPartners": [
+                "_owner"
+            ],
+            "allowSites": [
+                "4_BaJ2eJU0tORSo6-t0fPGhQ",
+                "4__d8l3To6jD2TWe02Q7VxKg",
+                "4_odQU7bKHKf1a6k9VzP9U1Q"
+            ]
+        },
+        "users": [
+            "AEOt9tr7uRTZ"
+        ],
+        "description": "Used in CDC Toolbox e2e tests"
+    },
+    "cpi": {
+        "aclID": "cpi",
+        "scope": {
+            "allowPartners": [
+                "_owner"
+            ],
+            "allowSites": [
+                "*"
+            ]
+        },
+        "users": [
+            "ABXMIWlb9DVG",
+            "AF0O6bTJRCfp",
+            "APzYLk1ORsbE"
+        ],
+        "description": ""
+    },
+    "daniel_AdminGroup": {
+        "aclID": "daniel_AdminGroup",
+        "scope": {
+            "allowPartners": [
+                "_owner"
+            ],
+            "allowSites": [
+                "*"
+            ]
+        },
+        "users": [
+            "AORlBI9NSve3"
+        ],
+        "description": "test permission group"
+    },
+    "daniel_flowbuilder_api": {
+        "aclID": "daniel_flowbuilder_api",
+        "scope": {
+            "allowPartners": [
+                "_owner"
+            ],
+            "allowSites": [
+                "*"
+            ]
+        },
+        "users": [
+            "AOwWTOcZJePD"
+        ],
+        "description": ""
+    },
+    "daniel_testAppGroup": {
+        "aclID": "daniel_testAppGroup",
+        "scope": {
+            "allowPartners": [
+                "_owner"
+            ],
+            "allowSites": [
+                "3_IkUKYNVo_ep0kjSr4cVH8fv5KP311y0iAtYAABQSjsh5mQKL0kFc5z-PnJG-X1vn"
+            ]
+        },
+        "users": [
+            "AFIquWobnqrJ",
+            "ALsmNogHEdCo",
+            "AORlBI9NSve3"
+        ],
+        "description": ""
+    },
+    "daniel_testGroup": {
+        "aclID": "daniel_testGroup",
+        "scope": {
+            "allowPartners": [
+                "_owner"
+            ],
+            "allowSites": [
+                "*"
+            ]
+        },
+        "users": [
+            "AMMATGsqhf/5"
+        ],
+        "description": ""
+    },
+    "Daniel_Test_ACL": {
+        "aclID": "daniel_AdminGroup",
+        "scope": {
+            "allowPartners": [
+                "_owner"
+            ],
+            "allowSites": [
+                "*"
+            ]
+        },
+        "users": [
+            "AIUS2Rni2uTG"
+        ],
+        "description": "By creating a permission group, is an ACL created also?"
+    },
+    "Dev CMS Portal": {
+        "aclID": "Dev CMS Portal",
+        "scope": {
+            "allowPartners": [
+                "_owner"
+            ],
+            "allowSites": []
+        },
+        "users": [
+            "AMcQlZ/UYdz5"
+        ],
+        "description": "Exercise request from https://cxwiki.sap.com/display/cxpractice/GConnectors+-+Exercise :\nFull Data Access\nPrivileges:\n3rd Party Plugins\nFull API Access\nScope:\nParent and all child sites under your existing development Site Group"
+    },
+    "developers": {
+        "aclID": "developers",
+        "scope": {
+            "allowPartners": [
+                "_owner"
+            ],
+            "allowSites": []
+        },
+        "users": [
+            "AC/IOgO0G/vH",
+            "AF0O6bTJRCfp",
+            "AIpuH57phSZi",
+            "AJrU6Sra3/M2",
+            "AMUgbi5u8J/p"
+        ],
+        "description": ""
+    },
+    "duarteAuditTest": {
+        "aclID": "duarteAuditTest",
+        "scope": {
+            "allowPartners": [
+                "_owner"
+            ],
+            "allowSites": [
+                "*"
+            ]
+        },
+        "users": [
+            "AKIBNmC3sHnG"
+        ],
+        "description": ""
+    },
+    "e2e_testing": {
+        "aclID": "e2e_testing",
+        "scope": {
+            "allowPartners": [
+                "_owner"
+            ],
+            "allowSites": []
+        },
+        "users": [
+            "AFww+F466MSR"
+        ],
+        "description": ""
+    },
+    "H&M": {
+        "aclID": "H&M",
+        "scope": {
+            "allowPartners": [
+                "_owner"
+            ],
+            "allowSites": [
+                "4_1ie_5gQwI9DhscMUF5rj-g"
+            ]
+        },
+        "users": [
+            "AFyK+PcYnOb2"
+        ],
+        "description": ""
+    },
+    "import_full_accounts_test": {
+        "aclID": "import_full_accounts_test",
+        "scope": {
+            "allowPartners": [
+                "_owner"
+            ],
+            "allowSites": [
+                "*"
+            ]
+        },
+        "users": [
+            "AGXtfztQ8xAy"
+        ],
+        "description": "import full accounts test"
+    },
+    "integrator_admin_nonprod": {
+        "aclID": "integrator_admin_nonprod",
+        "scope": {
+            "allowPartners": [
+                "_owner"
+            ],
+            "allowSites": [
+                "*"
+            ]
+        },
+        "users": [],
+        "description": "test for user role analysis - Nestlé"
+    },
+    "integrator_admin_prod": {
+        "aclID": "integrator_admin_prod",
+        "scope": {
+            "allowPartners": [
+                "_owner"
+            ],
+            "allowSites": [
+                "*"
+            ]
+        },
+        "users": [],
+        "description": "test for user role analysis - Nestlé"
+    },
+    "integrator_nonprod": {
+        "aclID": "integrator_nonprod",
+        "scope": {
+            "allowPartners": [
+                "_owner"
+            ],
+            "allowSites": [
+                "*"
+            ]
+        },
+        "users": [],
+        "description": "test for user role analysis - Nestlé"
+    },
+    "integrator_prod": {
+        "aclID": "integrator_prod",
+        "scope": {
+            "allowPartners": [
+                "_owner"
+            ],
+            "allowSites": [
+                "*"
+            ]
+        },
+        "users": [],
+        "description": "test for user role analysis - Nestlé"
+    },
+    "LGO_nonProd": {
+        "aclID": "LGO_nonProd",
+        "scope": {
+            "allowPartners": [
+                "_owner"
+            ],
+            "allowSites": [
+                "*"
+            ]
+        },
+        "users": [],
+        "description": "tests for user role analysis - Nestlé"
+    },
+    "LGO_prod": {
+        "aclID": "LGO_prod",
+        "scope": {
+            "allowPartners": [
+                "_owner"
+            ],
+            "allowSites": [
+                "*"
+            ]
+        },
+        "users": [],
+        "description": "tests for user role analysis - Nestlé"
+    },
+    "luis_group": {
+        "aclID": "luis_group",
+        "scope": {
+            "allowPartners": [
+                "_owner"
+            ],
+            "allowSites": [
+                "4_k60fhUYVAfo1JOLdtYIVRA",
+                "4_q9flUEmSmqxvaEw7FhpJyw",
+                "4_XZ7VPjk23giMqjlwgumu-A"
+            ]
+        },
+        "users": [
+            "AK4o28lQ8n8E",
+            "AKNxIqtQMYv8"
+        ],
+        "description": "test"
+    },
+    "luis_test_ACL": {
+        "aclID": "luis_test_ACL",
+        "scope": {
+            "allowPartners": [
+                "_owner"
+            ],
+            "allowSites": [
+                "*"
+            ]
+        },
+        "users": [],
+        "description": ""
+    },
+    "NHS_UK": {
+        "aclID": "NHS_UK",
+        "scope": {
+            "allowPartners": [
+                "_owner"
+            ],
+            "allowSites": [
+                "*"
+            ]
+        },
+        "users": [
+            "AM11LWdPy/XO"
+        ],
+        "description": "market: UK"
+    },
+    "NHS_UK_purina": {
+        "aclID": "NHS_UK_purina",
+        "scope": {
+            "allowPartners": [
+                "_owner"
+            ],
+            "allowSites": [
+                "*"
+            ]
+        },
+        "users": [],
+        "description": "UK"
+    },
+    "personal_sites_admins": {
+        "aclID": "personal_sites_admins",
+        "scope": {
+            "denySites": [],
+            "allowPartners": [
+                "_owner"
+            ],
+            "allowSites": [
+                "*"
+            ]
+        },
+        "users": [
+            "AF0O6bTJRCfp",
+            "AIpuH57phSZi"
+        ],
+        "description": "Administrator permissions for all the personal sandbox websites"
+    },
+    "prod.testNestle": {
+        "aclID": "prod.testNestle",
+        "scope": {
+            "allowPartners": [
+                "_owner"
+            ],
+            "allowSites": [
+                "*"
+            ]
+        },
+        "users": [],
+        "description": ""
+    },
+    "ricTestAdminPermissionGroup": {
+        "aclID": "ricTestAdminPermissionGroup",
+        "scope": {
+            "allowPartners": [
+                "_owner"
+            ],
+            "allowSites": [
+                "4_Z2xHZ3rCbGnbUNl5H8af-w"
+            ]
+        },
+        "users": [
+            "AL6OotMPwkmI"
+        ],
+        "description": "ricTestAdminPermissionGroup"
+    },
+    "StandardUser_dev": {
+        "aclID": "StandardUser_dev",
+        "scope": {
+            "allowPartners": [
+                "_owner"
+            ],
+            "allowSites": [
+                "*"
+            ]
+        },
+        "users": [],
+        "description": "test for user role analysis - Nestlé"
+    },
+    "StandardUser_prod": {
+        "aclID": "StandardUser_prod",
+        "scope": {
+            "allowPartners": [
+                "_owner"
+            ],
+            "allowSites": [
+                "*"
+            ]
+        },
+        "users": [],
+        "description": "test for user role analysis - Nestlé"
+    },
+    "StandardUser_stag": {
+        "aclID": "StandardUser_stag",
+        "scope": {
+            "allowPartners": [
+                "_owner"
+            ],
+            "allowSites": [
+                "*"
+            ]
+        },
+        "users": [],
+        "description": "test for user role analysis - Nestlé"
+    },
+    "std_dev.parent.jovenesnestle.com.ve": {
+        "aclID": "std_dev.parent.jovenesnestle.com.ve",
+        "scope": {
+            "allowPartners": [
+                "_owner"
+            ],
+            "allowSites": [
+                "4_TwW7950ibbn2MjPNDn5IHw"
+            ]
+        },
+        "users": [],
+        "description": ""
+    },
+    "teresa_pg": {
+        "aclID": "teresa_pg",
+        "scope": {
+            "allowPartners": [
+                "_owner"
+            ],
+            "allowSites": [
+                "3_6zmY-zeo79aouqq0ff8Ew8Ki3iVL-1vCesrz6DNWlXd69WFaB7JKpr-s4KvRqbM8"
+            ]
+        },
+        "users": [
+            "ABXMIWlb9DVG"
+        ],
+        "description": ""
+    },
+    "teresa_testGroup1": {
+        "aclID": "teresa_testGroup1",
+        "scope": {
+            "allowPartners": [
+                "_owner"
+            ],
+            "allowSites": [
+                "3_oAyqEurF4Kkq8boI9TixfTGhajGLbGsWYY6bRNl70iDq2ejRqBsm68lbsxEaJjqd"
+            ]
+        },
+        "users": [
+            "ALSdT0vOIG/h",
+            "ANVVVEVxmqqd"
+        ],
+        "description": ""
+    },
+    "teresa_testGroup2": {
+        "aclID": "teresa_testGroup2",
+        "scope": {
+            "allowPartners": [
+                "_owner"
+            ],
+            "allowSites": [
+                "3_oAyqEurF4Kkq8boI9TixfTGhajGLbGsWYY6bRNl70iDq2ejRqBsm68lbsxEaJjqd"
+            ]
+        },
+        "users": [
+            "ALSdT0vOIG/h"
+        ],
+        "description": ""
+    },
+    "test": {
+        "aclID": "test",
+        "scope": {
+            "allowPartners": [
+                "_owner"
+            ],
+            "allowSites": [
+                "*"
+            ]
+        },
+        "users": [
+            "ABTuadiOiKmp",
+            "AMLJPo2lfQMu"
+        ],
+        "description": ""
+    },
+    "testDaniel_NestleUserRoles": {
+        "aclID": "testDaniel_NestleUserRoles",
+        "scope": {
+            "allowPartners": [
+                "_owner"
+            ],
+            "allowSites": [
+                "*"
+            ]
+        },
+        "users": [],
+        "description": "tests for Nestle User roles matrix update"
+    },
+    "teste": {
+        "aclID": "teste",
+        "scope": {
+            "allowPartners": [
+                "_owner"
+            ],
+            "allowSites": [
+                "*"
+            ]
+        },
+        "users": []
+    },
+    "testPermssionGroupDaniel": {
+        "aclID": "testPermssionGroupDaniel",
+        "scope": {
+            "allowPartners": [
+                "_owner"
+            ],
+            "allowSites": [
+                "*"
+            ]
+        },
+        "users": [],
+        "description": ""
+    },
+    "test_Teresa": {
+        "aclID": "test_Teresa",
+        "scope": {
+            "allowPartners": [
+                "_owner"
+            ],
+            "allowSites": [
+                "3_6zmY-zeo79aouqq0ff8Ew8Ki3iVL-1vCesrz6DNWlXd69WFaB7JKpr-s4KvRqbM8"
+            ]
+        },
+        "users": [],
+        "description": ""
+    },
+    "tj_NHS_ES": {
+        "aclID": "tj_NHS_ES",
+        "scope": {
+            "allowPartners": [
+                "_owner"
+            ],
+            "allowSites": [
+                "3_6zmY-zeo79aouqq0ff8Ew8Ki3iVL-1vCesrz6DNWlXd69WFaB7JKpr-s4KvRqbM8"
+            ]
+        },
+        "users": [
+            "ABXMIWlb9DVG"
+        ],
+        "description": ""
+    },
+    "tj_NHS_ES22": {
+        "aclID": "tj_NHS_ES22",
+        "scope": {
+            "allowPartners": [
+                "_owner"
+            ],
+            "allowSites": [
+                "*"
+            ]
+        },
+        "users": []
+    },
+    "_admins": {
+        "aclID": "_admins",
+        "scope": {
+            "allowPartners": [
+                "_owner"
+            ],
+            "allowSites": [
+                "*"
+            ]
+        },
+        "users": [
+            "AARPeX5baHxO",
+            "ABXMIWlb9DVG",
+            "AC/IOgO0G/vH",
+            "ACF0LDv5v67n",
+            "ACSFvpKhU2FT",
+            "AEMbGC5NZkxE",
+            "AF0O6bTJRCfp",
+            "AF37ncYU747F",
+            "AF4xmY7qxHds",
+            "AFww+F466MSR",
+            "AG5Ph5jfDmzO",
+            "AGemTgLN0r5h",
+            "AGqHP/5NJ0JJ",
+            "AHZLeqa56u8Q",
+            "AIpuH57phSZi",
+            "AJrU6Sra3/M2",
+            "ALf/B/jy0hjC",
+            "AMG4suNaA3NP",
+            "ANAduftBfnKP",
+            "ANHZHhdHWtKD"
+        ]
+    },
+    "_authorization_console_service": {
+        "aclID": "_authorization_console_service",
+        "scope": {
+            "allowPartners": [
+                "_owner"
+            ],
+            "allowSites": [
+                "*"
+            ]
+        },
+        "users": [
+            "APxNDJtSNfj0"
+        ]
+    },
+    "_cs_admins": {
+        "aclID": "_cs_admins",
+        "scope": {
+            "allowPartners": [
+                "_owner"
+            ],
+            "allowSites": [
+                "*"
+            ]
+        },
+        "users": []
+    },
+    "_idx_application_editors": {
+        "aclID": "_idx_application_editors",
+        "scope": {
+            "allowPartners": [
+                "_owner"
+            ],
+            "allowSites": [
+                "*"
+            ]
+        },
+        "users": [
+            "AGnhdeZVmROJ"
+        ]
+    },
+    "_no_permissions": {
+        "aclID": "_no_permissions",
+        "scope": {
+            "allowPartners": [
+                "_owner"
+            ],
+            "allowSites": [
+                "*"
+            ]
+        },
+        "users": [
+            "ABTuadiOiKmp",
+            "ABXMIWlb9DVG",
+            "AC/IOgO0G/vH",
+            "ACSFvpKhU2FT",
+            "AEMbGC5NZkxE",
+            "AEOt9tr7uRTZ",
+            "AF37ncYU747F",
+            "AF4xmY7qxHds",
+            "AFww+F466MSR",
+            "AFyK+PcYnOb2",
+            "AG5Ph5jfDmzO",
+            "AGemTgLN0r5h",
+            "AGqHP/5NJ0JJ",
+            "AGXtfztQ8xAy",
+            "AIpuH57phSZi",
+            "AIUS2Rni2uTG",
+            "AJoy9Xd6S08Z",
+            "AJrU6Sra3/M2",
+            "AK4o28lQ8n8E",
+            "AKIBNmC3sHnG",
+            "AKNxIqtQMYv8",
+            "AL6OotMPwkmI",
+            "ALf/B/jy0hjC",
+            "ALSdT0vOIG/h",
+            "ALsmNogHEdCo",
+            "AM11LWdPy/XO",
+            "AMcQlZ/UYdz5",
+            "AMLJPo2lfQMu",
+            "AMMATGsqhf/5",
+            "AMUgbi5u8J/p",
+            "ANHZHhdHWtKD",
+            "ANVVVEVxmqqd",
+            "AORlBI9NSve3",
+            "AOwWTOcZJePD",
+            "APzYLk1ORsbE"
+        ]
+    }
+}

@@ -10,7 +10,7 @@ import { BUILD_DIRECTORY, CDC_ACCELERATOR_DIRECTORY, SRC_DIRECTORY } from './con
 import { bundleInlineImportScripts, cleanJavaScriptModuleBoilerplateScreenSetEvents, processMainScriptInlineImports } from '../utils/utils.js'
 
 export default class WebScreenSets extends SiteFeature {
-    static TEMPLATE_SCREEN_SET_JAVASCRIPT_FILE = path.join(CDC_ACCELERATOR_DIRECTORY, `/templates/defaultScreenSetJavaScript.js`)
+    static TEMPLATE_SCREEN_SET_JAVASCRIPT_FILE = path.join(CDC_ACCELERATOR_DIRECTORY, 'templates', 'defaultScreenSetJavaScript.js')
     static TEMPLATE_SCREEN_SET_CSS_CUSTOM_CODE_SEPARATOR_START = `/* || CUSTOM CODE START */`
     static TEMPLATE_SCREEN_SET_CSS_CUSTOM_CODE_SEPARATOR_END = `/* || CUSTOM CODE END */`
 
