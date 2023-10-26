@@ -15,6 +15,8 @@ import { init } from './init.js'
 
 const { USER_KEY, SECRET_KEY } = process.env
 const gigya = new Gigya(USER_KEY, SECRET_KEY)
-
+if (process.argv == 'undefined' || process.argv > 4) {
+    throw new Error('Incorrect number of arguments. Usage: [operation] [featureName] [environment]')
+}
 const { sites, featureName, environment } = parseArguments({ args: process.argv, config: config.source })
 init({ gigya, sites, featureName, environment })
