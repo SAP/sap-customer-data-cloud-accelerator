@@ -10,6 +10,9 @@ import { getPartnerID } from '../services/gigya/gigya.helpers.js'
 
 const parseArguments = ({ args, config }) => {
     let [, , featureName, environment] = args
+    if (args != featureName || args != environment) {
+        throw new Error('Insert a valid argument')
+    }
     if (args.length > 4) {
         throw new Error('Incorrect number of arguments. Usage: [operation] [featureName] [environment]')
     }
