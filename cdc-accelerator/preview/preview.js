@@ -424,7 +424,7 @@ const getScreenSetWebSdkFilename = async ({ apiKey }) => {
     if (site.siteDomain) {
         filename += `${site.siteDomain}/`
     }
-    filename += 'WebSdk.js'
+    filename += 'WebSdk/WebSdk.js'
 
     return filename
 }
