@@ -62,34 +62,6 @@ const onGigyaServiceReady = () => {
 // Load Gigya
 //
 
-const getConfig = async () =>
-    await fetch(CONFIG_FILE)
-        .then((response) => response.json())
-        .then((data) => data)
-
-const getConfigSites = async (origin = 'deploy') => {
-    const config = await getConfig()
-    if (!config[origin]) {
-        return []
-    }
-
-    // If using single site, convert to array
-    if (!Array.isArray(config[origin]) && config[origin].apiKey) {
-        config[origin] = [config[origin]]
-    }
-
-    // If using environments, get sites with environment field
-    if (!Array.isArray(config[origin])) {
-        let sites = []
-        Object.entries(config[origin]).forEach(([environment, environmentSites]) => {
-            environmentSites.forEach((site) => sites.push({ ...site, environment }))
-        })
-        return sites
-    }
-
-    return config[origin]
-}
-
 const appendGigyaScriptTag = ({ apiKey, webSdk, lang }) => {
     let gigyaScript = document.createElement('script')
     gigyaScript.src = `${GIGYA_API_URL}?apikey=${apiKey}${lang ? `&lang=${lang}` : ''}`
@@ -141,7 +113,7 @@ const selectSite = (apiKey) => {
 }
 
 const loadSiteSelector = async ({ apiKey: currentApiKey }) => {
-    const sites = await getConfigSites(ORIGIN)
+    const sites = await Configuration.getConfigSites(ORIGIN)
 
     // If no site selected, or invalid apiKey, select the first enabled site
     if (!currentApiKey || !sites.find((site) => site.apiKey === currentApiKey)) {
@@ -404,12 +376,10 @@ const loadScreenSetCss = async (params) => {
 }
 
 const getScreenSetCssFilename = async ({ apiKey, screenSetID }) => {
-    const sites = await getConfigSites(ORIGIN)
-    const site = sites.find((site) => site.apiKey === apiKey)
-
-    let filename = BUILD_DIRECTORY + 'SAP Customer Data Cloud/Sites/' // TODO Change this hardcoded partner name
-    if (site.siteDomain) {
-        filename += `${site.siteDomain}/`
+    const site = await Configuration.getSiteInfo(apiKey)
+    let filename = BUILD_DIRECTORY + site.partnerName + '/Sites/'
+    if (site.baseDomain) {
+        filename += `${site.baseDomain}/`
     }
     filename += `WebScreenSets/${screenSetID}/${screenSetID}.css`
 
@@ -417,12 +387,10 @@ const getScreenSetCssFilename = async ({ apiKey, screenSetID }) => {
 }
 
 const getScreenSetWebSdkFilename = async ({ apiKey }) => {
-    const sites = await getConfigSites(ORIGIN)
-    const site = sites.find((site) => site.apiKey === apiKey)
-
-    let filename = BUILD_DIRECTORY + 'SAP Customer Data Cloud/Sites/' // TODO Change this hardcoded partner name
-    if (site.siteDomain) {
-        filename += `${site.siteDomain}/`
+    const site = await Configuration.getSiteInfo(apiKey)
+    let filename = BUILD_DIRECTORY + site.partnerName + '/Sites/'
+    if (site.baseDomain) {
+        filename += `${site.baseDomain}/`
     }
     filename += 'WebSdk/WebSdk.js'
 
@@ -430,12 +398,10 @@ const getScreenSetWebSdkFilename = async ({ apiKey }) => {
 }
 
 const getScreenSetEvents = async ({ apiKey, screenSetID }) => {
-    const sites = await getConfigSites(ORIGIN)
-    const site = sites.find((site) => site.apiKey === apiKey)
-
-    let filename = BUILD_DIRECTORY + 'SAP Customer Data Cloud/Sites/' // TODO Change this hardcoded partner name
-    if (site.siteDomain) {
-        filename += `${site.siteDomain}/`
+    const site = await Configuration.getSiteInfo(apiKey)
+    let filename = BUILD_DIRECTORY + site.partnerName + '/Sites/'
+    if (site.baseDomain) {
+        filename += `${site.baseDomain}/`
     }
     filename += `WebScreenSets/${screenSetID}/${screenSetID}.js`
 
@@ -464,4 +430,53 @@ const getScreenSetEventsFromFile = async (filename) => {
     }
 
     return screenSetEvents
+}
+
+class Configuration {
+    static configuration = undefined
+    static Origin = { source: 'source', deploy: 'deploy', cache: 'cache' }
+
+    static async #read() {
+        await fetch(CONFIG_FILE)
+            .then((response) => response.json())
+            .then((data) => (Configuration.configuration = data))
+    }
+
+    static async get() {
+        if (this.configuration === undefined) {
+            await Configuration.#read()
+        }
+        return this.configuration
+    }
+
+    static async getConfigSites(origin = this.Origin.deploy) {
+        const config = await this.get()
+        if (!config[origin]) {
+            return []
+        }
+
+        // If using single site, convert to array
+        if (!Array.isArray(config[origin]) && config[origin].apiKey) {
+            config[origin] = [config[origin]]
+        }
+
+        // If using environments, get sites with environment field
+        if (!Array.isArray(config[origin])) {
+            let sites = []
+            Object.entries(config[origin]).forEach(([environment, environmentSites]) => {
+                environmentSites.forEach((site) => sites.push({ ...site, environment }))
+            })
+            return sites
+        }
+
+        return config[origin]
+    }
+
+    static async getSiteInfo(apiKey) {
+        const config = await this.get()
+        if (!config[this.Origin.cache]) {
+            return undefined
+        }
+        return config[this.Origin.cache].find((site) => site.apiKey === apiKey)
+    }
 }
