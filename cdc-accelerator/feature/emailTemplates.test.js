@@ -1,10 +1,12 @@
-import { expectedGigyaResponseNok, getSiteConfig } from './test.gigyaResponses.js'
+import { expectedGigyaResponseNok, expectedGigyaResponseOk, getSiteConfig } from './test.gigyaResponses.js'
 import { emailsExpectedResponse, emailTemplate, getEmailsExpectedResponseWithMinimumTemplates } from './test.gigyaResponses.emails.js'
 import fs from 'fs'
 import EmailTemplates from './emailTemplates.js'
 import axios from 'axios'
 import path from 'path'
 import { credentials, siteDomain, apiKey, srcSiteDirectory, buildSiteDirectory } from './test.common.js'
+import ToolkitEmailOptions from '../sap-cdc-toolkit/copyConfig/emails/emailOptions.js'
+import EmailTemplateNameTranslator from '../sap-cdc-toolkit/emails/emailTemplateNameTranslator.js'
 
 jest.mock('axios')
 jest.mock('fs')
@@ -208,5 +210,79 @@ describe('Email templates test suite', () => {
                 passwordResetRenderedPt,
             )
         })
+    })
+
+    describe('Deploy test suite', () => {
+        test('all email templates files are deployed successfully', async () => {
+            await testDeploy(expectedGigyaResponseOk)
+        })
+
+        test('all email templates files are deployed unsuccessfully', async () => {
+            await testDeploy(expectedGigyaResponseNok)
+        })
+
+        async function testDeploy(serverResponse) {
+            const templatesToTest = ['magicLink', 'welcomeEmailTemplates', 'accountDeletedEmailTemplates', 'doubleOptIn', 'twoFactorAuth', 'unknownLocationNotification']
+            fs.readdirSync
+                .mockReturnValueOnce(templatesToTest)
+                .mockReturnValueOnce(['magicLink-en.html', 'magicLink-pt.html'])
+                .mockReturnValueOnce(['welcomeEmailTemplates-en.html'])
+                .mockReturnValueOnce(['accountDeletedEmailTemplates-pt-br.html'])
+                .mockReturnValueOnce(['doubleOptIn-en.html'])
+                .mockReturnValueOnce(['twoFactorAuth-en.html'])
+            fs.readFileSync
+                .mockReturnValueOnce(emailTemplate)
+                .mockReturnValueOnce(emailTemplate)
+                .mockReturnValueOnce(emailTemplate)
+                .mockReturnValueOnce(emailTemplate)
+                .mockReturnValueOnce(emailTemplate)
+                .mockReturnValueOnce(emailTemplate)
+            const payload = {
+                magicLink: {
+                    emailTemplates: {
+                        en: emailTemplate,
+                        pt: emailTemplate,
+                    },
+                },
+                emailNotifications: {
+                    welcomeEmailTemplates: {
+                        en: emailTemplate,
+                    },
+                    accountDeletedEmailTemplates: {
+                        'pt-br': emailTemplate,
+                    },
+                },
+                doubleOptIn: {
+                    confirmationEmailTemplates: {
+                        en: emailTemplate,
+                    },
+                },
+                twoFactorAuth: {
+                    emailProvider: {
+                        emailTemplates: {
+                            en: emailTemplate,
+                        },
+                    },
+                },
+            }
+            let spy = jest.spyOn(emailTemplates, 'deployUsingToolkit').mockReturnValueOnce([serverResponse])
+            if (serverResponse.statusCode === 200) {
+                const response = await emailTemplates.deploy(apiKey, getSiteConfig, buildSiteDirectory)
+                expect(response.length).toEqual(1)
+            } else {
+                await expect(emailTemplates.deploy(apiKey, getSiteConfig, buildSiteDirectory)).rejects.toThrow(Error)
+            }
+            expect(spy.mock.calls.length).toBe(1)
+            const emailOptions = new ToolkitEmailOptions()
+            const emailNameTranslator = new EmailTemplateNameTranslator()
+            for (const templateToTest of templatesToTest.slice(0, templatesToTest.length - 1)) {
+                emailOptions.options.branches.push({
+                    id: templateToTest,
+                    name: emailNameTranslator.translateInternalName(templateToTest),
+                    value: true,
+                })
+            }
+            expect(spy).toHaveBeenNthCalledWith(1, apiKey, getSiteConfig, payload, emailOptions)
+        }
     })
 })

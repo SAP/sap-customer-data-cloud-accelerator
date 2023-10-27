@@ -6,7 +6,7 @@ describe('End to end test suite', () => {
         executeTest(Operations.reset)
     })
 
-    test.skip(`Deploy all features`, () => {
+    test(`Deploy all features`, () => {
         executeTest(Operations.deploy)
     })
 
