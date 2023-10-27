@@ -407,11 +407,11 @@ const getScreenSetCssFilename = async ({ apiKey, screenSetID }) => {
     const sites = await getConfigSites(ORIGIN)
     const site = sites.find((site) => site.apiKey === apiKey)
 
-    let filename = BUILD_DIRECTORY
+    let filename = BUILD_DIRECTORY + 'SAP Customer Data Cloud/Sites/' // TODO Change this hardcoded partner name
     if (site.siteDomain) {
         filename += `${site.siteDomain}/`
     }
-    filename += `webScreenSets/${screenSetID}/${screenSetID}.css`
+    filename += `WebScreenSets/${screenSetID}/${screenSetID}.css`
 
     return filename
 }
@@ -420,11 +420,11 @@ const getScreenSetWebSdkFilename = async ({ apiKey }) => {
     const sites = await getConfigSites(ORIGIN)
     const site = sites.find((site) => site.apiKey === apiKey)
 
-    let filename = BUILD_DIRECTORY
+    let filename = BUILD_DIRECTORY + 'SAP Customer Data Cloud/Sites/' // TODO Change this hardcoded partner name
     if (site.siteDomain) {
         filename += `${site.siteDomain}/`
     }
-    filename += `webSdk.js`
+    filename += 'WebSdk.js'
 
     return filename
 }
@@ -433,11 +433,11 @@ const getScreenSetEvents = async ({ apiKey, screenSetID }) => {
     const sites = await getConfigSites(ORIGIN)
     const site = sites.find((site) => site.apiKey === apiKey)
 
-    let filename = BUILD_DIRECTORY
+    let filename = BUILD_DIRECTORY + 'SAP Customer Data Cloud/Sites/' // TODO Change this hardcoded partner name
     if (site.siteDomain) {
         filename += `${site.siteDomain}/`
     }
-    filename += `webScreenSets/${screenSetID}/${screenSetID}.js`
+    filename += `WebScreenSets/${screenSetID}/${screenSetID}.js`
 
     return await getScreenSetEventsFromFile(filename)
 }
