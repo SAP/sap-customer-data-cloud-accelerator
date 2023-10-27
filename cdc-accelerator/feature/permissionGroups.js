@@ -5,7 +5,7 @@ import { clearDirectoryContents } from '../utils/utils.js'
 import { SRC_DIRECTORY, BUILD_DIRECTORY } from './constants.js'
 import client from '../../cdc-accelerator/sap-cdc-toolkit/gigya/client.js'
 export default class PermissionGroups extends PartnerFeature {
-    static PERMISSIONGROUP_FILE_NAME = 'permissionGroups.json'
+    static PERMISSIONGROUP_FILE_NAME = 'PermissionGroups.json'
     constructor(credentials) {
         super(credentials)
     }
@@ -42,7 +42,7 @@ export default class PermissionGroups extends PartnerFeature {
         const buildFeaturePath = path.join(directory, this.getName())
         clearDirectoryContents(buildFeaturePath)
         const srcFeaturePath = buildFeaturePath.replace(BUILD_DIRECTORY, SRC_DIRECTORY)
-        this.copyFileFromSrcToBuild(srcFeaturePath, 'permissionGroups.json')
+        this.copyFileFromSrcToBuild(srcFeaturePath, PermissionGroups.PERMISSIONGROUP_FILE_NAME)
     }
 
     async deploy(directory) {
