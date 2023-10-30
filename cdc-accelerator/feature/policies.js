@@ -29,14 +29,16 @@ export default class Policies extends SiteFeature {
             throw new Error(JSON.stringify(policiesResponse))
         }
 
-        removePropertyFromObjectCascading(policiesResponse, 'confirmationEmailTemplates')
-        removePropertyFromObjectCascading(policiesResponse, 'emailTemplates')
+        const filteredPoliciesResponse = JSON.parse(JSON.stringify(policiesResponse))
+
+        removePropertyFromObjectCascading(filteredPoliciesResponse, 'confirmationEmailTemplates')
+        removePropertyFromObjectCascading(filteredPoliciesResponse, 'emailTemplates')
+
         const featureDirectory = path.join(siteDirectory, this.getName())
         this.createDirectory(featureDirectory)
 
-        // Create policy file
-        this.removeResponseStatusFields(policiesResponse)
-        fs.writeFileSync(path.join(featureDirectory, Policies.POLICIES_FILE_NAME), JSON.stringify(policiesResponse, null, 4))
+        this.removeResponseStatusFields(filteredPoliciesResponse)
+        fs.writeFileSync(path.join(featureDirectory, Policies.POLICIES_FILE_NAME), JSON.stringify(filteredPoliciesResponse, null, 4))
     }
 
     reset(siteDirectory) {
