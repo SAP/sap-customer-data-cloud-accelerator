@@ -315,76 +315,36 @@ processHashChange = async (params) => {
         window.location.reload()
     }
 
-    // ScreenSet changed
-    if (params.screenSetID && params.screenID) {
-        // Load screen with events from local build/ file
-        if (USE_LOCAL_SCREEN_SETS) {
-            const screenSetEvents = await getScreenSetEvents(params)
-            gigya.accounts.showScreenSet({ ...screenSetEvents, screenSet: params.screenSetID, startScreen: params.screenID, containerID: PREVIEW_CONTAINER_ID })
+    features.forEach((f) => {
+      if(f.isChanged(params)) {
+          f.onChanged(params)
 
-            // Load local css file
-            loadScreenSetCss(params)
-            // If any css file form gigya was loaded after, it will override the local css file
-            setTimeout(() => (document.querySelector('.cdc-initializer--css-link').nextSibling ? loadScreenSetCss(params) : false), 500)
-        }
-        // Load screen with events from cdc server
-        else {
-            gigya.accounts.showScreenSet({ screenSet: params.screenSetID, startScreen: params.screenID, containerID: PREVIEW_CONTAINER_ID })
-        }
+          if (!document.querySelector(`[href="${window.location.hash}"]`)) {
+              return
+          }
 
-        if (!document.querySelector(`[href="${window.location.hash}"]`)) {
-            return
-        }
+          // Open screen set type menu if closed
+          const screenSetMenuElement = document.querySelector(`[href="${window.location.hash}"]`).closest('[role="group"]').previousElementSibling
+          const screenSetTypeMenuElement = screenSetMenuElement.closest('[role="group"]').previousElementSibling
 
-        // Open screen set type menu if closed
-        const screenSetMenuElement = document.querySelector(`[href="${window.location.hash}"]`).closest('[role="group"]').previousElementSibling
-        const screenSetTypeMenuElement = screenSetMenuElement.closest('[role="group"]').previousElementSibling
+          if (!screenSetTypeMenuElement.nextElementSibling.classList.contains('show')) {
+              screenSetTypeMenuElement.click()
+          }
+          if (!screenSetMenuElement.nextElementSibling.classList.contains('show')) {
+              screenSetMenuElement.click()
+          }
 
-        if (!screenSetTypeMenuElement.nextElementSibling.classList.contains('show')) {
-            screenSetTypeMenuElement.click()
-        }
-        if (!screenSetMenuElement.nextElementSibling.classList.contains('show')) {
-            screenSetMenuElement.click()
-        }
-
-        // Remove active class from all menu items
-        document.querySelectorAll(`.${PREVIEW_MENU_ITEM_CLASS}`).forEach((element) => {
-            element.classList.remove('active')
-        })
-        // Add active class to current menu item
-        document.querySelector(`[href="${window.location.hash}"]`).classList.add('active')
-    }
+          // Remove active class from all menu items
+          document.querySelectorAll(`.${PREVIEW_MENU_ITEM_CLASS}`).forEach((element) => {
+              element.classList.remove('active')
+          })
+          // Add active class to current menu item
+          document.querySelector(`[href="${window.location.hash}"]`).classList.add('active')
+      }
+    })
 }
 
-//
-// ScreenSet build/ files
-//
 
-const loadScreenSetCss = async (params) => {
-    // Create and load css file
-    const cssFile = document.createElement('link')
-    cssFile.setAttribute('rel', 'stylesheet')
-    cssFile.setAttribute('type', 'text/css')
-    cssFile.setAttribute('class', LINK_CSS_CLASS)
-    cssFile.setAttribute('href', await getScreenSetCssFilename(params))
-
-    // Remove previous css files
-    Array.from(document.querySelectorAll(`link[rel="stylesheet"].${LINK_CSS_CLASS}`)).forEach((element) => element.remove())
-
-    // Load css file
-    document.head.appendChild(cssFile)
-}
-
-const getScreenSetCssFilename = async ({ apiKey, screenSetID }) => {
-    const site = await Configuration.getSiteInfo(apiKey)
-    let filename = BUILD_DIRECTORY + site.partnerName + '/Sites/'
-    if (site.baseDomain) {
-        filename += `${site.baseDomain}/`
-    }
-    filename += `WebScreenSets/${screenSetID}/${screenSetID}.css`
-
-    return filename
-}
 
 const getScreenSetWebSdkFilename = async ({ apiKey }) => {
     const site = await Configuration.getSiteInfo(apiKey)
@@ -395,41 +355,6 @@ const getScreenSetWebSdkFilename = async ({ apiKey }) => {
     filename += 'WebSdk/WebSdk.js'
 
     return filename
-}
-
-const getScreenSetEvents = async ({ apiKey, screenSetID }) => {
-    const site = await Configuration.getSiteInfo(apiKey)
-    let filename = BUILD_DIRECTORY + site.partnerName + '/Sites/'
-    if (site.baseDomain) {
-        filename += `${site.baseDomain}/`
-    }
-    filename += `WebScreenSets/${screenSetID}/${screenSetID}.js`
-
-    return await getScreenSetEventsFromFile(filename)
-}
-
-const getScreenSetEventsFromFile = async (filename) => {
-    // Get screenSet JavaScript from build folder
-    let screenJs = await fetch(filename)
-        .then((response) => response.text())
-        .then((data) => data)
-        .catch((error) => {
-            console.log({ error })
-        })
-
-    // Remove comments and \n
-    screenJs = screenJs.replace(/\/\*[\s\S]*?\*\/|([^\\:]|^)\/\/.*$/gm, '')
-    screenJs = '' + screenJs.replaceAll('\n', '')
-
-    let screenSetEvents
-    try {
-        screenSetEvents = eval('(' + screenJs + ')')
-    } catch (error) {
-        alert('Error loading local Screen-Set events from file: \n\n' + filename)
-        screenSetEvents = {}
-    }
-
-    return screenSetEvents
 }
 
 class Configuration {
@@ -480,3 +405,91 @@ class Configuration {
         return config[this.Origin.cache].find((site) => site.apiKey === apiKey)
     }
 }
+
+class WebScreenSets {
+
+    isChanged(params) {
+        return params.screenSetID && params.screenID
+    }
+
+    async onChanged(params) {
+        // Load screen with events from local build/ file
+        if (USE_LOCAL_SCREEN_SETS) {
+            const screenSetEvents = await this.getScreenSetEvents(params)
+            gigya.accounts.showScreenSet({ ...screenSetEvents, screenSet: params.screenSetID, startScreen: params.screenID, containerID: PREVIEW_CONTAINER_ID })
+
+            // Load local css file
+            await this.loadScreenSetCss(params)
+            // If any css file form gigya was loaded after, it will override the local css file
+            setTimeout(() => (document.querySelector('.cdc-initializer--css-link').nextSibling ? this.loadScreenSetCss(params) : false), 500)
+        }
+        // Load screen with events from cdc server
+        else {
+            gigya.accounts.showScreenSet({ screenSet: params.screenSetID, startScreen: params.screenID, containerID: PREVIEW_CONTAINER_ID })
+        }
+    }
+
+    async loadScreenSetCss(params) {
+        // Create and load css file
+        const cssFile = document.createElement('link')
+        cssFile.setAttribute('rel', 'stylesheet')
+        cssFile.setAttribute('type', 'text/css')
+        cssFile.setAttribute('class', LINK_CSS_CLASS)
+        cssFile.setAttribute('href', await this.getScreenSetCssFilename(params))
+
+        // Remove previous css files
+        Array.from(document.querySelectorAll(`link[rel="stylesheet"].${LINK_CSS_CLASS}`)).forEach((element) => element.remove())
+
+        // Load css file
+        document.head.appendChild(cssFile)
+    }
+
+    async getScreenSetCssFilename({ apiKey, screenSetID }) {
+        const site = await Configuration.getSiteInfo(apiKey)
+        let filename = BUILD_DIRECTORY + site.partnerName + '/Sites/'
+        if (site.baseDomain) {
+            filename += `${site.baseDomain}/`
+        }
+        filename += `WebScreenSets/${screenSetID}/${screenSetID}.css`
+
+        return filename
+    }
+
+    async getScreenSetEvents({ apiKey, screenSetID }) {
+        const site = await Configuration.getSiteInfo(apiKey)
+        let filename = BUILD_DIRECTORY + site.partnerName + '/Sites/'
+        if (site.baseDomain) {
+            filename += `${site.baseDomain}/`
+        }
+        filename += `WebScreenSets/${screenSetID}/${screenSetID}.js`
+
+        return await this.#getScreenSetEventsFromFile(filename)
+    }
+
+    async #getScreenSetEventsFromFile(filename) {
+        // Get screenSet JavaScript from build folder
+        let screenJs = await fetch(filename)
+            .then((response) => response.text())
+            .then((data) => data)
+            .catch((error) => {
+                console.log({ error })
+            })
+
+        // Remove comments and \n
+        screenJs = screenJs.replace(/\/\*[\s\S]*?\*\/|([^\\:]|^)\/\/.*$/gm, '')
+        screenJs = '' + screenJs.replaceAll('\n', '')
+
+        let screenSetEvents
+        try {
+            screenSetEvents = eval('(' + screenJs + ')')
+        } catch (error) {
+            alert('Error loading local Screen-Set events from file: \n\n' + filename)
+            screenSetEvents = {}
+        }
+
+        return screenSetEvents
+    }
+}
+
+const features = [new WebScreenSets()]
+
