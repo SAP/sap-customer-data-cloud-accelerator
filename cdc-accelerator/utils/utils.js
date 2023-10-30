@@ -4,22 +4,12 @@
  */
 import fs from 'fs'
 import path from 'path'
-
+import shellescape from 'escape-it'
 import { FEATURE_NAME_LIST } from '../constants.js'
 import { getPartnerID } from '../services/gigya/gigya.helpers.js'
 
 const parseArguments = ({ args, config }) => {
     let [, , featureName, environment] = args
-    if (args != featureName || args != environment) {
-        throw new Error('Insert a valid argument')
-    }
-    if (args.length > 4) {
-        throw new Error('Incorrect number of arguments. Usage: [operation] [featureName] [environment]')
-    }
-    if (!featureName || !environment) {
-        console.log('undefined args')
-    }
-
     // If no feature selected, deploy all features and the environment might be in the featureName variable
     if (!FEATURE_NAME_LIST.includes(featureName)) {
         environment = featureName
