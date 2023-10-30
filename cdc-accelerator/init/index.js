@@ -15,6 +15,6 @@ import { init } from './init.js'
 var shellescape = require('escape-it')
 const { USER_KEY, SECRET_KEY } = process.env
 const gigya = new Gigya(USER_KEY, SECRET_KEY)
-
-const { sites, featureName, environment } = parseArguments({ args: process.argv, config: config.source })
+var escape = shellescape(process.argv)
+const { sites, featureName, environment } = parseArguments({ args: escape, config: config.source })
 init({ gigya, sites, featureName, environment })
