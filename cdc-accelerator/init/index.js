@@ -8,13 +8,14 @@ import { CONFIG_FILENAME } from '../constants.js'
 import { createRequire } from 'module'
 const require = createRequire(import.meta.url)
 const config = require(`../../${CONFIG_FILENAME}`)
-
 import Gigya from '../services/gigya/gigya.js'
 import { parseArguments } from '../utils/utils.js'
 import { init } from './init.js'
-var shellescape = require('escape-it')
+
 const { USER_KEY, SECRET_KEY } = process.env
 const gigya = new Gigya(USER_KEY, SECRET_KEY)
-var escape = shellescape(process.argv)
-const { sites, featureName, environment } = parseArguments({ args: escape, config: config.source })
-init({ gigya, sites, featureName, environment })
+let args = process.argv
+if (args.length >= 2) {
+    const { sites, featureName, environment } = parseArguments({ args: args, config: config.source })
+    init({ gigya, sites, featureName, environment })
+}

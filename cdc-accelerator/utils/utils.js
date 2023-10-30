@@ -4,11 +4,11 @@
  */
 import fs from 'fs'
 import path from 'path'
-import shellescape from 'escape-it'
 import { FEATURE_NAME_LIST } from '../constants.js'
 import { getPartnerID } from '../services/gigya/gigya.helpers.js'
 
 const parseArguments = ({ args, config }) => {
+    console.log('asdkasd', args)
     let [, , featureName, environment] = args
     // If no feature selected, deploy all features and the environment might be in the featureName variable
     if (!FEATURE_NAME_LIST.includes(featureName)) {

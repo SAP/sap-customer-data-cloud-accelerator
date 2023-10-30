@@ -18,11 +18,16 @@ import { runWithProgressAsync } from '../utils/utils.js'
 import { initWebSdk } from './initWebSdk.js'
 import { initWebScreenSets } from './initWebScreenSets.js'
 import { initPolicies } from './initPolicies.js'
-var shellescape = require('escape-it')
+
 const init = async ({ gigya, sites, featureName, environment, reset }) => {
     try {
-        var escaped = shellescape(environment)
-        console.log(`Init start${escaped ? ` (${escaped})` : ''}`)
+        // console.log('asoidja', validator.isEmpty(environment))
+
+        if (!environment) {
+            console.log('Init start')
+        } else {
+            console.log(`Init start${environment ? ` (${environment})` : ''}`)
+        }
 
         if (!sites) {
             if (environment) {
