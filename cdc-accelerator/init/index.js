@@ -14,8 +14,8 @@ import { init } from './init.js'
 
 const { USER_KEY, SECRET_KEY } = process.env
 const gigya = new Gigya(USER_KEY, SECRET_KEY)
-let args = process.argv
-if (args.length >= 2) {
-    const { sites, featureName, environment } = parseArguments({ args: args, config: config.source })
+
+if (process.argv.length >= 2) {
+    const { sites, featureName, environment } = parseArguments({ args: process.argv, config: config.source })
     init({ gigya, sites, featureName, environment })
 }
