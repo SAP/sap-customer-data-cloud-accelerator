@@ -5,6 +5,7 @@ import Policies from './policies.js'
 import { SRC_DIRECTORY, BUILD_DIRECTORY } from './constants.js'
 import axios from 'axios'
 import ToolkitPolicyOptions from '../sap-cdc-toolkit/copyConfig/policies/policyOptions.js'
+import { removePropertyFromObjectCascading } from '../sap-cdc-toolkit/copyConfig/objectHelper.js'
 import { credentials, siteDomain, apiKey, srcSiteDirectory } from './test.common.js'
 jest.mock('fs')
 jest.mock('axios')
@@ -12,15 +13,31 @@ jest.mock('axios')
 const policies = new Policies(credentials)
 
 describe('Init policies test suite', () => {
-    test('policies file is generated successfully', async () => {
+    test('policies file does not contain unwanted fields', async () => {
+        cloneWithoutEmailTemplates = function (original) {
+            const cloned = JSON.parse(JSON.stringify(original))
+            delete cloned.emailVerification.emailTemplates
+            delete cloned.doubleOptIn.emailTemplates
+            delete cloned.passwordReset.emailTemplates
+            delete cloned.twoFactorAuth.emailProvider.emailTemplates
+            delete cloned.preferencesCenter.emailTemplates
+            delete cloned.codeVerification.emailTemplates
+            delete cloned.doubleOptIn.confirmationEmailTemplates
+            delete cloned.statusCode
+            delete cloned.errorCode
+            delete cloned.statusReason
+            delete cloned.callId
+            delete cloned.time
+            return cloned
+        }
         axios.mockResolvedValueOnce({ data: expectedPoliciesResponse })
-        fs.existsSync.mockReturnValue(false)
-        fs.mkdirSync.mockReturnValue(undefined)
-        fs.writeFileSync.mockReturnValue(undefined)
+
         await policies.init(apiKey, getSiteConfig, srcSiteDirectory)
-        const srcDirectory = path.join(srcSiteDirectory, policies.getName())
-        expect(fs.existsSync).toHaveBeenCalledWith(srcDirectory)
-        expect(fs.writeFileSync).toHaveBeenCalledWith(path.join(srcDirectory, Policies.POLICIES_FILE_NAME), JSON.stringify(expectedPoliciesResponse, null, 4))
+
+        const expectedOutput = cloneWithoutEmailTemplates(expectedPoliciesResponse)
+        const expectedPath = path.join(srcSiteDirectory, policies.getName(), Policies.POLICIES_FILE_NAME)
+
+        expect(fs.writeFileSync).toHaveBeenCalledWith(expectedPath, JSON.stringify(expectedOutput, null, 4))
     })
 
     test('get policies failed', async () => {
