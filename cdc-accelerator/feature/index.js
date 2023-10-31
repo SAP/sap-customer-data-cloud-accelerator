@@ -5,4 +5,8 @@
 import CLI from './cli.js'
 
 const cli = new CLI()
-await cli.main(process)
+const credentials = {
+    userKey: process.env.USER_KEY,
+    secret: process.env.SECRET_KEY,
+}
+await cli.main(credentials, process.argv)
