@@ -92,13 +92,23 @@ const getHashParams = () => {
     const hashParams = location.hash.split('/').filter((param) => param.length > 1)
     const params = {
         apiKey: hashParams[0] ? hashParams[0] : '',
-        screenSetID: hashParams[1] ? hashParams[1] : '',
-        screenID: hashParams[2] ? hashParams[2] : '',
+        featureName: hashParams[1] ? hashParams[1] : '',
+        screenSetID: hashParams[2] ? hashParams[2] : '',
+        screenID: hashParams[3] ? hashParams[3] : '',
     }
     return params
 }
 
-const createHash = ({ apiKey, screenSetID, screenID }) => (screenSetID && screenID ? `/${apiKey}/${screenSetID}/${screenID}` : `/${apiKey}/`)
+function createHash({ apiKey, featureName, screenSetID, screenID }) {
+    let hash = `/${apiKey}/`
+    if (screenSetID && screenID) {
+        if (featureName) {
+            hash += `${featureName}/`
+        }
+        hash += `${screenSetID}/${screenID}`
+    }
+    return hash
+}
 
 const setHashParams = (params) => {
     location.hash = createHash(params)
@@ -107,7 +117,6 @@ const setHashParams = (params) => {
 const getCurrentApiKey = () => getHashParams().apiKey
 
 const selectSite = (apiKey) => {
-    // setHashParams({ ...getHashParams(), apiKey })
     setHashParams({ apiKey })
     window.location.reload()
 }
@@ -163,7 +172,8 @@ const loadScreenSetsMenu = (callback = () => {}) => {
     const featuresMenus = []
     features.forEach((f) => featuresMenus.push(f.getMenu()))
     Promise.all(featuresMenus).then((menu) => {
-        const menuTreeData = menu[0][0].nodes
+        let menuTreeData = [...menu]
+
         const defaultMenuItems = [
             {
                 text: 'Logout',
@@ -188,7 +198,7 @@ const loadScreenSetsMenu = (callback = () => {}) => {
         $(`#${PREVIEW_MENU_ID}`)
             .html('')
             .bstreeview({
-                data: [...menuTreeData, ...defaultMenuItems],
+                data: [...menuTreeData.flat(), ...defaultMenuItems],
                 expandIcon: 'fa fa-angle-down fa-fw',
                 collapseIcon: 'fa fa-angle-right fa-fw',
                 openNodeLinkOnNewTab: false,
@@ -335,6 +345,9 @@ class Configuration {
 }
 
 class WebScreenSets {
+    getName() {
+        return 'WebScreenSets'
+    }
     isChanged(params) {
         return params.screenSetID && params.screenID
     }
@@ -393,12 +406,20 @@ class WebScreenSets {
                         class: `${PREVIEW_MENU_ITEM_CLASS} list-group-item-action`,
                         href: `#${createHash({
                             apiKey: gigya.apiKey,
+                            featureName: this.getName(),
                             screenSetID: screenSet.screenSetID,
                             screenID: screensID,
                         })}`,
                     })),
                 })),
             }))
+            menuTreeData = [
+                {
+                    text: this.getName(),
+                    expanded: menuTreeData[0].text,
+                    nodes: menuTreeData[0].nodes,
+                },
+            ]
             return menuTreeData
         })
     }
@@ -504,4 +525,37 @@ class WebScreenSets {
     }
 }
 
-const features = [new WebScreenSets()]
+class EmailTemplates {
+    webScreenSets
+
+    constructor() {
+        this.webScreenSets = new WebScreenSets()
+    }
+
+    getName() {
+        return 'EmailTemplates'
+    }
+
+    isChanged(params) {
+        return this.webScreenSets.isChanged(params)
+    }
+
+    async onChanged(params) {
+        return this.webScreenSets.onChanged(params)
+    }
+
+    async getMenu() {
+        const menuTreeData = await this.webScreenSets.getMenu()
+        menuTreeData[0].text = this.getName()
+        menuTreeData.forEach((menu) => {
+            menu.nodes.forEach((group) => {
+                group.nodes.forEach((instance) => {
+                    instance.href = instance.href.replace('WebScreenSets', 'EmailTemplates')
+                })
+            })
+        })
+        return menuTreeData
+    }
+}
+
+const features = [new WebScreenSets(), new EmailTemplates()]
