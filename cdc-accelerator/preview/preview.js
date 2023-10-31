@@ -160,9 +160,10 @@ const isSiteEnabled = ({ apiKey }) => {
 //
 
 const loadScreenSetsMenu = (callback = () => {}) => {
-    Promise.all([features[0].getMenu()]).then((menu) => {
+    const featuresMenus = []
+    features.forEach((f) => featuresMenus.push(f.getMenu()))
+    Promise.all(featuresMenus).then((menu) => {
         const menuTreeData = menu[0][0].nodes
-        console.log('loadScreenSetsMenu', menuTreeData)
         const defaultMenuItems = [
             {
                 text: 'Logout',
@@ -342,7 +343,6 @@ class WebScreenSets {
         // Load screen with events from local build/ file
         if (USE_LOCAL_SCREEN_SETS) {
             const screenSetEvents = await this.getScreenSetEvents(params)
-            console.log('onChanged', screenSetEvents)
             gigya.accounts.showScreenSet({ ...screenSetEvents, screenSet: params.screenSetID, startScreen: params.screenID, containerID: PREVIEW_CONTAINER_ID })
 
             // Load local css file
@@ -358,10 +358,7 @@ class WebScreenSets {
 
     getMenu() {
         let menuTreeData
-        //let screenSets = await this.getScreenSetsID()
         return new Promise(this.getScreenSetsID).then((screenSets) => {
-            //console.log('ss', screenSets)
-            //return [screenSets]
             if (FILTER_SCREENS?.length) {
                 let filterScreens = [...FILTER_SCREENS]
 
@@ -402,14 +399,8 @@ class WebScreenSets {
                     })),
                 })),
             }))
-            console.log('getMenu', menuTreeData)
-            console.log(new Date())
             return menuTreeData
         })
-
-        //this.getScreenSetsID((screenSets) => {
-
-        //}))
     }
 
     getScreenSetsID(callback = () => {}) {
@@ -479,7 +470,6 @@ class WebScreenSets {
 
     async getScreenSetEvents({ apiKey, screenSetID }) {
         const site = await Configuration.getSiteInfo(apiKey)
-        console.log('getScreenSetEvents', site)
         let filename = BUILD_DIRECTORY + site.partnerName + '/Sites/'
         if (site.baseDomain) {
             filename += `${site.baseDomain}/`
