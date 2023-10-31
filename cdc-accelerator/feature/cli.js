@@ -23,6 +23,17 @@ export default class CLI {
 
     parseArguments(args) {
         let [, , operation, featureName, environment] = args
+        if (operation != null) {
+            validator.escape(operation)
+        }
+        if (featureName != null) {
+            validator.escape(featureName)
+        }
+
+        if (environment != null) {
+            validator.escape(environment)
+        }
+
         if (args.length > 5) {
             throw new Error('Incorrect number of arguments. Usage: [operation] [featureName] [environment]')
         }
@@ -100,8 +111,7 @@ export default class CLI {
             const credentials = { userKey: process.env.USER_KEY, secret: process.env.SECRET_KEY }
             this.siteFeature = this.initSiteFeature(credentials)
             this.partnerFeature = this.initPartnerFeature(credentials)
-
-            const { operation, sites, featureName, environment } = this.parseArguments(validator.escape(process.argv))
+            const { operation, sites, featureName, environment } = this.parseArguments(process.argv)
 
             const accelerator = new Accelerator(this.siteFeature, this.partnerFeature)
             return await accelerator.execute(operation, sites, featureName, environment)
