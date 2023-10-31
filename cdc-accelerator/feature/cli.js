@@ -16,7 +16,7 @@ import Accelerator from './accelerator.js'
 import Feature from './feature.js'
 import fs from 'fs'
 import EmailTemplates from './emailTemplates.js'
-
+import validator from 'validator'
 export default class CLI {
     siteFeature
     partnerFeature
@@ -101,7 +101,7 @@ export default class CLI {
             this.siteFeature = this.initSiteFeature(credentials)
             this.partnerFeature = this.initPartnerFeature(credentials)
 
-            const { operation, sites, featureName, environment } = this.parseArguments(process.argv)
+            const { operation, sites, featureName, environment } = this.parseArguments(validator.escape(process.argv))
 
             const accelerator = new Accelerator(this.siteFeature, this.partnerFeature)
             return await accelerator.execute(operation, sites, featureName, environment)
