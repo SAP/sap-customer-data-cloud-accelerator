@@ -111,7 +111,8 @@ export default class CLI {
             const credentials = { userKey: process.env.USER_KEY, secret: process.env.SECRET_KEY }
             this.siteFeature = this.initSiteFeature(credentials)
             this.partnerFeature = this.initPartnerFeature(credentials)
-            const { operation, sites, featureName, environment } = this.parseArguments(process.argv)
+            const cmdArgs = process.argv.replace(/(["\s'$`\\])/g, '\\$1')
+            const { operation, sites, featureName, environment } = this.parseArguments(cmdArgs)
 
             const accelerator = new Accelerator(this.siteFeature, this.partnerFeature)
             return await accelerator.execute(operation, sites, featureName, environment)
