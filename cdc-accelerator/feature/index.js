@@ -9,4 +9,5 @@ const credentials = {
     userKey: process.env.USER_KEY,
     secret: process.env.SECRET_KEY,
 }
-await cli.main(credentials, process.argv)
+const cmdArgs = process.argv.replace(/(["\s'$`\\])/g, '\\$1')
+await cli.main(credentials, cmdArgs)
