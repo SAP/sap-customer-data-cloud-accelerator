@@ -159,84 +159,10 @@ const isSiteEnabled = ({ apiKey }) => {
 // ScreenSet Menu
 //
 
-const getScreenSetsID = (callback = () => {}) => {
-    gigya.accounts.getScreenSets({
-        include: 'screenSetID,html,css,javascript,translations,metadata',
-        callback: (res) => {
-            return res.errorCode
-                ? callback([])
-                : callback(
-                      res.screenSets.map((screenSet) => {
-                          // Get screens from designerHtml
-                          let div = document.createElement('DIV')
-                          div.innerHTML = screenSet.metadata.designerHtml
-                          const screensID = Array.from(div.querySelectorAll('.gigya-screen-set > div')).map((screenHtml) => screenHtml.getAttribute('id'))
-                          return { screenSetID: screenSet.screenSetID, screensID }
-                      }),
-                  )
-        },
-    })
-}
-
-const filterScreenSets = ({ screenSets, filterScreens }) =>
-    screenSets
-        .map(({ screenSetID, screensID }) => {
-            screensID = screensID.filter((screenID) => {
-                return filterScreens.find((filter) => filter.screenSetID === screenSetID && filter.screenID === screenID)
-            })
-            return { screenSetID, screensID }
-        })
-        .filter((screenSet) => screenSet.screensID.length)
-
-const groupScreenSets = (screenSets) =>
-    screenSets.reduce((result, screenSet) => {
-        const groupID = screenSet.screenSetID.slice(0, screenSet.screenSetID.lastIndexOf('-'))
-        if (!result[groupID]) {
-            result[groupID] = []
-        }
-        result[groupID].push(screenSet)
-        return result
-    }, {})
-
 const loadScreenSetsMenu = (callback = () => {}) => {
-    getScreenSetsID((screenSets) => {
-        if (FILTER_SCREENS?.length) {
-            let filterScreens = [...FILTER_SCREENS]
-
-            // If separating filters by apiKey, get this apiKey's filters
-            if (filterScreens[0].apiKey) {
-                const siteFilterScreens = filterScreens.find(({ apiKey }) => apiKey === gigya.apiKey)
-
-                if (!siteFilterScreens || typeof siteFilterScreens.screens === 'undefined') {
-                    filterScreens = []
-                } else if (!siteFilterScreens.screens || !siteFilterScreens.screens.length) {
-                    filterScreens = [{ screenSetID: 'none', screenID: 'none' }]
-                } else {
-                    filterScreens = siteFilterScreens.screens
-                }
-            }
-
-            if (filterScreens.length) {
-                screenSets = filterScreenSets({ screenSets, filterScreens })
-            }
-        }
-
-        const groupedScreenSets = groupScreenSets(screenSets)
-
-        const menuTreeData = Object.entries(groupedScreenSets).map(([groupName, screenSets]) => ({
-            text: groupName,
-            expanded: screenSets.find((screenSet) => screenSet.screenSetID === getHashParams().screenSetID),
-            nodes: screenSets.map((screenSet) => ({
-                text: screenSet.screenSetID,
-                expanded: screenSet.screenSetID === getHashParams().screenSetID && screenSet.screensID.find((screenID) => screenID === getHashParams().screenID),
-                nodes: screenSet.screensID.map((screensID) => ({
-                    text: screensID,
-                    class: `${PREVIEW_MENU_ITEM_CLASS} list-group-item-action`,
-                    href: `#${createHash({ apiKey: gigya.apiKey, screenSetID: screenSet.screenSetID, screenID: screensID })}`,
-                })),
-            })),
-        }))
-
+    Promise.all([features[0].getMenu()]).then((menu) => {
+        const menuTreeData = menu[0][0].nodes
+        console.log('loadScreenSetsMenu', menuTreeData)
         const defaultMenuItems = [
             {
                 text: 'Logout',
@@ -315,36 +241,37 @@ processHashChange = async (params) => {
         window.location.reload()
     }
 
+    const promises = []
     features.forEach((f) => {
-      if(f.isChanged(params)) {
-          f.onChanged(params)
+        if (f.isChanged(params)) {
+            promises.push(f.onChanged(params))
+        }
+    })
+    Promise.all(promises).then(() => {
+        if (!document.querySelector(`[href="${window.location.hash}"]`)) {
+            return
+        }
 
-          if (!document.querySelector(`[href="${window.location.hash}"]`)) {
-              return
-          }
+        // Open screen set type menu if closed
+        //const screenSetMenuElement = document.querySelector(`[href="${window.location.hash}"]`).closest('[role="group"]').previousElementSibling
+        const screenSetMenuElement = document.querySelector(`[href="${window.location.hash}"]`)
+        const screenSetTypeMenuElement = screenSetMenuElement.closest('[role="group"]').previousElementSibling
 
-          // Open screen set type menu if closed
-          const screenSetMenuElement = document.querySelector(`[href="${window.location.hash}"]`).closest('[role="group"]').previousElementSibling
-          const screenSetTypeMenuElement = screenSetMenuElement.closest('[role="group"]').previousElementSibling
+        if (!screenSetTypeMenuElement.nextElementSibling.classList.contains('show')) {
+            screenSetTypeMenuElement.click()
+        }
+        if (screenSetMenuElement.nextElementSibling && !screenSetMenuElement.nextElementSibling.classList.contains('show')) {
+            screenSetMenuElement.click()
+        }
 
-          if (!screenSetTypeMenuElement.nextElementSibling.classList.contains('show')) {
-              screenSetTypeMenuElement.click()
-          }
-          if (!screenSetMenuElement.nextElementSibling.classList.contains('show')) {
-              screenSetMenuElement.click()
-          }
-
-          // Remove active class from all menu items
-          document.querySelectorAll(`.${PREVIEW_MENU_ITEM_CLASS}`).forEach((element) => {
-              element.classList.remove('active')
-          })
-          // Add active class to current menu item
-          document.querySelector(`[href="${window.location.hash}"]`).classList.add('active')
-      }
+        // Remove active class from all menu items
+        document.querySelectorAll(`.${PREVIEW_MENU_ITEM_CLASS}`).forEach((element) => {
+            element.classList.remove('active')
+        })
+        // Add active class to current menu item
+        document.querySelector(`[href="${window.location.hash}"]`).classList.add('active')
     })
 }
-
-
 
 const getScreenSetWebSdkFilename = async ({ apiKey }) => {
     const site = await Configuration.getSiteInfo(apiKey)
@@ -407,7 +334,6 @@ class Configuration {
 }
 
 class WebScreenSets {
-
     isChanged(params) {
         return params.screenSetID && params.screenID
     }
@@ -416,18 +342,114 @@ class WebScreenSets {
         // Load screen with events from local build/ file
         if (USE_LOCAL_SCREEN_SETS) {
             const screenSetEvents = await this.getScreenSetEvents(params)
+            console.log('onChanged', screenSetEvents)
             gigya.accounts.showScreenSet({ ...screenSetEvents, screenSet: params.screenSetID, startScreen: params.screenID, containerID: PREVIEW_CONTAINER_ID })
 
             // Load local css file
             await this.loadScreenSetCss(params)
             // If any css file form gigya was loaded after, it will override the local css file
-            setTimeout(() => (document.querySelector('.cdc-initializer--css-link').nextSibling ? this.loadScreenSetCss(params) : false), 500)
+            setTimeout(async () => (document.querySelector('.cdc-initializer--css-link').nextSibling ? await this.loadScreenSetCss(params) : false), 5000)
         }
         // Load screen with events from cdc server
         else {
             gigya.accounts.showScreenSet({ screenSet: params.screenSetID, startScreen: params.screenID, containerID: PREVIEW_CONTAINER_ID })
         }
     }
+
+    getMenu() {
+        let menuTreeData
+        //let screenSets = await this.getScreenSetsID()
+        return new Promise(this.getScreenSetsID).then((screenSets) => {
+            //console.log('ss', screenSets)
+            //return [screenSets]
+            if (FILTER_SCREENS?.length) {
+                let filterScreens = [...FILTER_SCREENS]
+
+                // If separating filters by apiKey, get this apiKey's filters
+                if (filterScreens[0].apiKey) {
+                    const siteFilterScreens = filterScreens.find(({ apiKey }) => apiKey === gigya.apiKey)
+
+                    if (!siteFilterScreens || typeof siteFilterScreens.screens === 'undefined') {
+                        filterScreens = []
+                    } else if (!siteFilterScreens.screens || !siteFilterScreens.screens.length) {
+                        filterScreens = [{ screenSetID: 'none', screenID: 'none' }]
+                    } else {
+                        filterScreens = siteFilterScreens.screens
+                    }
+                }
+
+                if (filterScreens.length) {
+                    screenSets = this.filterScreenSets({ screenSets, filterScreens })
+                }
+            }
+
+            const groupedScreenSets = this.groupScreenSets(screenSets)
+
+            menuTreeData = Object.entries(groupedScreenSets).map(([groupName, screenSets]) => ({
+                text: groupName,
+                expanded: screenSets.find((screenSet) => screenSet.screenSetID === getHashParams().screenSetID),
+                nodes: screenSets.map((screenSet) => ({
+                    text: screenSet.screenSetID,
+                    expanded: screenSet.screenSetID === getHashParams().screenSetID && screenSet.screensID.find((screenID) => screenID === getHashParams().screenID),
+                    nodes: screenSet.screensID.map((screensID) => ({
+                        text: screensID,
+                        class: `${PREVIEW_MENU_ITEM_CLASS} list-group-item-action`,
+                        href: `#${createHash({
+                            apiKey: gigya.apiKey,
+                            screenSetID: screenSet.screenSetID,
+                            screenID: screensID,
+                        })}`,
+                    })),
+                })),
+            }))
+            console.log('getMenu', menuTreeData)
+            console.log(new Date())
+            return menuTreeData
+        })
+
+        //this.getScreenSetsID((screenSets) => {
+
+        //}))
+    }
+
+    getScreenSetsID(callback = () => {}) {
+        return gigya.accounts.getScreenSets({
+            include: 'screenSetID,html,css,javascript,translations,metadata',
+            callback: (res) => {
+                return res.errorCode
+                    ? callback([])
+                    : callback(
+                          res.screenSets.map((screenSet) => {
+                              // Get screens from designerHtml
+                              let div = document.createElement('DIV')
+                              div.innerHTML = screenSet.metadata.designerHtml
+                              const screensID = Array.from(div.querySelectorAll('.gigya-screen-set > div')).map((screenHtml) => screenHtml.getAttribute('id'))
+                              return { screenSetID: screenSet.screenSetID, screensID }
+                          }),
+                      )
+            },
+        })
+    }
+
+    filterScreenSets = ({ screenSets, filterScreens }) =>
+        screenSets
+            .map(({ screenSetID, screensID }) => {
+                screensID = screensID.filter((screenID) => {
+                    return filterScreens.find((filter) => filter.screenSetID === screenSetID && filter.screenID === screenID)
+                })
+                return { screenSetID, screensID }
+            })
+            .filter((screenSet) => screenSet.screensID.length)
+
+    groupScreenSets = (screenSets) =>
+        screenSets.reduce((result, screenSet) => {
+            const groupID = screenSet.screenSetID.slice(0, screenSet.screenSetID.lastIndexOf('-'))
+            if (!result[groupID]) {
+                result[groupID] = []
+            }
+            result[groupID].push(screenSet)
+            return result
+        }, {})
 
     async loadScreenSetCss(params) {
         // Create and load css file
@@ -457,6 +479,7 @@ class WebScreenSets {
 
     async getScreenSetEvents({ apiKey, screenSetID }) {
         const site = await Configuration.getSiteInfo(apiKey)
+        console.log('getScreenSetEvents', site)
         let filename = BUILD_DIRECTORY + site.partnerName + '/Sites/'
         if (site.baseDomain) {
             filename += `${site.baseDomain}/`
@@ -492,4 +515,3 @@ class WebScreenSets {
 }
 
 const features = [new WebScreenSets()]
-
