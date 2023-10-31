@@ -39,7 +39,8 @@ export default class Accelerator {
 
     async #init(sites, featureName, environment) {
         const environmentInfo = environment ? ` (${environment})` : ''
-        console.log(`${Operations.init} start${environmentInfo}`)
+        const cleanData = environmentInfo.replace('\t', '_').replace('\n', '_').replace('\r', '_')
+        console.log(`${Operations.init} start${cleanData}`)
 
         if (!sites || !sites.length) {
             let msg = 'No source sites to use'
