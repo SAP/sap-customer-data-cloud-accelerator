@@ -22,10 +22,10 @@ export default class CLI {
     partnerFeature
 
     parseArguments(args) {
-        // let [, , operation, featureName, environment] = args
-        let operation = args.operation
-        let featureName = args.featureName
-        let environment = args.environment
+        let [, , operation, featureName, environment] = args
+        // let operation = args.operation
+        // let featureName = args.featureName
+        // let environment = args.environment
         if (operation != null) {
             validator.escape(operation)
         }
