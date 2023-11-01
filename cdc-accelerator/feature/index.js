@@ -10,5 +10,11 @@ const credentials = {
     secret: process.env.SECRET_KEY,
 }
 if (process.argv.length >= 3 && typeof process.argv[2] === 'string') {
-    await cli.main(credentials, process.argv)
+    const operations = {
+        operation: process.argv[2],
+        sites: process.argv[3],
+        featureName: process.argv[4],
+        environment: process.argv[5],
+    }
+    await cli.main(credentials, operations)
 }
