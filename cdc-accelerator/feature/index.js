@@ -9,11 +9,6 @@ const credentials = {
     userKey: process.env.USER_KEY,
     secret: process.env.SECRET_KEY,
 }
-fs.realpath(process.argv[1], { encoding: 'utf8' }, async (error, resolvedPath) => {
-    if (error) {
-        console.log(error)
-    } else {
-        console.log('The resolved path is:', process.argv)
-        await cli.main(credentials, process.argv)
-    }
-})
+if (process.argv.length >= 3 && typeof process.argv[2] === 'string') {
+    await cli.main(credentials, process.argv)
+}
