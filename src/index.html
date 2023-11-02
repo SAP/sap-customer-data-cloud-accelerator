@@ -19,10 +19,13 @@
         <script src="../cdc-accelerator/preview/preview.js"></script>
         <script>
             // Show only the necessary screens for this demo
-            const filterScreens = [
+            const filter = [
                 {
                     apiKey: '4_Ch-q_qKrjBJ_-QBEfMPkKA',
                     screens: false,
+                    emails: [
+                        { emailID: 'codeVerification', languages: ['en'] },
+                    ]
                 },
                 {
                     apiKey: '4_tqmAZeYVLPfPl9SYu_iFxA',
@@ -39,6 +42,18 @@
                         { screenSetID: 'PreferencesCenter-PasswordReset', screenID: 'gigya-reset-password-screen' },
                         { screenSetID: 'PreferencesCenter-PasswordReset', screenID: 'gigya-reset-password-success-screen' },
                     ],
+                    emails: [
+                        { emailID: 'codeVerification', languages: ['en'] },
+                        { emailID: 'doubleOptIn', languages: ['ar', 'en', 'pt-br'] },
+                        { emailID: 'emailVerification', languages: ['en'] },
+                        { emailID: 'impossibleTraveler', languages: ['en'] },
+                        { emailID: 'magicLink', languages: ['en'] },
+                        { emailID: 'passwordReset', languages: ['en', 'es-mx'] },
+                        { emailID: 'passwordResetNotification', languages: ['en'] },
+                        { emailID: 'preferencesCenter', languages: ['en'] },
+                        { emailID: 'twoFactorAuth', languages: ['en'] },
+                        { emailID: 'unknownLocationNotification', languages: ['en'] },
+                    ]
                 },
                 {
                     apiKey: '4_G9hcFjoYwj860VKK2eCILA',
@@ -73,7 +88,7 @@
                 origin: 'source', // 'source' or 'deploy'
                 useLocalWebSdk: true, // Use local web sdk js code from build/ directory (for development)
                 useLocalScreenSets: true, // Use local screensets js code from build/ directory (for development)
-                filterScreens, // Show only the necessary screens for this demo
+                filter,     // Show only the necessary features for this demo
                 lang: 'en', // Language of the Screen-Sets
             })
         </script>

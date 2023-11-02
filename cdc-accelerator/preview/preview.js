@@ -10,7 +10,7 @@ const CONFIG_FILE = '../cdc-accelerator.json'
 const BUILD_DIRECTORY = '../build/'
 
 let ORIGIN = ''
-let FILTER_SCREENS = []
+let FILTER = []
 
 let LINK_CSS_CLASS = ''
 let PREVIEW_CONTAINER_ID = ''
@@ -31,10 +31,10 @@ const preview = ({
     menuItemClass = 'cdc-initializer--preview-menu-item',
     selectApiKeyID = 'cdc-initializer--select-api-key',
     linkCssClass = 'cdc-initializer--css-link',
-    filterScreens,
+    filter,
 }) => {
     ORIGIN = origin
-    FILTER_SCREENS = filterScreens
+    FILTER = filter
 
     LINK_CSS_CLASS = linkCssClass
     PREVIEW_CONTAINER_ID = containerID
@@ -225,11 +225,11 @@ class Navigation {
     }
 
     static getSiteFilteredScreens({ apiKey }) {
-        return FILTER_SCREENS.find((filter) => filter.apiKey === apiKey)
+        return FILTER.find((filter) => filter.apiKey === apiKey)
     }
 
     static isSiteEnabled({ apiKey }) {
-        if (!FILTER_SCREENS) {
+        if (!FILTER) {
             return true
         }
         const siteFilterScreens = Navigation.getSiteFilteredScreens({ apiKey })
@@ -369,8 +369,8 @@ class WebScreenSets {
     getMenu() {
         let menuTreeData
         return new Promise(this.getScreenSetsID).then((screenSets) => {
-            if (FILTER_SCREENS?.length) {
-                let filterScreens = [...FILTER_SCREENS]
+            if (FILTER?.length) {
+                let filterScreens = [...FILTER]
 
                 // If separating filters by apiKey, get this apiKey's filters
                 if (filterScreens[0].apiKey) {
@@ -414,8 +414,8 @@ class WebScreenSets {
             menuTreeData = [
                 {
                     text: this.getName(),
-                    expanded: menuTreeData[0].text,
-                    nodes: menuTreeData[0].nodes,
+                    expanded: undefined,
+                    nodes: menuTreeData,
                 },
             ]
             return menuTreeData
@@ -532,10 +532,12 @@ class EmailTemplates {
     async getMenu() {
         const menuTreeData = await this.webScreenSets.getMenu()
         menuTreeData[0].text = this.getName()
-        menuTreeData.forEach((menu) => {
-            menu.nodes.forEach((group) => {
-                group.nodes.forEach((instance) => {
-                    instance.href = instance.href.replace('WebScreenSets', 'EmailTemplates')
+        menuTreeData.forEach((feature) => {
+            feature.nodes.forEach((menu) => {
+                menu.nodes.forEach((group) => {
+                    group.nodes.forEach((instance) => {
+                        instance.href = instance.href.replace('WebScreenSets', 'EmailTemplates')
+                    })
                 })
             })
         })
