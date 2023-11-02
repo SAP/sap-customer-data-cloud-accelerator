@@ -10,7 +10,6 @@ const credentials = {
     secret: process.env.SECRET_KEY,
 }
 if (process.argv.length >= 3 && typeof process.argv[2] === 'string') {
-    console.log(validateProcess())
     // const operations = {
     //     operation: process.argv[2],
     //     sites: process.argv[3],
@@ -25,7 +24,7 @@ function validateProcess() {
     for (let i = 2; i < process.argv.length; i++) {
         if (!allowedArgs.includes(process.argv[i])) {
             console.error(`Invalid argument: ${process.argv[i]}`)
-            process.exit(1) // Exit the program with an error status code
+            process.exit(1)
         }
         return sanitizeError(process.argv.replace('\t', '-').replace('\n', '-').replace('\r', '-'))
     }

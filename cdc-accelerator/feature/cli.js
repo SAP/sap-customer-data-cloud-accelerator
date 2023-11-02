@@ -24,9 +24,7 @@ export default class CLI {
     parseArguments(args) {
         const splitArgs = args.split(',')
         let [, , operation, featureName, environment] = splitArgs
-        // let operation = args.operation
-        // let featureName = args.featureName
-        // let environment = args.environment
+
         if (operation != null) {
             validator.escape(operation)
         }
