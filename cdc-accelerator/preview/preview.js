@@ -367,7 +367,6 @@ class WebScreenSets {
     }
 
     getMenu() {
-        let menuTreeData
         return new Promise(this.getScreenSetsID).then((screenSets) => {
             if (FILTER?.length) {
                 let filterScreens = [...FILTER]
@@ -390,32 +389,25 @@ class WebScreenSets {
                 }
             }
 
-            const groupedScreenSets = this.groupScreenSets(screenSets)
-
-            menuTreeData = Object.entries(groupedScreenSets).map(([groupName, screenSets]) => ({
-                text: groupName,
-                expanded: screenSets.find((screenSet) => screenSet.screenSetID === Navigation.getHashParams().groupID),
-                nodes: screenSets.map((screenSet) => ({
-                    text: screenSet.screenSetID,
-                    expanded:
-                        screenSet.screenSetID === Navigation.getHashParams().groupID && screenSet.screensID.find((screenID) => screenID === Navigation.getHashParams().itemID),
-                    nodes: screenSet.screensID.map((screensID) => ({
-                        text: screensID,
-                        class: `${PREVIEW_MENU_ITEM_CLASS} list-group-item-action`,
-                        href: `#${Navigation.createHash({
-                            apiKey: gigya.apiKey,
-                            featureName: this.getName(),
-                            groupID: screenSet.screenSetID,
-                            itemID: screensID,
-                        })}`,
-                    })),
-                })),
-            }))
-            menuTreeData = [
+            const menuTreeData = [
                 {
                     text: this.getName(),
                     expanded: undefined,
-                    nodes: menuTreeData,
+                    nodes: screenSets.map((screenSet) => ({
+                        text: screenSet.screenSetID,
+                        expanded:
+                            screenSet.screenSetID === Navigation.getHashParams().groupID && screenSet.screensID.find((screenID) => screenID === Navigation.getHashParams().itemID),
+                        nodes: screenSet.screensID.map((screensID) => ({
+                            text: screensID,
+                            class: `${PREVIEW_MENU_ITEM_CLASS} list-group-item-action`,
+                            href: `#${Navigation.createHash({
+                                apiKey: gigya.apiKey,
+                                featureName: this.getName(),
+                                groupID: screenSet.screenSetID,
+                                itemID: screensID,
+                            })}`,
+                        })),
+                    })),
                 },
             ]
             return menuTreeData
@@ -450,16 +442,6 @@ class WebScreenSets {
                 return { screenSetID, screensID }
             })
             .filter((screenSet) => screenSet.screensID.length)
-
-    groupScreenSets = (screenSets) =>
-        screenSets.reduce((result, screenSet) => {
-            const groupID = screenSet.screenSetID.slice(0, screenSet.screenSetID.lastIndexOf('-'))
-            if (!result[groupID]) {
-                result[groupID] = []
-            }
-            result[groupID].push(screenSet)
-            return result
-        }, {})
 
     async loadScreenSetCss(params) {
         // Create and load css file
@@ -532,12 +514,10 @@ class EmailTemplates {
     async getMenu() {
         const menuTreeData = await this.webScreenSets.getMenu()
         menuTreeData[0].text = this.getName()
-        menuTreeData.forEach((feature) => {
-            feature.nodes.forEach((menu) => {
-                menu.nodes.forEach((group) => {
-                    group.nodes.forEach((instance) => {
-                        instance.href = instance.href.replace('WebScreenSets', 'EmailTemplates')
-                    })
+        menuTreeData.forEach((menu) => {
+            menu.nodes.forEach((group) => {
+                group.nodes.forEach((instance) => {
+                    instance.href = instance.href.replace('WebScreenSets', 'EmailTemplates')
                 })
             })
         })
