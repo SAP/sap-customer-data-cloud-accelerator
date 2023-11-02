@@ -21,7 +21,7 @@ let PREVIEW_SELECT_API_KEY_ID = ''
 let USE_LOCAL_SCREEN_SETS = true
 
 const preview = ({
-    apiKey = getCurrentApiKey(),
+    apiKey = Navigation.getCurrentApiKey(),
     origin = 'deploy',
     useLocalWebSdk = true,
     useLocalScreenSets = true,
@@ -44,131 +44,21 @@ const preview = ({
 
     USE_LOCAL_SCREEN_SETS = useLocalScreenSets
 
-    loadSiteSelector({ apiKey, origin })
+    Navigation.loadSiteSelector({ apiKey, origin })
 
     if (!apiKey) {
         return console.log('No apiKey provided')
     }
-    loadGigya({ apiKey, useLocalWebSdk, lang })
+    return Gigya.loadGigya({ apiKey, useLocalWebSdk, lang })
 }
 
 const onGigyaServiceReady = () => {
-    loadScreenSetsMenu(() => {
-        initNavigation()
+    loadFeaturesMenu(() => {
+        Navigation.initNavigation()
     })
 }
 
-//
-// Load Gigya
-//
-
-const appendGigyaScriptTag = ({ apiKey, webSdk, lang }) => {
-    let gigyaScript = document.createElement('script')
-    gigyaScript.src = `${GIGYA_API_URL}?apikey=${apiKey}${lang ? `&lang=${lang}` : ''}`
-    gigyaScript.innerHTML = webSdk || ''
-    document.querySelector('head').append(gigyaScript)
-}
-
-const loadGigya = async ({ apiKey, useLocalWebSdk, lang }) => {
-    if (!useLocalWebSdk) {
-        return appendGigyaScriptTag({ apiKey, lang })
-    }
-
-    const httpClient = new XMLHttpRequest()
-    httpClient.open('GET', await getScreenSetWebSdkFilename({ apiKey }))
-    httpClient.onreadystatechange = function () {
-        if (this.readyState == 4 && this.status == 200) {
-            appendGigyaScriptTag({ apiKey, webSdk: httpClient.responseText, lang })
-        }
-    }
-    return httpClient.send()
-}
-
-//
-// Select apiKey
-//
-
-const getHashParams = () => {
-    const hashParams = location.hash.split('/').filter((param) => param.length > 1)
-    const params = {
-        apiKey: hashParams[0] ? hashParams[0] : '',
-        featureName: hashParams[1] ? hashParams[1] : '',
-        screenSetID: hashParams[2] ? hashParams[2] : '',
-        screenID: hashParams[3] ? hashParams[3] : '',
-    }
-    return params
-}
-
-function createHash({ apiKey, featureName, screenSetID, screenID }) {
-    let hash = `/${apiKey}/`
-    if (screenSetID && screenID) {
-        if (featureName) {
-            hash += `${featureName}/`
-        }
-        hash += `${screenSetID}/${screenID}`
-    }
-    return hash
-}
-
-const setHashParams = (params) => {
-    location.hash = createHash(params)
-}
-
-const getCurrentApiKey = () => getHashParams().apiKey
-
-const selectSite = (apiKey) => {
-    setHashParams({ apiKey })
-    window.location.reload()
-}
-
-const loadSiteSelector = async ({ apiKey: currentApiKey }) => {
-    const sites = await Configuration.getConfigSites(ORIGIN)
-
-    // If no site selected, or invalid apiKey, select the first enabled site
-    if (!currentApiKey || !sites.find((site) => site.apiKey === currentApiKey)) {
-        const enabledSites = sites.filter((site) => isSiteEnabled(site))
-        return enabledSites.length ? selectSite(enabledSites[0].apiKey) : ''
-    }
-
-    const selectApiKey = document.querySelector(`#${PREVIEW_SELECT_API_KEY_ID}`)
-
-    sites.forEach(({ apiKey, siteDomain, environment }) => {
-        // Ignore sites that don't have any screen to see after filters
-        if (!isSiteEnabled({ apiKey })) {
-            return true
-        }
-
-        const option = document.createElement('option')
-        option.value = apiKey
-        let text = siteDomain ? `${siteDomain} - ${apiKey}` : apiKey
-        if (environment) {
-            text = `${environment}: ${text}`
-        }
-        option.text = text
-        if (currentApiKey === apiKey) {
-            option.setAttribute('selected', true)
-        }
-        selectApiKey.appendChild(option)
-    })
-
-    selectApiKey.addEventListener('change', (event) => selectSite(event.target.value))
-}
-
-const getSiteFilteredScreens = ({ apiKey }) => FILTER_SCREENS.find((filter) => filter.apiKey === apiKey)
-
-const isSiteEnabled = ({ apiKey }) => {
-    if (!FILTER_SCREENS) {
-        return true
-    }
-    const siteFilterScreens = getSiteFilteredScreens({ apiKey })
-    return !(siteFilterScreens && typeof siteFilterScreens.screens !== 'undefined' && (!siteFilterScreens.screens || !siteFilterScreens.screens.length))
-}
-
-//
-// ScreenSet Menu
-//
-
-const loadScreenSetsMenu = (callback = () => {}) => {
+const loadFeaturesMenu = (callback = () => {}) => {
     const featuresMenus = []
     features.forEach((f) => featuresMenus.push(f.getMenu()))
     Promise.all(featuresMenus).then((menu) => {
@@ -237,62 +127,157 @@ const loadScreenSetsMenu = (callback = () => {}) => {
     })
 }
 
-//
-// Navigation
-//
+class Gigya {
+    static async loadGigya({ apiKey, useLocalWebSdk, lang }) {
+        if (!useLocalWebSdk) {
+            return Gigya.#appendGigyaScriptTag({ apiKey, lang })
+        }
 
-initNavigation = () => {
-    window.addEventListener('hashchange', () => processHashChange(getHashParams()))
-    setTimeout(() => processHashChange(getHashParams()), 50)
+        const httpClient = new XMLHttpRequest()
+        httpClient.open('GET', await Gigya.getScreenSetWebSdkFilename({ apiKey }))
+        httpClient.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                Gigya.#appendGigyaScriptTag({ apiKey, webSdk: httpClient.responseText, lang })
+            }
+        }
+        return httpClient.send()
+    }
+
+    static #appendGigyaScriptTag({ apiKey, webSdk, lang }) {
+        let gigyaScript = document.createElement('script')
+        gigyaScript.src = `${GIGYA_API_URL}?apikey=${apiKey}${lang ? `&lang=${lang}` : ''}`
+        gigyaScript.innerHTML = webSdk || ''
+        document.querySelector('head').append(gigyaScript)
+    }
+
+    static async getScreenSetWebSdkFilename({ apiKey }) {
+        return await Feature.getFeatureFilename(apiKey, 'WebSdk/WebSdk.js')
+    }
 }
 
-processHashChange = async (params) => {
-    // API Key changed
-    if (gigya.apiKey !== params.apiKey) {
+class Navigation {
+    static getHashParams() {
+        const hashParams = location.hash.split('/').filter((param) => param.length > 1)
+        const params = {
+            apiKey: hashParams[0] ? hashParams[0] : '',
+            featureName: hashParams[1] ? hashParams[1] : '',
+            screenSetID: hashParams[2] ? hashParams[2] : '',
+            screenID: hashParams[3] ? hashParams[3] : '',
+        }
+        return params
+    }
+
+    static createHash({ apiKey, featureName, screenSetID, screenID }) {
+        let hash = `/${apiKey}/`
+        if (screenSetID && screenID) {
+            if (featureName) {
+                hash += `${featureName}/`
+            }
+            hash += `${screenSetID}/${screenID}`
+        }
+        return hash
+    }
+
+    static setHashParams(params) {
+        location.hash = Navigation.createHash(params)
+    }
+
+    static getCurrentApiKey() {
+        return Navigation.getHashParams().apiKey
+    }
+
+    static selectSite(apiKey) {
+        Navigation.setHashParams({ apiKey })
         window.location.reload()
     }
 
-    const promises = []
-    features.forEach((f) => {
-        if (f.isChanged(params)) {
-            promises.push(f.onChanged(params))
-        }
-    })
-    Promise.all(promises).then(() => {
-        if (!document.querySelector(`[href="${window.location.hash}"]`)) {
-            return
+    static async loadSiteSelector({ apiKey: currentApiKey }) {
+        const sites = await Configuration.getConfigSites(ORIGIN)
+
+        // If no site selected, or invalid apiKey, select the first enabled site
+        if (!currentApiKey || !sites.find((site) => site.apiKey === currentApiKey)) {
+            const enabledSites = sites.filter((site) => Navigation.isSiteEnabled(site))
+            return enabledSites.length ? Navigation.selectSite(enabledSites[0].apiKey) : ''
         }
 
-        // Open screen set type menu if closed
-        //const screenSetMenuElement = document.querySelector(`[href="${window.location.hash}"]`).closest('[role="group"]').previousElementSibling
-        const screenSetMenuElement = document.querySelector(`[href="${window.location.hash}"]`)
-        const screenSetTypeMenuElement = screenSetMenuElement.closest('[role="group"]').previousElementSibling
+        const selectApiKey = document.querySelector(`#${PREVIEW_SELECT_API_KEY_ID}`)
 
-        if (!screenSetTypeMenuElement.nextElementSibling.classList.contains('show')) {
-            screenSetTypeMenuElement.click()
-        }
-        if (screenSetMenuElement.nextElementSibling && !screenSetMenuElement.nextElementSibling.classList.contains('show')) {
-            screenSetMenuElement.click()
-        }
+        sites.forEach(({ apiKey, siteDomain, environment }) => {
+            // Ignore sites that don't have any screen to see after filters
+            if (!Navigation.isSiteEnabled({ apiKey })) {
+                return true
+            }
 
-        // Remove active class from all menu items
-        document.querySelectorAll(`.${PREVIEW_MENU_ITEM_CLASS}`).forEach((element) => {
-            element.classList.remove('active')
+            const option = document.createElement('option')
+            option.value = apiKey
+            let text = siteDomain ? `${siteDomain} - ${apiKey}` : apiKey
+            if (environment) {
+                text = `${environment}: ${text}`
+            }
+            option.text = text
+            if (currentApiKey === apiKey) {
+                option.setAttribute('selected', true)
+            }
+            selectApiKey.appendChild(option)
         })
-        // Add active class to current menu item
-        document.querySelector(`[href="${window.location.hash}"]`).classList.add('active')
-    })
-}
 
-const getScreenSetWebSdkFilename = async ({ apiKey }) => {
-    const site = await Configuration.getSiteInfo(apiKey)
-    let filename = BUILD_DIRECTORY + site.partnerName + '/Sites/'
-    if (site.baseDomain) {
-        filename += `${site.baseDomain}/`
+        selectApiKey.addEventListener('change', (event) => Navigation.selectSite(event.target.value))
     }
-    filename += 'WebSdk/WebSdk.js'
 
-    return filename
+    static getSiteFilteredScreens({ apiKey }) {
+        return FILTER_SCREENS.find((filter) => filter.apiKey === apiKey)
+    }
+
+    static isSiteEnabled({ apiKey }) {
+        if (!FILTER_SCREENS) {
+            return true
+        }
+        const siteFilterScreens = Navigation.getSiteFilteredScreens({ apiKey })
+        return !(siteFilterScreens && typeof siteFilterScreens.screens !== 'undefined' && (!siteFilterScreens.screens || !siteFilterScreens.screens.length))
+    }
+
+    static async processHashChange(params) {
+        // API Key changed
+        if (gigya.apiKey !== params.apiKey) {
+            window.location.reload()
+        }
+
+        const promises = []
+        features.forEach((f) => {
+            if (f.isChanged(params)) {
+                promises.push(f.onChanged(params))
+            }
+        })
+        Promise.all(promises).then(() => {
+            if (!document.querySelector(`[href="${window.location.hash}"]`)) {
+                return
+            }
+
+            // Open screen set type menu if closed
+            //const screenSetMenuElement = document.querySelector(`[href="${window.location.hash}"]`).closest('[role="group"]').previousElementSibling
+            const screenSetMenuElement = document.querySelector(`[href="${window.location.hash}"]`)
+            const screenSetTypeMenuElement = screenSetMenuElement.closest('[role="group"]').previousElementSibling
+
+            if (!screenSetTypeMenuElement.nextElementSibling.classList.contains('show')) {
+                screenSetTypeMenuElement.click()
+            }
+            if (screenSetMenuElement.nextElementSibling && !screenSetMenuElement.nextElementSibling.classList.contains('show')) {
+                screenSetMenuElement.click()
+            }
+
+            // Remove active class from all menu items
+            document.querySelectorAll(`.${PREVIEW_MENU_ITEM_CLASS}`).forEach((element) => {
+                element.classList.remove('active')
+            })
+            // Add active class to current menu item
+            document.querySelector(`[href="${window.location.hash}"]`).classList.add('active')
+        })
+    }
+
+    static initNavigation() {
+        window.addEventListener('hashchange', () => Navigation.processHashChange(Navigation.getHashParams()))
+        setTimeout(() => Navigation.processHashChange(Navigation.getHashParams()), 50)
+    }
 }
 
 class Configuration {
@@ -341,6 +326,18 @@ class Configuration {
             return undefined
         }
         return config[this.Origin.cache].find((site) => site.apiKey === apiKey)
+    }
+}
+
+class Feature {
+    static async getFeatureFilename(apiKey, featureFilePath) {
+        const site = await Configuration.getSiteInfo(apiKey)
+        let filename = BUILD_DIRECTORY + site.partnerName + '/Sites/'
+        if (site.baseDomain) {
+            filename += `${site.baseDomain}/`
+        }
+        filename += featureFilePath
+        return filename
     }
 }
 
@@ -397,14 +394,16 @@ class WebScreenSets {
 
             menuTreeData = Object.entries(groupedScreenSets).map(([groupName, screenSets]) => ({
                 text: groupName,
-                expanded: screenSets.find((screenSet) => screenSet.screenSetID === getHashParams().screenSetID),
+                expanded: screenSets.find((screenSet) => screenSet.screenSetID === Navigation.getHashParams().screenSetID),
                 nodes: screenSets.map((screenSet) => ({
                     text: screenSet.screenSetID,
-                    expanded: screenSet.screenSetID === getHashParams().screenSetID && screenSet.screensID.find((screenID) => screenID === getHashParams().screenID),
+                    expanded:
+                        screenSet.screenSetID === Navigation.getHashParams().screenSetID &&
+                        screenSet.screensID.find((screenID) => screenID === Navigation.getHashParams().screenID),
                     nodes: screenSet.screensID.map((screensID) => ({
                         text: screensID,
                         class: `${PREVIEW_MENU_ITEM_CLASS} list-group-item-action`,
-                        href: `#${createHash({
+                        href: `#${Navigation.createHash({
                             apiKey: gigya.apiKey,
                             featureName: this.getName(),
                             screenSetID: screenSet.screenSetID,
@@ -479,24 +478,11 @@ class WebScreenSets {
     }
 
     async getScreenSetCssFilename({ apiKey, screenSetID }) {
-        const site = await Configuration.getSiteInfo(apiKey)
-        let filename = BUILD_DIRECTORY + site.partnerName + '/Sites/'
-        if (site.baseDomain) {
-            filename += `${site.baseDomain}/`
-        }
-        filename += `WebScreenSets/${screenSetID}/${screenSetID}.css`
-
-        return filename
+        return await Feature.getFeatureFilename(apiKey, `${this.getName()}/${screenSetID}/${screenSetID}.css`)
     }
 
     async getScreenSetEvents({ apiKey, screenSetID }) {
-        const site = await Configuration.getSiteInfo(apiKey)
-        let filename = BUILD_DIRECTORY + site.partnerName + '/Sites/'
-        if (site.baseDomain) {
-            filename += `${site.baseDomain}/`
-        }
-        filename += `WebScreenSets/${screenSetID}/${screenSetID}.js`
-
+        const filename = await Feature.getFeatureFilename(apiKey, `${this.getName()}/${screenSetID}/${screenSetID}.js`)
         return await this.#getScreenSetEventsFromFile(filename)
     }
 
