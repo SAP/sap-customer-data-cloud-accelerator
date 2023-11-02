@@ -5,8 +5,8 @@
     "main": "index.js",
     "type": "module",
     "scripts": {
-        "test-old": "cross-env CI=true npm run update-sap-cdc-toolkit && npm run test:e2e && jest --collect-coverage --coverage --watch=all --coverageDirectory=coverage/unit ./cdc-accelerator/feature",
-        "test": "cross-env CI=true jest --collect-coverage --coverage --watch=all --coverageDirectory=coverage/unit ./cdc-accelerator/feature",
+        "test-old": "cross-env CI=true jest --collect-coverage --coverage --watch=all --coverageDirectory=coverage/unit ./cdc-accelerator",
+        "test": "cross-env CI=true npm run update-sap-cdc-toolkit && jest --collect-coverage --coverage --watch=all --coverageDirectory=coverage/unit ./cdc-accelerator/feature",
         "test:e2e": "cross-env E2E=true CI=true jest -i cdc-accelerator/scripts",
         "init-old": "node cdc-accelerator/init/index.js",
         "init": "node cdc-accelerator/feature/index.js init",
