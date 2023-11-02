@@ -161,19 +161,19 @@ class Navigation {
         const params = {
             apiKey: hashParams[0] ? hashParams[0] : '',
             featureName: hashParams[1] ? hashParams[1] : '',
-            screenSetID: hashParams[2] ? hashParams[2] : '',
-            screenID: hashParams[3] ? hashParams[3] : '',
+            groupID: hashParams[2] ? hashParams[2] : '',
+            itemID: hashParams[3] ? hashParams[3] : '',
         }
         return params
     }
 
-    static createHash({ apiKey, featureName, screenSetID, screenID }) {
+    static createHash({ apiKey, featureName, groupID, itemID }) {
         let hash = `/${apiKey}/`
-        if (screenSetID && screenID) {
+        if (groupID && itemID) {
             if (featureName) {
                 hash += `${featureName}/`
             }
-            hash += `${screenSetID}/${screenID}`
+            hash += `${groupID}/${itemID}`
         }
         return hash
     }
@@ -346,14 +346,14 @@ class WebScreenSets {
         return 'WebScreenSets'
     }
     isChanged(params) {
-        return params.screenSetID && params.screenID
+        return params.groupID && params.itemID
     }
 
     async onChanged(params) {
         // Load screen with events from local build/ file
         if (USE_LOCAL_SCREEN_SETS) {
             const screenSetEvents = await this.getScreenSetEvents(params)
-            gigya.accounts.showScreenSet({ ...screenSetEvents, screenSet: params.screenSetID, startScreen: params.screenID, containerID: PREVIEW_CONTAINER_ID })
+            gigya.accounts.showScreenSet({ ...screenSetEvents, screenSet: params.groupID, startScreen: params.itemID, containerID: PREVIEW_CONTAINER_ID })
 
             // Load local css file
             await this.loadScreenSetCss(params)
@@ -362,7 +362,7 @@ class WebScreenSets {
         }
         // Load screen with events from cdc server
         else {
-            gigya.accounts.showScreenSet({ screenSet: params.screenSetID, startScreen: params.screenID, containerID: PREVIEW_CONTAINER_ID })
+            gigya.accounts.showScreenSet({ screenSet: params.groupID, startScreen: params.itemID, containerID: PREVIEW_CONTAINER_ID })
         }
     }
 
@@ -394,20 +394,19 @@ class WebScreenSets {
 
             menuTreeData = Object.entries(groupedScreenSets).map(([groupName, screenSets]) => ({
                 text: groupName,
-                expanded: screenSets.find((screenSet) => screenSet.screenSetID === Navigation.getHashParams().screenSetID),
+                expanded: screenSets.find((screenSet) => screenSet.screenSetID === Navigation.getHashParams().groupID),
                 nodes: screenSets.map((screenSet) => ({
                     text: screenSet.screenSetID,
                     expanded:
-                        screenSet.screenSetID === Navigation.getHashParams().screenSetID &&
-                        screenSet.screensID.find((screenID) => screenID === Navigation.getHashParams().screenID),
+                        screenSet.screenSetID === Navigation.getHashParams().groupID && screenSet.screensID.find((screenID) => screenID === Navigation.getHashParams().itemID),
                     nodes: screenSet.screensID.map((screensID) => ({
                         text: screensID,
                         class: `${PREVIEW_MENU_ITEM_CLASS} list-group-item-action`,
                         href: `#${Navigation.createHash({
                             apiKey: gigya.apiKey,
                             featureName: this.getName(),
-                            screenSetID: screenSet.screenSetID,
-                            screenID: screensID,
+                            groupID: screenSet.screenSetID,
+                            itemID: screensID,
                         })}`,
                     })),
                 })),
@@ -477,12 +476,12 @@ class WebScreenSets {
         document.head.appendChild(cssFile)
     }
 
-    async getScreenSetCssFilename({ apiKey, screenSetID }) {
-        return await Feature.getFeatureFilename(apiKey, `${this.getName()}/${screenSetID}/${screenSetID}.css`)
+    async getScreenSetCssFilename({ apiKey, groupID }) {
+        return await Feature.getFeatureFilename(apiKey, `${this.getName()}/${groupID}/${groupID}.css`)
     }
 
-    async getScreenSetEvents({ apiKey, screenSetID }) {
-        const filename = await Feature.getFeatureFilename(apiKey, `${this.getName()}/${screenSetID}/${screenSetID}.js`)
+    async getScreenSetEvents({ apiKey, groupID }) {
+        const filename = await Feature.getFeatureFilename(apiKey, `${this.getName()}/${groupID}/${groupID}.js`)
         return await this.#getScreenSetEventsFromFile(filename)
     }
 
