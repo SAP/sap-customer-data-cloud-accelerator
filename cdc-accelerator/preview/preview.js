@@ -339,6 +339,12 @@ class Feature {
         filename += featureFilePath
         return filename
     }
+
+    static async getTextFileContent(path) {
+        return await fetch(path)
+            .then((response) => response.text())
+            .then((data) => data)
+    }
 }
 
 class WebScreenSets {
@@ -346,7 +352,7 @@ class WebScreenSets {
         return 'WebScreenSets'
     }
     isChanged(params) {
-        return params.groupID && params.itemID
+        return params.featureName === this.getName() && params.groupID && params.itemID
     }
 
     async onChanged(params) {
@@ -389,6 +395,7 @@ class WebScreenSets {
                 }
             }
 
+            const hashParams = Navigation.getHashParams()
             const menuTreeData = [
                 {
                     text: this.getName(),
@@ -396,7 +403,7 @@ class WebScreenSets {
                     nodes: screenSets.map((screenSet) => ({
                         text: screenSet.screenSetID,
                         expanded:
-                            screenSet.screenSetID === Navigation.getHashParams().groupID && screenSet.screensID.find((screenID) => screenID === Navigation.getHashParams().itemID),
+                            screenSet.screenSetID === hashParams.groupID && screenSet.screensID.find((screenID) => screenID === hashParams.itemID),
                         nodes: screenSet.screensID.map((screensID) => ({
                             text: screensID,
                             class: `${PREVIEW_MENU_ITEM_CLASS} list-group-item-action`,
@@ -433,15 +440,16 @@ class WebScreenSets {
         })
     }
 
-    filterScreenSets = ({ screenSets, filterScreens }) =>
-        screenSets
-            .map(({ screenSetID, screensID }) => {
+    filterScreenSets({ screenSets, filterScreens }) {
+        return screenSets
+            .map(({screenSetID, screensID}) => {
                 screensID = screensID.filter((screenID) => {
                     return filterScreens.find((filter) => filter.screenSetID === screenSetID && filter.screenID === screenID)
                 })
-                return { screenSetID, screensID }
+                return {screenSetID, screensID}
             })
             .filter((screenSet) => screenSet.screensID.length)
+    }
 
     async loadScreenSetCss(params) {
         // Create and load css file
@@ -493,7 +501,9 @@ class WebScreenSets {
 }
 
 class EmailTemplates {
-    webScreenSets
+    static METADATA_FILE = 'metadata.json'
+    #metadata
+    #metadataApiKey
 
     constructor() {
         this.webScreenSets = new WebScreenSets()
@@ -504,24 +514,73 @@ class EmailTemplates {
     }
 
     isChanged(params) {
-        return this.webScreenSets.isChanged(params)
+        return params.featureName === this.getName() && params.groupID && params.itemID
     }
 
     async onChanged(params) {
-        return this.webScreenSets.onChanged(params)
+        this.#metadata = await this.getMetadata(params.apiKey)
+        let iframeElement = document.getElementById('cdc-initializer--preview-container_iframeEmails')
+        if(!iframeElement) {
+            iframeElement = document.createElement('iframe')
+            iframeElement.id = 'cdc-initializer--preview-container_iframeEmails'
+            iframeElement.style.width = '800px'
+            iframeElement.style.height = '800px'
+            const container = document.getElementById('cdc-initializer--preview-container')
+            container.innerHTML = ''
+            container.appendChild(iframeElement)
+        }
+        const filename = await Feature.getFeatureFilename(params.apiKey, `${this.getName()}/${params.groupID}/${params.groupID}-${params.itemID}.html`)
+        iframeElement.src = filename
     }
 
     async getMenu() {
-        const menuTreeData = await this.webScreenSets.getMenu()
-        menuTreeData[0].text = this.getName()
-        menuTreeData.forEach((menu) => {
-            menu.nodes.forEach((group) => {
-                group.nodes.forEach((instance) => {
-                    instance.href = instance.href.replace('WebScreenSets', 'EmailTemplates')
-                })
-            })
-        })
+        const emailTemplates = await this.getFilteredEmails()
+        const hashParams = Navigation.getHashParams()
+        const menuTreeData = [
+            {
+                text: this.getName(),
+                expanded: undefined,
+                nodes: emailTemplates.map((emailTemplate) => ({
+                    text: emailTemplate[0],
+                    expanded:
+                        emailTemplate[0] === hashParams.groupID && emailTemplate[1].languages.find((language) => language === hashParams.itemID),
+                    nodes: emailTemplate[1].languages.map((language) => ({
+                        text: language,
+                        class: `${PREVIEW_MENU_ITEM_CLASS} list-group-item-action`,
+                        href: `#${Navigation.createHash({
+                            apiKey: gigya.apiKey,
+                            featureName: this.getName(),
+                            groupID: emailTemplate[0],
+                            itemID: language,
+                        })}`,
+                    })),
+                })),
+            },
+        ]
         return menuTreeData
+    }
+
+    async getMetadata(apiKey) {
+        if(this.#metadataApiKey === apiKey) {
+            return this.#metadata
+        }
+        const siteInfo = await Configuration.getSiteInfo(apiKey)
+        const path = `${BUILD_DIRECTORY}${siteInfo.partnerName}/Sites/${siteInfo.baseDomain}/${this.getName()}/${EmailTemplates.METADATA_FILE}`
+        return await fetch(path)
+            .then((response) => response.json())
+            .then((data) => {
+                this.#metadata = data
+                this.#metadataApiKey = apiKey
+                return data
+            })
+            .catch((error) => {
+                console.log({ error })
+            })
+    }
+
+    async getFilteredEmails() {
+        const meta = await this.getMetadata(Navigation.getCurrentApiKey())
+        return Object.entries(meta)
     }
 }
 

@@ -135,19 +135,23 @@ export default class EmailTemplates extends SiteFeature {
         const srcTemplatesPath = path.join(srcFeaturePath, EmailTemplates.FOLDER_TEMPLATES)
         const srcLocalesPath = path.join(srcFeaturePath, EmailTemplates.FOLDER_LOCALES)
         const buildFeaturePath = path.join(siteDirectory, this.getName())
+        const previewEmailTemplatesMetadata = {}
 
         fs.readdirSync(srcTemplatesPath).forEach((templateFile) => {
             const templateName = path.parse(templateFile).name
             const outputDirectory = path.join(buildFeaturePath, templateName)
             this.createDirectoryIfNotExists(outputDirectory)
             const htmlTemplate = fs.readFileSync(path.join(srcTemplatesPath, templateFile), { encoding: 'utf8' })
+            previewEmailTemplatesMetadata[templateName] = { languages: [] }
             fs.readdirSync(path.join(srcLocalesPath, templateName)).forEach((localeFile) => {
                 const localeData = fs.readFileSync(path.join(srcLocalesPath, templateName, localeFile), { encoding: 'utf8' })
                 const renderedHtml = Mustache.render(htmlTemplate, JSON.parse(localeData.toString()))
                 const language = path.parse(localeFile).name
                 fs.writeFileSync(path.join(outputDirectory, `${templateName}-${language}${path.extname(templateFile)}`), renderedHtml)
+                previewEmailTemplatesMetadata[templateName].languages.push(language)
             })
         })
+        fs.writeFileSync(path.join(buildFeaturePath, 'metadata.json'), JSON.stringify(previewEmailTemplatesMetadata, null, 4))
     }
 
     async deploy(apiKey, siteConfig, siteDirectory) {
