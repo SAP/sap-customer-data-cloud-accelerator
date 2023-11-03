@@ -18,6 +18,7 @@ export const partnerBaseDirector = path.join(SRC_DIRECTORY, partnerIds[0])
 export const siteBaseDirectory = path.join(SRC_DIRECTORY, partnerIds[0], SITES_DIRECTORY)
 export const srcSiteDirectory = path.join(siteBaseDirectory, siteDomain)
 export const buildSiteDirectory = srcSiteDirectory.replace(SRC_DIRECTORY, BUILD_DIRECTORY)
+export const partnerBuildDirector = partnerBaseDirector.replace(SRC_DIRECTORY, BUILD_DIRECTORY)
 export const sites = [
     { apiKey: '1_Eh-x_qKjjBJ_-QBEfMDABC', siteDomain: 'cdc-accelerator.parent.site-group.com' },
     { apiKey: '2_Eh-x_qKjjBJ_-QBEfMDABC', siteDomain: 'cdc-accelerator.preferences-center.com' },

@@ -2,7 +2,7 @@ import { expectedGigyaResponseNok, expectedGigyaResponseOk, expectedPermissionGr
 import fs from 'fs'
 import axios from 'axios'
 import path from 'path'
-import { credentials, partnerBaseDirector } from './test.common.js'
+import { credentials, partnerBaseDirector, partnerBuildDirector } from './test.common.js'
 import PermissionGroups from './permissionGroups.js'
 
 jest.mock('axios')
@@ -65,5 +65,51 @@ describe('Permission Groups test suite', () => {
             })
             await expect(permissionGroups.init(partnerBaseDirector, getSiteInfo)).rejects.toThrow('File write error')
         })
+    })
+    describe('Build test suite', () => {
+        test('all permission group files are build successfully', () => {
+            const srcFileContent = JSON.stringify(expectedPermissionGroupsResponse.groups)
+            const dirExists = true
+            fs.existsSync.mockReturnValue(dirExists)
+            fs.rmSync.mockReturnValue(undefined)
+            fs.mkdirSync.mockReturnValue(undefined)
+            fs.writeFileSync.mockReturnValue(undefined)
+            fs.readFileSync.mockReturnValue(srcFileContent)
+            // for the build method it is passed the build path
+            permissionGroups.build(partnerBuildDirector)
+            const buildFeatureDirectory = path.join(partnerBuildDirector, permissionGroups.getName())
+            expect(fs.existsSync).toHaveBeenCalledWith(buildFeatureDirectory)
+            if (dirExists) {
+                expect(fs.rmSync).toHaveBeenCalledWith(buildFeatureDirectory, { force: true, recursive: true })
+            }
+            expect(fs.writeFileSync).toHaveBeenCalledWith(
+                path.join(buildFeatureDirectory, `${permissionGroups.getName()}.json`),
+                JSON.stringify(JSON.parse(srcFileContent), null, 4),
+            )
+        })
+    })
+    describe('Reset test suite', () => {
+        test('reset with existing folder', () => {
+            testReset(true)
+        })
+
+        test('reset with non-existing folder', () => {
+            testReset(false)
+        })
+
+        function testReset(dirExists) {
+            fs.existsSync.mockReturnValue(dirExists)
+            fs.rmSync.mockReturnValue(undefined)
+
+            permissionGroups.reset(partnerBaseDirector)
+
+            const featureDirectory = path.join(partnerBaseDirector, permissionGroups.getName())
+            expect(fs.existsSync).toHaveBeenCalledWith(featureDirectory)
+            if (dirExists) {
+                expect(fs.rmSync).toHaveBeenCalledWith(featureDirectory, { force: true, recursive: true })
+            } else {
+                expect(fs.rmSync).not.toHaveBeenCalled()
+            }
+        }
     })
 })

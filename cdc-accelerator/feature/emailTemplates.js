@@ -9,6 +9,7 @@ import path from 'path'
 import Mustache from 'mustache'
 import SiteFeature from './siteFeature.js'
 import { BUILD_DIRECTORY, SRC_DIRECTORY } from './constants.js'
+import EmailTemplateNameTranslator from '../sap-cdc-toolkit/emails/emailTemplateNameTranslator.js'
 
 export default class EmailTemplates extends SiteFeature {
     static FOLDER_LOCALES = 'locales'
@@ -155,15 +156,82 @@ export default class EmailTemplates extends SiteFeature {
     }
 
     async deploy(apiKey, siteConfig, siteDirectory) {
+        const buildFeatureDirectory = path.join(siteDirectory, this.getName())
         const payload = {}
-        const response = await this.deployUsingToolkit(apiKey, siteConfig, payload, new ToolkitEmailOptions())
+        const emailOptions = new ToolkitEmailOptions()
+        const emailNameTranslator = new EmailTemplateNameTranslator()
+        fs.readdirSync(buildFeatureDirectory).forEach((templateName) => {
+            if (!this.#emailTemplateShouldBeIgnored(templateName)) {
+                const templatePayload = this.#generateEmailTemplatePayload(path.join(buildFeatureDirectory, templateName), templateName)
+                this.#mergePayloads(payload, templatePayload)
+                emailOptions.options.branches.push({
+                    id: templateName,
+                    name: emailNameTranslator.translateInternalName(templateName),
+                    value: true,
+                })
+            }
+        })
+
+        const response = await this.deployUsingToolkit(apiKey, siteConfig, payload, emailOptions)
         const isAnyError = response.some((res) => {
-            return res.errorCode
+            return res.errorCode !== 0
         })
         if (isAnyError) {
             throw new Error(JSON.stringify(response))
         }
         return response
+    }
+
+    #emailTemplateShouldBeIgnored(templateName) {
+        return templateName === 'unknownLocationNotification' || templateName === 'passwordResetNotification'
+    }
+
+    #generateEmailTemplatePayload(buildTemplateDirectory, templateName) {
+        const jsonPath = this.#getEmailTemplateJsonPath(templateName)
+        const payload = {}
+        fs.readdirSync(buildTemplateDirectory).forEach((templateFile) => {
+            const templateFilePath = path.join(buildTemplateDirectory, templateFile)
+            const language = path.parse(templateFile.substring(templateName.length + 1)).name
+            const content = fs.readFileSync(templateFilePath, { encoding: 'utf8' })
+            const templateContainerObj = this.#getTemplateContainerObject(payload, jsonPath)
+            templateContainerObj[language] = content
+        })
+        return payload
+    }
+
+    #getEmailTemplateJsonPath(templateName) {
+        if (templateName.endsWith('EmailTemplates')) {
+            return `emailNotifications.${templateName}`
+        } else {
+            if (templateName === 'doubleOptIn') {
+                return `${templateName}.confirmationEmailTemplates`
+            } else if (templateName === 'twoFactorAuth') {
+                return `${templateName}.emailProvider.emailTemplates`
+            }
+            return `${templateName}.emailTemplates`
+        }
+    }
+
+    #getTemplateContainerObject(payload, jsonPath) {
+        const tokens = jsonPath.split('.')
+        let pointer = payload
+        for (const token of tokens) {
+            if (pointer[token] === undefined) {
+                pointer[token] = {}
+            }
+            pointer = pointer[token]
+        }
+        return pointer
+    }
+
+    #mergePayloads(payload, templatePayload) {
+        const key = Object.keys(templatePayload)[0]
+        if (payload[key]) {
+            const subKey = Object.keys(templatePayload[key])[0]
+            payload[key][subKey] = templatePayload[key][subKey]
+        } else {
+            payload[key] = templatePayload[key]
+        }
     }
 
     async deployUsingToolkit(apiKey, siteConfig, payload, options) {
