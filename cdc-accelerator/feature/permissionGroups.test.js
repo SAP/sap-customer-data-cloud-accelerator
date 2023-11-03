@@ -88,4 +88,28 @@ describe('Permission Groups test suite', () => {
             )
         })
     })
+    describe('Reset test suite', () => {
+        test('reset with existing folder', () => {
+            testReset(true)
+        })
+
+        test('reset with non-existing folder', () => {
+            testReset(false)
+        })
+
+        function testReset(dirExists) {
+            fs.existsSync.mockReturnValue(dirExists)
+            fs.rmSync.mockReturnValue(undefined)
+
+            permissionGroups.reset(partnerBaseDirector)
+
+            const featureDirectory = path.join(partnerBaseDirector, permissionGroups.getName())
+            expect(fs.existsSync).toHaveBeenCalledWith(featureDirectory)
+            if (dirExists) {
+                expect(fs.rmSync).toHaveBeenCalledWith(featureDirectory, { force: true, recursive: true })
+            } else {
+                expect(fs.rmSync).not.toHaveBeenCalled()
+            }
+        }
+    })
 })
