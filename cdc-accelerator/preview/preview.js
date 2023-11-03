@@ -77,7 +77,7 @@ const loadFeaturesMenu = (callback = () => {}) => {
 
         Array.from(document.querySelectorAll(`.${PREVIEW_MENU_ITEM_CLASS}`)).forEach((element) => {
             element.addEventListener('click', (e) => {
-                // Get href and remove it to prevent redirect (prevent treeview plugin behaviour)
+                // Get href and remove it to prevent redirect (prevent tree view plugin behaviour)
                 const href = e.target.getAttribute('href')
                 if (href !== 'show-debug-ui' && href !== 'enable-event-logger' && href !== 'disable-event-logger' && href !== 'logout') {
                     return false
@@ -141,13 +141,12 @@ class Navigation {
     static #PREVIEW_SELECT_API_KEY_ID = 'cdc-initializer--select-api-key'
     static getHashParams() {
         const hashParams = location.hash.split('/').filter((param) => param.length > 1)
-        const params = {
+        return {
             apiKey: hashParams[0] ? hashParams[0] : '',
             featureName: hashParams[1] ? hashParams[1] : '',
             groupID: hashParams[2] ? hashParams[2] : '',
             itemID: hashParams[3] ? hashParams[3] : '',
         }
-        return params
     }
 
     static createHash({ apiKey, featureName, groupID, itemID }) {
@@ -199,7 +198,7 @@ class Navigation {
             }
             option.text = text
             if (currentApiKey === apiKey) {
-                option.setAttribute('selected', true)
+                option.setAttribute('selected', 'true')
             }
             selectApiKey.appendChild(option)
         })
@@ -376,7 +375,7 @@ class WebScreenSets {
             }
 
             const hashParams = Navigation.getHashParams()
-            const menuTreeData = [
+            return [
                 {
                     text: this.getName(),
                     expanded: undefined,
@@ -396,7 +395,6 @@ class WebScreenSets {
                     })),
                 },
             ]
-            return menuTreeData
         })
     }
 
@@ -497,45 +495,47 @@ class EmailTemplates {
     }
 
     async onChanged(params) {
-        this.#metadata = await this.getMetadata(params.apiKey)
-        let iframeElement = document.getElementById('cdc-initializer--preview-container_iframeEmails')
-        if (!iframeElement) {
-            iframeElement = document.createElement('iframe')
-            iframeElement.id = 'cdc-initializer--preview-container_iframeEmails'
-            iframeElement.style.width = '800px'
-            iframeElement.style.height = '800px'
-            const container = document.getElementById('cdc-initializer--preview-container')
-            container.innerHTML = ''
-            container.appendChild(iframeElement)
+        let iFrameElement = document.getElementById('cdc-initializer--preview-container_iframeEmails')
+        if (!iFrameElement) {
+            iFrameElement = this.createIFrame()
         }
-        const filename = await Feature.getFeatureFilename(params.apiKey, `${this.getName()}/${params.groupID}/${params.groupID}-${params.itemID}.html`)
-        iframeElement.src = filename
+        iFrameElement.src = await Feature.getFeatureFilename(params.apiKey, `${this.getName()}/${params.groupID}/${params.groupID}-${params.itemID}.html`)
+    }
+
+    createIFrame() {
+        const iFrameElement = document.createElement('iframe')
+        iFrameElement.id = 'cdc-initializer--preview-container_iframeEmails'
+        iFrameElement.style.width = '800px'
+        iFrameElement.style.height = '800px'
+        const container = document.getElementById('cdc-initializer--preview-container')
+        container.innerHTML = ''
+        container.appendChild(iFrameElement)
+        return iFrameElement
     }
 
     async getMenu() {
         const emailTemplates = await this.getFilteredEmails()
         const hashParams = Navigation.getHashParams()
-        const menuTreeData = [
+        return [
             {
                 text: this.getName(),
                 expanded: undefined,
                 nodes: emailTemplates.map((emailTemplate) => ({
-                    text: emailTemplate[0],
-                    expanded: emailTemplate[0] === hashParams.groupID && emailTemplate[1].languages.find((language) => language === hashParams.itemID),
-                    nodes: emailTemplate[1].languages.map((language) => ({
+                    text: emailTemplate.emailID,
+                    expanded: emailTemplate.emailID === hashParams.groupID && emailTemplate.languages.find((language) => language === hashParams.itemID),
+                    nodes: emailTemplate.languages.map((language) => ({
                         text: language,
                         class: `${PREVIEW_MENU_ITEM_CLASS} list-group-item-action`,
                         href: `#${Navigation.createHash({
                             apiKey: gigya.apiKey,
                             featureName: this.getName(),
-                            groupID: emailTemplate[0],
+                            groupID: emailTemplate.emailID,
                             itemID: language,
                         })}`,
                     })),
                 })),
             },
         ]
-        return menuTreeData
     }
 
     async getMetadata(apiKey) {
@@ -557,8 +557,33 @@ class EmailTemplates {
     }
 
     async getFilteredEmails() {
-        const meta = await this.getMetadata(Navigation.getCurrentApiKey())
-        return Object.entries(meta)
+        const emailTemplateEntries = await this.getMetadata(Navigation.getCurrentApiKey())
+
+        let emailsFilter = []
+        const filterConfiguration = [...FILTER]
+        const siteFilterConfiguration = filterConfiguration.find(({ apiKey }) => apiKey === gigya.apiKey)
+        if (siteFilterConfiguration) {
+            if (siteFilterConfiguration.emails) {
+                emailsFilter = siteFilterConfiguration.emails
+            }
+        } else {
+            const genericFilterConfiguration = filterConfiguration.find(({ apiKey }) => apiKey === '*')
+            if (genericFilterConfiguration && genericFilterConfiguration.emails) {
+                emailsFilter = genericFilterConfiguration.emails
+            }
+        }
+        return emailsFilter.length === 0 ? emailTemplateEntries : this.filterEmailTemplates(emailTemplateEntries, emailsFilter)
+    }
+
+    filterEmailTemplates(emailTemplateEntries, emailsFilter) {
+        const filteredEmails = []
+        emailTemplateEntries.forEach((entry) => {
+            const filter = emailsFilter.find((filter) => filter.emailID === entry.emailID)
+            if (filter) {
+                filteredEmails.push(filter)
+            }
+        })
+        return filteredEmails
     }
 }
 
