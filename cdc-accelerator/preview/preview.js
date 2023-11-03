@@ -4,20 +4,10 @@
  */
 // Needs to be implemented: Make this file a class
 
-const GIGYA_API_URL = 'https://cdns.gigya.com/js/gigya.js'
-const CONFIG_FILE = '../cdc-accelerator.json'
-
 const BUILD_DIRECTORY = '../build/'
-
-let ORIGIN = ''
 let FILTER = []
 
-let LINK_CSS_CLASS = ''
-let PREVIEW_CONTAINER_ID = ''
-let PREVIEW_MENU_ID = ''
 let PREVIEW_MENU_ITEM_CLASS = ''
-let PREVIEW_SELECT_API_KEY_ID = ''
-
 let USE_LOCAL_SCREEN_SETS = true
 
 const preview = ({
@@ -26,22 +16,12 @@ const preview = ({
     useLocalWebSdk = true,
     useLocalScreenSets = true,
     lang,
-    containerID = 'cdc-initializer--preview-container',
-    menuID = 'cdc-initializer--preview-menu-container',
     menuItemClass = 'cdc-initializer--preview-menu-item',
-    selectApiKeyID = 'cdc-initializer--select-api-key',
-    linkCssClass = 'cdc-initializer--css-link',
     filter,
 }) => {
-    ORIGIN = origin
     FILTER = filter
 
-    LINK_CSS_CLASS = linkCssClass
-    PREVIEW_CONTAINER_ID = containerID
-    PREVIEW_MENU_ID = menuID
     PREVIEW_MENU_ITEM_CLASS = menuItemClass
-    PREVIEW_SELECT_API_KEY_ID = selectApiKeyID
-
     USE_LOCAL_SCREEN_SETS = useLocalScreenSets
 
     Navigation.loadSiteSelector({ apiKey, origin })
@@ -59,6 +39,7 @@ const onGigyaServiceReady = () => {
 }
 
 const loadFeaturesMenu = (callback = () => {}) => {
+    const PREVIEW_MENU_ID = 'cdc-initializer--preview-menu-container'
     const featuresMenus = []
     features.forEach((f) => featuresMenus.push(f.getMenu()))
     Promise.all(featuresMenus).then((menu) => {
@@ -128,6 +109,7 @@ const loadFeaturesMenu = (callback = () => {}) => {
 }
 
 class Gigya {
+    static #GIGYA_API_URL = 'https://cdns.gigya.com/js/gigya.js'
     static async loadGigya({ apiKey, useLocalWebSdk, lang }) {
         if (!useLocalWebSdk) {
             return Gigya.#appendGigyaScriptTag({ apiKey, lang })
@@ -145,7 +127,7 @@ class Gigya {
 
     static #appendGigyaScriptTag({ apiKey, webSdk, lang }) {
         let gigyaScript = document.createElement('script')
-        gigyaScript.src = `${GIGYA_API_URL}?apikey=${apiKey}${lang ? `&lang=${lang}` : ''}`
+        gigyaScript.src = `${Gigya.#GIGYA_API_URL}?apikey=${apiKey}${lang ? `&lang=${lang}` : ''}`
         gigyaScript.innerHTML = webSdk || ''
         document.querySelector('head').append(gigyaScript)
     }
@@ -156,6 +138,7 @@ class Gigya {
 }
 
 class Navigation {
+    static #PREVIEW_SELECT_API_KEY_ID = 'cdc-initializer--select-api-key'
     static getHashParams() {
         const hashParams = location.hash.split('/').filter((param) => param.length > 1)
         const params = {
@@ -191,8 +174,8 @@ class Navigation {
         window.location.reload()
     }
 
-    static async loadSiteSelector({ apiKey: currentApiKey }) {
-        const sites = await Configuration.getConfigSites(ORIGIN)
+    static async loadSiteSelector({ apiKey: currentApiKey, origin }) {
+        const sites = await Configuration.getConfigSites(origin)
 
         // If no site selected, or invalid apiKey, select the first enabled site
         if (!currentApiKey || !sites.find((site) => site.apiKey === currentApiKey)) {
@@ -200,7 +183,7 @@ class Navigation {
             return enabledSites.length ? Navigation.selectSite(enabledSites[0].apiKey) : ''
         }
 
-        const selectApiKey = document.querySelector(`#${PREVIEW_SELECT_API_KEY_ID}`)
+        const selectApiKey = document.querySelector(`#${Navigation.#PREVIEW_SELECT_API_KEY_ID}`)
 
         sites.forEach(({ apiKey, siteDomain, environment }) => {
             // Ignore sites that don't have any screen to see after filters
@@ -281,11 +264,12 @@ class Navigation {
 }
 
 class Configuration {
+    static #CONFIG_FILE = '../cdc-accelerator.json'
     static configuration = undefined
     static Origin = { source: 'source', deploy: 'deploy', cache: 'cache' }
 
     static async #read() {
-        await fetch(CONFIG_FILE)
+        await fetch(Configuration.#CONFIG_FILE)
             .then((response) => response.json())
             .then((data) => (Configuration.configuration = data))
     }
@@ -332,22 +316,18 @@ class Configuration {
 class Feature {
     static async getFeatureFilename(apiKey, featureFilePath) {
         const site = await Configuration.getSiteInfo(apiKey)
-        let filename = BUILD_DIRECTORY + site.partnerName + '/Sites/'
+        let filename = `${BUILD_DIRECTORY}${site.partnerName}/Sites/`
         if (site.baseDomain) {
             filename += `${site.baseDomain}/`
         }
         filename += featureFilePath
         return filename
     }
-
-    static async getTextFileContent(path) {
-        return await fetch(path)
-            .then((response) => response.text())
-            .then((data) => data)
-    }
 }
 
 class WebScreenSets {
+    static #LINK_CSS_CLASS = 'cdc-initializer--css-link'
+    static #PREVIEW_CONTAINER_ID = 'cdc-initializer--preview-container'
     getName() {
         return 'WebScreenSets'
     }
@@ -359,7 +339,7 @@ class WebScreenSets {
         // Load screen with events from local build/ file
         if (USE_LOCAL_SCREEN_SETS) {
             const screenSetEvents = await this.getScreenSetEvents(params)
-            gigya.accounts.showScreenSet({ ...screenSetEvents, screenSet: params.groupID, startScreen: params.itemID, containerID: PREVIEW_CONTAINER_ID })
+            gigya.accounts.showScreenSet({ ...screenSetEvents, screenSet: params.groupID, startScreen: params.itemID, containerID: WebScreenSets.#PREVIEW_CONTAINER_ID })
 
             // Load local css file
             await this.loadScreenSetCss(params)
@@ -368,7 +348,7 @@ class WebScreenSets {
         }
         // Load screen with events from cdc server
         else {
-            gigya.accounts.showScreenSet({ screenSet: params.groupID, startScreen: params.itemID, containerID: PREVIEW_CONTAINER_ID })
+            gigya.accounts.showScreenSet({ screenSet: params.groupID, startScreen: params.itemID, containerID: WebScreenSets.#PREVIEW_CONTAINER_ID })
         }
     }
 
@@ -402,8 +382,7 @@ class WebScreenSets {
                     expanded: undefined,
                     nodes: screenSets.map((screenSet) => ({
                         text: screenSet.screenSetID,
-                        expanded:
-                            screenSet.screenSetID === hashParams.groupID && screenSet.screensID.find((screenID) => screenID === hashParams.itemID),
+                        expanded: screenSet.screenSetID === hashParams.groupID && screenSet.screensID.find((screenID) => screenID === hashParams.itemID),
                         nodes: screenSet.screensID.map((screensID) => ({
                             text: screensID,
                             class: `${PREVIEW_MENU_ITEM_CLASS} list-group-item-action`,
@@ -442,11 +421,11 @@ class WebScreenSets {
 
     filterScreenSets({ screenSets, filterScreens }) {
         return screenSets
-            .map(({screenSetID, screensID}) => {
+            .map(({ screenSetID, screensID }) => {
                 screensID = screensID.filter((screenID) => {
                     return filterScreens.find((filter) => filter.screenSetID === screenSetID && filter.screenID === screenID)
                 })
-                return {screenSetID, screensID}
+                return { screenSetID, screensID }
             })
             .filter((screenSet) => screenSet.screensID.length)
     }
@@ -456,11 +435,11 @@ class WebScreenSets {
         const cssFile = document.createElement('link')
         cssFile.setAttribute('rel', 'stylesheet')
         cssFile.setAttribute('type', 'text/css')
-        cssFile.setAttribute('class', LINK_CSS_CLASS)
+        cssFile.setAttribute('class', WebScreenSets.#LINK_CSS_CLASS)
         cssFile.setAttribute('href', await this.getScreenSetCssFilename(params))
 
         // Remove previous css files
-        Array.from(document.querySelectorAll(`link[rel="stylesheet"].${LINK_CSS_CLASS}`)).forEach((element) => element.remove())
+        Array.from(document.querySelectorAll(`link[rel="stylesheet"].${WebScreenSets.#LINK_CSS_CLASS}`)).forEach((element) => element.remove())
 
         // Load css file
         document.head.appendChild(cssFile)
@@ -520,7 +499,7 @@ class EmailTemplates {
     async onChanged(params) {
         this.#metadata = await this.getMetadata(params.apiKey)
         let iframeElement = document.getElementById('cdc-initializer--preview-container_iframeEmails')
-        if(!iframeElement) {
+        if (!iframeElement) {
             iframeElement = document.createElement('iframe')
             iframeElement.id = 'cdc-initializer--preview-container_iframeEmails'
             iframeElement.style.width = '800px'
@@ -542,8 +521,7 @@ class EmailTemplates {
                 expanded: undefined,
                 nodes: emailTemplates.map((emailTemplate) => ({
                     text: emailTemplate[0],
-                    expanded:
-                        emailTemplate[0] === hashParams.groupID && emailTemplate[1].languages.find((language) => language === hashParams.itemID),
+                    expanded: emailTemplate[0] === hashParams.groupID && emailTemplate[1].languages.find((language) => language === hashParams.itemID),
                     nodes: emailTemplate[1].languages.map((language) => ({
                         text: language,
                         class: `${PREVIEW_MENU_ITEM_CLASS} list-group-item-action`,
@@ -561,7 +539,7 @@ class EmailTemplates {
     }
 
     async getMetadata(apiKey) {
-        if(this.#metadataApiKey === apiKey) {
+        if (this.#metadataApiKey === apiKey) {
             return this.#metadata
         }
         const siteInfo = await Configuration.getSiteInfo(apiKey)

@@ -14,6 +14,7 @@ import EmailTemplateNameTranslator from '../sap-cdc-toolkit/emails/emailTemplate
 export default class EmailTemplates extends SiteFeature {
     static FOLDER_LOCALES = 'locales'
     static FOLDER_TEMPLATES = 'templates'
+    static FILE_METADATA = 'metadata.json'
     constructor(credentials) {
         super(credentials)
     }
@@ -152,7 +153,7 @@ export default class EmailTemplates extends SiteFeature {
                 previewEmailTemplatesMetadata[templateName].languages.push(language)
             })
         })
-        fs.writeFileSync(path.join(buildFeaturePath, 'metadata.json'), JSON.stringify(previewEmailTemplatesMetadata, null, 4))
+        fs.writeFileSync(path.join(buildFeaturePath, EmailTemplates.FILE_METADATA), JSON.stringify(previewEmailTemplatesMetadata, null, 4))
     }
 
     async deploy(apiKey, siteConfig, siteDirectory) {
@@ -183,7 +184,7 @@ export default class EmailTemplates extends SiteFeature {
     }
 
     #emailTemplateShouldBeIgnored(templateName) {
-        return templateName === 'unknownLocationNotification' || templateName === 'passwordResetNotification'
+        return templateName === 'unknownLocationNotification' || templateName === 'passwordResetNotification' || templateName === EmailTemplates.FILE_METADATA
     }
 
     #generateEmailTemplatePayload(buildTemplateDirectory, templateName) {
