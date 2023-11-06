@@ -206,16 +206,25 @@ class Navigation {
         selectApiKey.addEventListener('change', (event) => Navigation.selectSite(event.target.value))
     }
 
-    static getSiteFilteredScreens({ apiKey }) {
-        return FILTER.find((filter) => filter.apiKey === apiKey)
+    static getSiteFilter({ apiKey }) {
+        return FILTER.find((filter) => filter.apiKey === apiKey || filter.apiKey === '*')
     }
 
     static isSiteEnabled({ apiKey }) {
         if (!FILTER) {
             return true
         }
-        const siteFilterScreens = Navigation.getSiteFilteredScreens({ apiKey })
-        return !(siteFilterScreens && typeof siteFilterScreens.screens !== 'undefined' && (!siteFilterScreens.screens || !siteFilterScreens.screens.length))
+        const siteFilter = Navigation.getSiteFilter({ apiKey })
+        return Navigation.anyFeatureEnabled(siteFilter)
+    }
+
+    static anyFeatureEnabled(siteFilter) {
+        if(!siteFilter) {
+            return true
+        }
+        const areScreenSetsEnabled = !(siteFilter.screens && !siteFilter.screens.length)
+        const areEmailTemplatesEnabled = !(siteFilter.emails && !siteFilter.emails.length)
+        return areScreenSetsEnabled || areEmailTemplatesEnabled
     }
 
     static async processHashChange(params) {
