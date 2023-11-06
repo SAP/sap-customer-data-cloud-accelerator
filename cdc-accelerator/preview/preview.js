@@ -497,12 +497,12 @@ class EmailTemplates {
     async onChanged(params) {
         let iFrameElement = document.getElementById('cdc-initializer--preview-container_iframeEmails')
         if (!iFrameElement) {
-            iFrameElement = this.createIFrame()
+            iFrameElement = EmailTemplates.#createIFrame()
         }
         iFrameElement.src = await Feature.getFeatureFilename(params.apiKey, `${this.getName()}/${params.groupID}/${params.groupID}-${params.itemID}.html`)
     }
 
-    createIFrame() {
+    static #createIFrame() {
         const iFrameElement = document.createElement('iframe')
         iFrameElement.id = 'cdc-initializer--preview-container_iframeEmails'
         iFrameElement.style.width = '800px'
@@ -559,7 +559,7 @@ class EmailTemplates {
     async getFilteredEmails() {
         const emailTemplateEntries = await this.getMetadata(Navigation.getCurrentApiKey())
 
-        let emailsFilter = []
+        let emailsFilter = undefined
         const filterConfiguration = [...FILTER]
         const siteFilterConfiguration = filterConfiguration.find(({ apiKey }) => apiKey === gigya.apiKey)
         if (siteFilterConfiguration) {
@@ -572,7 +572,7 @@ class EmailTemplates {
                 emailsFilter = genericFilterConfiguration.emails
             }
         }
-        return emailsFilter.length === 0 ? emailTemplateEntries : this.filterEmailTemplates(emailTemplateEntries, emailsFilter)
+        return emailsFilter === undefined ? emailTemplateEntries : this.filterEmailTemplates(emailTemplateEntries, emailsFilter)
     }
 
     filterEmailTemplates(emailTemplateEntries, emailsFilter) {
