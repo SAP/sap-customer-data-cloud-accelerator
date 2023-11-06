@@ -379,7 +379,16 @@ const readJsonFile = (filePath) => {
     const fileContent = fs.readFileSync(filePath, { encoding: 'utf8' })
     return JSON.parse(fileContent)
 }
-
+const extractAclAndScopeKeys = (fileContent) => {
+    const aclAndScopeData = []
+    for (const key in fileContent) {
+        const keys = fileContent[key]
+        let aclId = keys.aclID
+        let scope = keys.scope
+        aclAndScopeData.push({ aclId, scope })
+    }
+    return aclAndScopeData
+}
 export {
     parseArguments,
     runWithProgress,
@@ -394,4 +403,5 @@ export {
     processMainScriptInlineImports,
     readJsonFile,
     getPartnerId,
+    extractAclAndScopeKeys,
 }

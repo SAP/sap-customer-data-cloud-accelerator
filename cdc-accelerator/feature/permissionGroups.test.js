@@ -4,7 +4,7 @@ import axios from 'axios'
 import path from 'path'
 import { credentials, partnerBaseDirector, partnerBuildDirector } from './test.common.js'
 import PermissionGroups from './permissionGroups.js'
-
+import { extractAclAndScopeKeys } from '../utils/utils.js'
 jest.mock('axios')
 jest.mock('fs')
 
@@ -111,5 +111,47 @@ describe('Permission Groups test suite', () => {
                 expect(fs.rmSync).not.toHaveBeenCalled()
             }
         }
+    })
+    describe('Deploy test suite', () => {
+        test('all permission groups were deployed successfully', async () => {
+            const aclAndScopeData = []
+            let requestBody = {}
+            const getSiteInfo = {
+                partnerId: 123123,
+                dataCenter: 'us1',
+                aclID: 'test_acl',
+                scope: {
+                    allowPartners: ['_owner'],
+                },
+            }
+            const permissionGroupsResponse = expectedPermissionGroupsResponse.groups
+            axios.mockResolvedValue({ data: expectedGigyaResponseOk }).mockResolvedValue({ data: expectedGigyaResponseOk })
+            fs.readFileSync.mockReturnValue(JSON.stringify(permissionGroupsResponse))
+            extractAclAndScopeKeys(permissionGroupsResponse).forEach(async ({ aclId, scope }) => {
+                requestBody = {
+                    aclId: aclId,
+                    scope: scope,
+                }
+            })
+            let spy = jest.spyOn(permissionGroups, 'deployPermissionGroup')
+            await permissionGroups.deploy(partnerBuildDirector, getSiteInfo)
+            expect(spy.mock.calls.length).toBe(2)
+            expect(spy).toHaveBeenNthCalledWith(2, getSiteInfo, requestBody.aclId, JSON.stringify(requestBody.scope), credentials)
+        })
+
+        test('all permission groups were not deployed unsuccessfully', async () => {
+            const permissionGroupsResponse = expectedPermissionGroupsResponse.groups
+            axios.mockResolvedValueOnce({ data: expectedGigyaResponseNok })
+            const getSiteInfo = {
+                partnerId: 123123,
+                dataCenter: 'us1',
+                aclID: 'test_acl',
+                scope: {
+                    allowPartners: ['_owner'],
+                },
+            }
+            fs.readFileSync.mockReturnValue(JSON.stringify(permissionGroupsResponse))
+            await expect(permissionGroups.deploy(partnerBuildDirector, getSiteInfo)).rejects.toEqual(new Error(JSON.stringify(expectedGigyaResponseNok)))
+        })
     })
 })
