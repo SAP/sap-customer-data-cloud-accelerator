@@ -219,7 +219,7 @@ class Navigation {
     }
 
     static anyFeatureEnabled(siteFilter) {
-        if(!siteFilter) {
+        if (!siteFilter) {
             return true
         }
         const areScreenSetsEnabled = !(siteFilter.screens && !siteFilter.screens.length)
@@ -387,7 +387,7 @@ class WebScreenSets {
             return [
                 {
                     text: this.getName(),
-                    expanded: undefined,
+                    expanded: hashParams.groupID ? screenSets.find((screenSet) => screenSet.screenSetID === hashParams.groupID) : undefined,
                     nodes: screenSets.map((screenSet) => ({
                         text: screenSet.screenSetID,
                         expanded: screenSet.screenSetID === hashParams.groupID && screenSet.screensID.find((screenID) => screenID === hashParams.itemID),
@@ -528,7 +528,7 @@ class EmailTemplates {
         return [
             {
                 text: this.getName(),
-                expanded: undefined,
+                expanded: hashParams.groupID ? emailTemplates.find((emailTemplate) => emailTemplate.emailID === hashParams.groupID) : undefined,
                 nodes: emailTemplates.map((emailTemplate) => ({
                     text: emailTemplate.emailID,
                     expanded: emailTemplate.emailID === hashParams.groupID && emailTemplate.languages.find((language) => language === hashParams.itemID),
