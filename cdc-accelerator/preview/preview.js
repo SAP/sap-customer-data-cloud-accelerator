@@ -24,11 +24,10 @@ const preview = ({
     PREVIEW_MENU_ITEM_CLASS = menuItemClass
     USE_LOCAL_SCREEN_SETS = useLocalScreenSets
 
-    if (!apiKey) {
-        return console.log('No apiKey provided')
-    }
-
     Navigation.loadSiteSelector({ apiKey, origin }).then((resp) => {
+        if (!apiKey) {
+            return console.log('No apiKey provided')
+        }
         return Gigya.loadGigya({ apiKey, useLocalWebSdk, lang })
     })
 }
