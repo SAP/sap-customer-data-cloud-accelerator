@@ -2,7 +2,7 @@ import { expectedGigyaResponseNok, expectedGigyaResponseOk, expectedPermissionGr
 import fs from 'fs'
 import axios from 'axios'
 import path from 'path'
-import { credentials, partnerBaseDirector, partnerBuildDirector } from './test.common.js'
+import { credentials, partnerBaseDirectory, partnerBuildDirectory } from './test.common.js'
 import PermissionGroups from './permissionGroups.js'
 import { extractAclAndScopeKeys } from '../utils/utils.js'
 jest.mock('axios')
@@ -23,8 +23,8 @@ describe('Permission Groups test suite', () => {
             fs.existsSync.mockReturnValue(false)
             fs.mkdirSync.mockReturnValue(undefined)
             fs.writeFileSync.mockReturnValue(undefined)
-            await permissionGroups.init(partnerBaseDirector, getSiteInfo)
-            const srcDirectory = path.join(partnerBaseDirector, permissionGroups.getName())
+            await permissionGroups.init(partnerBaseDirectory, getSiteInfo)
+            const srcDirectory = path.join(partnerBaseDirectory, permissionGroups.getName())
             expect(fs.existsSync).toHaveBeenCalledWith(srcDirectory)
             expect(fs.writeFileSync).toHaveBeenCalledWith(
                 path.join(srcDirectory, PermissionGroups.PERMISSIONGROUP_FILE_NAME),
@@ -36,7 +36,7 @@ describe('Permission Groups test suite', () => {
                 partnerId: 123123,
             }
             axios.mockResolvedValueOnce({ data: expectedGigyaResponseNok })
-            await expect(permissionGroups.init(partnerBaseDirector, getSiteInfo)).rejects.toEqual(new Error(JSON.stringify(expectedGigyaResponseNok)))
+            await expect(permissionGroups.init(partnerBaseDirectory, getSiteInfo)).rejects.toEqual(new Error(JSON.stringify(expectedGigyaResponseNok)))
         })
         test('feature directory already exists', async () => {
             const getSiteInfo = {
@@ -44,10 +44,10 @@ describe('Permission Groups test suite', () => {
             }
             axios.mockResolvedValueOnce({ data: expectedPermissionGroupsResponse })
             fs.existsSync.mockReturnValue(true)
-            await expect(permissionGroups.init(partnerBaseDirector, getSiteInfo)).rejects.toEqual(
+            await expect(permissionGroups.init(partnerBaseDirectory, getSiteInfo)).rejects.toEqual(
                 new Error(
                     `The "${path.join(
-                        partnerBaseDirector,
+                        partnerBaseDirectory,
                         permissionGroups.getName(),
                     )}" directory already exists, to overwrite its contents please use the option "reset" instead of "init"`,
                 ),
@@ -63,7 +63,7 @@ describe('Permission Groups test suite', () => {
             fs.writeFileSync.mockImplementation(() => {
                 throw new Error('File write error')
             })
-            await expect(permissionGroups.init(partnerBaseDirector, getSiteInfo)).rejects.toThrow('File write error')
+            await expect(permissionGroups.init(partnerBaseDirectory, getSiteInfo)).rejects.toThrow('File write error')
         })
     })
     describe('Build test suite', () => {
@@ -76,8 +76,8 @@ describe('Permission Groups test suite', () => {
             fs.writeFileSync.mockReturnValue(undefined)
             fs.readFileSync.mockReturnValue(srcFileContent)
             // for the build method it is passed the build path
-            permissionGroups.build(partnerBuildDirector)
-            const buildFeatureDirectory = path.join(partnerBuildDirector, permissionGroups.getName())
+            permissionGroups.build(partnerBuildDirectory)
+            const buildFeatureDirectory = path.join(partnerBuildDirectory, permissionGroups.getName())
             expect(fs.existsSync).toHaveBeenCalledWith(buildFeatureDirectory)
             if (dirExists) {
                 expect(fs.rmSync).toHaveBeenCalledWith(buildFeatureDirectory, { force: true, recursive: true })
@@ -101,9 +101,9 @@ describe('Permission Groups test suite', () => {
             fs.existsSync.mockReturnValue(dirExists)
             fs.rmSync.mockReturnValue(undefined)
 
-            permissionGroups.reset(partnerBaseDirector)
+            permissionGroups.reset(partnerBaseDirectory)
 
-            const featureDirectory = path.join(partnerBaseDirector, permissionGroups.getName())
+            const featureDirectory = path.join(partnerBaseDirectory, permissionGroups.getName())
             expect(fs.existsSync).toHaveBeenCalledWith(featureDirectory)
             if (dirExists) {
                 expect(fs.rmSync).toHaveBeenCalledWith(featureDirectory, { force: true, recursive: true })
@@ -114,29 +114,26 @@ describe('Permission Groups test suite', () => {
     })
     describe('Deploy test suite', () => {
         test('all permission groups were deployed successfully', async () => {
-            const aclAndScopeData = []
-            let requestBody = {}
+            const permissionGroupsResponse = expectedPermissionGroupsResponse.groups
+            axios.mockResolvedValue({ data: expectedGigyaResponseOk }).mockResolvedValue({ data: expectedGigyaResponseOk })
+            const firstRequestBody = {
+                aclId: permissionGroupsResponse.alexTestAdminPermissionGroup.aclID,
+                scope: permissionGroupsResponse.alexTestAdminPermissionGroup.scope,
+            }
+            const secondRequestBody = {
+                aclId: permissionGroupsResponse.cdc_toolbox_e2e_test.aclID,
+                scope: permissionGroupsResponse.cdc_toolbox_e2e_test.scope,
+            }
             const getSiteInfo = {
                 partnerId: 123123,
                 dataCenter: 'us1',
-                aclID: 'test_acl',
-                scope: {
-                    allowPartners: ['_owner'],
-                },
             }
-            const permissionGroupsResponse = expectedPermissionGroupsResponse.groups
-            axios.mockResolvedValue({ data: expectedGigyaResponseOk }).mockResolvedValue({ data: expectedGigyaResponseOk })
             fs.readFileSync.mockReturnValue(JSON.stringify(permissionGroupsResponse))
-            extractAclAndScopeKeys(permissionGroupsResponse).forEach(async ({ aclId, scope }) => {
-                requestBody = {
-                    aclId: aclId,
-                    scope: scope,
-                }
-            })
             let spy = jest.spyOn(permissionGroups, 'deployPermissionGroup')
-            await permissionGroups.deploy(partnerBuildDirector, getSiteInfo)
+            await permissionGroups.deploy(partnerBuildDirectory, getSiteInfo)
             expect(spy.mock.calls.length).toBe(2)
-            expect(spy).toHaveBeenNthCalledWith(2, getSiteInfo, requestBody.aclId, JSON.stringify(requestBody.scope), credentials)
+            expect(spy).toHaveBeenNthCalledWith(1, getSiteInfo, firstRequestBody, credentials)
+            expect(spy).toHaveBeenNthCalledWith(2, getSiteInfo, secondRequestBody, credentials)
         })
 
         test('all permission groups were not deployed unsuccessfully', async () => {
@@ -151,7 +148,7 @@ describe('Permission Groups test suite', () => {
                 },
             }
             fs.readFileSync.mockReturnValue(JSON.stringify(permissionGroupsResponse))
-            await expect(permissionGroups.deploy(partnerBuildDirector, getSiteInfo)).rejects.toEqual(new Error(JSON.stringify(expectedGigyaResponseNok)))
+            await expect(permissionGroups.deploy(partnerBuildDirectory, getSiteInfo)).rejects.toEqual(new Error(JSON.stringify(expectedGigyaResponseNok)))
         })
     })
 })

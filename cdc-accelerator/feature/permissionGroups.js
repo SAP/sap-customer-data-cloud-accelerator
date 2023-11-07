@@ -1,11 +1,11 @@
 import PartnerFeature from './partnerFeature.js'
 import path from 'path'
 import fs from 'fs'
-import { clearDirectoryContents, extractAclAndScopeKeys } from '../utils/utils.js'
+import { clearDirectoryContents } from '../utils/utils.js'
 import { SRC_DIRECTORY, BUILD_DIRECTORY } from './constants.js'
 import client from '../../cdc-accelerator/sap-cdc-toolkit/gigya/client.js'
 export default class PermissionGroups extends PartnerFeature {
-    static PERMISSIONGROUP_FILE_NAME = 'PermissionGroups.json'
+    static PERMISSIONGROUP_FILE_NAME = `${this.getName()}.json`
     constructor(credentials) {
         super(credentials)
     }
@@ -54,14 +54,21 @@ export default class PermissionGroups extends PartnerFeature {
         if (!fileContent || !fileContent.length) {
             throw new Error(`Invalid file: ${buildFileName}`)
         }
+        const aclAndScopeData = []
+        for (const key in parsedContent) {
+            const keys = parsedContent[key]
+            let aclId = keys.aclID
+            let scope = keys.scope
+            aclAndScopeData.push({ aclId, scope })
+        }
 
-        extractAclAndScopeKeys(parsedContent).forEach(async ({ aclId, scope }) => {
+        aclAndScopeData.forEach(async ({ aclId, scope }) => {
             const requestBody = {
                 aclId: aclId,
                 scope: scope,
             }
 
-            const response = await this.deployPermissionGroup(siteInfo, requestBody.aclId, JSON.stringify(requestBody.scope), this.credentials)
+            const response = await this.deployPermissionGroup(siteInfo, requestBody, this.credentials)
             if (response.errorCode === 400006) {
                 console.log(`Group ${requestBody.aclId} already exists. Skipping...`)
             }
@@ -72,8 +79,8 @@ export default class PermissionGroups extends PartnerFeature {
         })
     }
 
-    async deployPermissionGroup(siteInfo, aclID, scope, credentials) {
-        return await this.setPermissionRequest(siteInfo.dataCenter, siteInfo.partnerId, aclID, scope, credentials.userKey, credentials.secret)
+    async deployPermissionGroup(siteInfo, requestBody, credentials) {
+        return await this.setPermissionRequest(siteInfo.dataCenter, siteInfo.partnerId, requestBody.aclId, requestBody.scope, credentials.userKey, credentials.secret)
     }
     async getPermissionGroups(dataCenter, partnerID, credentials) {
         const url = `https://admin.${dataCenter}.gigya.com/admin.getGroups`
@@ -82,7 +89,7 @@ export default class PermissionGroups extends PartnerFeature {
     }
     async setPermissionRequest(dataCenter, partnerID, aclID, scope, userKey, secret) {
         const url = `https://admin.${dataCenter}.gigya.com/admin.createGroup`
-        const response = await client.post(url, this.#setPermissionGroupsParameters(partnerID, userKey, secret, aclID, scope)).catch((error) => error)
+        const response = await client.post(url, this.#setPermissionGroupsParameters(partnerID, userKey, secret, aclID, JSON.stringify(scope))).catch((error) => error)
         return response.data
     }
 
