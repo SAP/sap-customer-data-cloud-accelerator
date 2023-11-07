@@ -457,3 +457,17 @@ export const expectedPermissionGroupsResponse = {
         },
     },
 }
+
+export const expectedAclResponse = {
+    callId: c2de5b649c4f46c9849e036edd123d09,
+    errorCode: 0,
+    apiVersion: 2,
+    statusCode: 200,
+    statusReason: OK,
+    time: '2023-11-07T17:23:34.285Z',
+    acl: {
+        _api: {},
+        _data: {},
+        _inherit: ['_accountsFullAccess', '_basicSiteAccess', '_viewPartnerAndSiteAuditLog', '_viewSiteAuditLog'],
+    },
+}

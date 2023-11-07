@@ -4,6 +4,7 @@ import fs from 'fs'
 import { clearDirectoryContents } from '../utils/utils.js'
 import { SRC_DIRECTORY, BUILD_DIRECTORY } from './constants.js'
 import client from '../../cdc-accelerator/sap-cdc-toolkit/gigya/client.js'
+import ACL from './acls.js'
 export default class PermissionGroups extends PartnerFeature {
     static PERMISSIONGROUP_FILE_NAME = 'PermissionGroups.json'
     constructor(credentials) {
@@ -15,6 +16,7 @@ export default class PermissionGroups extends PartnerFeature {
     }
 
     async init(partnerDirectory, siteInfo) {
+        const acls = new ACL(this.credentials)
         if (!siteInfo['partnerId']) {
             console.error(`Failed to retrieve partnerID for apiKey "${siteInfo['apiKey']}"`)
             throw new Error(JSON.stringify(siteInfo['partnerId']))
@@ -25,7 +27,7 @@ export default class PermissionGroups extends PartnerFeature {
 
         // Get permission groups
         const permissionGroupsRes = await this.getPermissionGroups(siteInfo['dataCenter'], siteInfo['partnerId'], this.credentials)
-
+        const aclsResponse = acls.init(JSON.stringify(permissionGroupsRes['groups']), siteInfo['partnerId'], partnerDirectory, siteInfo['dataCenter'])
         if (permissionGroupsRes.errorCode) {
             throw new Error(JSON.stringify(permissionGroupsRes))
         }
