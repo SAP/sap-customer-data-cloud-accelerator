@@ -4,7 +4,6 @@ import axios from 'axios'
 import path from 'path'
 import { credentials, partnerBaseDirectory, partnerBuildDirectory } from './test.common.js'
 import PermissionGroups from './permissionGroups.js'
-import { extractAclAndScopeKeys } from '../utils/utils.js'
 jest.mock('axios')
 jest.mock('fs')
 
