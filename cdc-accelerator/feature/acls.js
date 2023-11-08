@@ -30,9 +30,6 @@ export default class ACL extends PartnerFeature {
             aclData.push({ aclId })
         }
         for (const { aclId } of aclData) {
-            const requestBody = {
-                aclId: aclId,
-            }
             const response = await this.getAclsRequest(dataCenter, aclId, partnerId, this.credentials)
             if (response.errorCode) {
                 throw new Error(JSON.stringify(response))
