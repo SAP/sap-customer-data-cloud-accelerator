@@ -5,7 +5,7 @@ import { clearDirectoryContents } from '../utils/utils.js'
 import { SRC_DIRECTORY, BUILD_DIRECTORY } from './constants.js'
 import client from '../../cdc-accelerator/sap-cdc-toolkit/gigya/client.js'
 export default class PermissionGroups extends PartnerFeature {
-    static PERMISSIONGROUP_FILE_NAME = `${this.getName()}.json`
+    static PERMISSIONGROUP_FILE_NAME = 'PermissionGroups.json'
     constructor(credentials) {
         super(credentials)
     }
@@ -54,48 +54,54 @@ export default class PermissionGroups extends PartnerFeature {
         if (!fileContent || !fileContent.length) {
             throw new Error(`Invalid file: ${buildFileName}`)
         }
-        const aclAndScopeData = []
-        for (const key in parsedContent) {
-            const keys = parsedContent[key]
-            let aclId = keys.aclID
-            let scope = keys.scope
-            aclAndScopeData.push({ aclId, scope })
-        }
 
-        aclAndScopeData.forEach(async ({ aclId, scope }) => {
+        let keys = Object.keys(parsedContent)
+        const aclAndScopeData = keys.map((key) => {
+            const { aclID, scope } = parsedContent[key]
+            return { aclId: aclID, scope, groupId: key }
+        })
+        aclAndScopeData.forEach(async ({ aclId, scope, groupId }) => {
             const requestBody = {
                 aclId: aclId,
                 scope: scope,
+                groupId: groupId,
             }
 
             const response = await this.deployPermissionGroup(siteInfo, requestBody, this.credentials)
             if (response.errorCode === 400006) {
-                console.log(`Group ${requestBody.aclId} already exists. Skipping...`)
+                console.log(`Group ${requestBody.groupId} already exists. Skipping...`)
             }
             if (response.errorCode !== 0 && response.errorCode !== 400006) {
                 throw new Error(JSON.stringify(response))
             }
-            return response
         })
     }
 
     async deployPermissionGroup(siteInfo, requestBody, credentials) {
-        return await this.setPermissionRequest(siteInfo.dataCenter, siteInfo.partnerId, requestBody.aclId, requestBody.scope, credentials.userKey, credentials.secret)
+        return await this.setPermissionRequest(
+            siteInfo.dataCenter,
+            siteInfo.partnerId,
+            requestBody.groupId,
+            requestBody.aclId,
+            requestBody.scope,
+            credentials.userKey,
+            credentials.secret,
+        )
     }
     async getPermissionGroups(dataCenter, partnerID, credentials) {
         const url = `https://admin.${dataCenter}.gigya.com/admin.getGroups`
         const response = await client.post(url, this.#getPermissionGroupsParameters(partnerID, credentials.userKey, credentials.secret)).catch((error) => error)
         return response.data
     }
-    async setPermissionRequest(dataCenter, partnerID, aclID, scope, userKey, secret) {
+    async setPermissionRequest(dataCenter, partnerID, groupID, aclID, scope, userKey, secret) {
         const url = `https://admin.${dataCenter}.gigya.com/admin.createGroup`
-        const response = await client.post(url, this.#setPermissionGroupsParameters(partnerID, userKey, secret, aclID, JSON.stringify(scope))).catch((error) => error)
+        const response = await client.post(url, this.#setPermissionGroupsParameters(partnerID, userKey, secret, groupID, aclID, JSON.stringify(scope))).catch((error) => error)
         return response.data
     }
 
-    #setPermissionGroupsParameters(partnerID, userKey, secret, aclID, scope) {
+    #setPermissionGroupsParameters(partnerID, userKey, secret, groupID, aclID, scope) {
         const parameters = Object.assign(this.#getPermissionGroupsParameters(partnerID, userKey, secret))
-        parameters.groupID = aclID
+        parameters.groupID = groupID
         parameters.aclID = aclID
         parameters.scope = scope
         return parameters

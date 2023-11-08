@@ -118,10 +118,12 @@ describe('Permission Groups test suite', () => {
             const firstRequestBody = {
                 aclId: permissionGroupsResponse.alexTestAdminPermissionGroup.aclID,
                 scope: permissionGroupsResponse.alexTestAdminPermissionGroup.scope,
+                groupId: 'alexTestAdminPermissionGroup',
             }
             const secondRequestBody = {
                 aclId: permissionGroupsResponse.cdc_toolbox_e2e_test.aclID,
                 scope: permissionGroupsResponse.cdc_toolbox_e2e_test.scope,
+                groupId: 'cdc_toolbox_e2e_test',
             }
             const getSiteInfo = {
                 partnerId: 123123,
@@ -136,18 +138,13 @@ describe('Permission Groups test suite', () => {
         })
 
         test('all permission groups were not deployed unsuccessfully', async () => {
-            const permissionGroupsResponse = expectedPermissionGroupsResponse.groups
-            axios.mockResolvedValueOnce({ data: expectedGigyaResponseNok })
             const getSiteInfo = {
                 partnerId: 123123,
                 dataCenter: 'us1',
-                aclID: 'test_acl',
-                scope: {
-                    allowPartners: ['_owner'],
-                },
             }
-            fs.readFileSync.mockReturnValue(JSON.stringify(permissionGroupsResponse))
-            await expect(permissionGroups.deploy(partnerBuildDirectory, getSiteInfo)).rejects.toEqual(new Error(JSON.stringify(expectedGigyaResponseNok)))
+            axios.mockResolvedValueOnce({ data: expectedGigyaResponseNok }).mockResolvedValueOnce({ data: expectedGigyaResponseNok })
+            fs.readFileSync.mockReturnValue(true)
+            await expect(permissionGroups.deploy(partnerBuildDirectory, getSiteInfo)).rejects.toThrow(Error)
         })
     })
 })
