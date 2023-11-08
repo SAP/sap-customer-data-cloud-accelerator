@@ -60,33 +60,20 @@ export default class PermissionGroups extends PartnerFeature {
             const { aclID, scope } = parsedContent[key]
             return { aclId: aclID, scope, groupId: key }
         })
-        aclAndScopeData.forEach(async ({ aclId, scope, groupId }) => {
-            const requestBody = {
-                aclId: aclId,
-                scope: scope,
-                groupId: groupId,
-            }
-
-            const response = await this.deployPermissionGroup(siteInfo, requestBody, this.credentials)
+        for (let keys of aclAndScopeData) {
+            const response = await this.deployPermissionGroup(siteInfo, keys.groupId, keys.aclId, keys.scope, this.credentials)
             if (response.errorCode === 400006) {
                 console.log(`Group ${requestBody.groupId} already exists. Skipping...`)
             }
             if (response.errorCode !== 0 && response.errorCode !== 400006) {
                 throw new Error(JSON.stringify(response))
             }
-        })
+            return response
+        }
     }
 
-    async deployPermissionGroup(siteInfo, requestBody, credentials) {
-        return await this.setPermissionRequest(
-            siteInfo.dataCenter,
-            siteInfo.partnerId,
-            requestBody.groupId,
-            requestBody.aclId,
-            requestBody.scope,
-            credentials.userKey,
-            credentials.secret,
-        )
+    async deployPermissionGroup(siteInfo, groupId, aclId, scope, credentials) {
+        return await this.setPermissionRequest(siteInfo.dataCenter, siteInfo.partnerId, groupId, aclId, scope, credentials.userKey, credentials.secret)
     }
     async getPermissionGroups(dataCenter, partnerID, credentials) {
         const url = `https://admin.${dataCenter}.gigya.com/admin.getGroups`
