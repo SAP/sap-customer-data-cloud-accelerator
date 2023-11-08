@@ -24,7 +24,7 @@ const preview = ({
     PREVIEW_MENU_ITEM_CLASS = menuItemClass
     USE_LOCAL_SCREEN_SETS = useLocalScreenSets
 
-    Navigation.loadSiteSelector({ apiKey, origin }).then((resp) => {
+    Navigation.loadSiteSelector({ apiKey, origin }).then(() => {
         if (!apiKey) {
             return console.log('No apiKey provided')
         }
@@ -478,7 +478,7 @@ class WebScreenSets {
         try {
             screenSetEvents = eval('(' + screenJs + ')')
         } catch (error) {
-            alert('Error loading local Screen-Set events from file: \n\n' + filename)
+            window.location.reload()
             screenSetEvents = {}
         }
 
@@ -514,8 +514,8 @@ class EmailTemplates {
     static #createIFrame() {
         const iFrameElement = document.createElement('iframe')
         iFrameElement.id = 'cdc-initializer--preview-container_iframeEmails'
-        iFrameElement.style.width = '800px'
-        iFrameElement.style.height = '800px'
+        iFrameElement.style.width = '100%'
+        iFrameElement.style.height = 'calc(100vh - 40px)'
         const container = document.getElementById('cdc-initializer--preview-container')
         container.innerHTML = ''
         container.appendChild(iFrameElement)
@@ -562,6 +562,7 @@ class EmailTemplates {
             })
             .catch((error) => {
                 console.log({ error })
+                window.location.reload()
             })
     }
 
