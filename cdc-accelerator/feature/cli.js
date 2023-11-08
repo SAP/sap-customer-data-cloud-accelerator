@@ -4,7 +4,7 @@
  */
 import 'dotenv/config'
 
-import { CONFIG_FILENAME, Operations } from './constants.js'
+import { CONFIG_FILENAME, Environments, Operations } from './constants.js'
 import SiteFeature from './siteFeature.js'
 import Schema from './schema.js'
 import WebSdk from './webSdk.js'
@@ -33,9 +33,7 @@ export default class CLI {
             environment = featureName
             featureName = undefined
         }
-        if (!this.#environmentSupported(environment)) {
-            throw new Error('The environment argument is not supported. Please use dev, qa or prod.')
-        }
+        environment = this.#sanitizeEnvironment(environment)
 
         let configuration = this.#getConfiguration(operation, environment)
         let sites
@@ -48,8 +46,19 @@ export default class CLI {
         return { operation, sites, featureName, environment }
     }
 
-    #environmentSupported(environment) {
-        return undefined === environment || 'dev' === environment || 'qa' === environment || 'prod' === environment
+    #sanitizeEnvironment(environment) {
+        switch (environment) {
+            case Environments.dev:
+                return Environments.dev
+            case Environments.qa:
+                return Environments.qa
+            case Environments.prod:
+                return Environments.prod
+            case Environments.undefined:
+                return Environments.undefined
+            default:
+                throw new Error('The environment argument is not supported. Please use ', Object.keys(Environments))
+        }
     }
 
     #areFeaturesRegistered() {
