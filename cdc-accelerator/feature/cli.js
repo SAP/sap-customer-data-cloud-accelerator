@@ -33,6 +33,9 @@ export default class CLI {
             environment = featureName
             featureName = undefined
         }
+        if (!this.#environmentSupported(environment)) {
+            throw new Error('The environment argument is not supported. Please use dev, qa or prod.')
+        }
 
         let configuration = this.#getConfiguration(operation, environment)
         let sites
@@ -43,6 +46,10 @@ export default class CLI {
         sites = configuration
 
         return { operation, sites, featureName, environment }
+    }
+
+    #environmentSupported(environment) {
+        return undefined === environment || 'dev' === environment || 'qa' === environment || 'prod' === environment
     }
 
     #areFeaturesRegistered() {
@@ -74,7 +81,15 @@ export default class CLI {
     }
 
     getConfigurationByEnvironment(environment) {
-        return JSON.parse(fs.readFileSync(CONFIG_FILENAME, { encoding: 'utf8' }))
+        switch (environment) {
+            case 'dev':
+            case 'qa':
+            case 'prod':
+            case undefined:
+                return JSON.parse(fs.readFileSync(CONFIG_FILENAME, { encoding: 'utf8' }))
+            default:
+                throw new Error('Environment bot supported')
+        }
     }
 
     initSiteFeature(credentials) {
