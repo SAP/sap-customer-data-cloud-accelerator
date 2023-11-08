@@ -29,16 +29,14 @@ describe('ACLs test suite', () => {
             expect(fs.writeFileSync).toHaveBeenCalledWith(path.join(srcDirectory, ACL.ACL_FILE_NAME), JSON.stringify(expectedACLFileContent, null, 4))
         })
         test('get ACLs failed', async () => {
-            axios.mockResolvedValueOnce({ data: expectedGigyaResponseNok }).mockResolvedValueOnce({ data: expectedGigyaResponseNok })
+            axios.mockResolvedValue({ data: expectedGigyaResponseNok })
             const getSiteInfo = {
                 partnerId: 123123,
                 dataCenter: 'eu1',
             }
             fs.readFileSync.mockReturnValue(true)
-            await expect(
-                acls
-                    .init(JSON.stringify(expectedPermissionGroupsResponse.groups), getSiteInfo.partnerId, partnerBaseDirector, getSiteInfo.dataCenter)
-                    .rejects.toEqual(new Error(JSON.stringify(expectedGigyaResponseNok))),
+            await expect(acls.init(JSON.stringify(expectedPermissionGroupsResponse.groups), getSiteInfo.partnerId, partnerBaseDirector, getSiteInfo.dataCenter)).rejects.toThrow(
+                new Error(JSON.stringify(expectedGigyaResponseNok)),
             )
         })
     })
