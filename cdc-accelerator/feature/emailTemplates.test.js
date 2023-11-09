@@ -193,7 +193,7 @@ describe('Email templates test suite', () => {
                 .mockReturnValueOnce(passwordResetLocalePt)
 
             await emailTemplates.build(buildSiteDirectory)
-            expect(fs.writeFileSync.mock.calls.length).toBe(3)
+            expect(fs.writeFileSync.mock.calls.length).toBe(3 + 1)
             expect(fs.writeFileSync).toHaveBeenNthCalledWith(
                 1,
                 path.join(buildSiteDirectory, emailTemplates.getName(), templateName1, `${templateName1}-en${templateFileExtension}`),
@@ -209,6 +209,7 @@ describe('Email templates test suite', () => {
                 path.join(buildSiteDirectory, emailTemplates.getName(), templateName2, `${templateName2}-pt${templateFileExtension}`),
                 passwordResetRenderedPt,
             )
+            expect(fs.writeFileSync).toHaveBeenNthCalledWith(4, path.join(buildSiteDirectory, emailTemplates.getName(), EmailTemplates.FILE_METADATA), expect.anything())
         })
     })
 
