@@ -1,42 +1,32 @@
-import PartnerFeature from './partnerFeature.js'
 import path from 'path'
 import fs from 'fs'
 import { clearDirectoryContents } from '../utils/utils.js'
 import { SRC_DIRECTORY, BUILD_DIRECTORY } from './constants.js'
 import client from '../../cdc-accelerator/sap-cdc-toolkit/gigya/client.js'
-export default class ACL extends PartnerFeature {
+export default class ACL {
     static ACL_FILE_NAME = 'Acls.json'
+    #credentials
     constructor(credentials) {
-        super(credentials)
+        this.#credentials = credentials
     }
 
     getName() {
         return this.constructor.name
     }
 
-    async init(permissionGroupsFile, partnerId, partnerDirectory, dataCenter) {
-        const permissionGroups = JSON.parse(permissionGroupsFile)
-        const aclData = []
-        let finalResponse = {}
-        if (!permissionGroups) {
-            console.error('Failed to parse groups from permissionGroups.json file')
-            return
-        }
-        const featureDirectory = path.join(partnerDirectory, this.getName())
-        this.createDirectory(featureDirectory)
-        for (const key in permissionGroups) {
-            const keys = permissionGroups[key]
-            let aclId = keys.aclID
-            aclData.push({ aclId })
-        }
-        for (const { aclId } of aclData) {
-            const response = await this.getAclsRequest(dataCenter, aclId, partnerId, this.credentials)
+    async init(aclID, partnerId, permissionGroupDirectory, dataCenter) {
+        const promises = aclID.map(async (ids) => {
+            const response = await this.getAclsRequest(dataCenter, ids, partnerId, this.#credentials)
             if (response.errorCode) {
                 throw new Error(JSON.stringify(response))
             }
-            finalResponse = Object.assign(finalResponse, { [aclId]: response['acl'] })
-        }
-        fs.writeFileSync(path.join(featureDirectory, ACL.ACL_FILE_NAME), JSON.stringify(finalResponse, null, 4))
+
+            return { [ids]: response['acl'] }
+        })
+        const results = await Promise.all(promises)
+        let finalResponse = Object.assign({}, ...results)
+
+        fs.writeFileSync(path.join(permissionGroupDirectory, ACL.ACL_FILE_NAME), JSON.stringify(finalResponse, null, 4))
     }
 
     reset(directory) {
@@ -47,7 +37,7 @@ export default class ACL extends PartnerFeature {
         const buildFeaturePath = path.join(directory, this.getName())
         clearDirectoryContents(buildFeaturePath)
         const srcFeaturePath = buildFeaturePath.replace(BUILD_DIRECTORY, SRC_DIRECTORY)
-        this.copyFileFromSrcToBuild(srcFeaturePath, PermissionGroups.PERMISSIONGROUP_FILE_NAME)
+        this.copyFileFromSrcToBuild(srcFeaturePath, ACL.ACL_FILE_NAME)
     }
 
     async deploy(partnerDirectory, siteInfo) {
@@ -67,4 +57,3 @@ export default class ACL extends PartnerFeature {
         return parameters
     }
 }
-//TOOLKIT CHANNELS E TOPICS ou CONSENTS MESMA MANEIRA COM OS ACLS
