@@ -28,11 +28,11 @@ export default class PermissionGroups extends PartnerFeature {
 
         // Get permission groups
         const permissionGroupsRes = await this.getPermissionGroups(siteInfo['dataCenter'], siteInfo['partnerId'], this.credentials)
-        const aclIDs = Object.keys(permissionGroupsRes['groups']).map((key) => permissionGroupsRes['groups'][key].aclID)
-        await this.#acls.init(aclIDs, siteInfo['partnerId'], featureDirectory, siteInfo['dataCenter'])
         if (permissionGroupsRes.errorCode) {
             throw new Error(JSON.stringify(permissionGroupsRes))
         }
+        const aclIDs = Object.keys(permissionGroupsRes['groups']).map((key) => permissionGroupsRes['groups'][key].aclID)
+        await this.#acls.init(aclIDs, siteInfo['partnerId'], featureDirectory, siteInfo['dataCenter'])
 
         // Create permissionGroups file
         fs.writeFileSync(path.join(featureDirectory, PermissionGroups.PERMISSIONGROUP_FILE_NAME), JSON.stringify(permissionGroupsRes['groups'], null, 4))

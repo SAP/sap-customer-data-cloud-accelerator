@@ -15,22 +15,17 @@ export default class ACL {
     }
 
     async init(aclID, partnerId, permissionGroupDirectory, dataCenter) {
-        const promises = aclID.map(async (ids) => {
-            const response = await this.getAclsRequest(dataCenter, ids, partnerId, this.#credentials)
+        let finalResponse = {}
+        for (const aclId of aclID) {
+            const response = await this.getAclsRequest(dataCenter, aclId, partnerId, this.#credentials)
             if (response.errorCode) {
                 throw new Error(JSON.stringify(response))
             }
 
-            return { [ids]: response['acl'] }
-        })
-        const results = await Promise.all(promises)
-        let finalResponse = Object.assign({}, ...results)
+            finalResponse = Object.assign(finalResponse, { [aclId]: response['acl'] })
+        }
 
         fs.writeFileSync(path.join(permissionGroupDirectory, ACL.ACL_FILE_NAME), JSON.stringify(finalResponse, null, 4))
-    }
-
-    reset(directory) {
-        this.deleteDirectory(path.join(directory, this.getName()))
     }
 
     build(directory) {
@@ -43,9 +38,9 @@ export default class ACL {
     async deploy(partnerDirectory, siteInfo) {
         console.log('deploy was called')
     }
-    async getAclsRequest(dataCenter, requestBody, partnerID, credentials) {
+    async getAclsRequest(dataCenter, aclID, partnerID, credentials) {
         const url = `https://admin.${dataCenter}.gigya.com/admin.getACL`
-        const response = await client.post(url, this.#getAcls(requestBody, partnerID, credentials.userKey, credentials.secret))
+        const response = await client.post(url, this.#getAcls(aclID, partnerID, credentials.userKey, credentials.secret))
         return response.data
     }
     #getAcls(aclID, partnerID, userKey, secret) {
