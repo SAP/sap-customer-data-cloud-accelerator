@@ -14,9 +14,9 @@ export default class ACL {
         return this.constructor.name
     }
 
-    async init(aclID, partnerId, permissionGroupDirectory, dataCenter) {
+    async init(aclIDList, partnerId, permissionGroupDirectory, dataCenter) {
         let finalResponse = {}
-        for (const aclId of aclID) {
+        for (const aclId of aclIDList) {
             const response = await this.getAclsRequest(dataCenter, aclId, partnerId, this.#credentials)
             if (response.errorCode) {
                 throw new Error(JSON.stringify(response))

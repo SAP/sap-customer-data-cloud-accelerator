@@ -23,20 +23,15 @@ export default class PermissionGroups extends PartnerFeature {
             console.error(`Failed to retrieve partnerID for apiKey "${siteInfo['apiKey']}"`)
             throw new Error(JSON.stringify(siteInfo['partnerId']))
         }
-
         const featureDirectory = path.join(partnerDirectory, this.getName())
         this.createDirectory(featureDirectory)
-
-        // Get permission groups
         const permissionGroupsRes = await this.getPermissionGroups(siteInfo['dataCenter'], siteInfo['partnerId'], this.credentials)
         if (permissionGroupsRes.errorCode) {
             throw new Error(JSON.stringify(permissionGroupsRes))
         }
+        fs.writeFileSync(path.join(featureDirectory, PermissionGroups.PERMISSIONGROUP_FILE_NAME), JSON.stringify(permissionGroupsRes['groups'], null, 4))
         const aclIDs = Object.keys(permissionGroupsRes['groups']).map((key) => permissionGroupsRes['groups'][key].aclID)
         await this.#acls.init(aclIDs, siteInfo['partnerId'], featureDirectory, siteInfo['dataCenter'])
-
-        // Create permissionGroups file
-        fs.writeFileSync(path.join(featureDirectory, PermissionGroups.PERMISSIONGROUP_FILE_NAME), JSON.stringify(permissionGroupsRes['groups'], null, 4))
     }
 
     reset(directory) {
@@ -66,7 +61,7 @@ export default class PermissionGroups extends PartnerFeature {
         parameters.partnerID = partnerID
         return parameters
     }
-    async getAcl() {
+    getAcl() {
         return this.#acls
     }
 }

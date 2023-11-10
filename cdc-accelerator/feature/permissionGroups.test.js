@@ -4,7 +4,6 @@ import axios from 'axios'
 import path from 'path'
 import { credentials, partnerBaseDirector, partnerBuildDirector } from './test.common.js'
 import PermissionGroups from './permissionGroups.js'
-import ACL from './acl.js'
 
 jest.mock('axios')
 jest.mock('fs')
@@ -37,8 +36,10 @@ describe('Permission Groups test suite', () => {
             const getSiteInfo = {
                 partnerId: 123123,
             }
+            let spy = jest.spyOn(await permissionGroups.getAcl(), 'init')
             axios.mockResolvedValueOnce({ data: expectedGigyaResponseNok })
             await expect(permissionGroups.init(partnerBaseDirector, getSiteInfo)).rejects.toEqual(new Error(JSON.stringify(expectedGigyaResponseNok)))
+            expect(spy.mock.calls.length).toBe(0)
         })
         test('feature directory already exists', async () => {
             const getSiteInfo = {
@@ -46,6 +47,7 @@ describe('Permission Groups test suite', () => {
             }
             axios.mockResolvedValueOnce({ data: expectedPermissionGroupsResponse })
             fs.existsSync.mockReturnValue(true)
+
             await expect(permissionGroups.init(partnerBaseDirector, getSiteInfo)).rejects.toEqual(
                 new Error(
                     `The "${path.join(
@@ -59,6 +61,7 @@ describe('Permission Groups test suite', () => {
             const getSiteInfo = {
                 partnerId: 123123,
             }
+            let spy = jest.spyOn(await permissionGroups.getAcl(), 'init')
             axios.mockResolvedValueOnce({ data: expectedPermissionGroupsResponse }).mockResolvedValue({ data: expectedGigyaResponseOk })
             fs.existsSync.mockReturnValue(false)
             fs.mkdirSync.mockReturnValue(undefined)
@@ -66,15 +69,6 @@ describe('Permission Groups test suite', () => {
                 throw new Error('File write error')
             })
             await expect(permissionGroups.init(partnerBaseDirector, getSiteInfo)).rejects.toThrow('File write error')
-        })
-        test('ACL Init should not be called', async () => {
-            axios.mockResolvedValue({ data: expectedGigyaResponseNok })
-            const getSiteInfo = {
-                partnerId: 123123,
-                dataCenter: 'eu1',
-            }
-            let spy = jest.spyOn(await permissionGroups.getAcl(), 'init')
-            await expect(permissionGroups.init(partnerBaseDirector, getSiteInfo)).rejects.toThrow(new Error(JSON.stringify(expectedGigyaResponseNok)))
             expect(spy.mock.calls.length).toBe(0)
         })
     })
