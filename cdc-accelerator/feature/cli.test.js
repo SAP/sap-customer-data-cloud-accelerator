@@ -102,7 +102,7 @@ describe('CLI test suite', () => {
             processExecutable,
             'unknown', // operation
         ]
-        expect(() => cli.parseArguments(processArgv)).toThrow('Cannot find configuration')
+        expect(() => cli.parseArguments(processArgv)).toThrow('The operation argument is not supported. Please use init,reset,build,deploy')
     })
 
     test('parseArguments with no features', async () => {
