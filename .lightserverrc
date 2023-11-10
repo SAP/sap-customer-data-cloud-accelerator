@@ -7,8 +7,12 @@
         "src/index.html # # reload",
         "src/*.js # npm run build # reload",
         "src/*.css # npm run build # reload",
+        "src/*.html # npm run build # reload",
+        "src/*.json # npm run build # reload",
         "src/**/*.js # npm run build # reload",
-        "src/**/*.css # npm run build # reload"
+        "src/**/*.css # npm run build # reload",
+        "src/**/*.html # npm run build # reload",
+        "src/**/*.json # npm run build # reload"
     ],
     "interval": 500,
     "delay": 0,
