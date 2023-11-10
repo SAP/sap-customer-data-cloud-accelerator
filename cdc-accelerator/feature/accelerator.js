@@ -82,9 +82,7 @@ export default class Accelerator {
 
     resetConfirmation = () => {
         if (process.env.E2E) {
-            return new Promise((resolve, reject) => {
-                resolve(true)
-            })
+            return Promise.resolve(true)
         }
         const rl = readline.createInterface({ input: process.stdin, output: process.stdout })
         return new Promise((resolve, reject) => {

@@ -19,10 +19,13 @@
         <script src="../cdc-accelerator/preview/preview.js"></script>
         <script>
             // Show only the necessary screens for this demo
-            const filterScreens = [
+            const filter = [
                 {
                     apiKey: '4_Ch-q_qKrjBJ_-QBEfMPkKA',
-                    screens: false,
+                    screens: [],
+                    emails: [
+                        { emailID: 'codeVerification', languages: ['en'] },
+                    ]
                 },
                 {
                     apiKey: '4_tqmAZeYVLPfPl9SYu_iFxA',
@@ -39,6 +42,18 @@
                         { screenSetID: 'PreferencesCenter-PasswordReset', screenID: 'gigya-reset-password-screen' },
                         { screenSetID: 'PreferencesCenter-PasswordReset', screenID: 'gigya-reset-password-success-screen' },
                     ],
+                    emails: [
+                        { emailID: 'codeVerification', languages: ['en'] },
+                        { emailID: 'doubleOptIn', languages: ['ar', 'en', 'pt-br'] },
+                        { emailID: 'emailVerification', languages: ['en'] },
+                        { emailID: 'impossibleTraveler', languages: ['en'] },
+                        { emailID: 'magicLink', languages: ['en'] },
+                        { emailID: 'passwordReset', languages: ['en', 'es-mx'] },
+                        { emailID: 'passwordResetNotification', languages: ['en'] },
+                        { emailID: 'preferencesCenter', languages: ['en'] },
+                        { emailID: 'twoFactorAuth', languages: ['en'] },
+                        { emailID: 'unknownLocationNotification', languages: ['en'] },
+                    ]
                 },
                 {
                     apiKey: '4_G9hcFjoYwj860VKK2eCILA',
@@ -57,6 +72,9 @@
                         { screenSetID: 'nescafe-RegistrationLogin', screenID: 'gigya-register-screen' },
                         { screenSetID: 'nescafe-RegistrationLogin', screenID: 'gigya-complete-registration-screen' },
                     ],
+                    emails: [
+                        { emailID: 'doubleOptIn', languages: ['ar', 'en', 'pt-br'] }
+                    ]
                 },
                 {
                     apiKey: '4_9XTXgPYTsS8EJ8ohejOCZw',
@@ -66,14 +84,21 @@
                         { screenSetID: 'purina-RegistrationLogin', screenID: 'gigya-register-screen' },
                         { screenSetID: 'purina-RegistrationLogin', screenID: 'gigya-complete-registration-screen' },
                     ],
+                    emails: []
                 },
+                {
+                    apiKey: '*',
+                    emails: [
+                        { emailID: 'doubleOptIn', languages: ['ar', 'en', 'pt-br'] }
+                    ]
+                }
             ]
 
             preview({
                 origin: 'source', // 'source' or 'deploy'
                 useLocalWebSdk: true, // Use local web sdk js code from build/ directory (for development)
                 useLocalScreenSets: true, // Use local screensets js code from build/ directory (for development)
-                filterScreens, // Show only the necessary screens for this demo
+                filter,     // Show only the necessary features for this demo
                 lang: 'en', // Language of the Screen-Sets
             })
         </script>
@@ -98,21 +123,21 @@
                     <ol>
                         <li>
                             Register a lite account in the
-                            <a href="#/4_G9hcFjoYwj860VKK2eCILA/felix-LiteRegistration/gigya-subscribe-with-email-screen" class="alert-link">Felix Lite Registration screen</a>
+                            <a href="#/4_G9hcFjoYwj860VKK2eCILA/WebScreenSets/felix-LiteRegistration/gigya-subscribe-with-email-screen" class="alert-link">Felix Lite Registration screen</a>
                             selecting 1 or more subscriptions.
                         </li>
                         <li>
                             Register the same lite account in the
-                            <a href="#/4_51rYFDhKRgNJdru9HSz0JA/nescafe-LiteRegistration/gigya-subscribe-with-email-screen" class="alert-link">Nescafé Lite Registration screen</a>
+                            <a href="#/4_51rYFDhKRgNJdru9HSz0JA/WebScreenSets/nescafe-LiteRegistration/gigya-subscribe-with-email-screen" class="alert-link">Nescafé Lite Registration screen</a>
                             selecting 1 or more subscriptions.
                         </li>
                         <li>
                             Authenticate with the lite account in the
-                            <a href="#/4_tqmAZeYVLPfPl9SYu_iFxA/PreferencesCenter-Landing/gigya-login-screen" class="alert-link">Preferences Center Login screen</a>.
+                            <a href="#/4_tqmAZeYVLPfPl9SYu_iFxA/WebScreenSets/PreferencesCenter-Landing/gigya-login-screen" class="alert-link">Preferences Center Login screen</a>.
                         </li>
                         <li>
                             Check your email's inbox and click on the link inside to be redirected to the
-                            <a href="#/4_tqmAZeYVLPfPl9SYu_iFxA/PreferencesCenter-ProfileUpdate/gigya-update-profile-screen" class="alert-link">Profile Update screen</a>
+                            <a href="#/4_tqmAZeYVLPfPl9SYu_iFxA/WebScreenSets/PreferencesCenter-ProfileUpdate/gigya-update-profile-screen" class="alert-link">Profile Update screen</a>
                         </li>
                     </ol>
                     <hr />
@@ -120,25 +145,25 @@
                     <ol>
                         <li>
                             Register an account in the
-                            <a href="#/4_G9hcFjoYwj860VKK2eCILA/felix-RegistrationLogin/gigya-register-screen" class="alert-link">Felix Registration screen</a> selecting 1 or more
+                            <a href="#/4_G9hcFjoYwj860VKK2eCILA/WebScreenSets/felix-RegistrationLogin/gigya-register-screen" class="alert-link">Felix Registration screen</a> selecting 1 or more
                             subscriptions.
                         </li>
                         <li>
                             Login with the same account in the
-                            <a href="#/4_51rYFDhKRgNJdru9HSz0JA/nescafe-RegistrationLogin/gigya-login-screen" class="alert-link">Nescafé Login screen</a>, then select 1 or more
+                            <a href="#/4_51rYFDhKRgNJdru9HSz0JA/WebScreenSets/nescafe-RegistrationLogin/gigya-login-screen" class="alert-link">Nescafé Login screen</a>, then select 1 or more
                             subscriptions in the
-                            <a href="#/4_51rYFDhKRgNJdru9HSz0JA/nescafe-RegistrationLogin/gigya-complete-registration-screen" class="alert-link">Registration Completion screen</a>.
+                            <a href="#/4_51rYFDhKRgNJdru9HSz0JA/WebScreenSets/nescafe-RegistrationLogin/gigya-complete-registration-screen" class="alert-link">Registration Completion screen</a>.
                         </li>
                         <li>Logout before trying to login on the preferences center</li>
                         <li>
                             Login in the
-                            <a href="#/4_tqmAZeYVLPfPl9SYu_iFxA/PreferencesCenter-Landing/gigya-login-screen" class="alert-link">Preferences Center Login screen</a> and accept the
+                            <a href="#/4_tqmAZeYVLPfPl9SYu_iFxA/WebScreenSets/PreferencesCenter-Landing/gigya-login-screen" class="alert-link">Preferences Center Login screen</a> and accept the
                             terms of service in the
-                            <a href="#/4_tqmAZeYVLPfPl9SYu_iFxA/PreferencesCenter-Landing/gigya-complete-registration-screen" class="alert-link">Registration Completion screen</a>.
+                            <a href="#/4_tqmAZeYVLPfPl9SYu_iFxA/WebScreenSets/PreferencesCenter-Landing/gigya-complete-registration-screen" class="alert-link">Registration Completion screen</a>.
                         </li>
                         <li>
                             Access the subscriptions in the
-                            <a href="#/4_tqmAZeYVLPfPl9SYu_iFxA/PreferencesCenter-ProfileUpdate/gigya-update-profile-screen" class="alert-link">Profile Update screen</a>.
+                            <a href="#/4_tqmAZeYVLPfPl9SYu_iFxA/WebScreenSets/PreferencesCenter-ProfileUpdate/gigya-update-profile-screen" class="alert-link">Profile Update screen</a>.
                         </li>
                     </ol>
                 </div>
