@@ -36,7 +36,7 @@ describe('Permission Groups test suite', () => {
             const getSiteInfo = {
                 partnerId: 123123,
             }
-            let spy = jest.spyOn(await permissionGroups.getAcl(), 'init')
+            let spy = jest.spyOn(permissionGroups.getAcl(), 'init')
             axios.mockResolvedValueOnce({ data: expectedGigyaResponseNok })
             await expect(permissionGroups.init(partnerBaseDirector, getSiteInfo)).rejects.toEqual(new Error(JSON.stringify(expectedGigyaResponseNok)))
             expect(spy.mock.calls.length).toBe(0)
@@ -61,7 +61,7 @@ describe('Permission Groups test suite', () => {
             const getSiteInfo = {
                 partnerId: 123123,
             }
-            let spy = jest.spyOn(await permissionGroups.getAcl(), 'init')
+            let spy = jest.spyOn(permissionGroups.getAcl(), 'init')
             axios.mockResolvedValueOnce({ data: expectedPermissionGroupsResponse }).mockResolvedValue({ data: expectedGigyaResponseOk })
             fs.existsSync.mockReturnValue(false)
             fs.mkdirSync.mockReturnValue(undefined)
@@ -81,7 +81,9 @@ describe('Permission Groups test suite', () => {
             fs.mkdirSync.mockReturnValue(undefined)
             fs.writeFileSync.mockReturnValue(undefined)
             fs.readFileSync.mockReturnValue(srcFileContent)
+            let spy = jest.spyOn(permissionGroups.getAcl(), 'build')
             permissionGroups.build(partnerBuildDirector)
+            expect(spy.mock.calls.length).toBe(1)
             const buildFeatureDirectory = path.join(partnerBuildDirector, permissionGroups.getName())
             expect(fs.existsSync).toHaveBeenCalledWith(buildFeatureDirectory)
             if (dirExists) {

@@ -27,12 +27,11 @@ export default class ACL {
 
         fs.writeFileSync(path.join(permissionGroupDirectory, ACL.ACL_FILE_NAME), JSON.stringify(finalResponse, null, 4))
     }
-
     build(directory) {
-        const buildFeaturePath = path.join(directory, this.getName())
-        clearDirectoryContents(buildFeaturePath)
-        const srcFeaturePath = buildFeaturePath.replace(BUILD_DIRECTORY, SRC_DIRECTORY)
-        this.copyFileFromSrcToBuild(srcFeaturePath, ACL.ACL_FILE_NAME)
+        const srcFeaturePath = directory.replace(BUILD_DIRECTORY, SRC_DIRECTORY)
+        const fileContent = JSON.parse(fs.readFileSync(path.join(srcFeaturePath, ACL.ACL_FILE_NAME), { encoding: 'utf8' }))
+        const buildBasePath = srcFeaturePath.replace(SRC_DIRECTORY, BUILD_DIRECTORY)
+        fs.writeFileSync(path.join(buildBasePath, ACL.ACL_FILE_NAME), JSON.stringify(fileContent, null, 4))
     }
 
     async deploy(partnerDirectory, siteInfo) {

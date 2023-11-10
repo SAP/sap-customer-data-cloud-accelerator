@@ -37,12 +37,12 @@ export default class PermissionGroups extends PartnerFeature {
     reset(directory) {
         this.deleteDirectory(path.join(directory, this.getName()))
     }
-
     build(directory) {
         const buildFeaturePath = path.join(directory, this.getName())
         clearDirectoryContents(buildFeaturePath)
         const srcFeaturePath = buildFeaturePath.replace(BUILD_DIRECTORY, SRC_DIRECTORY)
         this.copyFileFromSrcToBuild(srcFeaturePath, PermissionGroups.PERMISSIONGROUP_FILE_NAME)
+        this.#acls.build(buildFeaturePath)
     }
 
     async deploy(directory) {

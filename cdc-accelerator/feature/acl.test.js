@@ -41,4 +41,19 @@ describe('ACLs test suite', () => {
             await expect(acls.init(aclIDs, getSiteInfo.partnerId, srcDirectory, getSiteInfo.dataCenter)).rejects.toThrow(new Error(JSON.stringify(expectedGigyaResponseNok)))
         })
     })
+    describe('Build test suit', () => {
+        test('All ACL files are built successfully', async () => {
+            //build\\SAP Customer Data Cloud
+            const srcFileContent = JSON.stringify(expectedACLFileContent)
+            const buildPermissionGroupDirectory = path.join(partnerBuildDirector, permissionGroupDirectoryName)
+            const dirExists = true
+            fs.existsSync.mockReturnValue(dirExists)
+            fs.rmSync.mockReturnValue(undefined)
+            fs.mkdirSync.mockReturnValue(undefined)
+            fs.writeFileSync.mockReturnValue(undefined)
+            fs.readFileSync.mockReturnValue(srcFileContent)
+            acls.build(buildPermissionGroupDirectory)
+            expect(fs.writeFileSync).toHaveBeenCalledWith(path.join(buildPermissionGroupDirectory, `${ACL.ACL_FILE_NAME}`), JSON.stringify(JSON.parse(srcFileContent), null, 4))
+        })
+    })
 })
