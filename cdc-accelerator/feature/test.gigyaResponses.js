@@ -473,14 +473,6 @@ export const expectedAclResponse = {
 }
 
 export const expectedACLFileContent = {
-    alexTestAdminPermissionGroup: {
-        _api: {},
-        _data: {},
-        _inherit: ['_accountsFullAccess', '_basicSiteAccess', '_viewPartnerAndSiteAuditLog', '_viewSiteAuditLog'],
-    },
-    cdc_toolbox_e2e_test: {
-        _api: {},
-        _data: {},
-        _inherit: ['_accountsFullAccess', '_basicSiteAccess', '_viewPartnerAndSiteAuditLog', '_viewSiteAuditLog'],
-    },
+    alexTestAdminPermissionGroup: expectedAclResponse.acl,
+    cdc_toolbox_e2e_test: expectedAclResponse.acl,
 }

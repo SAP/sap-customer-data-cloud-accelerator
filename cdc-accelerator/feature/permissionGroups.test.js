@@ -4,6 +4,7 @@ import axios from 'axios'
 import path from 'path'
 import { credentials, partnerBaseDirector, partnerBuildDirector } from './test.common.js'
 import PermissionGroups from './permissionGroups.js'
+import ACL from './acl.js'
 
 jest.mock('axios')
 jest.mock('fs')
@@ -16,9 +17,10 @@ describe('Permission Groups test suite', () => {
 
     describe('Init test suit', () => {
         test('All permission groups files are generated sucessfully', async () => {
-            axios.mockResolvedValueOnce({ data: expectedPermissionGroupsResponse })
+            axios.mockResolvedValue({ data: expectedPermissionGroupsResponse })
             const getSiteInfo = {
                 partnerId: 123123,
+                dataCenter: 'eu1',
             }
             fs.existsSync.mockReturnValue(false)
             fs.mkdirSync.mockReturnValue(undefined)
@@ -57,13 +59,23 @@ describe('Permission Groups test suite', () => {
             const getSiteInfo = {
                 partnerId: 123123,
             }
-            axios.mockResolvedValueOnce({ data: expectedGigyaResponseOk })
+            axios.mockResolvedValueOnce({ data: expectedPermissionGroupsResponse }).mockResolvedValue({ data: expectedGigyaResponseOk })
             fs.existsSync.mockReturnValue(false)
             fs.mkdirSync.mockReturnValue(undefined)
             fs.writeFileSync.mockImplementation(() => {
                 throw new Error('File write error')
             })
             await expect(permissionGroups.init(partnerBaseDirector, getSiteInfo)).rejects.toThrow('File write error')
+        })
+        test('ACL Init should not be called', async () => {
+            axios.mockResolvedValue({ data: expectedGigyaResponseNok })
+            const getSiteInfo = {
+                partnerId: 123123,
+                dataCenter: 'eu1',
+            }
+            let spy = jest.spyOn(await permissionGroups.getAcl(), 'init')
+            await expect(permissionGroups.init(partnerBaseDirector, getSiteInfo)).rejects.toThrow(new Error(JSON.stringify(expectedGigyaResponseNok)))
+            expect(spy.mock.calls.length).toBe(0)
         })
     })
     describe('Build test suite', () => {
@@ -75,7 +87,6 @@ describe('Permission Groups test suite', () => {
             fs.mkdirSync.mockReturnValue(undefined)
             fs.writeFileSync.mockReturnValue(undefined)
             fs.readFileSync.mockReturnValue(srcFileContent)
-            // for the build method it is passed the build path
             permissionGroups.build(partnerBuildDirector)
             const buildFeatureDirectory = path.join(partnerBuildDirector, permissionGroups.getName())
             expect(fs.existsSync).toHaveBeenCalledWith(buildFeatureDirectory)

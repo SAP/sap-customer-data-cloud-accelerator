@@ -4,10 +4,11 @@ import fs from 'fs'
 import { clearDirectoryContents } from '../utils/utils.js'
 import { SRC_DIRECTORY, BUILD_DIRECTORY } from './constants.js'
 import client from '../../cdc-accelerator/sap-cdc-toolkit/gigya/client.js'
-import ACL from './acls.js'
+import ACL from './acl.js'
 export default class PermissionGroups extends PartnerFeature {
     static PERMISSIONGROUP_FILE_NAME = 'PermissionGroups.json'
     #acls
+
     constructor(credentials) {
         super(credentials)
         this.#acls = new ACL(this.credentials)
@@ -64,5 +65,8 @@ export default class PermissionGroups extends PartnerFeature {
         parameters.secret = secret
         parameters.partnerID = partnerID
         return parameters
+    }
+    async getAcl() {
+        return this.#acls
     }
 }

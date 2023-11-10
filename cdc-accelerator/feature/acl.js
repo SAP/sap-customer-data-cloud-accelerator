@@ -2,7 +2,7 @@ import path from 'path'
 import fs from 'fs'
 import { clearDirectoryContents } from '../utils/utils.js'
 import { SRC_DIRECTORY, BUILD_DIRECTORY } from './constants.js'
-import client from '../../cdc-accelerator/sap-cdc-toolkit/gigya/client.js'
+import client from '../sap-cdc-toolkit/gigya/client.js'
 export default class ACL {
     static ACL_FILE_NAME = 'Acls.json'
     #credentials
