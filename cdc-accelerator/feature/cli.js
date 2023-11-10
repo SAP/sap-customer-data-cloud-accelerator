@@ -33,7 +33,8 @@ export default class CLI {
             environment = featureName
             featureName = undefined
         }
-        environment = this.#sanitizeEnvironment(environment)
+        environment = this.#sanitize(environment, Environments, 'environment')
+        operation = this.#sanitize(operation, Operations, 'operation')
 
         let configuration = this.#getConfiguration(operation, environment)
         let sites
@@ -46,19 +47,15 @@ export default class CLI {
         return { operation, sites, featureName, environment }
     }
 
-    #sanitizeEnvironment(environment) {
-        switch (environment) {
-            case Environments.dev:
-                return Environments.dev
-            case Environments.qa:
-                return Environments.qa
-            case Environments.prod:
-                return Environments.prod
-            case Environments.undefined:
-                return Environments.undefined
-            default:
-                throw new Error('The environment argument is not supported. Please use ', Object.keys(Environments))
+    #sanitize(variable, type, argumentName) {
+        if (variable === undefined) {
+            return undefined
         }
+        const operation = Object.keys(type).filter((t) => t === variable)
+        if (!operation.length) {
+            throw new Error(`The ${argumentName} argument is not supported. Please use ${Object.keys(type)}`)
+        }
+        return operation[0]
     }
 
     #areFeaturesRegistered() {
@@ -97,7 +94,7 @@ export default class CLI {
             case undefined:
                 return JSON.parse(fs.readFileSync(CONFIG_FILENAME, { encoding: 'utf8' }))
             default:
-                throw new Error('Environment bot supported')
+                throw new Error('The environment is not supported')
         }
     }
 

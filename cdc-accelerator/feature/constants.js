@@ -12,4 +12,4 @@ export const CDC_ACCELERATOR_DIRECTORY = `${PROJECT_NAME}`
 export const CONFIG_FILENAME = `${PROJECT_NAME}.json`
 
 export const Operations = { init: 'init', reset: 'reset', build: 'build', deploy: 'deploy' }
-export const Environments = { dev: 'dev', qa: 'qa', prod: 'prod', undefined: undefined }
+export const Environments = { dev: 'dev', qa: 'qa', prod: 'prod' }

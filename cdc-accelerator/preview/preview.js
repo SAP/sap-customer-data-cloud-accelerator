@@ -555,8 +555,7 @@ class EmailTemplates {
         const path = `${BUILD_DIRECTORY}${siteInfo.partnerName}/Sites/${siteInfo.baseDomain}/${this.getName()}/${EmailTemplates.METADATA_FILE}`
         return await fetch(path)
             .then((response) => response.json())
-            .then((templatesInfo) => {
-                const data = JSON.parse(JSON.stringify(templatesInfo))
+            .then((data) => {
                 this.#metadata = data
                 this.#metadataApiKey = apiKey
                 return data
