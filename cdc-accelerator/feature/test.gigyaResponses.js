@@ -457,3 +457,22 @@ export const expectedPermissionGroupsResponse = {
         },
     },
 }
+
+export const expectedAclResponse = {
+    callId: 'c2de5b649c4f46c9849e036edd123d09',
+    errorCode: 0,
+    apiVersion: 2,
+    statusCode: 200,
+    statusReason: 'OK',
+    time: '2023-10-11T14:56:02.645Z',
+    acl: {
+        _api: {},
+        _data: {},
+        _inherit: ['_accountsFullAccess', '_basicSiteAccess', '_viewPartnerAndSiteAuditLog', '_viewSiteAuditLog'],
+    },
+}
+
+export const expectedACLFileContent = {
+    alexTestAdminPermissionGroup: expectedAclResponse.acl,
+    cdc_toolbox_e2e_test: expectedAclResponse.acl,
+}

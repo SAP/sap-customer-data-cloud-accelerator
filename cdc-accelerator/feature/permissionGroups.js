@@ -4,10 +4,14 @@ import fs from 'fs'
 import { clearDirectoryContents } from '../utils/utils.js'
 import { SRC_DIRECTORY, BUILD_DIRECTORY } from './constants.js'
 import client from '../../cdc-accelerator/sap-cdc-toolkit/gigya/client.js'
+import ACL from './acl.js'
 export default class PermissionGroups extends PartnerFeature {
     static PERMISSIONGROUP_FILE_NAME = 'PermissionGroups.json'
+    #acls
+
     constructor(credentials) {
         super(credentials)
+        this.#acls = new ACL(this.credentials)
     }
 
     getName() {
@@ -19,19 +23,15 @@ export default class PermissionGroups extends PartnerFeature {
             console.error(`Failed to retrieve partnerID for apiKey "${siteInfo['apiKey']}"`)
             throw new Error(JSON.stringify(siteInfo['partnerId']))
         }
-
         const featureDirectory = path.join(partnerDirectory, this.getName())
         this.createDirectory(featureDirectory)
-
-        // Get permission groups
         const permissionGroupsRes = await this.getPermissionGroups(siteInfo['dataCenter'], siteInfo['partnerId'], this.credentials)
-
         if (permissionGroupsRes.errorCode) {
             throw new Error(JSON.stringify(permissionGroupsRes))
         }
-
-        // Create permissionGroups file
         fs.writeFileSync(path.join(featureDirectory, PermissionGroups.PERMISSIONGROUP_FILE_NAME), JSON.stringify(permissionGroupsRes['groups'], null, 4))
+        const aclIDs = Object.keys(permissionGroupsRes['groups']).map((key) => permissionGroupsRes['groups'][key].aclID)
+        await this.#acls.init(aclIDs, siteInfo['partnerId'], featureDirectory, siteInfo['dataCenter'])
     }
 
     reset(directory) {
@@ -60,5 +60,8 @@ export default class PermissionGroups extends PartnerFeature {
         parameters.secret = secret
         parameters.partnerID = partnerID
         return parameters
+    }
+    getAcl() {
+        return this.#acls
     }
 }
