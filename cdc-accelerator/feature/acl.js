@@ -4,7 +4,7 @@ import { clearDirectoryContents } from '../utils/utils.js'
 import { SRC_DIRECTORY, BUILD_DIRECTORY } from './constants.js'
 import client from '../sap-cdc-toolkit/gigya/client.js'
 export default class ACL {
-    static ACL_FILE_NAME = 'Acls.json'
+    static ACL_FILE_NAME = 'Acl.json'
     #credentials
     constructor(credentials) {
         this.#credentials = credentials
