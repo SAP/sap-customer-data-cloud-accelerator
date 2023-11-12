@@ -16,6 +16,7 @@ import Accelerator from './accelerator.js'
 import Feature from './feature.js'
 import fs from 'fs'
 import EmailTemplates from './emailTemplates.js'
+import SmsTemplates from './smsTemplates.js'
 
 export default class CLI {
     siteFeature
@@ -84,6 +85,7 @@ export default class CLI {
         siteFeature.register(new Policies(credentials))
         siteFeature.register(new WebScreenSets(credentials))
         siteFeature.register(new EmailTemplates(credentials))
+        siteFeature.register(new SmsTemplates(credentials))
         return siteFeature
     }
 
