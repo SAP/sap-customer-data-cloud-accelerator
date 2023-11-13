@@ -1,6 +1,5 @@
 import path from 'path'
 import fs from 'fs'
-import { clearDirectoryContents } from '../utils/utils.js'
 import { SRC_DIRECTORY, BUILD_DIRECTORY } from './constants.js'
 import client from '../sap-cdc-toolkit/gigya/client.js'
 export default class ACL {
@@ -30,8 +29,7 @@ export default class ACL {
     build(directory) {
         const srcFeaturePath = directory.replace(BUILD_DIRECTORY, SRC_DIRECTORY)
         const fileContent = JSON.parse(fs.readFileSync(path.join(srcFeaturePath, ACL.ACL_FILE_NAME), { encoding: 'utf8' }))
-        const buildBasePath = srcFeaturePath.replace(SRC_DIRECTORY, BUILD_DIRECTORY)
-        fs.writeFileSync(path.join(buildBasePath, ACL.ACL_FILE_NAME), JSON.stringify(fileContent, null, 4))
+        fs.writeFileSync(path.join(directory, ACL.ACL_FILE_NAME), JSON.stringify(fileContent, null, 4))
     }
 
     async deploy(partnerDirectory, siteInfo) {
