@@ -31,7 +31,9 @@ export default class ACL {
         const fileContent = JSON.parse(fs.readFileSync(path.join(srcFeaturePath, ACL.ACL_FILE_NAME), { encoding: 'utf8' }))
         fs.writeFileSync(path.join(directory, ACL.ACL_FILE_NAME), JSON.stringify(fileContent, null, 4))
     }
-
+    reset() {
+        //This is supposed to be empty
+    }
     async deploy(partnerDirectory, siteInfo) {
         console.log('deploy was called')
     }
