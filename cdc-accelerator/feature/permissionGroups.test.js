@@ -172,8 +172,6 @@ describe('Permission Groups test suite', () => {
                 scope: permissionGroupsResponse.alexTestAdminPermissionGroup.scope,
                 groupId: 'alexTestAdminPermissionGroup',
             }
-
-            console.log('keys', Object.keys(permissionGroupsResponse))
             await permissionGroups.deploy(partnerBuildDirectory, getSiteInfo)
             expect(spy.mock.calls.length).toBe(1)
             expect(spy).toHaveBeenNthCalledWith(1, getSiteInfo, updateBody.groupId, updateBody, credentials)

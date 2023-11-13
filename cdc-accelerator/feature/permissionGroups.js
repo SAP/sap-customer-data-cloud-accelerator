@@ -49,11 +49,11 @@ export default class PermissionGroups extends PartnerFeature {
         const buildFeatureDirectory = path.join(partnerDirectory, this.getName())
         const buildFileName = path.join(buildFeatureDirectory, `${this.getName()}.json`)
         const fileContent = fs.readFileSync(buildFileName, { encoding: 'utf8' })
-        const parsedContent = JSON.parse(fileContent)
 
         if (!fileContent || !fileContent.length) {
             throw new Error(`Invalid file: ${buildFileName}`)
         }
+        const parsedContent = JSON.parse(fileContent)
 
         let keys = Object.keys(parsedContent)
         const aclAndScopeData = keys.map((key) => {
@@ -61,9 +61,9 @@ export default class PermissionGroups extends PartnerFeature {
             return { aclId: aclID, scope, groupId: key }
         })
         for (let keys of aclAndScopeData) {
-            const response = await this.deployPermissionGroup(siteInfo, keys.groupId, keys.aclId, keys.scope, this.credentials)
+            let response = await this.deployPermissionGroup(siteInfo, keys.groupId, keys.aclId, keys.scope, this.credentials)
             if (response.errorCode === 400006) {
-                await this.updatePermissionGroup(siteInfo, keys.groupId, keys, this.credentials)
+                response = await this.updatePermissionGroup(siteInfo, keys.groupId, keys, this.credentials)
             }
             if (response.errorCode !== 0 && response.errorCode !== 400006) {
                 throw new Error(JSON.stringify(response))
@@ -89,7 +89,7 @@ export default class PermissionGroups extends PartnerFeature {
     }
 
     async updatePermissionGroupRequest(dataCenter, partnerID, groupID, config, credentials) {
-        const url = `https://admin.${dataCenter}.gigya.com/admin.getGroups`
+        const url = `https://admin.${dataCenter}.gigya.com/admin.updateGroup`
         const response = await client.post(url, this.#updatePermissionGroupsParameters(partnerID, groupID, config, credentials.userKey, credentials.secret)).catch((error) => error)
         return response.data
     }
