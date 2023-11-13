@@ -63,7 +63,7 @@ export default class PermissionGroups extends PartnerFeature {
         for (let keys of aclAndScopeData) {
             const response = await this.deployPermissionGroup(siteInfo, keys.groupId, keys.aclId, keys.scope, this.credentials)
             if (response.errorCode === 400006) {
-                console.log(`Group ${keys.groupId} already exists. Skipping...`)
+                await this.updatePermissionGroup(siteInfo, keys.groupId, keys, this.credentials)
             }
             if (response.errorCode !== 0 && response.errorCode !== 400006) {
                 throw new Error(JSON.stringify(response))
@@ -74,22 +74,56 @@ export default class PermissionGroups extends PartnerFeature {
     async deployPermissionGroup(siteInfo, groupId, aclId, scope, credentials) {
         return await this.setPermissionRequest(siteInfo.dataCenter, siteInfo.partnerId, groupId, aclId, scope, credentials.userKey, credentials.secret)
     }
+    async updatePermissionGroup(siteInfo, groupID, config, credentials) {
+        return await this.updatePermissionGroupRequest(siteInfo.dataCenter, siteInfo.partnerId, groupID, config, credentials)
+    }
     async getPermissionGroups(dataCenter, partnerID, credentials) {
         const url = `https://admin.${dataCenter}.gigya.com/admin.getGroups`
         const response = await client.post(url, this.#getPermissionGroupsParameters(partnerID, credentials.userKey, credentials.secret)).catch((error) => error)
         return response.data
     }
-    async setPermissionRequest(dataCenter, partnerID, groupID, aclID, scope, userKey, secret) {
+    async setPermissionRequest(dataCenter, partnerID, groupId, aclId, scope, userKey, secret) {
         const url = `https://admin.${dataCenter}.gigya.com/admin.createGroup`
-        const response = await client.post(url, this.#setPermissionGroupsParameters(partnerID, userKey, secret, groupID, aclID, JSON.stringify(scope))).catch((error) => error)
+        const response = await client.post(url, this.#setPermissionGroupsParameters(partnerID, userKey, secret, groupId, aclId, JSON.stringify(scope))).catch((error) => error)
         return response.data
     }
 
+    async updatePermissionGroupRequest(dataCenter, partnerID, groupID, config, credentials) {
+        const url = `https://admin.${dataCenter}.gigya.com/admin.getGroups`
+        const response = await client.post(url, this.#updatePermissionGroupsParameters(partnerID, groupID, config, credentials.userKey, credentials.secret)).catch((error) => error)
+        return response.data
+    }
     #setPermissionGroupsParameters(partnerID, userKey, secret, groupID, aclID, scope) {
         const parameters = Object.assign(this.#getPermissionGroupsParameters(partnerID, userKey, secret))
         parameters.groupID = groupID
         parameters.aclID = aclID
         parameters.scope = scope
+        return parameters
+    }
+    #updatePermissionGroupsParameters(partnerID, groupID, config, userKey, secret) {
+        const parameters = Object.assign(this.#getPermissionGroupsParameters(partnerID, userKey, secret))
+        parameters.groupID = groupID
+        if (config.aclId) {
+            parameters.aclID = config.aclId
+        }
+        if (config.scope) {
+            parameters.scope = JSON.stringify(config.scope)
+        }
+        if (config.newGroupID) {
+            parameters.newGroupID = config.newGroupID
+        }
+        if (config.description) {
+            parameters.description = config.description
+        }
+        if (config.addUsers) {
+            parameters.addUsers = config.addUsers
+        }
+        if (config.setUsers) {
+            parameters.setUsers = config.setUsers
+        }
+        if (config.removeUsers) {
+            parameters.removeUsers = config.removeUsers
+        }
         return parameters
     }
 

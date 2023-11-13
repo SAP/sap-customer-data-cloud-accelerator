@@ -457,6 +457,34 @@ export const expectedPermissionGroupsResponse = {
         },
     },
 }
+export const expectedUpdatedPermissionGroupsResponse = {
+    callId: '143306dc47dc43ed96126dfecb025252',
+    errorCode: 0,
+    apiVersion: 2,
+    statusCode: 200,
+    statusReason: 'OK',
+    time: '2023-10-11T14:56:02.645Z',
+    groups: {
+        alexTestAdminPermissionGroup: {
+            aclID: 'alexTestAdminPermissionGroup',
+            scope: {
+                allowPartners: ['_owner'],
+                allowSites: [],
+            },
+            users: ['ANHZHhdHWtKD'],
+            description: '',
+        },
+        alexTestAdminPermissionGroup: {
+            aclID: 'alexTestAdminPermissionGroup',
+            scope: {
+                allowPartners: ['_owner'],
+                allowSites: ['*'],
+            },
+            users: ['ANHZHhdHWtKD'],
+            description: '',
+        },
+    },
+}
 
 export const expectedAclResponse = {
     callId: 'c2de5b649c4f46c9849e036edd123d09',
@@ -470,6 +498,16 @@ export const expectedAclResponse = {
         _data: {},
         _inherit: ['_accountsFullAccess', '_basicSiteAccess', '_viewPartnerAndSiteAuditLog', '_viewSiteAuditLog'],
     },
+}
+export const expectedGroupIdAlreadyExistsResponse = {
+    callId: 'c4bc82b8da8845698b3ce4540349ed1b',
+    errorCode: 400006,
+    errorDetails: 'A group with the ID already exists',
+    errorMessage: 'Invalid parameter value',
+    apiVersion: 2,
+    statusCode: 400,
+    statusReason: 'Bad Request',
+    time: '2023-11-13T15:16:52.440Z',
 }
 
 export const expectedACLFileContent = {

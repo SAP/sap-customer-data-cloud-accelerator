@@ -1,4 +1,10 @@
-import { expectedGigyaResponseNok, expectedGigyaResponseOk, expectedPermissionGroupsResponse } from './test.gigyaResponses.js'
+import {
+    expectedGigyaResponseNok,
+    expectedGigyaResponseOk,
+    expectedGroupIdAlreadyExistsResponse,
+    expectedPermissionGroupsResponse,
+    expectedUpdatedPermissionGroupsResponse,
+} from './test.gigyaResponses.js'
 import fs from 'fs'
 import axios from 'axios'
 import path from 'path'
@@ -150,6 +156,27 @@ describe('Permission Groups test suite', () => {
             axios.mockResolvedValueOnce({ data: expectedGigyaResponseNok }).mockResolvedValueOnce({ data: expectedGigyaResponseNok })
             fs.readFileSync.mockReturnValue(true)
             await expect(permissionGroups.deploy(partnerBuildDirectory, getSiteInfo)).rejects.toThrow(Error)
+        })
+        test('all permission groups should update instead of deploy', async () => {
+            const getSiteInfo = {
+                partnerId: 123123,
+                dataCenter: 'us1',
+            }
+            const permissionGroupsResponse = expectedUpdatedPermissionGroupsResponse.groups
+            axios.mockResolvedValue({ data: expectedGigyaResponseOk }).mockResolvedValue({ data: expectedGroupIdAlreadyExistsResponse })
+            fs.readFileSync.mockReturnValue(JSON.stringify(permissionGroupsResponse))
+            let spy = jest.spyOn(permissionGroups, 'updatePermissionGroup')
+
+            const updateBody = {
+                aclId: permissionGroupsResponse.alexTestAdminPermissionGroup.aclID,
+                scope: permissionGroupsResponse.alexTestAdminPermissionGroup.scope,
+                groupId: 'alexTestAdminPermissionGroup',
+            }
+
+            console.log('keys', Object.keys(permissionGroupsResponse))
+            await permissionGroups.deploy(partnerBuildDirectory, getSiteInfo)
+            expect(spy.mock.calls.length).toBe(1)
+            expect(spy).toHaveBeenNthCalledWith(1, getSiteInfo, updateBody.groupId, updateBody, credentials)
         })
     })
 })
