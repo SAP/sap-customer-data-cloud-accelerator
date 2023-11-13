@@ -1,6 +1,7 @@
 import readline from 'readline'
 import Feature from './feature.js'
 import { Operations } from './constants.js'
+import HookInit from './hookInit.js'
 
 export default class Accelerator {
     siteFeatures
@@ -47,12 +48,15 @@ export default class Accelerator {
             throw new Error(msg)
         }
 
+        const init = new HookInit()
+        init.pre()
         if (this.#existsFeature(this.partnerFeatures, featureName)) {
             await this.partnerFeatures.init(sites, featureName)
         }
         if (this.#existsFeature(this.siteFeatures, featureName)) {
             await this.siteFeatures.init(sites, featureName)
         }
+        init.post()
 
         console.log('\n')
         this.#logSuccessResult(Operations.init, environment)
