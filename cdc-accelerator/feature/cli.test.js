@@ -26,9 +26,6 @@ describe('CLI test suite', () => {
     const cli = new CLI()
 
     beforeAll(() => {
-        jest.spyOn(CLI.prototype, 'getConfigurationByEnvironment').mockImplementation(() => {
-            return config
-        })
         cli.siteFeature = getSiteFeature()
         cli.partnerFeature = new PartnerFeature(credentials)
     })
@@ -46,12 +43,10 @@ describe('CLI test suite', () => {
             'dev', // environment
         ]
 
-        const { operation, sites, featureName, environment } = cli.parseArguments(processArgv)
+        const { operation, featureName, environment } = cli.parseArguments(processArgv)
         expect(operation).toEqual(processArgv[2])
         expect(featureName).toEqual(processArgv[3])
         expect(environment).toEqual(processArgv[4])
-        const expectedSites = Array.isArray(config[processArgv[2]]) ? config[processArgv[2]] : [config[processArgv[2]]]
-        expect(sites).toEqual(expectedSites)
     })
 
     test('parseArguments with operation init and feature name', async () => {
@@ -62,11 +57,10 @@ describe('CLI test suite', () => {
             'WebSdk', // feature name
             'dev', // environment
         ]
-        const { operation, sites, featureName, environment } = cli.parseArguments(processArgv)
+        const { operation, featureName, environment } = cli.parseArguments(processArgv)
         expect(operation).toEqual(processArgv[2])
         expect(featureName).toEqual(processArgv[3])
         expect(environment).toEqual(processArgv[4])
-        expect(sites).toEqual(config.source)
     })
 
     test('parseArguments with operation init and environment', async () => {
@@ -76,11 +70,10 @@ describe('CLI test suite', () => {
             Operations.init, // operation
             'dev', // environment
         ]
-        const { operation, sites, featureName, environment } = cli.parseArguments(processArgv)
+        const { operation, featureName, environment } = cli.parseArguments(processArgv)
         expect(operation).toEqual(processArgv[2])
         expect(featureName).toBeUndefined()
         expect(environment).toEqual(processArgv[3])
-        expect(sites).toEqual(config.source)
     })
 
     test('parseArguments with operation init', async () => {
@@ -89,11 +82,10 @@ describe('CLI test suite', () => {
             processExecutable,
             Operations.init, // operation
         ]
-        const { operation, sites, featureName, environment } = cli.parseArguments(processArgv)
+        const { operation, featureName, environment } = cli.parseArguments(processArgv)
         expect(operation).toEqual(processArgv[2])
         expect(featureName).toBeUndefined()
         expect(environment).toBeUndefined()
-        expect(sites).toEqual(config.source)
     })
 
     test('parseArguments with unknown operation', async () => {
