@@ -108,17 +108,11 @@ export default class PermissionGroups extends PartnerFeature {
         if (config.scope) {
             parameters.scope = JSON.stringify(config.scope)
         }
-        if (config.newGroupID) {
-            parameters.newGroupID = config.newGroupID
-        }
         if (config.description) {
             parameters.description = config.description
         }
         if (config.users) {
             parameters.setUsers = config.users
-        }
-        if (config.removeUsers) {
-            parameters.removeUsers = config.removeUsers
         }
         return parameters
     }
