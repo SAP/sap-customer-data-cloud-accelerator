@@ -56,14 +56,11 @@ export default class PermissionGroups extends PartnerFeature {
         const parsedContent = JSON.parse(fileContent)
 
         let keys = Object.keys(parsedContent)
-        const aclAndScopeData = keys.map((key) => {
-            const { aclID, scope } = parsedContent[key]
-            return { aclId: aclID, scope, groupId: key }
-        })
-        for (let keys of aclAndScopeData) {
-            let response = await this.deployPermissionGroup(siteInfo, keys.groupId, keys.aclId, keys.scope, this.credentials)
+        for (let ids of keys) {
+            const { aclID, scope } = parsedContent[ids]
+            let response = await this.deployPermissionGroup(siteInfo, ids, parsedContent[ids], this.credentials)
             if (response.errorCode === 400006) {
-                response = await this.updatePermissionGroup(siteInfo, keys.groupId, keys, this.credentials)
+                response = await this.updatePermissionGroup(siteInfo, ids, parsedContent[ids], this.credentials)
             }
             if (response.errorCode !== 0 && response.errorCode !== 400006) {
                 throw new Error(JSON.stringify(response))
@@ -71,8 +68,8 @@ export default class PermissionGroups extends PartnerFeature {
         }
     }
 
-    async deployPermissionGroup(siteInfo, groupId, aclId, scope, credentials) {
-        return await this.setPermissionRequest(siteInfo.dataCenter, siteInfo.partnerId, groupId, aclId, scope, credentials.userKey, credentials.secret)
+    async deployPermissionGroup(siteInfo, groupId, config, credentials) {
+        return await this.setPermissionRequest(siteInfo.dataCenter, siteInfo.partnerId, groupId, config, credentials.userKey, credentials.secret)
     }
     async updatePermissionGroup(siteInfo, groupID, config, credentials) {
         return await this.updatePermissionGroupRequest(siteInfo.dataCenter, siteInfo.partnerId, groupID, config, credentials)
@@ -82,9 +79,9 @@ export default class PermissionGroups extends PartnerFeature {
         const response = await client.post(url, this.#getPermissionGroupsParameters(partnerID, credentials.userKey, credentials.secret)).catch((error) => error)
         return response.data
     }
-    async setPermissionRequest(dataCenter, partnerID, groupId, aclId, scope, userKey, secret) {
+    async setPermissionRequest(dataCenter, partnerID, groupId, config, userKey, secret) {
         const url = `https://admin.${dataCenter}.gigya.com/admin.createGroup`
-        const response = await client.post(url, this.#setPermissionGroupsParameters(partnerID, userKey, secret, groupId, aclId, JSON.stringify(scope))).catch((error) => error)
+        const response = await client.post(url, this.#setPermissionGroupsParameters(partnerID, userKey, secret, groupId, config)).catch((error) => error)
         return response.data
     }
 
@@ -93,11 +90,14 @@ export default class PermissionGroups extends PartnerFeature {
         const response = await client.post(url, this.#updatePermissionGroupsParameters(partnerID, groupID, config, credentials.userKey, credentials.secret)).catch((error) => error)
         return response.data
     }
-    #setPermissionGroupsParameters(partnerID, userKey, secret, groupID, aclID, scope) {
+    #setPermissionGroupsParameters(partnerID, userKey, secret, groupID, config) {
         const parameters = Object.assign(this.#getPermissionGroupsParameters(partnerID, userKey, secret))
         parameters.groupID = groupID
-        parameters.aclID = aclID
-        parameters.scope = scope
+        parameters.aclID = config.aclID
+        parameters.scope = JSON.stringify(config.scope)
+        if (config.description) {
+            parameters.description = config.description
+        }
         return parameters
     }
     #updatePermissionGroupsParameters(partnerID, groupID, config, userKey, secret) {

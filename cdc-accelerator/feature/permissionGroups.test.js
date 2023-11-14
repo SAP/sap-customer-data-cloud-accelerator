@@ -1,9 +1,9 @@
 import {
-    expectedGigyaResponseNok,
     expectedGigyaResponseOk,
     expectedGroupIdAlreadyExistsResponse,
     expectedPermissionGroupsResponse,
     expectedUpdatedPermissionGroupsResponse,
+    expectedGigyaResponseNok,
 } from './test.gigyaResponses.js'
 import fs from 'fs'
 import axios from 'axios'
@@ -127,15 +127,19 @@ describe('Permission Groups test suite', () => {
             const permissionGroupsResponse = expectedPermissionGroupsResponse.groups
             axios.mockResolvedValue({ data: expectedGigyaResponseOk }).mockResolvedValue({ data: expectedGigyaResponseOk })
             const firstRequestBody = {
-                aclId: permissionGroupsResponse.alexTestAdminPermissionGroup.aclID,
+                aclID: permissionGroupsResponse.alexTestAdminPermissionGroup.aclID,
                 scope: permissionGroupsResponse.alexTestAdminPermissionGroup.scope,
-                groupId: 'alexTestAdminPermissionGroup',
+                description: permissionGroupsResponse.alexTestAdminPermissionGroup.description,
+                users: permissionGroupsResponse.alexTestAdminPermissionGroup.users,
             }
             const secondRequestBody = {
-                aclId: permissionGroupsResponse.cdc_toolbox_e2e_test.aclID,
+                aclID: permissionGroupsResponse.cdc_toolbox_e2e_test.aclID,
                 scope: permissionGroupsResponse.cdc_toolbox_e2e_test.scope,
-                groupId: 'cdc_toolbox_e2e_test',
+                description: permissionGroupsResponse.cdc_toolbox_e2e_test.description,
+                users: permissionGroupsResponse.cdc_toolbox_e2e_test.users,
             }
+            const alexTestAdminPermissionGroup_groupId = 'alexTestAdminPermissionGroup'
+            const cdc_toolbox_e2e_test_groupId = 'cdc_toolbox_e2e_test'
             const getSiteInfo = {
                 partnerId: 123123,
                 dataCenter: 'us1',
@@ -144,8 +148,8 @@ describe('Permission Groups test suite', () => {
             let spy = jest.spyOn(permissionGroups, 'deployPermissionGroup')
             await permissionGroups.deploy(partnerBuildDirectory, getSiteInfo)
             expect(spy.mock.calls.length).toBe(2)
-            expect(spy).toHaveBeenNthCalledWith(1, getSiteInfo, firstRequestBody.groupId, firstRequestBody.aclId, firstRequestBody.scope, credentials)
-            expect(spy).toHaveBeenNthCalledWith(2, getSiteInfo, secondRequestBody.groupId, secondRequestBody.aclId, secondRequestBody.scope, credentials)
+            expect(spy).toHaveBeenNthCalledWith(1, getSiteInfo, alexTestAdminPermissionGroup_groupId, firstRequestBody, credentials)
+            expect(spy).toHaveBeenNthCalledWith(2, getSiteInfo, cdc_toolbox_e2e_test_groupId, secondRequestBody, credentials)
         })
 
         test('all permission groups were not deployed unsuccessfully', async () => {
@@ -158,23 +162,25 @@ describe('Permission Groups test suite', () => {
             await expect(permissionGroups.deploy(partnerBuildDirectory, getSiteInfo)).rejects.toThrow(Error)
         })
         test('all permission groups should update instead of deploy', async () => {
+            axios.mockResolvedValue({ data: expectedGigyaResponseOk }).mockResolvedValue({ data: expectedGroupIdAlreadyExistsResponse })
             const getSiteInfo = {
                 partnerId: 123123,
                 dataCenter: 'us1',
             }
             const permissionGroupsResponse = expectedUpdatedPermissionGroupsResponse.groups
-            axios.mockResolvedValue({ data: expectedGigyaResponseOk }).mockResolvedValue({ data: expectedGroupIdAlreadyExistsResponse })
+
+            const alexTestAdminPermissionGroup_groupId = 'alexTestAdminPermissionGroup'
+            const updateBody = {
+                aclID: permissionGroupsResponse.alexTestAdminPermissionGroup.aclID,
+                scope: permissionGroupsResponse.alexTestAdminPermissionGroup.scope,
+                description: permissionGroupsResponse.alexTestAdminPermissionGroup.description,
+                users: permissionGroupsResponse.alexTestAdminPermissionGroup.users,
+            }
             fs.readFileSync.mockReturnValue(JSON.stringify(permissionGroupsResponse))
             let spy = jest.spyOn(permissionGroups, 'updatePermissionGroup')
-
-            const updateBody = {
-                aclId: permissionGroupsResponse.alexTestAdminPermissionGroup.aclID,
-                scope: permissionGroupsResponse.alexTestAdminPermissionGroup.scope,
-                groupId: 'alexTestAdminPermissionGroup',
-            }
             await permissionGroups.deploy(partnerBuildDirectory, getSiteInfo)
             expect(spy.mock.calls.length).toBe(1)
-            expect(spy).toHaveBeenNthCalledWith(1, getSiteInfo, updateBody.groupId, updateBody, credentials)
+            expect(spy).toHaveBeenNthCalledWith(1, getSiteInfo, alexTestAdminPermissionGroup_groupId, updateBody, credentials)
         })
     })
 })
