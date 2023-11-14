@@ -57,7 +57,6 @@ export default class PermissionGroups extends PartnerFeature {
 
         let keys = Object.keys(parsedContent)
         for (let ids of keys) {
-            const { aclID, scope } = parsedContent[ids]
             let response = await this.deployPermissionGroup(siteInfo, ids, parsedContent[ids], this.credentials)
             if (response.errorCode === 400006) {
                 response = await this.updatePermissionGroup(siteInfo, ids, parsedContent[ids], this.credentials)
