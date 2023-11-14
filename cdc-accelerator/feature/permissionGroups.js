@@ -112,7 +112,7 @@ export default class PermissionGroups extends PartnerFeature {
             parameters.description = config.description
         }
         if (config.users) {
-            parameters.setUsers = config.users
+            parameters.setUsers = JSON.stringify(config.users)
         }
         return parameters
     }
