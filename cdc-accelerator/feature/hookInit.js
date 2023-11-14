@@ -4,15 +4,18 @@ import path from 'path'
 
 export default class HookInit {
     pre() {
-        this.#copyIndexTemplate()
+        this.#createIndexHtmlTemplate()
     }
 
     post() {
         // Nothing to do
     }
 
-    #copyIndexTemplate() {
-        const content = fs.readFileSync(PREVIEW_TEMPLATE_FILE, { encoding: 'utf8' })
-        fs.writeFileSync(path.join(SRC_DIRECTORY, path.basename(PREVIEW_TEMPLATE_FILE)), content)
+    #createIndexHtmlTemplate() {
+        const fileName = path.basename(PREVIEW_TEMPLATE_FILE)
+        if(!fs.existsSync(path.join(SRC_DIRECTORY, fileName))) {
+            const content = fs.readFileSync(PREVIEW_TEMPLATE_FILE, {encoding: 'utf8'})
+            fs.writeFileSync(path.join(SRC_DIRECTORY, fileName), content)
+        }
     }
 }
