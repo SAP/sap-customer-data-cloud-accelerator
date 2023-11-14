@@ -1,6 +1,6 @@
 import { CONFIG_FILENAME, Operations } from './constants.js'
-import fs from 'fs'
 import SitesCache from './sitesCache.js'
+import fs from 'fs'
 
 export default class Configuration {
     static #getConfiguration(operation, environment) {
@@ -23,14 +23,28 @@ export default class Configuration {
             case 'qa':
             case 'prod':
             case undefined:
-                return JSON.parse(fs.readFileSync(CONFIG_FILENAME, { encoding: 'utf8' }))
+                return Configuration.getAllConfiguration()
             default:
                 throw new Error('The environment is not supported')
         }
     }
 
-    static async loadCache(credentials) {
-        await SitesCache.load(credentials)
+    static getAllConfiguration() {
+        return JSON.parse(fs.readFileSync(CONFIG_FILENAME, { encoding: 'utf8' }))
+    }
+
+    static #writeCacheToFile(cache) {
+        const configContent = Configuration.getAllConfiguration()
+        configContent['cache'] = cache
+        fs.writeFileSync(CONFIG_FILENAME, JSON.stringify(configContent, null, 4))
+    }
+
+    static async generateCache(credentials) {
+        const cache = await SitesCache.load(credentials, Configuration.getAllConfiguration())
+        if (!cache.length) {
+            throw new Error('Cannot generate configuration cache')
+        }
+        Configuration.#writeCacheToFile(cache)
     }
 
     static getSites(operation, environment) {

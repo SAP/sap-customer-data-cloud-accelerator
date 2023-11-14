@@ -38,7 +38,6 @@ export const sites = [
 export const config = {
     source: [{ apiKey: sites[0].apiKey }, { apiKey: sites[1].apiKey }],
     deploy: { apiKey: sites[1].apiKey },
-    cache: {},
 }
 
 export function getSiteFeature() {

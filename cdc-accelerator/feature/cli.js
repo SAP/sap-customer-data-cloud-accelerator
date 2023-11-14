@@ -87,7 +87,7 @@ export default class CLI {
 
             const { operation, featureName, environment } = this.parseArguments(process.argv)
 
-            await Configuration.loadCache(credentials)
+            await Configuration.generateCache(credentials)
             const sites = Configuration.getSites(operation, environment)
 
             const accelerator = new Accelerator(this.siteFeature, this.partnerFeature)
