@@ -114,11 +114,8 @@ export default class PermissionGroups extends PartnerFeature {
         if (config.description) {
             parameters.description = config.description
         }
-        if (config.addUsers) {
-            parameters.addUsers = config.addUsers
-        }
-        if (config.setUsers) {
-            parameters.setUsers = config.setUsers
+        if (config.users) {
+            parameters.setUsers = config.users
         }
         if (config.removeUsers) {
             parameters.removeUsers = config.removeUsers
