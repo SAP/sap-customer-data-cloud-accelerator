@@ -19,6 +19,18 @@
         {
             "apiKey": "4_9XTXgPYTsS8EJ8ohejOCZw",
             "siteDomain": "cdc-accelerator.preferences-center.purina.com"
+        },
+        {
+            "apiKey": "4_DJV5S94zn_l7bYAKIvhqrA",
+            "siteDomain": "cdc-accelerator.single-site.com"
+        },
+        {
+            "apiKey": "4_i9SMcFM_LOyCDk7TUcjaxA",
+            "siteDomain": "cdc-accelerator.parent-site.com"
+        },
+        {
+            "apiKey": "4_KBclTNdMCudLU8jLkMpl9Q",
+            "siteDomain": "cdc-accelerator.child-site.com"
         }
     ],
     "deploy": [
@@ -29,9 +41,42 @@
         {
             "apiKey": "4_tqmAZeYVLPfPl9SYu_iFxA",
             "siteDomain": "cdc-accelerator.preferences-center.com"
+        },
+        {
+            "apiKey": "4_DJV5S94zn_l7bYAKIvhqrA",
+            "siteDomain": "cdc-accelerator.single-site.com"
+        },
+        {
+            "apiKey": "4_i9SMcFM_LOyCDk7TUcjaxA",
+            "siteDomain": "cdc-accelerator.parent-site.com"
+        },
+        {
+            "apiKey": "4_KBclTNdMCudLU8jLkMpl9Q",
+            "siteDomain": "cdc-accelerator.child-site.com"
         }
     ],
     "cache": [
+        {
+            "apiKey": "4_i9SMcFM_LOyCDk7TUcjaxA",
+            "baseDomain": "cdc-accelerator.parent-site.com",
+            "dataCenter": "us1",
+            "partnerId": 10560275,
+            "partnerName": "SAP Customer Data Cloud B2B"
+        },
+        {
+            "apiKey": "4_KBclTNdMCudLU8jLkMpl9Q",
+            "baseDomain": "cdc-accelerator.child-site.com",
+            "dataCenter": "us1",
+            "partnerId": 10560275,
+            "partnerName": "SAP Customer Data Cloud B2B"
+        },
+        {
+            "apiKey": "4_DJV5S94zn_l7bYAKIvhqrA",
+            "baseDomain": "cdc-accelerator.single-site.com",
+            "dataCenter": "eu1",
+            "partnerId": 10560275,
+            "partnerName": "SAP Customer Data Cloud B2B"
+        },
         {
             "apiKey": "4_51rYFDhKRgNJdru9HSz0JA",
             "baseDomain": "cdc-accelerator.preferences-center.nescafe.com",
