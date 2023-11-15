@@ -27,13 +27,17 @@ export default class PartnerFeature extends Feature {
             if (processedPartners.has(siteInfo.partnerName)) {
                 continue
             }
-            processedPartners.add(siteInfo.partnerName)
-
             console.log(`\n${siteInfo.partnerName} - ${siteInfo.apiKey}`)
             const partnerDirectory = path.join(SRC_DIRECTORY, siteInfo.partnerName)
             this.createDirectoryIfNotExists(partnerDirectory)
             const baseDirectory = path.join(partnerDirectory, SITES_DIRECTORY)
-            await this.executeOperationOnFeature(this.#features, featureName, baseDirectory, { operation: Operations.init, args: [partnerDirectory, siteInfo] })
+            const anyFeatureExecuted = await this.executeOperationOnFeature(this.#features, featureName, siteInfo.features, baseDirectory, {
+                operation: Operations.init,
+                args: [partnerDirectory, siteInfo],
+            })
+            if (anyFeatureExecuted) {
+                processedPartners.add(siteInfo.partnerName)
+            }
         }
         return true
     }
@@ -44,12 +48,16 @@ export default class PartnerFeature extends Feature {
             if (processedPartners.has(siteInfo.partnerName)) {
                 continue
             }
-            processedPartners.add(siteInfo.partnerName)
-
             console.log(`\n${siteInfo.partnerName} - ${siteInfo.apiKey}`)
             const partnerDirectory = path.join(SRC_DIRECTORY, siteInfo.partnerName)
             const baseDirectory = path.join(partnerDirectory, SITES_DIRECTORY)
-            await this.executeOperationOnFeature(this.#features, featureName, baseDirectory, { operation: Operations.reset, args: [partnerDirectory] })
+            const anyFeatureExecuted = await this.executeOperationOnFeature(this.#features, featureName, siteInfo.features, baseDirectory, {
+                operation: Operations.reset,
+                args: [partnerDirectory],
+            })
+            if (anyFeatureExecuted) {
+                processedPartners.add(siteInfo.partnerName)
+            }
         }
         return true
     }
@@ -66,7 +74,7 @@ export default class PartnerFeature extends Feature {
             processedPartners.add(partnerPath)
 
             console.log(`\n${partnerPath}`)
-            await this.executeOperationOnFeature(this.#features, featureName, partnerPath, { operation: Operations.build, args: [partnerPath] })
+            await this.executeOperationOnFeature(this.#features, featureName, undefined, partnerPath, { operation: Operations.build, args: [partnerPath] })
         }
         return true
     }
@@ -85,12 +93,16 @@ export default class PartnerFeature extends Feature {
             if (processedPartners.has(siteInfo.partnerName)) {
                 continue
             }
-            processedPartners.add(siteInfo.partnerName)
-
             console.log(`\n${siteInfo.partnerName} - ${siteInfo.apiKey}`)
             const baseDirectory = path.join(BUILD_DIRECTORY, siteInfo.partnerName)
             this.createDirectoryIfNotExists(baseDirectory)
-            await this.executeOperationOnFeature(this.#features, featureName, baseDirectory, { operation: Operations.deploy, args: [baseDirectory] })
+            const anyFeatureExecuted = await this.executeOperationOnFeature(this.#features, featureName, siteInfo.features, baseDirectory, {
+                operation: Operations.deploy,
+                args: [baseDirectory],
+            })
+            if (anyFeatureExecuted) {
+                processedPartners.add(siteInfo.partnerName)
+            }
         }
         return true
     }

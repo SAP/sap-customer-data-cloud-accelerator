@@ -53,6 +53,7 @@ export default class Configuration {
         for (const apiKeyObj of apiKeys) {
             const siteInfo = SitesCache.getSiteInfo(apiKeyObj.apiKey)
             if (siteInfo) {
+                siteInfo['features'] = apiKeyObj.features
                 sites.push(siteInfo)
             }
         }

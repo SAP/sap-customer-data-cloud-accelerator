@@ -48,15 +48,17 @@ export default class Feature {
         fs.writeFileSync(path.join(buildBasePath, file), JSON.stringify(fileContent, null, 4))
     }
 
-    async executeOperationOnFeature(features, featureName, directory, runnable) {
+    async executeOperationOnFeature(features, featureName, allowedFeatures, directory, runnable) {
+        let anyFeatureExecuted = false
         for (const feature of features) {
-            if (featureName && !Feature.isEqualCaseInsensitive(featureName, feature.constructor.name)) {
+            if (this.#isFeatureFilteredOut(featureName, feature.constructor.name, allowedFeatures)) {
                 continue
             }
             const workingDirectory = this.#calculateWorkingDirectory(directory, feature)
             if (fs.existsSync(workingDirectory)) {
                 process.stdout.write(`- ${feature.getName()}: `)
                 await feature[runnable.operation](...runnable.args) // the same as -> feature.init(apiKey, siteConfig, siteDomain)
+                anyFeatureExecuted = true
                 readline.clearLine(process.stdout, 0)
                 readline.cursorTo(process.stdout, 0)
                 console.log(`- ${feature.getName()}: \x1b[32m%s\x1b[0m`, `Done`)
@@ -64,6 +66,14 @@ export default class Feature {
                 console.log(`- ${feature.getName()}: %s`, `Skip`)
             }
         }
+        return anyFeatureExecuted
+    }
+
+    #isFeatureFilteredOut(singleFeatureToExecute, currentFeatureName, allowedFeatures) {
+        return (
+            (singleFeatureToExecute && !Feature.isEqualCaseInsensitive(singleFeatureToExecute, currentFeatureName)) ||
+            (allowedFeatures && !allowedFeatures.find((f) => f === currentFeatureName))
+        )
     }
 
     #calculateWorkingDirectory(directory, feature) {

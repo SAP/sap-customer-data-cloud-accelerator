@@ -2,9 +2,9 @@ import { getSiteConfig } from './test.gigyaResponses'
 import fs from 'fs'
 import path from 'path'
 import axios from 'axios'
-import { partnerIds, sites, spyAllFeaturesMethod, getPartnerFeature, buildSiteDirectory } from './test.common.js'
+import { partnerIds, sites, spyAllFeaturesMethod, getPartnerFeature, buildSiteDirectory, getBaseFolder } from './test.common.js'
 import Feature from './feature.js'
-import { BUILD_DIRECTORY, Operations, SRC_DIRECTORY } from './constants.js'
+import { Operations } from './constants.js'
 
 jest.mock('axios')
 jest.mock('fs')
@@ -12,6 +12,7 @@ jest.mock('./sitesCache.js')
 
 describe('Partner features test suite', () => {
     const partnerFeature = getPartnerFeature()
+    let sitesOnTest = sites
 
     beforeEach(() => {
         jest.restoreAllMocks()
@@ -23,7 +24,7 @@ describe('Partner features test suite', () => {
 
         test(`${operation} all features executed successfully`, async () => {
             const spyesTotalCalls = await executeTestAndCountCalls(operation, undefined)
-            expect(spyesTotalCalls).toBe(partnerIds.length)
+            expect(spyesTotalCalls).toBe(sites.length)
         })
 
         test(`${operation} no partner feature executed successfully`, async () => {
@@ -33,7 +34,7 @@ describe('Partner features test suite', () => {
 
         test(`${operation} permission groups feature executed successfully`, async () => {
             const spyesTotalCalls = await executeTestAndCountCalls(operation, partnerFeature.getFeatures()[0].constructor.name)
-            expect(spyesTotalCalls).toBe(partnerIds.length)
+            expect(spyesTotalCalls).toBe(sites.length)
         })
     })
 
@@ -42,12 +43,12 @@ describe('Partner features test suite', () => {
 
         test(`${operation} all features executed successfully`, async () => {
             const spyesTotalCalls = await executeTestAndCountCalls(operation, undefined)
-            expect(spyesTotalCalls).toBe(partnerIds.length)
+            expect(spyesTotalCalls).toBe(sites.length)
         })
 
         test(`${operation} single feature executed successfully`, async () => {
             const spyesTotalCalls = await executeTestAndCountCalls(operation, partnerFeature.getFeatures()[0].constructor.name)
-            expect(spyesTotalCalls).toBe(partnerIds.length)
+            expect(spyesTotalCalls).toBe(sites.length)
         })
     })
 
@@ -65,7 +66,7 @@ describe('Partner features test suite', () => {
             })
 
             const spyesTotalCalls = await executeTestAndCountCalls(operation, undefined)
-            expect(spyesTotalCalls).toBe(partnerIds.length)
+            expect(spyesTotalCalls).toBe(sites.length)
             expect(getFilesSpy.mock.calls.length).toBe(1)
         })
     })
@@ -75,7 +76,7 @@ describe('Partner features test suite', () => {
 
         test(`${operation} all features executed successfully`, async () => {
             const spyesTotalCalls = await executeTestAndCountCalls(operation, undefined)
-            expect(spyesTotalCalls).toBe(partnerIds.length)
+            expect(spyesTotalCalls).toBe(sites.length)
         })
 
         test(`${operation} no partner feature executed successfully`, async () => {
@@ -85,8 +86,48 @@ describe('Partner features test suite', () => {
 
         test(`${operation} permission groups feature executed successfully`, async () => {
             const spyesTotalCalls = await executeTestAndCountCalls(operation, partnerFeature.getFeatures()[0].constructor.name)
-            expect(spyesTotalCalls).toBe(partnerIds.length)
+            expect(spyesTotalCalls).toBe(sites.length)
         })
+    })
+
+    const operations = [[Operations.init], [Operations.reset], [Operations.deploy]]
+    test.each(operations)(`%s filter features`, async (operation) => {
+        jest.restoreAllMocks()
+        jest.clearAllMocks()
+        sitesOnTest[0]['features'] = ['PermissionGroups', 'Schema', 'WebSdk', 'Policies', 'WebScreenSets', 'EmailTemplates']
+        sitesOnTest[1]['features'] = ['PermissionGroups', 'Schema', 'WebSdk', 'Policies', 'WebScreenSets', 'EmailTemplates']
+        let spyesTotalCalls = await executeTestAndCountCalls(operation, undefined)
+        expect(spyesTotalCalls).toBe(partnerFeature.getFeatures().length * sites.length)
+
+        jest.restoreAllMocks()
+        jest.clearAllMocks()
+        sitesOnTest[0]['features'] = ['PermissionGroups', 'Policies']
+        sitesOnTest[1]['features'] = ['PermissionGroups', 'Policies']
+        spyesTotalCalls = await executeTestAndCountCalls(operation, undefined)
+        expect(spyesTotalCalls).toBe(1 * sites.length)
+
+        jest.restoreAllMocks()
+        jest.clearAllMocks()
+        sitesOnTest[0]['features'] = []
+        sitesOnTest[1]['features'] = []
+        spyesTotalCalls = await executeTestAndCountCalls(operation, undefined)
+        expect(spyesTotalCalls).toBe(0)
+
+        jest.restoreAllMocks()
+        jest.clearAllMocks()
+        sitesOnTest[0]['features'] = undefined
+        sitesOnTest[1]['features'] = undefined
+        spyesTotalCalls = await executeTestAndCountCalls(operation, undefined)
+        expect(spyesTotalCalls).toBe(partnerFeature.getFeatures().length * sites.length)
+
+        jest.restoreAllMocks()
+        jest.clearAllMocks()
+        sitesOnTest[0]['features'] = ['PermissionGroups']
+        sitesOnTest[1]['features'] = ['PermissionGroups']
+        sitesOnTest[1].partnerName = partnerIds[0]
+        spyesTotalCalls = await executeTestAndCountCalls(operation, undefined)
+        sitesOnTest[1].partnerName = partnerIds[1]
+        expect(spyesTotalCalls).toBe(1)
     })
 
     async function executeTestAndCountCalls(operation, featureName) {
@@ -117,23 +158,5 @@ describe('Partner features test suite', () => {
             }
         }
         return spyesTotalCalls
-    }
-
-    function getBaseFolder(operation) {
-        let baseFolder
-        switch (operation) {
-            case Operations.init:
-            case Operations.reset:
-                baseFolder = SRC_DIRECTORY
-                break
-            case Operations.build:
-            case Operations.deploy:
-                baseFolder = BUILD_DIRECTORY
-                break
-            default:
-                baseFolder = ''
-                break
-        }
-        return baseFolder
     }
 })
