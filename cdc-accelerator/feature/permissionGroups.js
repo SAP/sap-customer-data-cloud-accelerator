@@ -45,8 +45,87 @@ export default class PermissionGroups extends PartnerFeature {
         this.copyFileFromSrcToBuild(srcFeaturePath, PermissionGroups.PERMISSIONGROUP_FILE_NAME)
     }
 
-    async deploy(directory) {
-        console.log('deploy called')
+    async deploy(partnerDirectory, siteInfo) {
+        const buildFeatureDirectory = path.join(partnerDirectory, this.getName())
+        const buildFileName = path.join(buildFeatureDirectory, `${this.getName()}.json`)
+        const fileContent = fs.readFileSync(buildFileName, { encoding: 'utf8' })
+
+        if (!fileContent || !fileContent.length) {
+            throw new Error(`Invalid file: ${buildFileName}`)
+        }
+        const parsedContent = JSON.parse(fileContent)
+
+        let keys = Object.keys(parsedContent)
+        for (let ids of keys) {
+            let response = await this.deployPermissionGroup(siteInfo, ids, parsedContent[ids], this.credentials)
+            if (response.errorCode === 400006) {
+                response = await this.updatePermissionGroup(siteInfo, ids, parsedContent[ids], this.credentials)
+            }
+            if (response.errorCode !== 0 && response.errorCode !== 400006) {
+                throw new Error(JSON.stringify(response))
+            }
+        }
+    }
+
+    async deployPermissionGroup(siteInfo, groupId, config, credentials) {
+        return await this.setPermissionRequest(siteInfo.dataCenter, siteInfo.partnerId, groupId, config, credentials.userKey, credentials.secret)
+    }
+    async updatePermissionGroup(siteInfo, groupID, config, credentials) {
+        return await this.updatePermissionGroupRequest(siteInfo.dataCenter, siteInfo.partnerId, groupID, config, credentials)
+    }
+    async getPermissionGroups(dataCenter, partnerID, credentials) {
+        const url = `https://admin.${dataCenter}.gigya.com/admin.getGroups`
+        const response = await client.post(url, this.#getPermissionGroupsParameters(partnerID, credentials.userKey, credentials.secret)).catch((error) => error)
+        return response.data
+    }
+    async setPermissionRequest(dataCenter, partnerID, groupId, config, userKey, secret) {
+        const url = `https://admin.${dataCenter}.gigya.com/admin.createGroup`
+        const response = await client.post(url, this.#setPermissionGroupsParameters(partnerID, userKey, secret, groupId, config)).catch((error) => error)
+        return response.data
+    }
+
+    async updatePermissionGroupRequest(dataCenter, partnerID, groupID, config, credentials) {
+        const url = `https://admin.${dataCenter}.gigya.com/admin.updateGroup`
+        const response = await client.post(url, this.#updatePermissionGroupsParameters(partnerID, groupID, config, credentials.userKey, credentials.secret)).catch((error) => error)
+        return response.data
+    }
+    #setPermissionGroupsParameters(partnerID, userKey, secret, groupID, config) {
+        const parameters = Object.assign(this.#getPermissionGroupsParameters(partnerID, userKey, secret))
+        parameters.groupID = groupID
+        parameters.aclID = config.aclID
+        parameters.scope = JSON.stringify(config.scope)
+        if (config.description) {
+            parameters.description = config.description
+        }
+        if (config.users) {
+            parameters.setUsers = JSON.stringify(config.users)
+        }
+        return parameters
+    }
+    #updatePermissionGroupsParameters(partnerID, groupID, config, userKey, secret) {
+        const parameters = Object.assign(this.#getPermissionGroupsParameters(partnerID, userKey, secret))
+        parameters.groupID = groupID
+        if (config.aclId) {
+            parameters.aclID = config.aclId
+        }
+        if (config.scope) {
+            parameters.scope = JSON.stringify(config.scope)
+        }
+        if (config.description) {
+            parameters.description = config.description
+        }
+        if (config.users) {
+            parameters.setUsers = JSON.stringify(config.users)
+        }
+        return parameters
+    }
+
+    #getPermissionGroupsParameters(partnerID, userKey, secret) {
+        const parameters = Object.assign({})
+        parameters.userKey = userKey
+        parameters.secret = secret
+        parameters.partnerID = partnerID
+        return parameters
     }
     async getPermissionGroups(dataCenter, partnerID, credentials) {
         const url = `https://admin.${dataCenter}.gigya.com/admin.getGroups`
