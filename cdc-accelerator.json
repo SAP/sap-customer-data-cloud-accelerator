@@ -1,82 +1,48 @@
 {
     "source": [
         {
-            "apiKey": "4_Ch-q_qKrjBJ_-QBEfMPkKA",
-            "siteDomain": "cdc-accelerator.parent.site-group.com"
+            "apiKey": "4_Ch-q_qKrjBJ_-QBEfMPkKA"
         },
         {
-            "apiKey": "4_tqmAZeYVLPfPl9SYu_iFxA",
-            "siteDomain": "cdc-accelerator.preferences-center.com"
+            "apiKey": "4_tqmAZeYVLPfPl9SYu_iFxA"
         },
         {
-            "apiKey": "4_G9hcFjoYwj860VKK2eCILA",
-            "siteDomain": "cdc-accelerator.preferences-center.felix.com"
+            "apiKey": "4_G9hcFjoYwj860VKK2eCILA"
         },
         {
-            "apiKey": "4_51rYFDhKRgNJdru9HSz0JA",
-            "siteDomain": "cdc-accelerator.preferences-center.nescafe.com"
+            "apiKey": "4_51rYFDhKRgNJdru9HSz0JA"
         },
         {
-            "apiKey": "4_9XTXgPYTsS8EJ8ohejOCZw",
-            "siteDomain": "cdc-accelerator.preferences-center.purina.com"
+            "apiKey": "4_9XTXgPYTsS8EJ8ohejOCZw"
         },
         {
-            "apiKey": "4_DJV5S94zn_l7bYAKIvhqrA",
-            "siteDomain": "cdc-accelerator.single-site.com"
+            "apiKey": "4_DJV5S94zn_l7bYAKIvhqrA"
         },
         {
-            "apiKey": "4_i9SMcFM_LOyCDk7TUcjaxA",
-            "siteDomain": "cdc-accelerator.parent-site.com"
+            "apiKey": "4_i9SMcFM_LOyCDk7TUcjaxA"
         },
         {
-            "apiKey": "4_KBclTNdMCudLU8jLkMpl9Q",
-            "siteDomain": "cdc-accelerator.child-site.com"
+            "apiKey": "4_KBclTNdMCudLU8jLkMpl9Q"
         }
     ],
     "deploy": [
         {
-            "apiKey": "4_Ch-q_qKrjBJ_-QBEfMPkKA",
-            "siteDomain": "cdc-accelerator.parent.site-group.com"
+            "apiKey": "4_Ch-q_qKrjBJ_-QBEfMPkKA"
         },
         {
-            "apiKey": "4_tqmAZeYVLPfPl9SYu_iFxA",
-            "siteDomain": "cdc-accelerator.preferences-center.com"
+            "apiKey": "4_tqmAZeYVLPfPl9SYu_iFxA"
         },
         {
-            "apiKey": "4_DJV5S94zn_l7bYAKIvhqrA",
-            "siteDomain": "cdc-accelerator.single-site.com"
+            "apiKey": "4_DJV5S94zn_l7bYAKIvhqrA"
         },
         {
-            "apiKey": "4_i9SMcFM_LOyCDk7TUcjaxA",
-            "siteDomain": "cdc-accelerator.parent-site.com"
+            "apiKey": "4_i9SMcFM_LOyCDk7TUcjaxA"
         },
         {
-            "apiKey": "4_KBclTNdMCudLU8jLkMpl9Q",
-            "siteDomain": "cdc-accelerator.child-site.com"
+            "apiKey": "4_KBclTNdMCudLU8jLkMpl9Q"
         }
     ],
     "cache": [
-        {
-            "apiKey": "4_i9SMcFM_LOyCDk7TUcjaxA",
-            "baseDomain": "cdc-accelerator.parent-site.com",
-            "dataCenter": "us1",
-            "partnerId": 10560275,
-            "partnerName": "SAP Customer Data Cloud B2B"
-        },
-        {
-            "apiKey": "4_KBclTNdMCudLU8jLkMpl9Q",
-            "baseDomain": "cdc-accelerator.child-site.com",
-            "dataCenter": "us1",
-            "partnerId": 10560275,
-            "partnerName": "SAP Customer Data Cloud B2B"
-        },
-        {
-            "apiKey": "4_DJV5S94zn_l7bYAKIvhqrA",
-            "baseDomain": "cdc-accelerator.single-site.com",
-            "dataCenter": "eu1",
-            "partnerId": 10560275,
-            "partnerName": "SAP Customer Data Cloud B2B"
-        },
         {
             "apiKey": "4_51rYFDhKRgNJdru9HSz0JA",
             "baseDomain": "cdc-accelerator.preferences-center.nescafe.com",
@@ -111,6 +77,27 @@
             "dataCenter": "eu1",
             "partnerId": 79597568,
             "partnerName": "SAP Customer Data Cloud"
+        },
+        {
+            "apiKey": "4_i9SMcFM_LOyCDk7TUcjaxA",
+            "baseDomain": "cdc-accelerator.parent-site.com",
+            "dataCenter": "us1",
+            "partnerId": 10560275,
+            "partnerName": "SAP Customer Data Cloud B2B"
+        },
+        {
+            "apiKey": "4_KBclTNdMCudLU8jLkMpl9Q",
+            "baseDomain": "cdc-accelerator.child-site.com",
+            "dataCenter": "us1",
+            "partnerId": 10560275,
+            "partnerName": "SAP Customer Data Cloud B2B"
+        },
+        {
+            "apiKey": "4_DJV5S94zn_l7bYAKIvhqrA",
+            "baseDomain": "cdc-accelerator.single-site.com",
+            "dataCenter": "eu1",
+            "partnerId": 10560275,
+            "partnerName": "SAP Customer Data Cloud B2B"
         }
     ]
 }
