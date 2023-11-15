@@ -46,7 +46,9 @@ export default class PermissionGroups extends PartnerFeature {
         this.#acls.build(buildFeaturePath)
     }
 
-    async deploy(directory) {
+    async deploy(directory, siteInfo) {
+        const buildFeatureDirectory = path.join(directory, this.getName())
+        await this.#acls.deploy(buildFeatureDirectory, siteInfo)
         console.log('deploy called')
     }
     async getPermissionGroups(dataCenter, partnerID, credentials) {

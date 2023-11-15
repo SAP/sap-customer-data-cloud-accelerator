@@ -99,7 +99,7 @@ export default class PartnerFeature extends Feature {
             console.log(`\n${siteInfo.partnerName} - ${apiKey}`)
             const baseDirectory = await FolderManager.getPartnerFolder(Operations.deploy, apiKey)
             this.createDirectoryIfNotExists(baseDirectory)
-            await this.executeOperationOnFeature(this.#features, featureName, baseDirectory, { operation: Operations.deploy, args: [baseDirectory] })
+            await this.executeOperationOnFeature(this.#features, featureName, baseDirectory, { operation: Operations.deploy, args: [baseDirectory, siteInfo] })
         }
         return true
     }
