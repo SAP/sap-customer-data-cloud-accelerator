@@ -36,6 +36,7 @@ describe('ACLs test suite', () => {
                 partnerId: 123123,
                 dataCenter: 'eu1',
             }
+
             fs.readFileSync.mockReturnValue(true)
             const srcDirectory = path.join(partnerBaseDirector, permissionGroupDirectoryName)
             await expect(acls.init(aclIDs, getSiteInfo.partnerId, srcDirectory, getSiteInfo.dataCenter)).rejects.toThrow(new Error(JSON.stringify(expectedGigyaResponseNok)))
