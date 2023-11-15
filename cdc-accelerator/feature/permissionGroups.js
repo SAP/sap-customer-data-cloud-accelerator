@@ -46,25 +46,23 @@ export default class PermissionGroups extends PartnerFeature {
     }
 
     async deploy(partnerDirectory, siteInfo) {
-        const buildFeatureDirectory = path.join(partnerDirectory, this.getName())
-        const buildFileName = path.join(buildFeatureDirectory, `${this.getName()}.json`)
-        const fileContent = fs.readFileSync(buildFileName, { encoding: 'utf8' })
-
-        if (!fileContent || !fileContent.length) {
-            throw new Error(`Invalid file: ${buildFileName}`)
-        }
-        const parsedContent = JSON.parse(fileContent)
-
-        let keys = Object.keys(parsedContent)
-        for (let ids of keys) {
-            let response = await this.deployPermissionGroup(siteInfo, ids, parsedContent[ids], this.credentials)
-            if (response.errorCode === 400006) {
-                response = await this.updatePermissionGroup(siteInfo, ids, parsedContent[ids], this.credentials)
-            }
-            if (response.errorCode !== 0 && response.errorCode !== 400006) {
-                throw new Error(JSON.stringify(response))
-            }
-        }
+        // const buildFeatureDirectory = path.join(partnerDirectory, this.getName())
+        // const buildFileName = path.join(buildFeatureDirectory, `${this.getName()}.json`)
+        // const fileContent = fs.readFileSync(buildFileName, { encoding: 'utf8' })
+        // if (!fileContent || !fileContent.length) {
+        //     throw new Error(`Invalid file: ${buildFileName}`)
+        // }
+        // const parsedContent = JSON.parse(fileContent)
+        // let keys = Object.keys(parsedContent)
+        // for (let ids of keys) {
+        //     let response = await this.deployPermissionGroup(siteInfo, ids, parsedContent[ids], this.credentials)
+        //     if (response.errorCode === 400006) {
+        //         response = await this.updatePermissionGroup(siteInfo, ids, parsedContent[ids], this.credentials)
+        //     }
+        //     if (response.errorCode !== 0 && response.errorCode !== 400006) {
+        //         throw new Error(JSON.stringify(response))
+        //     }
+        // }
     }
 
     async deployPermissionGroup(siteInfo, groupId, config, credentials) {
