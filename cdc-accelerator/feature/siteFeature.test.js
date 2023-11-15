@@ -2,17 +2,12 @@ import { expectedGigyaResponseNok, getSiteConfig } from './test.gigyaResponses.j
 import fs from 'fs'
 import path from 'path'
 import axios from 'axios'
-import Schema from './schema.js'
-import WebSdk from './webSdk.js'
-import Policies from './policies.js'
-import { sites, srcSiteDirectory, siteBaseDirectory, getSiteFeature, spyAllFeaturesMethod, partnerIds, buildSiteDirectory } from './test.common.js'
+import { sites, getSiteFeature, spyAllFeaturesMethod, partnerIds, buildSiteDirectory } from './test.common.js'
 import Feature from './feature.js'
-import FolderManager from './folderManager.js'
 import { Operations } from './constants.js'
 
 jest.mock('axios')
 jest.mock('fs')
-jest.mock('./sitesCache.js')
 
 describe('Site features test suite', () => {
     const siteFeature = getSiteFeature()
@@ -20,13 +15,6 @@ describe('Site features test suite', () => {
     beforeEach(() => {
         jest.restoreAllMocks()
         jest.clearAllMocks()
-
-        jest.spyOn(FolderManager, 'getSiteFolder').mockImplementation(async () => {
-            return srcSiteDirectory
-        })
-        jest.spyOn(FolderManager, 'getSiteBaseFolder').mockImplementation(async () => {
-            return siteBaseDirectory
-        })
     })
 
     describe('Init test suite', () => {

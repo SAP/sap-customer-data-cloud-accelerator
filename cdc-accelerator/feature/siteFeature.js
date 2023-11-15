@@ -4,9 +4,8 @@
  */
 import SiteConfigurator from '../sap-cdc-toolkit/configurator/siteConfigurator.js'
 import Feature from './feature.js'
-import { Operations } from './constants.js'
-import FolderManager from './folderManager.js'
-import SitesCache from './sitesCache.js'
+import { Operations, SITES_DIRECTORY, SRC_DIRECTORY, BUILD_DIRECTORY } from './constants.js'
+import path from 'path'
 
 export default class SiteFeature extends Feature {
     #features = []
@@ -24,17 +23,16 @@ export default class SiteFeature extends Feature {
     }
 
     async init(sites, featureName) {
-        await SitesCache.init(this.credentials)
-        for (const { apiKey, siteDomain = '' } of sites) {
-            const baseFolder = await FolderManager.getSiteBaseFolder(Operations.init, apiKey)
+        for (const siteInfo of sites) {
+            const baseFolder = path.join(SRC_DIRECTORY, siteInfo.partnerName, SITES_DIRECTORY)
             this.createDirectoryIfNotExists(baseFolder)
-            // If apiKey has siteDomain, use the contents inside that directory for that site, else use the contents of the build/ directory
-            const msg = siteDomain ? `\n${siteDomain} - ${apiKey}` : `\n${apiKey}`
+            // If apiKey has baseDomain, use the contents inside that directory for that site, else use the contents of the build/ directory
+            const msg = siteInfo.baseDomain ? `\n${siteInfo.baseDomain} - ${siteInfo.apiKey}` : `\n${siteInfo.apiKey}`
             console.log(msg)
 
-            const siteConfig = await this.#getSiteConfig(apiKey)
-            const siteFolder = await FolderManager.getSiteFolder(Operations.init, apiKey)
-            await this.executeOperationOnFeature(this.#features, featureName, baseFolder, { operation: Operations.init, args: [apiKey, siteConfig, siteFolder] })
+            const siteConfig = await this.#getSiteConfig(siteInfo.apiKey)
+            const siteFolder = path.join(baseFolder, siteInfo.baseDomain)
+            await this.executeOperationOnFeature(this.#features, featureName, baseFolder, { operation: Operations.init, args: [siteInfo.apiKey, siteConfig, siteFolder] })
         }
         return true
     }
@@ -49,11 +47,10 @@ export default class SiteFeature extends Feature {
     }
 
     async reset(sites, featureName) {
-        await SitesCache.load(this.credentials)
-        for (const { apiKey, siteDomain = '' } of sites) {
-            const baseFolder = await FolderManager.getSiteBaseFolder(Operations.reset, apiKey)
-            const siteFolder = await FolderManager.getSiteFolder(Operations.reset, apiKey)
-            const msg = siteDomain ? `\n${siteDomain} - ${apiKey}` : `\n${apiKey}`
+        for (const siteInfo of sites) {
+            const baseFolder = path.join(SRC_DIRECTORY, siteInfo.partnerName, SITES_DIRECTORY)
+            const siteFolder = path.join(baseFolder, siteInfo.baseDomain)
+            const msg = siteInfo.baseDomain ? `\n${siteInfo.baseDomain} - ${siteInfo.apiKey}` : `\n${siteInfo.apiKey}`
             console.log(msg)
             await this.executeOperationOnFeature(this.#features, featureName, baseFolder, { operation: Operations.reset, args: [siteFolder] })
         }
@@ -61,7 +58,6 @@ export default class SiteFeature extends Feature {
     }
 
     async build(featureName) {
-        await SitesCache.load()
         // Get all directories in src/ that are not features and check if they have features inside (Also '' to check the src/ directory itself)
         const sitePaths = await this.getAllLocalSitePaths()
         for (const sitePath of sitePaths) {
@@ -72,15 +68,14 @@ export default class SiteFeature extends Feature {
     }
 
     async deploy(sites, featureName) {
-        await SitesCache.load()
-        for (const { apiKey, siteDomain = '' } of sites) {
+        for (const siteInfo of sites) {
             // If apiKey has siteDomain, use the contents inside that directory for that site, else use the contents of the build/ directory
-            const msg = siteDomain ? `\n${siteDomain} - ${apiKey}` : `\n${apiKey}`
+            const msg = siteInfo.baseDomain ? `\n${siteInfo.baseDomain} - ${siteInfo.apiKey}` : `\n${siteInfo.apiKey}`
             console.log(msg)
 
-            const siteFolder = await FolderManager.getSiteFolder(Operations.deploy, apiKey)
-            const siteConfig = await this.#getSiteConfig(apiKey)
-            await this.executeOperationOnFeature(this.#features, featureName, siteFolder, { operation: Operations.deploy, args: [apiKey, siteConfig, siteFolder] })
+            const siteFolder = path.join(BUILD_DIRECTORY, siteInfo.partnerName, SITES_DIRECTORY, siteInfo.baseDomain)
+            const siteConfig = await this.#getSiteConfig(siteInfo.apiKey)
+            await this.executeOperationOnFeature(this.#features, featureName, siteFolder, { operation: Operations.deploy, args: [siteInfo.apiKey, siteConfig, siteFolder] })
         }
         return true
     }

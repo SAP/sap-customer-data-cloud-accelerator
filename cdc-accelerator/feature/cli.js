@@ -4,7 +4,7 @@
  */
 import 'dotenv/config'
 
-import { CONFIG_FILENAME, Environments, Operations } from './constants.js'
+import { Environments, Operations } from './constants.js'
 import SiteFeature from './siteFeature.js'
 import Schema from './schema.js'
 import WebSdk from './webSdk.js'
@@ -14,8 +14,8 @@ import PartnerFeature from './partnerFeature.js'
 import PermissionGroups from './permissionGroups.js'
 import Accelerator from './accelerator.js'
 import Feature from './feature.js'
-import fs from 'fs'
 import EmailTemplates from './emailTemplates.js'
+import Configuration from './configuration.js'
 
 export default class CLI {
     siteFeature
@@ -35,16 +35,7 @@ export default class CLI {
         }
         environment = this.#sanitize(environment, Environments, 'environment')
         operation = this.#sanitize(operation, Operations, 'operation')
-
-        let configuration = this.#getConfiguration(operation, environment)
-        let sites
-        // If source is object with single apiKey, convert to array
-        if (!Array.isArray(configuration) && configuration.apiKey) {
-            configuration = [configuration]
-        }
-        sites = configuration
-
-        return { operation, sites, featureName, environment }
+        return { operation, featureName, environment }
     }
 
     #sanitize(variable, type, argumentName) {
@@ -72,32 +63,6 @@ export default class CLI {
         return this.#featureNameExists(this.siteFeature, featureName) || this.#featureNameExists(this.partnerFeature, featureName)
     }
 
-    #getConfiguration = (operation, environment) => {
-        const config = this.getConfigurationByEnvironment(environment)
-        switch (operation) {
-            case Operations.init:
-            case Operations.reset:
-            case Operations.build:
-                return config.source
-            case Operations.deploy:
-                return config.deploy
-            default:
-                throw new Error('Cannot find configuration')
-        }
-    }
-
-    getConfigurationByEnvironment(environment) {
-        switch (environment) {
-            case 'dev':
-            case 'qa':
-            case 'prod':
-            case undefined:
-                return JSON.parse(fs.readFileSync(CONFIG_FILENAME, { encoding: 'utf8' }))
-            default:
-                throw new Error('The environment is not supported')
-        }
-    }
-
     initSiteFeature(credentials) {
         const siteFeature = new SiteFeature(credentials)
         siteFeature.register(new Schema(credentials))
@@ -120,7 +85,10 @@ export default class CLI {
             this.siteFeature = this.initSiteFeature(credentials)
             this.partnerFeature = this.initPartnerFeature(credentials)
 
-            const { operation, sites, featureName, environment } = this.parseArguments(process.argv)
+            const { operation, featureName, environment } = this.parseArguments(process.argv)
+
+            await Configuration.generateCache(credentials)
+            const sites = Configuration.getSites(operation, environment)
 
             const accelerator = new Accelerator(this.siteFeature, this.partnerFeature)
             return await accelerator.execute(operation, sites, featureName, environment)

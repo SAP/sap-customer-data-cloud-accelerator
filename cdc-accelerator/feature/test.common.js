@@ -20,13 +20,24 @@ export const srcSiteDirectory = path.join(siteBaseDirectory, siteDomain)
 export const buildSiteDirectory = srcSiteDirectory.replace(SRC_DIRECTORY, BUILD_DIRECTORY)
 export const partnerBuildDirector = partnerBaseDirector.replace(SRC_DIRECTORY, BUILD_DIRECTORY)
 export const sites = [
-    { apiKey: '1_Eh-x_qKjjBJ_-QBEfMDABC', siteDomain: 'cdc-accelerator.parent.site-group.com' },
-    { apiKey: '2_Eh-x_qKjjBJ_-QBEfMDABC', siteDomain: 'cdc-accelerator.preferences-center.com' },
+    {
+        apiKey: '1_Eh-x_qKjjBJ_-QBEfMDABC',
+        baseDomain: 'cdc-accelerator.parent.site-group.com',
+        dataCenter: 'eu1',
+        partnerId: 79597568,
+        partnerName: partnerIds[0],
+    },
+    {
+        apiKey: '2_Eh-x_qKjjBJ_-QBEfMDABC',
+        baseDomain: 'cdc-accelerator.preferences-center.com',
+        dataCenter: 'eu1',
+        partnerId: 79597568,
+        partnerName: partnerIds[1],
+    },
 ]
 export const config = {
-    source: sites,
-    deploy: { apiKey: sites[1].apiKey, siteDomain: sites[1].siteDomain },
-    cache: {},
+    source: [{ apiKey: sites[0].apiKey }, { apiKey: sites[1].apiKey }],
+    deploy: { apiKey: sites[1].apiKey },
 }
 
 export function getSiteFeature() {
