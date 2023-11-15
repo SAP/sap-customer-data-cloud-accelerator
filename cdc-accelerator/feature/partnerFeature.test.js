@@ -65,7 +65,7 @@ describe('Partner features test suite', () => {
             })
 
             const spyesTotalCalls = await executeTestAndCountCalls(operation, undefined)
-            expect(spyesTotalCalls).toBe(1)
+            expect(spyesTotalCalls).toBe(partnerIds.length)
             expect(getFilesSpy.mock.calls.length).toBe(1)
         })
     })
