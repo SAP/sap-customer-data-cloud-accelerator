@@ -151,16 +151,6 @@ describe('Permission Groups test suite', () => {
             expect(spy).toHaveBeenNthCalledWith(1, getSiteInfo, alexTestAdminPermissionGroup_groupId, firstRequestBody, credentials)
             expect(spy).toHaveBeenNthCalledWith(2, getSiteInfo, cdc_toolbox_e2e_test_groupId, secondRequestBody, credentials)
         })
-
-        test('all permission groups were not deployed unsuccessfully', async () => {
-            const getSiteInfo = {
-                partnerId: 123123,
-                dataCenter: 'us1',
-            }
-            axios.mockResolvedValueOnce({ data: expectedGigyaResponseNok }).mockResolvedValueOnce({ data: expectedGigyaResponseNok })
-            fs.readFileSync.mockReturnValue(true)
-            await expect(permissionGroups.deploy(partnerBuildDirectory, getSiteInfo)).rejects.toThrow(Error)
-        })
         test('all permission groups should update instead of deploy', async () => {
             axios.mockResolvedValue({ data: expectedGigyaResponseOk }).mockResolvedValue({ data: expectedGroupIdAlreadyExistsResponse })
             const getSiteInfo = {
@@ -181,6 +171,15 @@ describe('Permission Groups test suite', () => {
             await permissionGroups.deploy(partnerBuildDirectory, getSiteInfo)
             expect(spy.mock.calls.length).toBe(1)
             expect(spy).toHaveBeenNthCalledWith(1, getSiteInfo, alexTestAdminPermissionGroup_groupId, updateBody, credentials)
+        })
+        test('all permission groups were not deployed unsuccessfully', async () => {
+            const getSiteInfo = {
+                partnerId: 123123,
+                dataCenter: 'us1',
+            }
+            axios.mockResolvedValueOnce({ data: expectedGigyaResponseNok }).mockResolvedValueOnce({ data: expectedGigyaResponseNok })
+            fs.readFileSync.mockReturnValue(true)
+            await expect(permissionGroups.deploy(partnerBuildDirectory, getSiteInfo)).rejects.toThrow(Error)
         })
     })
 })

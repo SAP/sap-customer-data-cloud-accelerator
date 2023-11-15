@@ -3,7 +3,7 @@ import fs from 'fs'
 import axios from 'axios'
 import path from 'path'
 import { expectedGigyaResponseNok, expectedGigyaResponseOk, expectedAclResponse, expectedPermissionGroupsResponse, expectedACLFileContent } from './test.gigyaResponses.js'
-import { credentials, partnerBaseDirector, partnerBuildDirector } from './test.common.js'
+import { credentials, partnerBaseDirectory } from './test.common.js'
 jest.mock('axios')
 jest.mock('fs')
 
@@ -25,7 +25,7 @@ describe('ACLs test suite', () => {
             fs.existsSync.mockReturnValue(false)
             fs.mkdirSync.mockReturnValue(undefined)
             fs.writeFileSync.mockReturnValue(undefined)
-            const srcDirectory = path.join(partnerBaseDirector, permissionGroupDirectoryName)
+            const srcDirectory = path.join(partnerBaseDirectory, permissionGroupDirectoryName)
             await acls.init(aclIDs, getSiteInfo.partnerId, srcDirectory, getSiteInfo.dataCenter)
             expect(fs.writeFileSync).toHaveBeenCalledWith(path.join(srcDirectory, ACL.ACL_FILE_NAME), JSON.stringify(expectedACLFileContent, null, 4))
         })
@@ -37,7 +37,7 @@ describe('ACLs test suite', () => {
                 dataCenter: 'eu1',
             }
             fs.readFileSync.mockReturnValue(true)
-            const srcDirectory = path.join(partnerBaseDirector, permissionGroupDirectoryName)
+            const srcDirectory = path.join(partnerBaseDirectory, permissionGroupDirectoryName)
             await expect(acls.init(aclIDs, getSiteInfo.partnerId, srcDirectory, getSiteInfo.dataCenter)).rejects.toThrow(new Error(JSON.stringify(expectedGigyaResponseNok)))
         })
     })
