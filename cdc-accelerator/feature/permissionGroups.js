@@ -133,13 +133,6 @@ export default class PermissionGroups extends PartnerFeature {
         return response.data
     }
 
-    #setPermissionGroupsParameters(partnerID, userKey, secret) {
-        const parameters = Object.assign({})
-        parameters.userKey = userKey
-        parameters.secret = secret
-        parameters.partnerID = partnerID
-        return parameters
-    }
     getAcl() {
         return this.#acls
     }
