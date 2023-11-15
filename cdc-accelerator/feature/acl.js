@@ -24,7 +24,7 @@ export default class ACL {
 
             finalResponse = Object.assign(finalResponse, { [aclId]: response['acl'] })
         }
-
+        console.log('loging')
         fs.writeFileSync(path.join(permissionGroupDirectory, ACL.ACL_FILE_NAME), JSON.stringify(finalResponse, null, 4))
     }
 
