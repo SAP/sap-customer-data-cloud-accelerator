@@ -46,7 +46,7 @@ export default class PermissionGroups extends PartnerFeature {
     }
 
     async deploy(partnerDirectory, siteInfo) {
-        // const buildFeatureDirectory = path.join(partnerDirectory, this.getName())
+        const buildFeatureDirectory = path.join(partnerDirectory, this.getName())
         const buildFileName = path.join(buildFeatureDirectory, `${this.getName()}.json`)
         const fileContent = fs.readFileSync(buildFileName, { encoding: 'utf8' })
         if (!fileContent || !fileContent.length) {
