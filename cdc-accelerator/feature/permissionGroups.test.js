@@ -4,6 +4,7 @@ import {
     expectedPermissionGroupsResponse,
     expectedUpdatedPermissionGroupsResponse,
     expectedGigyaResponseNok,
+    expecterPermissionGroupsResponseAfterRemovingBuiltInGroups,
 } from './test.gigyaResponses.js'
 import fs from 'fs'
 import axios from 'axios'
@@ -34,7 +35,7 @@ describe('Permission Groups test suite', () => {
             expect(fs.existsSync).toHaveBeenCalledWith(srcDirectory)
             expect(fs.writeFileSync).toHaveBeenCalledWith(
                 path.join(srcDirectory, PermissionGroups.PERMISSIONGROUP_FILE_NAME),
-                JSON.stringify(expectedPermissionGroupsResponse.groups, null, 4),
+                JSON.stringify(expecterPermissionGroupsResponseAfterRemovingBuiltInGroups, null, 4),
             )
         })
         test('get permission groups failed', async () => {
@@ -123,7 +124,7 @@ describe('Permission Groups test suite', () => {
     })
     describe('Deploy test suite', () => {
         test('all permission groups were deployed successfully', async () => {
-            const permissionGroupsResponse = expectedPermissionGroupsResponse.groups
+            const permissionGroupsResponse = expecterPermissionGroupsResponseAfterRemovingBuiltInGroups
             axios.mockResolvedValue({ data: expectedGigyaResponseOk }).mockResolvedValue({ data: expectedGigyaResponseOk })
             const firstRequestBody = {
                 aclID: permissionGroupsResponse.alexTestAdminPermissionGroup.aclID,

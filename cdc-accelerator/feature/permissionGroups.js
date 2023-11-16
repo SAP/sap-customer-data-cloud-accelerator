@@ -29,7 +29,11 @@ export default class PermissionGroups extends PartnerFeature {
         if (permissionGroupsRes.errorCode) {
             throw new Error(JSON.stringify(permissionGroupsRes))
         }
-        fs.writeFileSync(path.join(featureDirectory, PermissionGroups.PERMISSIONGROUP_FILE_NAME), JSON.stringify(permissionGroupsRes['groups'], null, 4))
+
+        fs.writeFileSync(
+            path.join(featureDirectory, PermissionGroups.PERMISSIONGROUP_FILE_NAME),
+            JSON.stringify(this.remove_built_in_permission_groups(permissionGroupsRes.groups), null, 4),
+        )
         const aclIDs = Object.keys(permissionGroupsRes['groups']).map((key) => permissionGroupsRes['groups'][key].aclID)
         await this.#acls.init(aclIDs, siteInfo['partnerId'], featureDirectory, siteInfo['dataCenter'])
     }
@@ -75,18 +79,18 @@ export default class PermissionGroups extends PartnerFeature {
     }
     async getPermissionGroups(dataCenter, partnerID, credentials) {
         const url = `https://admin.${dataCenter}.gigya.com/admin.getGroups`
-        const response = await client.post(url, this.#getPermissionGroupsParameters(partnerID, credentials.userKey, credentials.secret)).catch((error) => error)
+        const response = await client.post(url, this.#getPermissionGroupsParameters(partnerID, credentials.userKey, credentials.secret))
         return response.data
     }
     async setPermissionRequest(dataCenter, partnerID, groupId, config, userKey, secret) {
         const url = `https://admin.${dataCenter}.gigya.com/admin.createGroup`
-        const response = await client.post(url, this.#setPermissionGroupsParameters(partnerID, userKey, secret, groupId, config)).catch((error) => error)
+        const response = await client.post(url, this.#setPermissionGroupsParameters(partnerID, userKey, secret, groupId, config))
         return response.data
     }
 
     async updatePermissionGroupRequest(dataCenter, partnerID, groupID, config, credentials) {
         const url = `https://admin.${dataCenter}.gigya.com/admin.updateGroup`
-        const response = await client.post(url, this.#updatePermissionGroupsParameters(partnerID, groupID, config, credentials.userKey, credentials.secret)).catch((error) => error)
+        const response = await client.post(url, this.#updatePermissionGroupsParameters(partnerID, groupID, config, credentials.userKey, credentials.secret))
         return response.data
     }
     #setPermissionGroupsParameters(partnerID, userKey, secret, groupID, config) {
@@ -129,5 +133,10 @@ export default class PermissionGroups extends PartnerFeature {
     }
     getAcl() {
         return this.#acls
+    }
+
+    remove_built_in_permission_groups(content) {
+        const filteredGroups = Object.fromEntries(Object.entries(content).filter(([key]) => !key.startsWith('_')))
+        return filteredGroups
     }
 }

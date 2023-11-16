@@ -455,7 +455,20 @@ export const expectedPermissionGroupsResponse = {
             users: ['AEOt9tr7uRTZ'],
             description: 'Used in CDC Toolbox e2e tests',
         },
+        _adminGroup: {
+            aclID: '_adminGroup',
+            scope: {
+                allowPartners: ['_owner'],
+                allowSites: ['4_BaJ2eJU0tORSo6-t0fPGhQ'],
+            },
+            users: ['AEOt9tr7uRTZ'],
+            description: '_adminGroup',
+        },
     },
+}
+export const expecterPermissionGroupsResponseAfterRemovingBuiltInGroups = {
+    alexTestAdminPermissionGroup: expectedPermissionGroupsResponse.groups.alexTestAdminPermissionGroup,
+    cdc_toolbox_e2e_test: expectedPermissionGroupsResponse.groups.cdc_toolbox_e2e_test,
 }
 export const expectedUpdatedPermissionGroupsResponse = {
     callId: '143306dc47dc43ed96126dfecb025252',
