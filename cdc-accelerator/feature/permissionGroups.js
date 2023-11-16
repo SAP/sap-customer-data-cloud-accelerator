@@ -71,11 +71,11 @@ export default class PermissionGroups extends PartnerFeature {
     // async updatePermissionGroup(siteInfo, groupID, config, credentials) {
     //     return await this.updatePermissionGroupRequest(siteInfo.dataCenter, siteInfo.partnerId, groupID, config, credentials)
     // }
-    async getPermissionGroups(dataCenter, partnerID, credentials) {
-        const url = `https://admin.${dataCenter}.gigya.com/admin.getGroups`
-        const response = await client.post(url, this.#getPermissionGroupsParameters(partnerID, credentials.userKey, credentials.secret)).catch((error) => error)
-        return response.data
-    }
+    // async getPermissionGroups(dataCenter, partnerID, credentials) {
+    //     const url = `https://admin.${dataCenter}.gigya.com/admin.getGroups`
+    //     const response = await client.post(url, this.#getPermissionGroupsParameters(partnerID, credentials.userKey, credentials.secret)).catch((error) => error)
+    //     return response.data
+    // }
     async setPermissionRequest(dataCenter, partnerID, groupId, config, userKey, secret) {
         const url = `https://admin.${dataCenter}.gigya.com/admin.createGroup`
         const response = await client.post(url, this.#setPermissionGroupsParameters(partnerID, userKey, secret, groupId, config)).catch((error) => error)
@@ -125,11 +125,11 @@ export default class PermissionGroups extends PartnerFeature {
         parameters.partnerID = partnerID
         return parameters
     }
-    async getPermissionGroups(dataCenter, partnerID, credentials) {
-        const url = `https://admin.${dataCenter}.gigya.com/admin.getGroups`
-        const response = await client.post(url, this.#setPermissionGroupsParameters(partnerID, credentials.userKey, credentials.secret)).catch((error) => error)
-        return response.data
-    }
+    // async getPermissionGroups(dataCenter, partnerID, credentials) {
+    //     const url = `https://admin.${dataCenter}.gigya.com/admin.getGroups`
+    //     const response = await client.post(url, this.#setPermissionGroupsParameters(partnerID, credentials.userKey, credentials.secret)).catch((error) => error)
+    //     return response.data
+    // }
 
     getAcl() {
         return this.#acls
