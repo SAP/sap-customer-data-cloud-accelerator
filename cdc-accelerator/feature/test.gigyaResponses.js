@@ -474,15 +474,6 @@ export const expectedUpdatedPermissionGroupsResponse = {
             users: ['ANHZHhdHWtKD'],
             description: '',
         },
-        alexTestAdminPermissionGroup: {
-            aclID: 'alexTestAdminPermissionGroup',
-            scope: {
-                allowPartners: ['_owner'],
-                allowSites: ['*'],
-            },
-            users: ['ANHZHhdHWtKD'],
-            description: '',
-        },
     },
 }
 
