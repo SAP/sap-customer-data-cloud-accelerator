@@ -85,7 +85,6 @@ describe('Permission Groups test suite', () => {
             fs.mkdirSync.mockReturnValue(undefined)
             fs.writeFileSync.mockReturnValue(undefined)
             fs.readFileSync.mockReturnValue(srcFileContent)
-            // for the build method it is passed the build path
             permissionGroups.build(partnerBuildDirectory)
             const buildFeatureDirectory = path.join(partnerBuildDirectory, permissionGroups.getName())
             expect(fs.existsSync).toHaveBeenCalledWith(buildFeatureDirectory)
