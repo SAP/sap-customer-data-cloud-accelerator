@@ -45,7 +45,7 @@ export default class PermissionGroups extends PartnerFeature {
         this.copyFileFromSrcToBuild(srcFeaturePath, PermissionGroups.PERMISSIONGROUP_FILE_NAME)
     }
 
-    // async deploy(partnerDirectory, siteInfo) {
+    //  async deploy(partnerDirectory) {
     //     const buildFeatureDirectory = path.join(partnerDirectory, this.getName())
     //     const buildFileName = path.join(buildFeatureDirectory, `${this.getName()}.json`)
     //     const fileContent = fs.readFileSync(buildFileName, { encoding: 'utf8' })
@@ -65,9 +65,9 @@ export default class PermissionGroups extends PartnerFeature {
     //     }
     // }
 
-    async deployPermissionGroup(siteInfo, groupId, config, credentials) {
-        return await this.setPermissionRequest(siteInfo.dataCenter, siteInfo.partnerId, groupId, config, credentials.userKey, credentials.secret)
-    }
+    // async deployPermissionGroup(siteInfo, groupId, config, credentials) {
+    //     return await this.setPermissionRequest(siteInfo.dataCenter, siteInfo.partnerId, groupId, config, credentials.userKey, credentials.secret)
+    // }
     // async updatePermissionGroup(siteInfo, groupID, config, credentials) {
     //     return await this.updatePermissionGroupRequest(siteInfo.dataCenter, siteInfo.partnerId, groupID, config, credentials)
     // }
@@ -76,30 +76,30 @@ export default class PermissionGroups extends PartnerFeature {
     //     const response = await client.post(url, this.#getPermissionGroupsParameters(partnerID, credentials.userKey, credentials.secret)).catch((error) => error)
     //     return response.data
     // }
-    async setPermissionRequest(dataCenter, partnerID, groupId, config, userKey, secret) {
-        const url = `https://admin.${dataCenter}.gigya.com/admin.createGroup`
-        const response = await client.post(url, this.#setPermissionGroupsParameters(partnerID, userKey, secret, groupId, config)).catch((error) => error)
-        return response.data
-    }
+    // async setPermissionRequest(dataCenter, partnerID, groupId, config, userKey, secret) {
+    //     const url = `https://admin.${dataCenter}.gigya.com/admin.createGroup`
+    //     const response = await client.post(url, this.#setPermissionGroupsParameters(partnerID, userKey, secret, groupId, config)).catch((error) => error)
+    //     return response.data
+    // }
 
     // async updatePermissionGroupRequest(dataCenter, partnerID, groupID, config, credentials) {
     //     const url = `https://admin.${dataCenter}.gigya.com/admin.updateGroup`
     //     const response = await client.post(url, this.#updatePermissionGroupsParameters(partnerID, groupID, config, credentials.userKey, credentials.secret)).catch((error) => error)
     //     return response.data
     // }
-    #setPermissionGroupsParameters(partnerID, userKey, secret, groupID, config) {
-        const parameters = Object.assign(this.#getPermissionGroupsParameters(partnerID, userKey, secret))
-        parameters.groupID = groupID
-        parameters.aclID = config.aclID
-        parameters.scope = JSON.stringify(config.scope)
-        if (config.description) {
-            parameters.description = config.description
-        }
-        if (config.users) {
-            parameters.setUsers = JSON.stringify(config.users)
-        }
-        return parameters
-    }
+    // #setPermissionGroupsParameters(partnerID, userKey, secret, groupID, config) {
+    //     const parameters = Object.assign(this.#getPermissionGroupsParameters(partnerID, userKey, secret))
+    //     parameters.groupID = groupID
+    //     parameters.aclID = config.aclID
+    //     parameters.scope = JSON.stringify(config.scope)
+    //     if (config.description) {
+    //         parameters.description = config.description
+    //     }
+    //     if (config.users) {
+    //         parameters.setUsers = JSON.stringify(config.users)
+    //     }
+    //     return parameters
+    // }
     // #updatePermissionGroupsParameters(partnerID, groupID, config, userKey, secret) {
     //     const parameters = Object.assign(this.#getPermissionGroupsParameters(partnerID, userKey, secret))
     //     parameters.groupID = groupID
