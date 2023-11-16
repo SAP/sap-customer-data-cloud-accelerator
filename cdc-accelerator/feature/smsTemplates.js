@@ -2,10 +2,9 @@ import SmsConfiguration from '../sap-cdc-toolkit/copyConfig/sms/smsConfiguration
 import fs from 'fs'
 import path from 'path'
 import SiteFeature from './siteFeature.js'
-
 export default class SmsTemplates extends SiteFeature {
-    static FOLDER_OTP = 'SmsTemplates/otp'
-    static FOLDER_TFA = 'SmsTemplates/tfa'
+    static FOLDER_OTP = 'otp'
+    static FOLDER_TFA = 'tfa'
     static FOLDER_GLOBAL_TEMPLATES = 'globalTemplates'
     static FOLDER_TEMPLATES_PER_COUNTRY_CODE = 'templatesPerCountryCode'
 
@@ -28,51 +27,48 @@ export default class SmsTemplates extends SiteFeature {
             throw new Error(JSON.stringify(smsResponse))
         }
 
-        const featureDirectoryOtp = path.join(siteDirectory, SmsTemplates.FOLDER_OTP)
-        this.createDirectory(featureDirectoryOtp)
-        const featureDirectoryTfa = path.join(siteDirectory, SmsTemplates.FOLDER_TFA)
-        this.createDirectory(featureDirectoryTfa)
+        const featureDirectory = path.join(siteDirectory, this.getName())
+        this.createDirectory(featureDirectory)
 
-        const globalTemplatesDirOtp = path.join(featureDirectoryOtp, SmsTemplates.FOLDER_GLOBAL_TEMPLATES)
-        this.createDirectory(globalTemplatesDirOtp)
-        const globalTemplatesDirTfa = path.join(featureDirectoryTfa, SmsTemplates.FOLDER_GLOBAL_TEMPLATES)
-        this.createDirectory(globalTemplatesDirTfa)
+        const featureDirectoryOtp = path.join(featureDirectory, SmsTemplates.FOLDER_OTP)
+        super.createDirectoryIfNotExists(featureDirectoryOtp)
+        const featureDirectoryTfa = path.join(featureDirectory, SmsTemplates.FOLDER_TFA)
+        super.createDirectoryIfNotExists(featureDirectoryTfa)
 
-        this.#generateTemplateFiles(smsResponse.templates, featureDirectoryOtp, featureDirectoryTfa)
+        this.generateOtpTemplateFiles(smsResponse.templates.otp, featureDirectoryOtp)
+        this.generateTfaTemplateFiles(smsResponse.templates.tfa, featureDirectoryTfa)
     }
 
-    #generateTemplateFiles(smsResponse, featureDirectoryOtp, featureDirectoryTfa) {
-        for (const type of ['otp', 'tfa']) {
-            const typeResponse = smsResponse[type]
-            const globalTemplates = typeResponse.globalTemplates.templates
-            const templatesPerCountryCode = typeResponse.templatesPerCountryCode
+    generateOtpTemplateFiles(smsResponse, featureDirectory) {
+        this.#generateTemplateFiles(smsResponse, featureDirectory)
+    }
 
-            const targetDirectory = type === 'otp' ? featureDirectoryOtp : featureDirectoryTfa
-            const globalTemplatesDir = path.join(targetDirectory, SmsTemplates.FOLDER_GLOBAL_TEMPLATES)
+    generateTfaTemplateFiles(smsResponse, featureDirectory) {
+        this.#generateTemplateFiles(smsResponse, featureDirectory)
+    }
 
-            for (const [language, template] of Object.entries(globalTemplates)) {
-                const filePath = path.join(globalTemplatesDir, `${language}.txt`)
+    #generateTemplateFiles(smsResponse, featureDirectory) {
+        const globalTemplates = smsResponse.globalTemplates.templates
+        const templatesPerCountryCode = smsResponse.templatesPerCountryCode
+        const globalTemplatesDir = path.join(featureDirectory, SmsTemplates.FOLDER_GLOBAL_TEMPLATES)
+        super.createDirectoryIfNotExists(globalTemplatesDir)
+
+        for (const [language, template] of Object.entries(globalTemplates)) {
+            const filePath = path.join(globalTemplatesDir, `${language}.txt`)
+            fs.writeFileSync(filePath, template)
+        }
+
+        const templatesPerCountryCodeDir = path.join(featureDirectory, SmsTemplates.FOLDER_TEMPLATES_PER_COUNTRY_CODE)
+        super.createDirectoryIfNotExists(templatesPerCountryCodeDir)
+
+        for (const [countryCode, countryTemplates] of Object.entries(templatesPerCountryCode)) {
+            const countryDir = path.join(templatesPerCountryCodeDir, countryCode)
+            super.createDirectoryIfNotExists(countryDir)
+
+            for (const [language, template] of Object.entries(countryTemplates.templates)) {
+                const filePath = path.join(countryDir, `${language}.txt`)
                 fs.writeFileSync(filePath, template)
             }
-
-            const templatesPerCountryCodeDir = path.join(targetDirectory, SmsTemplates.FOLDER_TEMPLATES_PER_COUNTRY_CODE)
-            this.createDirectoryIfNotExists(templatesPerCountryCodeDir)
-
-            for (const [countryCode, countryTemplates] of Object.entries(templatesPerCountryCode)) {
-                const countryDir = path.join(templatesPerCountryCodeDir, countryCode)
-                this.createDirectoryIfNotExists(countryDir)
-
-                for (const [language, template] of Object.entries(countryTemplates.templates)) {
-                    const filePath = path.join(countryDir, `${language}.txt`)
-                    fs.writeFileSync(filePath, template)
-                }
-            }
-        }
-    }
-
-    createDirectoryIfNotExists(directory) {
-        if (!fs.existsSync(directory)) {
-            fs.mkdirSync(directory, { recursive: true })
         }
     }
 

@@ -107,3 +107,33 @@ export const smsExpectedResponse = {
         },
     },
 }
+export function getSmsExpectedResponseWithMinimumTemplates() {
+    return {
+        callId: smsExpectedResponse.callId,
+        errorCode: smsExpectedResponse.errorCode,
+        apiVersion: smsExpectedResponse.apiVersion,
+        statusCode: smsExpectedResponse.statusCode,
+        statusReason: smsExpectedResponse.statusReason,
+        time: smsExpectedResponse.time,
+        templates: {
+            otp: {
+                globalTemplates: {
+                    templates: {
+                        en: smsExpectedResponse.templates.otp.globalTemplates.templates.en,
+                    },
+                    defaultLanguage: smsExpectedResponse.templates.otp.globalTemplates.defaultLanguage,
+                },
+                templatesPerCountryCode: smsExpectedResponse.templates.otp.templatesPerCountryCode,
+            },
+            tfa: {
+                globalTemplates: {
+                    templates: {
+                        en: smsExpectedResponse.templates.tfa.globalTemplates.templates.en,
+                    },
+                    defaultLanguage: smsExpectedResponse.templates.tfa.globalTemplates.defaultLanguage,
+                },
+                templatesPerCountryCode: smsExpectedResponse.templates.tfa.templatesPerCountryCode,
+            },
+        },
+    }
+}
