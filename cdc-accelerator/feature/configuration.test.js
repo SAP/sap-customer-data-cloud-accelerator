@@ -33,5 +33,7 @@ describe('Configuration test suite', () => {
         fs.readFileSync.mockReturnValue(JSON.stringify(config))
         const sitesInfo = Configuration.getSites(Operations.init, 'dev')
         expect(sitesInfo.length).toEqual(config.source.length)
+        expect(sitesInfo[0].features).toEqual(config.source[0].features)
+        expect(sitesInfo[1].features).toEqual(config.source[1].features)
     })
 })

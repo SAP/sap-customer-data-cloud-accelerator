@@ -48,15 +48,17 @@ export default class Feature {
         fs.writeFileSync(path.join(buildBasePath, file), JSON.stringify(fileContent, null, 4))
     }
 
-    async executeOperationOnFeature(features, featureName, directory, runnable) {
+    async executeOperationOnFeature(features, featureName, allowedFeatures, directory, runnable) {
+        let anyFeatureExecuted = false
         for (const feature of features) {
-            if (featureName && !Feature.isEqualCaseInsensitive(featureName, feature.constructor.name)) {
+            if (this.#isFeatureFilteredOut(featureName, feature.constructor.name, allowedFeatures)) {
                 continue
             }
             const workingDirectory = this.#calculateWorkingDirectory(directory, feature)
             if (fs.existsSync(workingDirectory)) {
                 process.stdout.write(`- ${feature.getName()}: `)
                 await feature[runnable.operation](...runnable.args) // the same as -> feature.init(apiKey, siteConfig, siteDomain)
+                anyFeatureExecuted = true
                 readline.clearLine(process.stdout, 0)
                 readline.cursorTo(process.stdout, 0)
                 console.log(`- ${feature.getName()}: \x1b[32m%s\x1b[0m`, `Done`)
@@ -64,6 +66,14 @@ export default class Feature {
                 console.log(`- ${feature.getName()}: %s`, `Skip`)
             }
         }
+        return anyFeatureExecuted
+    }
+
+    #isFeatureFilteredOut(singleFeatureToExecute, currentFeatureName, allowedFeatures) {
+        return (
+            (singleFeatureToExecute && !Feature.isEqualCaseInsensitive(singleFeatureToExecute, currentFeatureName)) ||
+            (allowedFeatures && !allowedFeatures.find((f) => Feature.isEqualCaseInsensitive(f, currentFeatureName)))
+        )
     }
 
     #calculateWorkingDirectory(directory, feature) {
@@ -94,11 +104,24 @@ export default class Feature {
     }
 
     async getAllLocalSitePaths() {
-        const paths = await this.getFiles(BUILD_DIRECTORY)
+        const buildPaths = await this.getLocalSitePaths(BUILD_DIRECTORY)
+        const srcPaths = await this.getLocalSitePaths(SRC_DIRECTORY)
+        const set = new Set(buildPaths)
+        srcPaths.forEach((path) => {
+            set.add(path.replace(SRC_DIRECTORY, BUILD_DIRECTORY))
+        })
+        return Array.from(set)
+    }
+
+    async getLocalSitePaths(baseDirectory) {
+        const paths = await this.getFiles(baseDirectory)
         const pathSep = path.sep
         const sites = new Set()
         for (const path of paths) {
-            const baseIdx = path.indexOf(BUILD_DIRECTORY)
+            const baseIdx = path.indexOf(baseDirectory)
+            if (baseIdx < 0) {
+                continue
+            }
             let startIdx = path.indexOf(SITES_DIRECTORY)
             if (startIdx > -1) {
                 startIdx += SITES_DIRECTORY.length

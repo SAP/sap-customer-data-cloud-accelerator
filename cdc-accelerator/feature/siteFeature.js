@@ -32,7 +32,10 @@ export default class SiteFeature extends Feature {
 
             const siteConfig = await this.#getSiteConfig(siteInfo.apiKey)
             const siteFolder = path.join(baseFolder, siteInfo.baseDomain)
-            await this.executeOperationOnFeature(this.#features, featureName, baseFolder, { operation: Operations.init, args: [siteInfo.apiKey, siteConfig, siteFolder] })
+            await this.executeOperationOnFeature(this.#features, featureName, siteInfo.features, baseFolder, {
+                operation: Operations.init,
+                args: [siteInfo.apiKey, siteConfig, siteFolder],
+            })
         }
         return true
     }
@@ -52,7 +55,7 @@ export default class SiteFeature extends Feature {
             const siteFolder = path.join(baseFolder, siteInfo.baseDomain)
             const msg = siteInfo.baseDomain ? `\n${siteInfo.baseDomain} - ${siteInfo.apiKey}` : `\n${siteInfo.apiKey}`
             console.log(msg)
-            await this.executeOperationOnFeature(this.#features, featureName, baseFolder, { operation: Operations.reset, args: [siteFolder] })
+            await this.executeOperationOnFeature(this.#features, featureName, siteInfo.features, baseFolder, { operation: Operations.reset, args: [siteFolder] })
         }
         return true
     }
@@ -62,7 +65,7 @@ export default class SiteFeature extends Feature {
         const sitePaths = await this.getAllLocalSitePaths()
         for (const sitePath of sitePaths) {
             console.log(`\n${sitePath}`)
-            await this.executeOperationOnFeature(this.#features, featureName, sitePath, { operation: Operations.build, args: [sitePath] })
+            await this.executeOperationOnFeature(this.#features, featureName, undefined, sitePath, { operation: Operations.build, args: [sitePath] })
         }
         return true
     }
@@ -75,7 +78,10 @@ export default class SiteFeature extends Feature {
 
             const siteFolder = path.join(BUILD_DIRECTORY, siteInfo.partnerName, SITES_DIRECTORY, siteInfo.baseDomain)
             const siteConfig = await this.#getSiteConfig(siteInfo.apiKey)
-            await this.executeOperationOnFeature(this.#features, featureName, siteFolder, { operation: Operations.deploy, args: [siteInfo.apiKey, siteConfig, siteFolder] })
+            await this.executeOperationOnFeature(this.#features, featureName, siteInfo.features, siteFolder, {
+                operation: Operations.deploy,
+                args: [siteInfo.apiKey, siteConfig, siteFolder],
+            })
         }
         return true
     }
