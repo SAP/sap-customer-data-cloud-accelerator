@@ -205,14 +205,14 @@ class Navigation {
 
     static createText(apiKey, baseDomain, partnerName, environment) {
         let text = ''
-        if (partnerName) {
-            text += partnerName
-        }
         if (baseDomain) {
+            text += baseDomain
+        }
+        if (partnerName) {
             if (text.length) {
                 text += ' - '
             }
-            text += baseDomain
+            text += partnerName
         }
         if (!text.length) {
             text = apiKey
