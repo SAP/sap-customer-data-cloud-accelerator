@@ -104,11 +104,24 @@ export default class Feature {
     }
 
     async getAllLocalSitePaths() {
-        const paths = await this.getFiles(BUILD_DIRECTORY)
+        const buildPaths = await this.getLocalSitePaths(BUILD_DIRECTORY)
+        const srcPaths = await this.getLocalSitePaths(SRC_DIRECTORY)
+        const set = new Set(buildPaths)
+        srcPaths.forEach((path) => {
+            set.add(path.replace(SRC_DIRECTORY, BUILD_DIRECTORY))
+        })
+        return Array.from(set)
+    }
+
+    async getLocalSitePaths(baseDirectory) {
+        const paths = await this.getFiles(baseDirectory)
         const pathSep = path.sep
         const sites = new Set()
         for (const path of paths) {
-            const baseIdx = path.indexOf(BUILD_DIRECTORY)
+            const baseIdx = path.indexOf(baseDirectory)
+            if(baseIdx < 0 ) {
+                continue
+            }
             let startIdx = path.indexOf(SITES_DIRECTORY)
             if (startIdx > -1) {
                 startIdx += SITES_DIRECTORY.length

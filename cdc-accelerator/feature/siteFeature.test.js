@@ -77,7 +77,7 @@ describe('Site features test suite', () => {
 
             const spyesTotalCalls = await executeTestAndCountCalls(operation, undefined)
             expect(spyesTotalCalls).toBe(siteFeature.getFeatures().length * 2)
-            expect(getFilesSpy.mock.calls.length).toBe(1)
+            expect(getFilesSpy.mock.calls.length).toBe(2)
         })
     })
 
