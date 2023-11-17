@@ -5,6 +5,7 @@
 // Needs to be implemented: Make this file a class
 
 const BUILD_DIRECTORY = '../build/'
+const Origin = { source: 'source', deploy: 'deploy', cache: 'cache' }
 let FILTER = []
 
 let PREVIEW_MENU_ITEM_CLASS = ''
@@ -12,7 +13,7 @@ let USE_LOCAL_SCREEN_SETS = true
 
 const preview = ({
     apiKey = Navigation.getCurrentApiKey(),
-    origin = 'deploy',
+    origin = Origin.deploy,
     useLocalWebSdk = true,
     useLocalScreenSets = true,
     lang,
@@ -174,7 +175,7 @@ class Navigation {
     }
 
     static async loadSiteSelector({ apiKey: currentApiKey, origin }) {
-        const sites = await Configuration.getConfigSites(origin)
+        const sites = await Configuration.getConfigSites(Origin.cache)
 
         // If no site selected, or invalid apiKey, select the first enabled site
         if (!currentApiKey || !sites.find((site) => site.apiKey === currentApiKey)) {
@@ -184,7 +185,7 @@ class Navigation {
 
         const selectApiKey = document.querySelector(`#${Navigation.#PREVIEW_SELECT_API_KEY_ID}`)
 
-        sites.forEach(({ apiKey, siteDomain, environment }) => {
+        sites.forEach(({ apiKey, baseDomain, partnerName, environment }) => {
             // Ignore sites that don't have any screen to see after filters
             if (!Navigation.isSiteEnabled({ apiKey })) {
                 return true
@@ -192,11 +193,7 @@ class Navigation {
 
             const option = document.createElement('option')
             option.value = apiKey
-            let text = siteDomain ? `${siteDomain} - ${apiKey}` : apiKey
-            if (environment) {
-                text = `${environment}: ${text}`
-            }
-            option.text = text
+            option.text = Navigation.createText(apiKey, baseDomain, partnerName, environment)
             if (currentApiKey === apiKey) {
                 option.setAttribute('selected', 'true')
             }
@@ -204,6 +201,26 @@ class Navigation {
         })
 
         selectApiKey.addEventListener('change', (event) => Navigation.selectSite(event.target.value))
+    }
+
+    static createText(apiKey, baseDomain, partnerName, environment) {
+        let text = ''
+        if (partnerName) {
+            text += partnerName
+        }
+        if (baseDomain) {
+            if (text.length) {
+                text += ' - '
+            }
+            text += baseDomain
+        }
+        if (!text.length) {
+            text = apiKey
+        }
+        if (environment) {
+            text = `${environment}: ${text}`
+        }
+        return text
     }
 
     static getSiteFilter({ apiKey }) {
@@ -274,7 +291,6 @@ class Navigation {
 class Configuration {
     static #CONFIG_FILE = '../cdc-accelerator.json'
     static configuration = undefined
-    static Origin = { source: 'source', deploy: 'deploy', cache: 'cache' }
 
     static async #read() {
         await fetch(Configuration.#CONFIG_FILE)
@@ -289,7 +305,7 @@ class Configuration {
         return this.configuration
     }
 
-    static async getConfigSites(origin = this.Origin.deploy) {
+    static async getConfigSites(origin = Origin.deploy) {
         const config = await this.get()
         if (!config[origin]) {
             return []
@@ -314,10 +330,10 @@ class Configuration {
 
     static async getSiteInfo(apiKey) {
         const config = await this.get()
-        if (!config[this.Origin.cache]) {
+        if (!config[Origin.cache]) {
             return undefined
         }
-        return config[this.Origin.cache].find((site) => site.apiKey === apiKey)
+        return config[Origin.cache].find((site) => site.apiKey === apiKey)
     }
 }
 
