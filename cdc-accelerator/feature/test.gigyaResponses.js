@@ -473,6 +473,10 @@ export const expectedAclResponse = {
 }
 
 export const expectedACLFileContent = {
-    alexTestAdminPermissionGroup: expectedAclResponse.acl,
-    cdc_toolbox_e2e_test: expectedAclResponse.acl,
+    alexTestAdminPermissionGroup: {
+        acl: expectedAclResponse.acl,
+    },
+    cdc_toolbox_e2e_test: {
+        acl: expectedAclResponse.acl,
+    },
 }

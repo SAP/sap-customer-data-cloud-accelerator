@@ -26,7 +26,7 @@ export default class ACL {
             }
         }
 
-        fs.writeFileSync(path.join(permissionGroupDirectory, ACL.ACL_FILE_NAME), JSON.stringify(finalResponse, null, 4))
+        fs.writeFileSync(path.join(permissionGroupDirectory, ACL.ACL_FILE_NAME), JSON.stringify(this.remove_built_in_permission_groups(finalResponse), null, 4))
     }
     build(directory) {
         const srcFeaturePath = directory.replace(BUILD_DIRECTORY, SRC_DIRECTORY)
@@ -45,10 +45,6 @@ export default class ACL {
         const parsedContent = JSON.parse(fileContent)
         let keys = Object.keys(parsedContent)
         for (let ids of keys) {
-            if (ids.startsWith('_')) {
-                console.log('entered here', ids)
-                continue
-            }
             let response = await this.deployAclRequest(siteInfo.dataCenter, ids, siteInfo.partnerId, parsedContent[ids].acl, parsedContent[ids].description, this.#credentials)
             if (response.errorCode) {
                 throw new Error(JSON.stringify(response))
@@ -88,5 +84,9 @@ export default class ACL {
         parameters.partnerID = partnerID
         parameters.aclID = aclID
         return parameters
+    }
+    remove_built_in_permission_groups(content) {
+        const filteredGroups = Object.fromEntries(Object.entries(content).filter(([key]) => !key.startsWith('_')))
+        return filteredGroups
     }
 }
