@@ -72,7 +72,7 @@ export default class Feature {
     #isFeatureFilteredOut(singleFeatureToExecute, currentFeatureName, allowedFeatures) {
         return (
             (singleFeatureToExecute && !Feature.isEqualCaseInsensitive(singleFeatureToExecute, currentFeatureName)) ||
-            (allowedFeatures && !allowedFeatures.find((f) => f === currentFeatureName))
+            (allowedFeatures && !allowedFeatures.find((f) => Feature.isEqualCaseInsensitive(f, currentFeatureName)))
         )
     }
 
@@ -119,7 +119,7 @@ export default class Feature {
         const sites = new Set()
         for (const path of paths) {
             const baseIdx = path.indexOf(baseDirectory)
-            if(baseIdx < 0 ) {
+            if (baseIdx < 0) {
                 continue
             }
             let startIdx = path.indexOf(SITES_DIRECTORY)
