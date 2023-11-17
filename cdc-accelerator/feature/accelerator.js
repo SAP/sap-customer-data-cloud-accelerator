@@ -1,6 +1,6 @@
 import readline from 'readline'
 import Feature from './feature.js'
-import { Operations } from './constants.js'
+import { Operations, SRC_DIRECTORY } from './constants.js'
 import HookInit from './hookInit.js'
 
 export default class Accelerator {
@@ -14,6 +14,7 @@ export default class Accelerator {
 
     async execute(operation, sites, featureName, environment) {
         try {
+            this.siteFeatures.createDirectoryIfNotExists(SRC_DIRECTORY)
             switch (operation) {
                 case Operations.init:
                     await this.#init(sites, featureName, environment)
