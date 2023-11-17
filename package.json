@@ -1,7 +1,7 @@
 {
-    "name": "cdc-accelerator",
+    "name": "SAP Customer Data Cloud accelerator",
     "version": "1.2.12",
-    "description": "",
+    "description": "A development environment for SAP Customer Data Cloud that enables the use of modern tools, such as JavaScript and source control.",
     "main": "index.js",
     "type": "module",
     "scripts": {
@@ -24,6 +24,10 @@
         "type": "git",
         "url": "https://github.com/SAP/sap-customer-data-cloud-accelerator.git"
     },
+    "bugs": {
+        "url": "https://github.com/SAP/sap-customer-data-cloud-accelerator/issues"
+    },
+    "homepage": "https://github.com/SAP/sap-customer-data-cloud-accelerator#readme",
     "contributors": [
         "Bruno Santos",
         "Guilherme Lopes",
