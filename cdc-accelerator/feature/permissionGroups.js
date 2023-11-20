@@ -29,13 +29,12 @@ export default class PermissionGroups extends PartnerFeature {
         if (permissionGroupsRes.errorCode) {
             throw new Error(JSON.stringify(permissionGroupsRes))
         }
-
         fs.writeFileSync(
             path.join(featureDirectory, PermissionGroups.PERMISSIONGROUP_FILE_NAME),
             JSON.stringify(this.remove_built_in_permission_groups(permissionGroupsRes.groups), null, 4),
         )
         const aclIDs = Object.keys(permissionGroupsRes['groups']).map((key) => permissionGroupsRes['groups'][key].aclID)
-        await this.#acls.init(aclIDs, siteInfo['partnerId'], featureDirectory, siteInfo['dataCenter'])
+        await this.#acls.init(aclIDs, siteInfo['partnerId'], partnerDirectory, siteInfo['dataCenter'])
     }
 
     reset(directory) {
@@ -60,12 +59,13 @@ export default class PermissionGroups extends PartnerFeature {
         const parsedContent = JSON.parse(fileContent)
 
         let keys = Object.keys(parsedContent)
+        let response
         for (let ids of keys) {
-            let response = await this.deployPermissionGroup(siteInfo, ids, parsedContent[ids], this.credentials)
-            if (response.errorCode === 400006) {
-                response = await this.updatePermissionGroup(siteInfo, ids, parsedContent[ids], this.credentials)
+            if (parsedContent[ids].scope) {
+                response = await this.deployPermissionGroup(siteInfo, ids, parsedContent[ids], this.credentials)
             }
-            if (response.errorCode !== 0 && response.errorCode !== 400006) {
+            response = await this.updatePermissionGroup(siteInfo, ids, parsedContent[ids], this.credentials)
+            if (response.errorCode !== 0) {
                 throw new Error(JSON.stringify(response))
             }
         }
@@ -136,7 +136,15 @@ export default class PermissionGroups extends PartnerFeature {
     }
 
     remove_built_in_permission_groups(content) {
-        const filteredGroups = Object.fromEntries(Object.entries(content).filter(([key]) => !key.startsWith('_')))
+        const filteredGroups = {}
+        for (const [key, value] of Object.entries(content)) {
+            if (!key.startsWith('_')) {
+                filteredGroups[key] = {
+                    aclID: value.aclID,
+                    description: value.description,
+                }
+            }
+        }
         return filteredGroups
     }
 }

@@ -466,9 +466,25 @@ export const expectedPermissionGroupsResponse = {
         },
     },
 }
-export const expecterPermissionGroupsResponseAfterRemovingBuiltInGroups = {
-    alexTestAdminPermissionGroup: expectedPermissionGroupsResponse.groups.alexTestAdminPermissionGroup,
-    cdc_toolbox_e2e_test: expectedPermissionGroupsResponse.groups.cdc_toolbox_e2e_test,
+export const expectedPermissionGroupsResponseAfterRemovingBuiltInGroups = {
+    alexTestAdminPermissionGroup: {
+        aclID: expectedPermissionGroupsResponse.groups.alexTestAdminPermissionGroup.aclID,
+        description: expectedPermissionGroupsResponse.groups.alexTestAdminPermissionGroup.description,
+    },
+    cdc_toolbox_e2e_test: {
+        aclID: expectedPermissionGroupsResponse.groups.cdc_toolbox_e2e_test.aclID,
+        description: expectedPermissionGroupsResponse.groups.cdc_toolbox_e2e_test.description,
+    },
+}
+export const expectedPermissionGroupDataWithScope = {
+    alexTestAdminPermissionGroup: {
+        aclID: expectedPermissionGroupsResponse.groups.alexTestAdminPermissionGroup.aclID,
+        description: expectedPermissionGroupsResponse.groups.alexTestAdminPermissionGroup.description,
+        scope: {
+            allowPartners: ['_owner'],
+            allowSites: [],
+        },
+    },
 }
 export const expectedUpdatedPermissionGroupsResponse = {
     callId: '143306dc47dc43ed96126dfecb025252',
@@ -478,15 +494,7 @@ export const expectedUpdatedPermissionGroupsResponse = {
     statusReason: 'OK',
     time: '2023-10-11T14:56:02.645Z',
     groups: {
-        alexTestAdminPermissionGroup: {
-            aclID: 'alexTestAdminPermissionGroup',
-            scope: {
-                allowPartners: ['_owner'],
-                allowSites: [],
-            },
-            users: ['ANHZHhdHWtKD'],
-            description: '',
-        },
+        alexTestAdminPermissionGroup: expectedPermissionGroupDataWithScope.alexTestAdminPermissionGroup,
     },
 }
 
@@ -512,9 +520,4 @@ export const expectedGroupIdAlreadyExistsResponse = {
     statusCode: 400,
     statusReason: 'Bad Request',
     time: '2023-11-13T15:16:52.440Z',
-}
-
-export const expectedACLFileContent = {
-    alexTestAdminPermissionGroup: expectedAclResponse.acl,
-    cdc_toolbox_e2e_test: expectedAclResponse.acl,
 }
