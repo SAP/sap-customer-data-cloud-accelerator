@@ -138,7 +138,7 @@ export default class PermissionGroups extends PartnerFeature {
     remove_built_in_permission_groups(content) {
         const filteredGroups = {}
         for (const [key, value] of Object.entries(content)) {
-            if (!key.startsWith('_')) {
+            if (key && !key.startsWith('_')) {
                 filteredGroups[key] = {
                     aclID: value.aclID,
                     description: value.description,
