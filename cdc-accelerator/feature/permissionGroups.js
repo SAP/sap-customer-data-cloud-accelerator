@@ -34,7 +34,7 @@ export default class PermissionGroups extends PartnerFeature {
             JSON.stringify(this.remove_built_in_permission_groups(permissionGroupsRes.groups), null, 4),
         )
         const aclIDs = Object.keys(permissionGroupsRes['groups']).map((key) => permissionGroupsRes['groups'][key].aclID)
-        await this.#acls.init(aclIDs, siteInfo['partnerId'], partnerDirectory, siteInfo['dataCenter'])
+        await this.#acls.init(aclIDs, siteInfo['partnerId'], featureDirectory, siteInfo['dataCenter'])
     }
 
     reset(directory) {
@@ -84,7 +84,7 @@ export default class PermissionGroups extends PartnerFeature {
     }
     async setPermissionRequest(dataCenter, partnerID, groupId, config, userKey, secret) {
         const url = `https://admin.${dataCenter}.gigya.com/admin.createGroup`
-        const response = await client.post(url, this.#setPermissionGroupsParameters(partnerID, userKey, secret, groupId, config))
+        const response = await client.post(url, this.#updatePermissionGroupsParameters(partnerID, groupId, config, userKey, secret))
         return response.data
     }
 
@@ -93,19 +93,7 @@ export default class PermissionGroups extends PartnerFeature {
         const response = await client.post(url, this.#updatePermissionGroupsParameters(partnerID, groupID, config, credentials.userKey, credentials.secret))
         return response.data
     }
-    #setPermissionGroupsParameters(partnerID, userKey, secret, groupID, config) {
-        const parameters = Object.assign(this.#getPermissionGroupsParameters(partnerID, userKey, secret))
-        parameters.groupID = groupID
-        parameters.aclID = config.aclID
-        parameters.scope = JSON.stringify(config.scope)
-        if (config.description) {
-            parameters.description = config.description
-        }
-        if (config.users) {
-            parameters.setUsers = JSON.stringify(config.users)
-        }
-        return parameters
-    }
+
     #updatePermissionGroupsParameters(partnerID, groupID, config, userKey, secret) {
         const parameters = Object.assign(this.#getPermissionGroupsParameters(partnerID, userKey, secret))
         parameters.groupID = groupID

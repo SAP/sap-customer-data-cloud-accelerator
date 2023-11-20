@@ -5,7 +5,6 @@ import { SRC_DIRECTORY, BUILD_DIRECTORY } from './constants.js'
 import client from '../sap-cdc-toolkit/gigya/client.js'
 import Feature from './feature.js'
 export default class ACL extends Feature {
-    static ACL_FILE_NAME = 'Acl.json'
     #credentials
     constructor(credentials) {
         super(credentials)
@@ -16,8 +15,8 @@ export default class ACL extends Feature {
         return this.constructor.name
     }
 
-    async init(aclIDList, partnerId, partnerDirectory, dataCenter) {
-        const featureDirectory = path.join(partnerDirectory, this.getName())
+    async init(aclIDList, partnerId, permissionGroupDirectory, dataCenter) {
+        const featureDirectory = path.join(permissionGroupDirectory, this.getName())
         this.createDirectory(featureDirectory)
         for (const aclId of aclIDList) {
             const response = await this.getAclsRequest(dataCenter, aclId, partnerId, this.#credentials)
@@ -35,7 +34,6 @@ export default class ACL extends Feature {
         const buildFeaturePath = path.join(directory, this.getName())
         clearDirectoryContents(buildFeaturePath)
         const srcFeaturePath = buildFeaturePath.replace(BUILD_DIRECTORY, SRC_DIRECTORY)
-        this.copyFileFromSrcToBuild(srcFeaturePath, ACL.ACL_FILE_NAME)
     }
 
     async deploy(partnerDirectory, siteInfo) {
