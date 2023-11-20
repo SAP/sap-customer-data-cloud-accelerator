@@ -30,21 +30,20 @@ export default class SmsTemplates extends SiteFeature {
         const featureDirectory = path.join(siteDirectory, this.getName())
         this.createDirectory(featureDirectory)
 
-        const featureDirectoryOtp = path.join(featureDirectory, SmsTemplates.FOLDER_OTP)
-        super.createDirectoryIfNotExists(featureDirectoryOtp)
-        const featureDirectoryTfa = path.join(featureDirectory, SmsTemplates.FOLDER_TFA)
-        super.createDirectoryIfNotExists(featureDirectoryTfa)
-
-        this.generateOtpTemplateFiles(smsResponse.templates.otp, featureDirectoryOtp)
-        this.generateTfaTemplateFiles(smsResponse.templates.tfa, featureDirectoryTfa)
+        this.generateOtpTemplateFiles(smsResponse, featureDirectory)
+        this.generateTfaTemplateFiles(smsResponse, featureDirectory)
     }
 
     generateOtpTemplateFiles(smsResponse, featureDirectory) {
-        this.#generateTemplateFiles(smsResponse, featureDirectory)
+        const featureDirectoryOtp = path.join(featureDirectory, SmsTemplates.FOLDER_OTP)
+        super.createDirectoryIfNotExists(featureDirectoryOtp)
+        this.#generateTemplateFiles(smsResponse.templates.otp, featureDirectoryOtp)
     }
 
     generateTfaTemplateFiles(smsResponse, featureDirectory) {
-        this.#generateTemplateFiles(smsResponse, featureDirectory)
+        const featureDirectoryTfa = path.join(featureDirectory, SmsTemplates.FOLDER_TFA)
+        super.createDirectoryIfNotExists(featureDirectoryTfa)
+        this.#generateTemplateFiles(smsResponse.templates.tfa, featureDirectoryTfa)
     }
 
     #generateTemplateFiles(smsResponse, featureDirectory) {

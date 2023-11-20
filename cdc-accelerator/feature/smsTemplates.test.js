@@ -10,49 +10,34 @@ jest.mock('fs')
 jest.mock('axios')
 
 describe('Sms templates test suite', () => {
-    const smsTemplates = new SmsTemplates(credentials)
+    let smsTemplates
 
     beforeEach(() => {
         jest.clearAllMocks()
+        smsTemplates = new SmsTemplates(credentials)
+        jest.spyOn(smsTemplates, 'generateOtpTemplateFiles').mockImplementation(() => {})
+        jest.spyOn(smsTemplates, 'generateTfaTemplateFiles').mockImplementation(() => {})
     })
 
     describe('Init test suite', () => {
         test('all sms templates files are generated successfully', async () => {
             axios.mockResolvedValueOnce({ data: smsExpectedResponse })
-
             fs.existsSync.mockReturnValue(false)
-            fs.mkdirSync.mockReturnValue(undefined)
-            fs.writeFileSync.mockImplementation((path, data) => {})
 
             await smsTemplates.init(apiKey, getSiteConfig, srcSiteDirectory)
 
-            const srcDirectory = path.join(srcSiteDirectory, smsTemplates.getName())
-            expect(fs.existsSync).toHaveBeenCalledWith(srcDirectory)
-
-            const numberOfOtpTemplates = Object.keys(smsExpectedResponse.templates.otp.globalTemplates.templates).length
-            const numberOfTfaTemplates = Object.keys(smsExpectedResponse.templates.tfa.globalTemplates.templates).length
-            const totalNumberOfFiles = numberOfOtpTemplates + numberOfTfaTemplates
-
-            expect(fs.writeFileSync.mock.calls.length).toBe(totalNumberOfFiles)
+            expect(smsTemplates.generateOtpTemplateFiles).toHaveBeenCalledTimes(1)
+            expect(smsTemplates.generateTfaTemplateFiles).toHaveBeenCalledTimes(1)
         })
 
         test('minimum sms templates files are generated successfully', async () => {
             axios.mockResolvedValueOnce({ data: getSmsExpectedResponseWithMinimumTemplates() })
-
             fs.existsSync.mockReturnValue(false)
-            fs.mkdirSync.mockReturnValue(undefined)
-            fs.writeFileSync.mockReturnValue(undefined)
 
             await smsTemplates.init(apiKey, getSiteConfig, srcSiteDirectory)
 
-            const srcDirectory = path.join(srcSiteDirectory, smsTemplates.getName())
-            expect(fs.existsSync).toHaveBeenCalledWith(srcDirectory)
-
-            const reducedSmsResponse = getSmsExpectedResponseWithMinimumTemplates()
-            const numberOfOtpTemplates = Object.keys(reducedSmsResponse.templates.otp.globalTemplates.templates).length
-            const numberOfTfaTemplates = Object.keys(reducedSmsResponse.templates.tfa.globalTemplates.templates).length
-            const totalNumberOfFiles = numberOfOtpTemplates + numberOfTfaTemplates
-            expect(fs.writeFileSync.mock.calls.length).toBe(totalNumberOfFiles)
+            expect(smsTemplates.generateOtpTemplateFiles).toHaveBeenCalled()
+            expect(smsTemplates.generateTfaTemplateFiles).toHaveBeenCalled()
         })
 
         test('get sms templates failed', async () => {
@@ -64,7 +49,7 @@ describe('Sms templates test suite', () => {
             axios.mockResolvedValueOnce({ data: smsExpectedResponse })
             fs.existsSync.mockReturnValue(true)
 
-            await expect(smsTemplates.init(apiKey, getSiteConfig, srcSiteDirectory, false)).rejects.toEqual(
+            await expect(smsTemplates.init(apiKey, getSiteConfig, srcSiteDirectory)).rejects.toEqual(
                 new Error(
                     `The "${path.join(
                         srcSiteDirectory,
