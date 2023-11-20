@@ -97,4 +97,9 @@ export default class CLI {
             return false
         }
     }
+
+    main2(process, operation, featureName, environment) {
+        console.log(`operation=${operation}, featureName=${featureName}, environment=${environment}`)
+        return
+    }
 }

@@ -1,5 +1,5 @@
 {
-    "name": "SAP Customer Data Cloud accelerator",
+    "name": "sap-customer-data-cloud-accelerator",
     "version": "1.2.12",
     "description": "A development environment for SAP Customer Data Cloud that enables the use of modern tools, such as JavaScript and source control.",
     "main": "index.js",
@@ -19,6 +19,9 @@
         "start-old": "babel --delete-dir-on-start src -d build && prettier --semi true --trailing-comma none --write build/**/webScreenSets/**/*.js && node cdc-accelerator/build/build.js && light-server -c .lightserverrc",
         "start": "babel --delete-dir-on-start src -d build && prettier --semi true --trailing-comma none --write build/**/WebScreenSets/**/*.js && node cdc-accelerator/feature/index.js build && light-server -c .lightserverrc",
         "update-sap-cdc-toolkit": "node cdc-accelerator/scripts/updateSapCdcToolkit.js"
+    },
+    "bin": {
+        "cdc": "./index.js"
     },
     "repository": {
         "type": "git",
@@ -58,6 +61,7 @@
     },
     "dependencies": {
         "axios": "^1.6.0",
+        "commander": "^11.1.0",
         "dotenv": "^16.0.3",
         "jszip": "^3.10.1",
         "light-server": "^2.9.1",
