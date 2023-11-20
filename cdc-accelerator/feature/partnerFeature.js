@@ -98,7 +98,7 @@ export default class PartnerFeature extends Feature {
             this.createDirectoryIfNotExists(baseDirectory)
             const anyFeatureExecuted = await this.executeOperationOnFeature(this.#features, featureName, siteInfo.features, baseDirectory, {
                 operation: Operations.deploy,
-                args: [baseDirectory],
+                args: [baseDirectory, siteInfo],
             })
             if (anyFeatureExecuted) {
                 processedPartners.add(siteInfo.partnerName)
