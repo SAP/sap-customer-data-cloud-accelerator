@@ -39,6 +39,19 @@ async function deploy(options) {
     await cli.main(process, 'deploy', options.featureName, options.environment)
 }
 
+async function start() {
+    console.log('start called')
+    const babelCommand = 'npx babel --delete-dir-on-start src -d build'
+    const prettierCommand = 'npx prettier --semi true --trailing-comma none --write build/**/WebScreenSets/**/*.js'
+    const command = `${babelCommand} && ${prettierCommand}`
+    execSync(command, { stdio: 'inherit' })
+
+    const cli = new CLI()
+    await cli.main(process, 'build')
+    const startServerCommand = 'npx light-server -c .lightserverrc'
+    execSync(startServerCommand, { stdio: 'inherit' })
+}
+
 function createCommandWithSharedOptions(name) {
     return new program.Command(name)
         .option('-f, --featureName [featureName]', 'Single feature to be executed')
@@ -65,6 +78,11 @@ program
     .name(packageInfo.name)
     .description(packageInfo.description)
     .version(packageInfo.version);
+
+program
+    .command(Operations.start)
+    .description('Launch local server for testing using the preview functionality')
+    .action(start)
 
 program
     .addCommand(cmdInit)
