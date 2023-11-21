@@ -79,13 +79,15 @@ export default class CLI {
         return partnerFeature
     }
 
-    async main(process) {
+    async main(process, operation, featureName, environment) {
+        console.log('main')
+        console.log(`operation=${operation}, featureName=${featureName}, environment=${environment}`)
         try {
             const credentials = { userKey: process.env.USER_KEY, secret: process.env.SECRET_KEY }
             this.siteFeature = this.initSiteFeature(credentials)
             this.partnerFeature = this.initPartnerFeature(credentials)
 
-            const { operation, featureName, environment } = this.parseArguments(process.argv)
+            //const { operation, featureName, environment } = this.parseArguments(process.argv)
 
             await Configuration.generateCache(credentials)
             const sites = Configuration.getSites(operation, environment)
@@ -96,10 +98,5 @@ export default class CLI {
             console.log('\x1b[31m%s\x1b[0m', `${String(error)}\n`)
             return false
         }
-    }
-
-    main2(process, operation, featureName, environment) {
-        console.log(`operation=${operation}, featureName=${featureName}, environment=${environment}`)
-        return
     }
 }

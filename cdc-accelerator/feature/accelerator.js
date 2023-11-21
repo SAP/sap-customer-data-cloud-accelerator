@@ -51,16 +51,28 @@ export default class Accelerator {
 
         const init = new HookInit()
         init.pre()
-        if (this.#existsFeature(this.partnerFeatures, featureName)) {
-            await this.partnerFeatures.init(sites, featureName)
-        }
-        if (this.#existsFeature(this.siteFeatures, featureName)) {
-            await this.siteFeatures.init(sites, featureName)
-        }
+        await this.#executeFeature(featureName, { operation: Operations.init, args: [sites, featureName] })
         init.post()
 
         console.log('\n')
         this.#logSuccessResult(Operations.init, environment)
+    }
+
+    async #executeFeature(featureName, args) {
+        let result = false
+        let featureExists = false
+        if (this.#existsFeature(this.partnerFeatures, featureName)) {
+            featureExists = true
+            result = await this.partnerFeatures[args.operation](...args.args)
+        }
+        if (this.#existsFeature(this.siteFeatures, featureName)) {
+            featureExists = true
+            result = await this.siteFeatures[args.operation](...args.args)
+        }
+        if (!featureExists) {
+            throw new Error('Feature name is not valid')
+        }
+        return result
     }
 
     async #reset(sites, featureName, environment) {
@@ -70,12 +82,7 @@ export default class Accelerator {
         // Get confirmation from user to replace existing directories
         let confirmation = await this.resetConfirmation()
         if (confirmation) {
-            if (this.#existsFeature(this.partnerFeatures, featureName)) {
-                result = await this.partnerFeatures.reset(sites, featureName)
-            }
-            if (this.#existsFeature(this.siteFeatures, featureName)) {
-                result = await this.siteFeatures.reset(sites, featureName)
-            }
+            result = await this.#executeFeature(featureName, { operation: Operations.reset, args: [sites, featureName] })
         }
         console.log('\n')
         this.#logSuccessResult(Operations.reset)
@@ -101,12 +108,7 @@ export default class Accelerator {
     async #build(featureName) {
         console.log(`\n${Operations.build} start`)
 
-        if (this.#existsFeature(this.partnerFeatures, featureName)) {
-            await this.partnerFeatures.build(featureName)
-        }
-        if (this.#existsFeature(this.siteFeatures, featureName)) {
-            await this.siteFeatures.build(featureName)
-        }
+        await this.#executeFeature(featureName, { operation: Operations.build, args: [featureName] })
 
         console.log('\n')
         this.#logSuccessResult(Operations.build)
@@ -122,12 +124,7 @@ export default class Accelerator {
             throw new Error(msg)
         }
 
-        if (this.#existsFeature(this.partnerFeatures, featureName)) {
-            await this.partnerFeatures.deploy(sites, featureName)
-        }
-        if (this.#existsFeature(this.siteFeatures, featureName)) {
-            await this.siteFeatures.deploy(sites, featureName)
-        }
+        await this.#executeFeature(featureName, { operation: Operations.deploy, args: [sites, featureName] })
 
         console.log('\n')
         this.#logSuccessResult(Operations.deploy, environment)
