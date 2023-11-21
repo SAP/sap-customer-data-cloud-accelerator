@@ -10,23 +10,18 @@
         "test:e2e": "cross-env E2E=true CI=true jest -i cdc-accelerator/scripts",
         "init-old": "node cdc-accelerator/init/index.js",
         "init": "cdc init",
-        "init2": "node cdc-accelerator/feature/index.js init",
         "reset-old": "node cdc-accelerator/reset/reset.js",
         "reset": "cdc reset",
-        "reset2": "node cdc-accelerator/feature/index.js reset",
         "build-old": "babel --delete-dir-on-start src -d build && prettier --semi true --trailing-comma none --write build/**/*.js && node cdc-accelerator/build/build.js",
         "build": "cdc build",
-        "build2": "babel --delete-dir-on-start src -d build && prettier --semi true --trailing-comma none --write build/**/*.js && node cdc-accelerator/feature/index.js build",
         "deploy-old": "babel --delete-dir-on-start src -d build && prettier --semi true --trailing-comma none --write build/**/webScreenSets/**/*.js && node cdc-accelerator/build/build.js && node cdc-accelerator/deploy/deploy.js",
         "deploy": "cdc deploy",
-        "deploy2": "babel --delete-dir-on-start src -d build && prettier --semi true --trailing-comma none --write build/**/WebScreenSets/**/*.js && node cdc-accelerator/feature/index.js build && node cdc-accelerator/feature/index.js deploy",
         "start-old": "babel --delete-dir-on-start src -d build && prettier --semi true --trailing-comma none --write build/**/webScreenSets/**/*.js && node cdc-accelerator/build/build.js && light-server -c .lightserverrc",
         "start": "cdc start",
-        "start2": "babel --delete-dir-on-start src -d build && prettier --semi true --trailing-comma none --write build/**/WebScreenSets/**/*.js && node cdc-accelerator/feature/index.js build && light-server -c .lightserverrc",
         "update-sap-cdc-toolkit": "node cdc-accelerator/scripts/updateSapCdcToolkit.js"
     },
     "bin": {
-        "cdc": "./index.js"
+        "cdc": "./cdc-accelerator/feature/index.js"
     },
     "repository": {
         "type": "git",

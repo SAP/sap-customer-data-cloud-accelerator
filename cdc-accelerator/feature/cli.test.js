@@ -5,7 +5,6 @@
 import CLI from './cli.js'
 import { getSiteFeature, credentials, config } from './test.common.js'
 import Accelerator from './accelerator.js'
-import SiteFeature from './siteFeature.js'
 import PartnerFeature from './partnerFeature.js'
 import { Operations } from './constants.js'
 
@@ -35,85 +34,6 @@ describe('CLI test suite', () => {
         jest.restoreAllMocks()
     })
 
-    test('parseArguments with operation deploy and feature name', async () => {
-        const processArgv = [
-            'node',
-            processExecutable,
-            Operations.deploy, // operation
-            'webSdk', // feature name
-            'dev', // environment
-        ]
-
-        const { operation, featureName, environment } = cli.parseArguments(processArgv)
-        expect(operation).toEqual(processArgv[2])
-        expect(featureName).toEqual(processArgv[3])
-        expect(environment).toEqual(processArgv[4])
-    })
-
-    test('parseArguments with operation init and feature name', async () => {
-        const processArgv = [
-            'node',
-            processExecutable,
-            Operations.init, // operation
-            'WebSdk', // feature name
-            'dev', // environment
-        ]
-        const { operation, featureName, environment } = cli.parseArguments(processArgv)
-        expect(operation).toEqual(processArgv[2])
-        expect(featureName).toEqual(processArgv[3])
-        expect(environment).toEqual(processArgv[4])
-    })
-
-    test('parseArguments with operation init and environment', async () => {
-        const processArgv = [
-            'node',
-            processExecutable,
-            Operations.init, // operation
-            'dev', // environment
-        ]
-        const { operation, featureName, environment } = cli.parseArguments(processArgv)
-        expect(operation).toEqual(processArgv[2])
-        expect(featureName).toBeUndefined()
-        expect(environment).toEqual(processArgv[3])
-    })
-
-    test('parseArguments with operation init', async () => {
-        const processArgv = [
-            'node',
-            processExecutable,
-            Operations.init, // operation
-        ]
-        const { operation, featureName, environment } = cli.parseArguments(processArgv)
-        expect(operation).toEqual(processArgv[2])
-        expect(featureName).toBeUndefined()
-        expect(environment).toBeUndefined()
-    })
-
-    test('parseArguments with unknown operation', async () => {
-        const processArgv = [
-            'node',
-            processExecutable,
-            'unknown', // operation
-        ]
-        expect(() => cli.parseArguments(processArgv)).toThrow('The operation argument is not supported. Please use init,reset,build,deploy')
-    })
-
-    test('parseArguments with no features', async () => {
-        const processArgv = [
-            'node',
-            processExecutable,
-            'unknown', // operation
-        ]
-        try {
-            cli.siteFeature = undefined
-            expect(() => cli.parseArguments(processArgv)).toThrow('No features registered, nothing to do!')
-            cli.siteFeature = new SiteFeature(credentials)
-            expect(() => cli.parseArguments(processArgv)).toThrow('No features registered, nothing to do!')
-        } finally {
-            cli.siteFeature = getSiteFeature()
-        }
-    })
-
     test('main successfully', async () => {
         const process = {
             argv: [
@@ -129,7 +49,7 @@ describe('CLI test suite', () => {
             },
         }
 
-        const result = await cli.main(process)
+        const result = await cli.main(process, process.argv[2], process.argv[3], process.argv[4])
         expect(result).toBeTruthy()
     })
 })
