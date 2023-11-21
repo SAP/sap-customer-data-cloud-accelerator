@@ -10,6 +10,7 @@ import PartnerFeature from './partnerFeature.js'
 import { Operations } from './constants.js'
 
 jest.mock('./accelerator.js')
+jest.mock('./configuration.js')
 
 describe('CLI test suite', () => {
     const processExecutable = 'cdc-accelerator/feature/index.js'

@@ -3,7 +3,7 @@ import fs from 'fs'
 import axios from 'axios'
 import path from 'path'
 import { expectedGigyaResponseNok, expectedAclResponse, expectedPermissionGroupsResponse, expectedACLFileContent } from './test.gigyaResponses.js'
-import { credentials, partnerBaseDirector, partnerBuildDirector } from './test.common.js'
+import { credentials, partnerBuildDirectory, partnerBaseDirectory } from './test.common.js'
 jest.mock('axios')
 jest.mock('fs')
 
@@ -25,9 +25,12 @@ describe('ACLs test suite', () => {
             fs.existsSync.mockReturnValue(false)
             fs.mkdirSync.mockReturnValue(undefined)
             fs.writeFileSync.mockReturnValue(undefined)
-            const srcDirectory = path.join(partnerBaseDirector, permissionGroupDirectoryName)
-            await acls.init(aclIDs, getSiteInfo.partnerId, srcDirectory, getSiteInfo.dataCenter)
-            expect(fs.writeFileSync).toHaveBeenCalledWith(path.join(srcDirectory, ACL.ACL_FILE_NAME), JSON.stringify(expectedACLFileContent, null, 4))
+            const srcDirectory = path.join(partnerBaseDirectory, acls.getName())
+            await acls.init(aclIDs, getSiteInfo.partnerId, partnerBaseDirectory, getSiteInfo.dataCenter)
+            expect(fs.existsSync).toHaveBeenCalledWith(srcDirectory)
+            expect(fs.writeFileSync.mock.calls.length).toBe(2)
+            expect(fs.writeFileSync).toHaveBeenCalledWith(path.join(srcDirectory, `${aclIDs[0]}.json`), JSON.stringify(expectedAclResponse.acl, null, 4))
+            expect(fs.writeFileSync).toHaveBeenCalledWith(path.join(srcDirectory, `${aclIDs[1]}.json`), JSON.stringify(expectedAclResponse.acl, null, 4))
         })
         test('get ACLs failed', async () => {
             const aclIDs = Object.keys(expectedPermissionGroupsResponse.groups).map((key) => expectedPermissionGroupsResponse.groups[key].aclID)
@@ -37,23 +40,33 @@ describe('ACLs test suite', () => {
                 dataCenter: 'eu1',
             }
             fs.readFileSync.mockReturnValue(true)
-            const srcDirectory = path.join(partnerBaseDirector, permissionGroupDirectoryName)
+            const srcDirectory = path.join(partnerBaseDirectory, permissionGroupDirectoryName)
             await expect(acls.init(aclIDs, getSiteInfo.partnerId, srcDirectory, getSiteInfo.dataCenter)).rejects.toThrow(new Error(JSON.stringify(expectedGigyaResponseNok)))
         })
     })
     describe('Build test suit', () => {
         test('All ACL files are built successfully', async () => {
-            //build\\SAP Customer Data Cloud
-            const srcFileContent = JSON.stringify(expectedACLFileContent)
-            const buildPermissionGroupDirectory = path.join(partnerBuildDirector, permissionGroupDirectoryName)
+            const srcFileContent = JSON.stringify(expectedAclResponse.acl)
+            const aclName = Object.keys(expectedACLFileContent)
+            const buildPermissionGroupDirectory = path.join(partnerBuildDirectory, permissionGroupDirectoryName)
             const dirExists = true
             fs.existsSync.mockReturnValue(dirExists)
-            fs.rmSync.mockReturnValue(undefined)
-            fs.mkdirSync.mockReturnValue(undefined)
-            fs.writeFileSync.mockReturnValue(undefined)
+            fs.readdirSync.mockReturnValue([`${aclName[0]}.json`, `${aclName[1]}.json`])
+
             fs.readFileSync.mockReturnValue(srcFileContent)
             acls.build(buildPermissionGroupDirectory)
-            expect(fs.writeFileSync).toHaveBeenCalledWith(path.join(buildPermissionGroupDirectory, `${ACL.ACL_FILE_NAME}`), JSON.stringify(JSON.parse(srcFileContent), null, 4))
+            expect(fs.writeFileSync.mock.calls.length).toBe(2)
+            expect(fs.writeFileSync).toHaveBeenNthCalledWith(
+                1,
+                path.join(buildPermissionGroupDirectory, `${acls.getName()}`, `${aclName[0]}.json`),
+                JSON.stringify(JSON.parse(srcFileContent)),
+            )
+
+            expect(fs.writeFileSync).toHaveBeenNthCalledWith(
+                2,
+                path.join(buildPermissionGroupDirectory, `${acls.getName()}`, `${aclName[1]}.json`),
+                JSON.stringify(JSON.parse(srcFileContent)),
+            )
         })
     })
 })
