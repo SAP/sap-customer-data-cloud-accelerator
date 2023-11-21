@@ -98,8 +98,8 @@ export default class PermissionGroups extends PartnerFeature {
     #updatePermissionGroupsParameters(partnerID, groupID, config, userKey, secret) {
         const parameters = Object.assign(this.#getPermissionGroupsParameters(partnerID, userKey, secret))
         parameters.groupID = groupID
-        if (config.aclId) {
-            parameters.aclID = config.aclId
+        if (config.aclID) {
+            parameters.aclID = config.aclID
         }
         if (config.scope) {
             parameters.scope = JSON.stringify(config.scope)
