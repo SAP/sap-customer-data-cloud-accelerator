@@ -13,26 +13,26 @@ export default class Commander {
     static #START_SERVER_COMMAND = 'npx light-server -c .lightserverrc'
 
     async init(options) {
-        await new CLI().main(process, Operations.init, options.featureName, options.environment)
+        await new CLI().main(process, Operations.init, options.feature, options.environment)
     }
 
     async #reset(options) {
-        await new CLI().main(process, Operations.reset, options.featureName, options.environment)
+        await new CLI().main(process, Operations.reset, options.feature, options.environment)
     }
 
     async #build(options) {
         const command = `${Commander.#BABEL_COMMAND} && ${Commander.#PRETTIER_COMMAND} build/**/*.js`
         execSync(command, { stdio: 'inherit' })
 
-        await new CLI().main(process, Operations.build, options.featureName, options.environment)
+        await new CLI().main(process, Operations.build, options.feature, options.environment)
     }
 
     async #deploy(options) {
         const command = `${Commander.#BABEL_COMMAND} && ${Commander.#PRETTIER_COMMAND} build/**/WebScreenSets/**/*.js`
         execSync(command, { stdio: 'inherit' })
 
-        await new CLI().main(process, Operations.build, options.featureName, options.environment)
-        await new CLI().main(process, Operations.deploy, options.featureName, options.environment)
+        await new CLI().main(process, Operations.build, options.feature, options.environment)
+        await new CLI().main(process, Operations.deploy, options.feature, options.environment)
     }
 
     async #start() {
@@ -45,7 +45,7 @@ export default class Commander {
 
     #createCommandWithSharedOptions(name) {
         return new program.Command(name)
-            .option('-f, --featureName [featureName]', 'Single feature to be executed')
+            .option('-f, --feature [feature]', 'Single feature to be executed')
             .option('-e, --environment [environment]', 'Configuration environment to be used during execution')
     }
 
