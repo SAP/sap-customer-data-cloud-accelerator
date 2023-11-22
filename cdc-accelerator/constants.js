@@ -10,7 +10,6 @@ const FEATURE = {
     WEB_SDK: 'webSdk',
     WEB_SCREEN_SETS: 'webScreenSets',
     EMAIL_TEMPLATES: 'emailTemplates',
-    SMS_TEMPLATES: 'smsTemplates',
     POLICIES: 'policies',
     SCHEMA: 'schema',
     ACLS: 'acls',
