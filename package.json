@@ -1,6 +1,6 @@
 {
     "name": "@sap_oss/sap-customer-data-cloud-accelerator",
-    "version": "1.2.12",
+    "version": "0.0.1",
     "description": "A development environment for SAP Customer Data Cloud that enables the use of modern tools, such as JavaScript and source control.",
     "main": "index.js",
     "type": "module",

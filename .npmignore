@@ -6,7 +6,6 @@ cdc-accelerator/deploy/
 cdc-accelerator/init/
 cdc-accelerator/reset/
 cdc-accelerator/scripts/
-cdc-accelerator/constants.js
 coverage/
 docs/
 src/
