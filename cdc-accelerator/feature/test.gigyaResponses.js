@@ -511,13 +511,12 @@ export const expectedAclResponse = {
         _inherit: ['_accountsFullAccess', '_basicSiteAccess', '_viewPartnerAndSiteAuditLog', '_viewSiteAuditLog'],
     },
 }
-export const expectedGroupIdAlreadyExistsResponse = {
-    callId: 'c4bc82b8da8845698b3ce4540349ed1b',
-    errorCode: 400006,
-    errorDetails: 'A group with the ID already exists',
-    errorMessage: 'Invalid parameter value',
-    apiVersion: 2,
-    statusCode: 400,
-    statusReason: 'Bad Request',
-    time: '2023-11-13T15:16:52.440Z',
+
+export const expectedACLFileContent = {
+    alexTestAdminPermissionGroup: {
+        acl: expectedAclResponse.acl,
+    },
+    cdc_toolbox_e2e_test: {
+        acl: expectedAclResponse.acl,
+    },
 }

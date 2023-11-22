@@ -1,6 +1,5 @@
 import path from 'path'
 import fs from 'fs'
-import { clearDirectoryContents } from '../utils/utils.js'
 import { SRC_DIRECTORY, BUILD_DIRECTORY } from './constants.js'
 import client from '../sap-cdc-toolkit/gigya/client.js'
 import Feature from './feature.js'
@@ -29,21 +28,29 @@ export default class ACL extends Feature {
             }
         }
     }
-
     build(directory) {
-        const buildFeaturePath = path.join(directory, this.getName())
-        clearDirectoryContents(buildFeaturePath)
-        const srcFeaturePath = buildFeaturePath.replace(BUILD_DIRECTORY, SRC_DIRECTORY)
+        const srcFeaturePath = directory.replace(BUILD_DIRECTORY, SRC_DIRECTORY)
+        const srcAclPath = path.join(srcFeaturePath, this.getName())
+        const buildPath = path.join(directory, this.getName())
+        this.createDirectoryIfNotExists(buildPath)
+        fs.readdirSync(srcAclPath).forEach((aclFile) => {
+            const aclData = fs.readFileSync(path.join(srcAclPath, aclFile), { encoding: 'utf8' })
+            fs.writeFileSync(path.join(buildPath, aclFile), aclData)
+        })
     }
-
+    reset() {
+        //This is supposed to be empty
+    }
     async deploy(partnerDirectory, siteInfo) {
         console.log('deploy was called')
     }
+
     async getAclsRequest(dataCenter, aclID, partnerID, credentials) {
         const url = `https://admin.${dataCenter}.gigya.com/admin.getACL`
         const response = await client.post(url, this.#getAcls(aclID, partnerID, credentials.userKey, credentials.secret))
         return response.data
     }
+
     #getAcls(aclID, partnerID, userKey, secret) {
         const parameters = Object.assign({})
         parameters.userKey = userKey
