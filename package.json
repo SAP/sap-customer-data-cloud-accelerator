@@ -20,6 +20,9 @@
         "start": "cdc-accelerator/feature/index.js start",
         "update-sap-cdc-toolkit": "node cdc-accelerator/scripts/updateSapCdcToolkit.js"
     },
+    "bin": {
+        "cdc": "./cdc-accelerator/feature/index.js"
+    },
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/sap-customer-data-cloud-accelerator.git"
