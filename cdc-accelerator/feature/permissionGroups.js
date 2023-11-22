@@ -39,13 +39,14 @@ export default class PermissionGroups extends PartnerFeature {
 
     reset(directory) {
         this.deleteDirectory(path.join(directory, this.getName()))
+        this.#acls.reset()
     }
-
     build(directory) {
         const buildFeaturePath = path.join(directory, this.getName())
         clearDirectoryContents(buildFeaturePath)
         const srcFeaturePath = buildFeaturePath.replace(BUILD_DIRECTORY, SRC_DIRECTORY)
         this.copyFileFromSrcToBuild(srcFeaturePath, PermissionGroups.PERMISSIONGROUP_FILE_NAME)
+        this.#acls.build(buildFeaturePath)
     }
 
     async deploy(partnerDirectory, siteInfo) {
@@ -97,8 +98,8 @@ export default class PermissionGroups extends PartnerFeature {
     #updatePermissionGroupsParameters(partnerID, groupID, config, userKey, secret) {
         const parameters = Object.assign(this.#getPermissionGroupsParameters(partnerID, userKey, secret))
         parameters.groupID = groupID
-        if (config.aclId) {
-            parameters.aclID = config.aclId
+        if (config.aclID) {
+            parameters.aclID = config.aclID
         }
         if (config.scope) {
             parameters.scope = JSON.stringify(config.scope)

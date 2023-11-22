@@ -4,6 +4,7 @@ import {
     expectedPermissionGroupsResponseAfterRemovingBuiltInGroups,
     expectedGigyaResponseNok,
     expectedPermissionGroupDataWithScope,
+    expectedACLFileContent,
 } from './test.gigyaResponses.js'
 import fs from 'fs'
 import axios from 'axios'
@@ -80,16 +81,21 @@ describe('Permission Groups test suite', () => {
             expect(spy.mock.calls.length).toBe(0)
         })
     })
+
     describe('Build test suite', () => {
         test('all permission group files are build successfully', () => {
             const srcFileContent = JSON.stringify(expectedPermissionGroupsResponse.groups)
+            const aclName = Object.keys(expectedACLFileContent)
             const dirExists = true
             fs.existsSync.mockReturnValue(dirExists)
             fs.rmSync.mockReturnValue(undefined)
             fs.mkdirSync.mockReturnValue(undefined)
             fs.writeFileSync.mockReturnValue(undefined)
             fs.readFileSync.mockReturnValue(srcFileContent)
+            let spy = jest.spyOn(permissionGroups.getAcl(), 'build')
+            fs.readdirSync.mockReturnValue([`${aclName[0]}.json`, `${aclName[1]}.json`])
             permissionGroups.build(partnerBuildDirectory)
+            expect(spy.mock.calls.length).toBe(1)
             const buildFeatureDirectory = path.join(partnerBuildDirectory, permissionGroups.getName())
             expect(fs.existsSync).toHaveBeenCalledWith(buildFeatureDirectory)
             if (dirExists) {
