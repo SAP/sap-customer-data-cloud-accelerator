@@ -1,3 +1,8 @@
+/*
+ * Copyright: Copyright 2023 SAP SE or an SAP affiliate company and cdc-accelerator contributors
+ * License: Apache-2.0
+ */
+
 import { CONFIG_FILENAME, Operations } from './constants.js'
 import SitesCache from './sitesCache.js'
 import fs from 'fs'
