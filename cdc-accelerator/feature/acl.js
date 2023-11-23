@@ -52,16 +52,13 @@ export default class ACL extends Feature {
             }
             const parsedData = JSON.parse(aclData)
             const aclName = path.parse(aclFile).name
-            let response = await this.deployAclRequest(siteInfo.dataCenter, aclName, siteInfo.partnerId, parsedData, this.#credentials)
+            let response = await this.setAclRequest(siteInfo.dataCenter, aclName, siteInfo.partnerId, parsedData, this.#credentials)
             if (response.errorCode) {
                 throw new Error(JSON.stringify(response))
             }
         }
     }
 
-    async deployAclRequest(dataCenter, aclID, partnerID, aclContent, credentials) {
-        return await this.setAclRequest(dataCenter, aclID, partnerID, aclContent, credentials)
-    }
     async setAclRequest(dataCenter, aclID, partnerID, aclContent, credentials) {
         const url = `https://admin.${dataCenter}.gigya.com/admin.setACL`
         const response = await client.post(url, this.#setAcl(aclID, partnerID, aclContent, credentials.userKey, credentials.secret))

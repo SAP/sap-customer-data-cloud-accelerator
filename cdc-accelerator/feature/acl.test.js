@@ -75,7 +75,7 @@ describe('ACLs test suite', () => {
             fs.existsSync.mockReturnValue(dirExists)
             fs.readdirSync.mockReturnValue([`${aclName[0]}.json`, `${aclName[1]}.json`])
             fs.readFileSync.mockReturnValue(srcFileContent)
-            let spy = jest.spyOn(acls, 'deployAclRequest')
+            let spy = jest.spyOn(acls, 'setAclRequest')
             acls.deploy(buildPermissionGroupDirectory, getSiteInfo)
             expect(spy.mock.calls.length).toBe(1)
             expect(spy).toHaveBeenNthCalledWith(1, getSiteInfo.dataCenter, aclName[0], getSiteInfo.partnerId, expectedAclResponse.acl, credentials)
@@ -87,7 +87,7 @@ describe('ACLs test suite', () => {
             }
             const buildPermissionGroupDirectory = path.join(partnerBuildDirectory, permissionGroupDirectoryName)
             axios.mockResolvedValueOnce({ data: expectedGigyaResponseNok })
-            fs.readFileSync.mockReturnValue(true)
+            fs.readFileSync.mockReturnValue([])
             await expect(acls.deploy(buildPermissionGroupDirectory, getSiteInfo)).rejects.toThrow(Error)
         })
     })
