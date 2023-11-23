@@ -70,6 +70,7 @@ export default class PermissionGroups extends PartnerFeature {
                 throw new Error(JSON.stringify(response))
             }
         }
+        this.#acls.deploy(buildFeatureDirectory, siteInfo)
     }
 
     async deployPermissionGroup(siteInfo, groupId, config, credentials) {

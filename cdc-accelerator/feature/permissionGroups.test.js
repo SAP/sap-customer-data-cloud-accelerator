@@ -92,8 +92,7 @@ describe('Permission Groups test suite', () => {
             fs.mkdirSync.mockReturnValue(undefined)
             fs.writeFileSync.mockReturnValue(undefined)
             fs.readFileSync.mockReturnValue(srcFileContent)
-            let spy = jest.spyOn(permissionGroups.getAcl(), 'build')
-            fs.readdirSync.mockReturnValue([`${aclName[0]}.json`, `${aclName[1]}.json`])
+            const spy = jest.spyOn(permissionGroups.getAcl(), 'build').mockImplementation(() => {})
             permissionGroups.build(partnerBuildDirectory)
             expect(spy.mock.calls.length).toBe(1)
             const buildFeatureDirectory = path.join(partnerBuildDirectory, permissionGroups.getName())
@@ -148,8 +147,10 @@ describe('Permission Groups test suite', () => {
             }
             fs.readFileSync.mockReturnValue(JSON.stringify(permissionGroupsResponse))
             let spy = jest.spyOn(permissionGroups, 'deployPermissionGroup')
+            const spyAcl = jest.spyOn(permissionGroups.getAcl(), 'deploy').mockImplementation(() => {})
             await permissionGroups.deploy(partnerBuildDirectory, getSiteInfo)
             expect(spy.mock.calls.length).toBe(1)
+            expect(spyAcl.mock.calls.length).toBe(1)
             expect(spy).toHaveBeenNthCalledWith(1, getSiteInfo, alexTestAdminPermissionGroup_groupId, firstRequestBody, credentials)
         })
         test('all permission groups should update instead of deploy', async () => {
@@ -172,8 +173,10 @@ describe('Permission Groups test suite', () => {
             }
             fs.readFileSync.mockReturnValue(JSON.stringify(permissionGroupsResponse))
             let spy = jest.spyOn(permissionGroups, 'updatePermissionGroup')
+            const spyAcl = jest.spyOn(permissionGroups.getAcl(), 'deploy').mockImplementation(() => {})
             await permissionGroups.deploy(partnerBuildDirectory, getSiteInfo)
             expect(spy.mock.calls.length).toBe(2)
+            expect(spyAcl.mock.calls.length).toBe(1)
             expect(spy).toHaveBeenNthCalledWith(1, getSiteInfo, alexTestAdminPermissionGroup_groupId, firstRequestBody, credentials)
             expect(spy).toHaveBeenNthCalledWith(2, getSiteInfo, cdc_toolbox_e2e_test_groupId, secondRequestBody, credentials)
         })
