@@ -2,7 +2,7 @@ import ACL from './acl.js'
 import fs from 'fs'
 import axios from 'axios'
 import path from 'path'
-import { expectedGigyaResponseNok, expectedAclResponse, expectedPermissionGroupsResponse, expectedACLFileContent } from './test.gigyaResponses.js'
+import { expectedGigyaResponseNok, expectedGigyaResponseOk, expectedAclResponse, expectedPermissionGroupsResponse, expectedACLFileContent } from './test.gigyaResponses.js'
 import { credentials, partnerBuildDirectory, partnerBaseDirectory } from './test.common.js'
 jest.mock('axios')
 jest.mock('fs')
@@ -56,17 +56,39 @@ describe('ACLs test suite', () => {
             fs.readFileSync.mockReturnValue(srcFileContent)
             acls.build(buildPermissionGroupDirectory)
             expect(fs.writeFileSync.mock.calls.length).toBe(2)
-            expect(fs.writeFileSync).toHaveBeenNthCalledWith(
-                1,
-                path.join(buildPermissionGroupDirectory, `${acls.getName()}`, `${aclName[0]}.json`),
-                JSON.stringify(JSON.parse(srcFileContent)),
-            )
+            expect(fs.writeFileSync).toHaveBeenNthCalledWith(1, path.join(buildPermissionGroupDirectory, `${acls.getName()}`, `${aclName[0]}.json`), srcFileContent)
 
-            expect(fs.writeFileSync).toHaveBeenNthCalledWith(
-                2,
-                path.join(buildPermissionGroupDirectory, `${acls.getName()}`, `${aclName[1]}.json`),
-                JSON.stringify(JSON.parse(srcFileContent)),
-            )
+            expect(fs.writeFileSync).toHaveBeenNthCalledWith(2, path.join(buildPermissionGroupDirectory, `${acls.getName()}`, `${aclName[1]}.json`), srcFileContent)
+        })
+    })
+    describe('Deploy test suit', () => {
+        test('All ACL files are deployed successfully', async () => {
+            axios.mockResolvedValue({ data: expectedGigyaResponseOk })
+            const getSiteInfo = {
+                partnerId: 123123,
+                dataCenter: 'eu1',
+            }
+            const srcFileContent = JSON.stringify(expectedAclResponse.acl)
+            const aclName = Object.keys(expectedACLFileContent)
+            const buildPermissionGroupDirectory = path.join(partnerBuildDirectory, permissionGroupDirectoryName)
+            const dirExists = true
+            fs.existsSync.mockReturnValue(dirExists)
+            fs.readdirSync.mockReturnValue([`${aclName[0]}.json`, `${aclName[1]}.json`])
+            fs.readFileSync.mockReturnValue(srcFileContent)
+            let spy = jest.spyOn(acls, 'deployAclRequest')
+            acls.deploy(buildPermissionGroupDirectory, getSiteInfo)
+            expect(spy.mock.calls.length).toBe(1)
+            expect(spy).toHaveBeenNthCalledWith(1, getSiteInfo.dataCenter, aclName[0], getSiteInfo.partnerId, expectedAclResponse.acl, credentials)
+        })
+        test('all ACL files were not deployed unsuccessfully', async () => {
+            const getSiteInfo = {
+                partnerId: 123123,
+                dataCenter: 'us1',
+            }
+            const buildPermissionGroupDirectory = path.join(partnerBuildDirectory, permissionGroupDirectoryName)
+            axios.mockResolvedValueOnce({ data: expectedGigyaResponseNok })
+            fs.readFileSync.mockReturnValue(true)
+            await expect(acls.deploy(buildPermissionGroupDirectory, getSiteInfo)).rejects.toThrow(Error)
         })
     })
 })

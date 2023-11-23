@@ -39,18 +39,44 @@ export default class ACL extends Feature {
         })
     }
     reset() {
-        //This is supposed to be empty
+        // The method is empty because there is nothing left to do after PermissionGroups.reset is executed
     }
-    async deploy(partnerDirectory, siteInfo) {
-        console.log('deploy was called')
+    async deploy(permissionGroupDirectory, siteInfo) {
+        const buildDirectory = path.join(permissionGroupDirectory, this.getName())
+        const aclFiles = fs.readdirSync(buildDirectory)
+        for (let aclFile of aclFiles) {
+            const aclData = fs.readFileSync(path.join(buildDirectory, aclFile), { encoding: 'utf8' })
+
+            if (!aclData || !aclData.length) {
+                throw new Error(`Invalid file: ${aclFile}`)
+            }
+            const parsedData = JSON.parse(aclData)
+            const aclName = path.parse(aclFile).name
+            let response = await this.deployAclRequest(siteInfo.dataCenter, aclName, siteInfo.partnerId, parsedData, this.#credentials)
+            if (response.errorCode) {
+                throw new Error(JSON.stringify(response))
+            }
+        }
     }
 
+    async deployAclRequest(dataCenter, aclID, partnerID, aclContent, credentials) {
+        return await this.setAclRequest(dataCenter, aclID, partnerID, aclContent, credentials)
+    }
+    async setAclRequest(dataCenter, aclID, partnerID, aclContent, credentials) {
+        const url = `https://admin.${dataCenter}.gigya.com/admin.setACL`
+        const response = await client.post(url, this.#setAcl(aclID, partnerID, aclContent, credentials.userKey, credentials.secret))
+        return response.data
+    }
     async getAclsRequest(dataCenter, aclID, partnerID, credentials) {
         const url = `https://admin.${dataCenter}.gigya.com/admin.getACL`
         const response = await client.post(url, this.#getAcls(aclID, partnerID, credentials.userKey, credentials.secret))
         return response.data
     }
-
+    #setAcl(aclID, partnerID, aclContent, userKey, secret) {
+        const parameters = Object.assign(this.#getAcls(aclID, partnerID, userKey, secret))
+        parameters.acl = JSON.stringify(aclContent)
+        return parameters
+    }
     #getAcls(aclID, partnerID, userKey, secret) {
         const parameters = Object.assign({})
         parameters.userKey = userKey
