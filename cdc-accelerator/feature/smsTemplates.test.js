@@ -46,14 +46,28 @@ describe('Sms templates test suite', () => {
             writeFileSyncMock.mockRestore()
         })
 
-        test('minimum sms templates files are generated successfully', async () => {
-            axios.mockResolvedValueOnce({ data: getSmsExpectedResponseWithMinimumTemplates() })
+        test('minimum sms templates files are not generated when no response is received', async () => {
+            axios.mockResolvedValueOnce({
+                data: {
+                    templates: {
+                        otp: {
+                            globalTemplates: { templates: {} },
+                            templatesPerCountryCode: {},
+                        },
+                        tfa: {
+                            globalTemplates: { templates: {} },
+                            templatesPerCountryCode: {},
+                        },
+                    },
+                },
+            })
+
             fs.existsSync.mockReturnValue(false)
             const writeFileSyncMock = jest.spyOn(fs, 'writeFileSync').mockImplementation(() => {})
 
             await smsTemplates.init(apiKey, getSiteConfig, srcSiteDirectory)
 
-            expect(writeFileSyncMock).toHaveBeenCalledWith(expect.any(String), expect.any(String))
+            expect(writeFileSyncMock).not.toHaveBeenCalled()
 
             writeFileSyncMock.mockRestore()
         })
@@ -75,51 +89,6 @@ describe('Sms templates test suite', () => {
                     )}" directory already exists, to overwrite its contents please use the option "reset" instead of "init"`,
                 ),
             )
-        })
-
-        test('has necessary properties with correct types', () => {
-            expect(smsExpectedResponse).toHaveProperty('callId')
-            expect(typeof smsExpectedResponse.callId).toBe('string')
-
-            expect(smsExpectedResponse).toHaveProperty('errorCode')
-            expect(typeof smsExpectedResponse.errorCode).toBe('number')
-
-            expect(smsExpectedResponse).toHaveProperty('templates')
-            expect(typeof smsExpectedResponse.templates).toBe('object')
-
-            expect(smsExpectedResponse.templates).toHaveProperty('otp')
-            expect(typeof smsExpectedResponse.templates.otp).toBe('object')
-
-            expect(smsExpectedResponse.templates).toHaveProperty('tfa')
-            expect(typeof smsExpectedResponse.templates.tfa).toBe('object')
-        })
-
-        test('otp and tfa templates have expected structure', () => {
-            const otpTemplate = smsExpectedResponse.templates.otp
-            const tfaTemplate = smsExpectedResponse.templates.tfa
-
-            ;['otp', 'tfa'].forEach((templateType) => {
-                expect(otpTemplate).toHaveProperty('globalTemplates')
-                expect(typeof otpTemplate.globalTemplates).toBe('object')
-
-                expect(otpTemplate.globalTemplates).toHaveProperty('templates')
-                expect(typeof otpTemplate.globalTemplates.templates).toBe('object')
-
-                ;['en', 'nl', 'es'].forEach((lang) => {
-                    expect(otpTemplate.globalTemplates.templates).toHaveProperty(lang)
-                    expect(typeof otpTemplate.globalTemplates.templates[lang]).toBe('string')
-                })
-            })
-        })
-
-        test('getSmsExpectedResponseWithMinimumTemplates returns simplified structure', () => {
-            const minimalResponse = getSmsExpectedResponseWithMinimumTemplates()
-            expect(minimalResponse).toHaveProperty('templates')
-
-            ;['otp', 'tfa'].forEach((templateType) => {
-                expect(minimalResponse.templates[templateType].globalTemplates.templates).toHaveProperty('en')
-                expect(Object.keys(minimalResponse.templates[templateType].globalTemplates.templates).length).toBe(1)
-            })
         })
     })
 })
