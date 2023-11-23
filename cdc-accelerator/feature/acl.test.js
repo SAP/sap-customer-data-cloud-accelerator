@@ -87,8 +87,19 @@ describe('ACLs test suite', () => {
             }
             const buildPermissionGroupDirectory = path.join(partnerBuildDirectory, permissionGroupDirectoryName)
             axios.mockResolvedValueOnce({ data: expectedGigyaResponseNok })
-            fs.readFileSync.mockReturnValue([])
+            fs.readFileSync.mockReturnValue(true)
             await expect(acls.deploy(buildPermissionGroupDirectory, getSiteInfo)).rejects.toThrow(Error)
+        })
+        test('ACL files returns empty', async () => {
+            const getSiteInfo = {
+                partnerId: 123123,
+                dataCenter: 'us1',
+            }
+            const aclName = Object.keys(expectedACLFileContent)
+            const buildPermissionGroupDirectory = path.join(partnerBuildDirectory, permissionGroupDirectoryName)
+            fs.readdirSync.mockReturnValue([`${aclName[0]}.json`])
+            fs.readFileSync.mockReturnValue([])
+            await expect(acls.deploy(buildPermissionGroupDirectory, getSiteInfo)).rejects.toThrowError(`Invalid file: ${aclName[0]}.json`)
         })
     })
 })
