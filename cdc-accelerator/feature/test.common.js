@@ -1,5 +1,5 @@
 import path from 'path'
-import { SRC_DIRECTORY, BUILD_DIRECTORY, SITES_DIRECTORY } from './constants.js'
+import { SRC_DIRECTORY, BUILD_DIRECTORY, SITES_DIRECTORY, Operations } from './constants.js'
 import SiteFeature from './siteFeature.js'
 import Schema from './schema.js'
 import WebSdk from './webSdk.js'
@@ -14,19 +14,38 @@ export const credentials = {
 export const siteDomain = 'domain.test.com'
 export const apiKey = 'apiKey'
 export const partnerIds = ['partnerId1', 'partnerId2']
-export const partnerBaseDirector = path.join(SRC_DIRECTORY, partnerIds[0])
+export const partnerBaseDirectory = path.join(SRC_DIRECTORY, partnerIds[0])
 export const siteBaseDirectory = path.join(SRC_DIRECTORY, partnerIds[0], SITES_DIRECTORY)
 export const srcSiteDirectory = path.join(siteBaseDirectory, siteDomain)
 export const buildSiteDirectory = srcSiteDirectory.replace(SRC_DIRECTORY, BUILD_DIRECTORY)
-export const partnerBuildDirector = partnerBaseDirector.replace(SRC_DIRECTORY, BUILD_DIRECTORY)
+export const partnerBuildDirectory = partnerBaseDirectory.replace(SRC_DIRECTORY, BUILD_DIRECTORY)
 export const sites = [
-    { apiKey: '1_Eh-x_qKjjBJ_-QBEfMDABC', siteDomain: 'cdc-accelerator.parent.site-group.com' },
-    { apiKey: '2_Eh-x_qKjjBJ_-QBEfMDABC', siteDomain: 'cdc-accelerator.preferences-center.com' },
+    {
+        apiKey: '1_Eh-x_qKjjBJ_-QBEfMDABC',
+        baseDomain: 'cdc-accelerator.parent.site-group.com',
+        dataCenter: 'eu1',
+        partnerId: 79597568,
+        partnerName: partnerIds[0],
+    },
+    {
+        apiKey: '2_Eh-x_qKjjBJ_-QBEfMDABC',
+        baseDomain: 'cdc-accelerator.preferences-center.com',
+        dataCenter: 'eu1',
+        partnerId: 79597569,
+        partnerName: partnerIds[1],
+    },
 ]
 export const config = {
-    source: sites,
-    deploy: { apiKey: sites[1].apiKey, siteDomain: sites[1].siteDomain },
-    cache: {},
+    source: [
+        {
+            apiKey: sites[0].apiKey,
+            features: ['feature1'],
+        },
+        {
+            apiKey: sites[1].apiKey,
+        },
+    ],
+    deploy: { apiKey: sites[1].apiKey },
 }
 
 export function getSiteFeature() {
@@ -49,4 +68,22 @@ export function spyAllFeaturesMethod(featuresType, method) {
         spies.push(jest.spyOn(f, method).mockImplementation(() => {}))
     }
     return spies
+}
+
+export function getBaseFolder(operation) {
+    let baseFolder
+    switch (operation) {
+        case Operations.init:
+        case Operations.reset:
+            baseFolder = SRC_DIRECTORY
+            break
+        case Operations.build:
+        case Operations.deploy:
+            baseFolder = BUILD_DIRECTORY
+            break
+        default:
+            baseFolder = ''
+            break
+    }
+    return baseFolder
 }

@@ -72,9 +72,6 @@ export default class SmsTemplates extends SiteFeature {
     }
 
     reset(siteDirectory) {
-        const directory = path.join(siteDirectory, this.getName())
-        if (fs.existsSync(directory)) {
-            fs.rmdirSync(directory, { recursive: true })
-        }
+        this.deleteDirectory(path.join(siteDirectory, this.getName()))
     }
 }

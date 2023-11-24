@@ -455,5 +455,68 @@ export const expectedPermissionGroupsResponse = {
             users: ['AEOt9tr7uRTZ'],
             description: 'Used in CDC Toolbox e2e tests',
         },
+        _adminGroup: {
+            aclID: '_adminGroup',
+            scope: {
+                allowPartners: ['_owner'],
+                allowSites: ['4_BaJ2eJU0tORSo6-t0fPGhQ'],
+            },
+            users: ['AEOt9tr7uRTZ'],
+            description: '_adminGroup',
+        },
+    },
+}
+export const expectedPermissionGroupsResponseAfterRemovingBuiltInGroups = {
+    alexTestAdminPermissionGroup: {
+        aclID: expectedPermissionGroupsResponse.groups.alexTestAdminPermissionGroup.aclID,
+        description: expectedPermissionGroupsResponse.groups.alexTestAdminPermissionGroup.description,
+    },
+    cdc_toolbox_e2e_test: {
+        aclID: expectedPermissionGroupsResponse.groups.cdc_toolbox_e2e_test.aclID,
+        description: expectedPermissionGroupsResponse.groups.cdc_toolbox_e2e_test.description,
+    },
+}
+export const expectedPermissionGroupDataWithScope = {
+    alexTestAdminPermissionGroup: {
+        aclID: expectedPermissionGroupsResponse.groups.alexTestAdminPermissionGroup.aclID,
+        description: expectedPermissionGroupsResponse.groups.alexTestAdminPermissionGroup.description,
+        scope: {
+            allowPartners: ['_owner'],
+            allowSites: [],
+        },
+    },
+}
+export const expectedUpdatedPermissionGroupsResponse = {
+    callId: '143306dc47dc43ed96126dfecb025252',
+    errorCode: 0,
+    apiVersion: 2,
+    statusCode: 200,
+    statusReason: 'OK',
+    time: '2023-10-11T14:56:02.645Z',
+    groups: {
+        alexTestAdminPermissionGroup: expectedPermissionGroupDataWithScope.alexTestAdminPermissionGroup,
+    },
+}
+
+export const expectedAclResponse = {
+    callId: 'c2de5b649c4f46c9849e036edd123d09',
+    errorCode: 0,
+    apiVersion: 2,
+    statusCode: 200,
+    statusReason: 'OK',
+    time: '2023-10-11T14:56:02.645Z',
+    acl: {
+        _api: {},
+        _data: {},
+        _inherit: ['_accountsFullAccess', '_basicSiteAccess', '_viewPartnerAndSiteAuditLog', '_viewSiteAuditLog'],
+    },
+}
+
+export const expectedACLFileContent = {
+    alexTestAdminPermissionGroup: {
+        acl: expectedAclResponse.acl,
+    },
+    cdc_toolbox_e2e_test: {
+        acl: expectedAclResponse.acl,
     },
 }

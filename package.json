@@ -1,7 +1,7 @@
 {
-    "name": "cdc-accelerator",
-    "version": "1.2.12",
-    "description": "",
+    "name": "@sap_oss/sap-customer-data-cloud-accelerator",
+    "version": "0.0.1",
+    "description": "A development environment for SAP Customer Data Cloud that enables the use of modern tools, such as JavaScript and source control.",
     "main": "index.js",
     "type": "module",
     "scripts": {
@@ -9,21 +9,28 @@
         "test": "cross-env CI=true npm run update-sap-cdc-toolkit && jest --collect-coverage --coverage --watch=all --coverageDirectory=coverage/unit ./cdc-accelerator/feature",
         "test:e2e": "cross-env E2E=true CI=true jest -i cdc-accelerator/scripts",
         "init-old": "node cdc-accelerator/init/index.js",
-        "init": "node cdc-accelerator/feature/index.js init",
+        "init": "cdc-accelerator/feature/index.js init",
         "reset-old": "node cdc-accelerator/reset/reset.js",
-        "reset": "node cdc-accelerator/feature/index.js reset",
+        "reset": "cdc-accelerator/feature/index.js reset",
         "build-old": "babel --delete-dir-on-start src -d build && prettier --semi true --trailing-comma none --write build/**/*.js && node cdc-accelerator/build/build.js",
-        "build": "babel --delete-dir-on-start src -d build && prettier --semi true --trailing-comma none --write build/**/*.js && node cdc-accelerator/feature/index.js build",
+        "build": "cdc-accelerator/feature/index.js build",
         "deploy-old": "babel --delete-dir-on-start src -d build && prettier --semi true --trailing-comma none --write build/**/webScreenSets/**/*.js && node cdc-accelerator/build/build.js && node cdc-accelerator/deploy/deploy.js",
-        "deploy": "babel --delete-dir-on-start src -d build && prettier --semi true --trailing-comma none --write build/**/WebScreenSets/**/*.js && node cdc-accelerator/feature/index.js build && node cdc-accelerator/feature/index.js deploy",
+        "deploy": "cdc-accelerator/feature/index.js deploy",
         "start-old": "babel --delete-dir-on-start src -d build && prettier --semi true --trailing-comma none --write build/**/webScreenSets/**/*.js && node cdc-accelerator/build/build.js && light-server -c .lightserverrc",
-        "start": "babel --delete-dir-on-start src -d build && prettier --semi true --trailing-comma none --write build/**/WebScreenSets/**/*.js && node cdc-accelerator/feature/index.js build && light-server -c .lightserverrc",
+        "start": "cdc-accelerator/feature/index.js start",
         "update-sap-cdc-toolkit": "node cdc-accelerator/scripts/updateSapCdcToolkit.js"
+    },
+    "bin": {
+        "cdc": "./cdc-accelerator/feature/index.js"
     },
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/sap-customer-data-cloud-accelerator.git"
     },
+    "bugs": {
+        "url": "https://github.com/SAP/sap-customer-data-cloud-accelerator/issues"
+    },
+    "homepage": "https://github.com/SAP/sap-customer-data-cloud-accelerator#readme",
     "contributors": [
         "Bruno Santos",
         "Guilherme Lopes",
@@ -53,7 +60,8 @@
         "prettier": "2.8.8"
     },
     "dependencies": {
-        "axios": "^1.2.3",
+        "axios": "^1.6.0",
+        "commander": "^11.1.0",
         "dotenv": "^16.0.3",
         "jszip": "^3.10.1",
         "light-server": "^2.9.1",

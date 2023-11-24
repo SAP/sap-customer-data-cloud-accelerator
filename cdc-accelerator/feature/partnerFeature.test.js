@@ -2,10 +2,9 @@ import { getSiteConfig } from './test.gigyaResponses'
 import fs from 'fs'
 import path from 'path'
 import axios from 'axios'
-import { apiKey, partnerIds, siteDomain, sites, spyAllFeaturesMethod, getPartnerFeature, buildSiteDirectory } from './test.common.js'
-import FolderManager from './folderManager.js'
+import { partnerIds, sites, spyAllFeaturesMethod, getPartnerFeature, buildSiteDirectory, getBaseFolder } from './test.common.js'
 import Feature from './feature.js'
-import { Operations, SITES_DIRECTORY } from './constants.js'
+import { Operations } from './constants.js'
 
 jest.mock('axios')
 jest.mock('fs')
@@ -13,41 +12,19 @@ jest.mock('./sitesCache.js')
 
 describe('Partner features test suite', () => {
     const partnerFeature = getPartnerFeature()
+    let sitesOnTest = sites
 
     beforeEach(() => {
         jest.restoreAllMocks()
         jest.clearAllMocks()
-
-        jest.spyOn(FolderManager, 'getSiteInfo')
-            .mockImplementationOnce(async () => {
-                return {
-                    apiKey: apiKey,
-                    baseDomain: siteDomain,
-                    dataCenter: 'us1',
-                    partnerId: partnerIds[0],
-                    partnerName: partnerIds[0],
-                }
-            })
-            .mockImplementationOnce(async () => {
-                return {
-                    apiKey: `another_${apiKey}`,
-                    baseDomain: `another_${siteDomain}`,
-                    dataCenter: 'us1',
-                    partnerId: partnerIds[1],
-                    partnerName: partnerIds[1],
-                }
-            })
     })
 
     describe('Init test suite', () => {
         const operation = Operations.init
-        beforeEach(() => {
-            mockFolderManager(operation)
-        })
 
         test(`${operation} all features executed successfully`, async () => {
             const spyesTotalCalls = await executeTestAndCountCalls(operation, undefined)
-            expect(spyesTotalCalls).toBe(partnerIds.length)
+            expect(spyesTotalCalls).toBe(sites.length)
         })
 
         test(`${operation} no partner feature executed successfully`, async () => {
@@ -57,32 +34,26 @@ describe('Partner features test suite', () => {
 
         test(`${operation} permission groups feature executed successfully`, async () => {
             const spyesTotalCalls = await executeTestAndCountCalls(operation, partnerFeature.getFeatures()[0].constructor.name)
-            expect(spyesTotalCalls).toBe(partnerIds.length)
+            expect(spyesTotalCalls).toBe(sites.length)
         })
     })
 
     describe('Reset test suite', () => {
         const operation = Operations.reset
-        beforeEach(() => {
-            mockFolderManager(operation)
-        })
 
         test(`${operation} all features executed successfully`, async () => {
             const spyesTotalCalls = await executeTestAndCountCalls(operation, undefined)
-            expect(spyesTotalCalls).toBe(partnerIds.length)
+            expect(spyesTotalCalls).toBe(sites.length)
         })
 
         test(`${operation} single feature executed successfully`, async () => {
             const spyesTotalCalls = await executeTestAndCountCalls(operation, partnerFeature.getFeatures()[0].constructor.name)
-            expect(spyesTotalCalls).toBe(partnerIds.length)
+            expect(spyesTotalCalls).toBe(sites.length)
         })
     })
 
     describe('Build test suite', () => {
         const operation = Operations.build
-        beforeEach(() => {
-            mockFolderManager(operation)
-        })
 
         test('Build all features executed successfully', async () => {
             const getFilesSpy = jest.spyOn(partnerFeature, 'getFiles').mockImplementation(async () => {
@@ -95,20 +66,17 @@ describe('Partner features test suite', () => {
             })
 
             const spyesTotalCalls = await executeTestAndCountCalls(operation, undefined)
-            expect(spyesTotalCalls).toBe(partnerIds.length)
-            expect(getFilesSpy.mock.calls.length).toBe(1)
+            expect(spyesTotalCalls).toBe(sites.length)
+            expect(getFilesSpy.mock.calls.length).toBe(2)
         })
     })
 
     describe('Deploy test suite', () => {
         const operation = Operations.deploy
-        beforeEach(() => {
-            mockFolderManager(operation)
-        })
 
         test(`${operation} all features executed successfully`, async () => {
             const spyesTotalCalls = await executeTestAndCountCalls(operation, undefined)
-            expect(spyesTotalCalls).toBe(partnerIds.length)
+            expect(spyesTotalCalls).toBe(sites.length)
         })
 
         test(`${operation} no partner feature executed successfully`, async () => {
@@ -118,8 +86,48 @@ describe('Partner features test suite', () => {
 
         test(`${operation} permission groups feature executed successfully`, async () => {
             const spyesTotalCalls = await executeTestAndCountCalls(operation, partnerFeature.getFeatures()[0].constructor.name)
-            expect(spyesTotalCalls).toBe(partnerIds.length)
+            expect(spyesTotalCalls).toBe(sites.length)
         })
+    })
+
+    const operations = [[Operations.init], [Operations.reset], [Operations.deploy]]
+    test.each(operations)(`%s filter features`, async (operation) => {
+        jest.restoreAllMocks()
+        jest.clearAllMocks()
+        sitesOnTest[0]['features'] = ['PermissionGroups', 'Schema', 'WebSdk', 'Policies', 'WebScreenSets', 'EmailTemplates']
+        sitesOnTest[1]['features'] = ['PermissionGroups', 'Schema', 'WebSdk', 'Policies', 'WebScreenSets', 'EmailTemplates']
+        let spyesTotalCalls = await executeTestAndCountCalls(operation, undefined)
+        expect(spyesTotalCalls).toBe(partnerFeature.getFeatures().length * sites.length)
+
+        jest.restoreAllMocks()
+        jest.clearAllMocks()
+        sitesOnTest[0]['features'] = ['PermissionGroups', 'Policies']
+        sitesOnTest[1]['features'] = ['PermissionGroups', 'Policies']
+        spyesTotalCalls = await executeTestAndCountCalls(operation, undefined)
+        expect(spyesTotalCalls).toBe(1 * sites.length)
+
+        jest.restoreAllMocks()
+        jest.clearAllMocks()
+        sitesOnTest[0]['features'] = []
+        sitesOnTest[1]['features'] = []
+        spyesTotalCalls = await executeTestAndCountCalls(operation, undefined)
+        expect(spyesTotalCalls).toBe(0)
+
+        jest.restoreAllMocks()
+        jest.clearAllMocks()
+        sitesOnTest[0]['features'] = undefined
+        sitesOnTest[1]['features'] = undefined
+        spyesTotalCalls = await executeTestAndCountCalls(operation, undefined)
+        expect(spyesTotalCalls).toBe(partnerFeature.getFeatures().length * sites.length)
+
+        jest.restoreAllMocks()
+        jest.clearAllMocks()
+        sitesOnTest[0]['features'] = ['PermissionGroups']
+        sitesOnTest[1]['features'] = ['PermissionGroups']
+        sitesOnTest[1].partnerName = partnerIds[0]
+        spyesTotalCalls = await executeTestAndCountCalls(operation, undefined)
+        sitesOnTest[1].partnerName = partnerIds[1]
+        expect(spyesTotalCalls).toBe(1)
     })
 
     async function executeTestAndCountCalls(operation, featureName) {
@@ -143,31 +151,12 @@ describe('Partner features test suite', () => {
             if (!featureName || (spy.mock.instances.length > 0 && Feature.isEqualCaseInsensitive(spy.mock.instances[0].constructor.name, featureName))) {
                 spyesTotalCalls += spy.mock.calls.length
                 for (let i = 0; i < spy.mock.calls.length; ++i) {
-                    expect(spy.mock.calls[i][0]).toEqual(path.join(FolderManager.getBaseFolder(operation), partnerIds[i]))
+                    expect(spy.mock.calls[i][0]).toEqual(path.join(getBaseFolder(operation), partnerIds[i]))
                 }
             } else {
                 expect(spy.mock.calls.length).toBe(0)
             }
         }
         return spyesTotalCalls
-    }
-
-    function mockFolderManager(operation) {
-        jest.spyOn(FolderManager, 'getPartnerFolder')
-            .mockImplementationOnce(async () => {
-                return path.join(FolderManager.getBaseFolder(operation), partnerIds[0])
-            })
-            .mockImplementationOnce(async () => {
-                return path.join(FolderManager.getBaseFolder(operation), partnerIds[1])
-            })
-
-        //jest.spyOn(partnerFeature.folderManager, 'getSiteBaseFolder')
-        jest.spyOn(FolderManager, 'getSiteBaseFolder')
-            .mockImplementationOnce(async () => {
-                return path.join(FolderManager.getBaseFolder(operation), partnerIds[0], SITES_DIRECTORY, siteDomain)
-            })
-            .mockImplementationOnce(async () => {
-                return path.join(FolderManager.getBaseFolder(operation), partnerIds[1], SITES_DIRECTORY, siteDomain)
-            })
     }
 })
