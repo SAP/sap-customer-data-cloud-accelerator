@@ -6,6 +6,7 @@ import { Operations } from './constants.js'
 import CLI from './cli.js'
 import { program } from 'commander'
 import { execSync } from 'child_process'
+import ProjectSetup from './postInstall/projectSetup.js'
 
 export default class Commander {
     static #BABEL_COMMAND = 'npx babel --delete-dir-on-start src -d build'
@@ -43,6 +44,10 @@ export default class Commander {
         execSync(Commander.#START_SERVER_COMMAND, { stdio: 'inherit' })
     }
 
+    async #setup() {
+        new ProjectSetup().setup()
+    }
+
     #createCommandWithSharedOptions(name) {
         return new program.Command(name)
             .option('-f, --feature [feature]', 'Single feature to be executed')
@@ -63,6 +68,7 @@ export default class Commander {
 
         program.name(name).description(description).version(version)
         program.command(Operations.start).description('Launch local server for testing using the preview functionality').action(this.#start)
+        program.command('setup').description('Setup a new project after this dependency is installed').action(this.#setup)
         program.addCommand(cmdInit).addCommand(cmdReset).addCommand(cmdBuild).addCommand(cmdDeploy).parse(process.argv)
     }
 }
