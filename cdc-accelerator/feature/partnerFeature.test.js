@@ -60,8 +60,8 @@ describe('Partner features test suite', () => {
                 return [
                     path.join('/root/', buildSiteDirectory, 'Schema', 'data.json'),
                     path.join('/root/', buildSiteDirectory, 'WebSdk', 'webSdk.js'),
-                    `/root/build/${partnerIds[1]}/Sites/siteDomain/WebSdk/webSdk.js`,
-                    '/root/anyDirectory/Schema/data.json',
+                    path.join('/root/', 'build', partnerIds[1], 'Sites', 'siteDomain', 'WebSdk', 'webSdk.js'),
+                    path.join('/root/', 'anyDirectory', 'Schema', 'data.json'),
                 ]
             })
 
