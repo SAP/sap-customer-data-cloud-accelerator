@@ -1,12 +1,12 @@
-import { expectedGigyaResponseNok, expectedGigyaResponseOk, getSiteConfig } from './test.gigyaResponses.js'
-import { emailsExpectedResponse, emailTemplate, getEmailsExpectedResponseWithMinimumTemplates } from './test.gigyaResponses.emails.js'
+import { expectedGigyaResponseNok, expectedGigyaResponseOk, getSiteConfig } from '../../test.gigyaResponses.js'
+import { emailsExpectedResponse, emailTemplate, getEmailsExpectedResponseWithMinimumTemplates } from '../test.gigyaResponses.emails.js'
 import fs from 'fs'
-import EmailTemplates from './emailTemplates.js'
+import EmailTemplates from '../emailTemplates.js'
 import axios from 'axios'
 import path from 'path'
-import { credentials, siteDomain, apiKey, srcSiteDirectory, buildSiteDirectory } from './test.common.js'
-import ToolkitEmailOptions from '../sap-cdc-toolkit/copyConfig/emails/emailOptions.js'
-import EmailTemplateNameTranslator from '../sap-cdc-toolkit/emails/emailTemplateNameTranslator.js'
+import { credentials, siteDomain, apiKey, srcSiteDirectory, buildSiteDirectory } from '../../test.common.js'
+import ToolkitEmailOptions from '../../../sap-cdc-toolkit/copyConfig/emails/emailOptions.js'
+import EmailTemplateNameTranslator from '../../../sap-cdc-toolkit/emails/emailTemplateNameTranslator.js'
 
 jest.mock('axios')
 jest.mock('fs')

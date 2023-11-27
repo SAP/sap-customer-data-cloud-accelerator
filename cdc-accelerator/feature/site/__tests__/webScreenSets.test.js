@@ -1,10 +1,10 @@
-import { apiKey, buildSiteDirectory, credentials, siteDomain, srcSiteDirectory } from './test.common.js'
+import { apiKey, buildSiteDirectory, credentials, siteDomain, srcSiteDirectory } from '../../test.common.js'
 import axios from 'axios'
-import { expectedGigyaResponseNok, expectedGigyaResponseOk, getExpectedScreenSetResponse, getSiteConfig, screenSetIds, screenSetTemplate } from './test.gigyaResponses.js'
+import { expectedGigyaResponseNok, expectedGigyaResponseOk, getExpectedScreenSetResponse, getSiteConfig, screenSetIds, screenSetTemplate } from '../../test.gigyaResponses.js'
 import fs from 'fs'
 import path from 'path'
-import WebScreenSets from './webScreenSets.js'
-import { Operations } from './constants'
+import WebScreenSets from '../webScreenSets.js'
+import { Operations } from '../../../core/constants.js'
 
 jest.mock('axios')
 jest.mock('fs')

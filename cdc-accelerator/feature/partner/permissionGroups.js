@@ -1,9 +1,9 @@
-import PartnerFeature from './partnerFeature.js'
+import PartnerFeature from '../partnerFeature.js'
 import path from 'path'
 import fs from 'fs'
-import { clearDirectoryContents } from '../utils/utils.js'
-import { SRC_DIRECTORY, BUILD_DIRECTORY } from './constants.js'
-import client from '../../cdc-accelerator/sap-cdc-toolkit/gigya/client.js'
+import { clearDirectoryContents } from '../../utils/utils.js'
+import { SRC_DIRECTORY, BUILD_DIRECTORY } from '../../core/constants.js'
+import client from '../../sap-cdc-toolkit/gigya/client.js'
 import ACL from './acl.js'
 export default class PermissionGroups extends PartnerFeature {
     static PERMISSIONGROUP_FILE_NAME = 'PermissionGroups.json'

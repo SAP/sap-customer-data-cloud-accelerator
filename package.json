@@ -7,15 +7,15 @@
     "scripts": {
         "test": "cross-env CI=true npm run update-sap-cdc-toolkit && jest --collect-coverage --coverage --watch=all --coverageDirectory=coverage/unit ./cdc-accelerator/core ./cdc-accelerator/feature",
         "test:e2e": "cross-env E2E=true CI=true jest -i cdc-accelerator/scripts",
-        "init": "cdc-accelerator/feature/index.js init",
-        "reset": "cdc-accelerator/feature/index.js reset",
-        "build": "cdc-accelerator/feature/index.js build",
-        "deploy": "cdc-accelerator/feature/index.js deploy",
-        "start": "cdc-accelerator/feature/index.js start",
+        "init": "cdc-accelerator/core/index.js init",
+        "reset": "cdc-accelerator/core/index.js reset",
+        "build": "cdc-accelerator/core/index.js build",
+        "deploy": "cdc-accelerator/core/index.js deploy",
+        "start": "cdc-accelerator/core/index.js start",
         "update-sap-cdc-toolkit": "node cdc-accelerator/scripts/updateSapCdcToolkit.js"
     },
     "bin": {
-        "cdc": "./cdc-accelerator/feature/index.js"
+        "cdc": "cdc-accelerator/core/index.js"
     },
     "repository": {
         "type": "git",

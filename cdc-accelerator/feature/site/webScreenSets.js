@@ -2,12 +2,12 @@
  * Copyright: Copyright 2023 SAP SE or an SAP affiliate company and cdc-accelerator contributors
  * License: Apache-2.0
  */
-import ToolkitScreenSet from '../sap-cdc-toolkit/copyConfig/screenset/screenset.js'
+import ToolkitScreenSet from '../../sap-cdc-toolkit/copyConfig/screenset/screenset.js'
 import fs from 'fs'
 import path from 'path'
-import SiteFeature from './siteFeature.js'
-import { BUILD_DIRECTORY, CDC_ACCELERATOR_DIRECTORY, SRC_DIRECTORY } from './constants.js'
-import { bundleInlineImportScripts, cleanJavaScriptModuleBoilerplateScreenSetEvents, processMainScriptInlineImports } from '../utils/utils.js'
+import SiteFeature from '../siteFeature.js'
+import { BUILD_DIRECTORY, CDC_ACCELERATOR_DIRECTORY, SRC_DIRECTORY } from '../../core/constants.js'
+import { bundleInlineImportScripts, cleanJavaScriptModuleBoilerplateScreenSetEvents, processMainScriptInlineImports } from '../../utils/utils.js'
 
 export default class WebScreenSets extends SiteFeature {
     static TEMPLATE_SCREEN_SET_JAVASCRIPT_FILE = path.join(CDC_ACCELERATOR_DIRECTORY, 'templates', 'defaultScreenSetJavaScript.js')

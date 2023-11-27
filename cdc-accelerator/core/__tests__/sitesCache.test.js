@@ -1,8 +1,8 @@
-import { apiKey, credentials, partnerIds, siteDomain, sites, config } from './test.common.js'
-import SitesCache from './sitesCache.js'
-import SiteFinderPaginated from '../sap-cdc-toolkit/search/siteFinderPaginated.js'
+import { apiKey, credentials, partnerIds, siteDomain, sites, config } from '../../feature/test.common.js'
+import SitesCache from '../sitesCache.js'
+import SiteFinderPaginated from '../../sap-cdc-toolkit/search/siteFinderPaginated.js'
 
-jest.mock('../sap-cdc-toolkit/search/siteFinderPaginated.js')
+jest.mock('../../sap-cdc-toolkit/search/siteFinderPaginated.js')
 
 describe('SitesCache test suite', () => {
     const expectedSite0Info = sites[0]

@@ -1,5 +1,5 @@
 import { execSync } from 'child_process'
-import { Operations } from '../feature/constants.js'
+import { Operations } from '../core/constants.js'
 
 describe('End to end test suite', () => {
     test(`Reset all features`, () => {

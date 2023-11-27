@@ -4,16 +4,16 @@
  */
 import 'dotenv/config'
 
-import SiteFeature from './siteFeature.js'
-import Schema from './schema.js'
-import WebSdk from './webSdk.js'
-import Policies from './policies.js'
-import WebScreenSets from './webScreenSets.js'
-import PartnerFeature from './partnerFeature.js'
-import PermissionGroups from './permissionGroups.js'
+import SiteFeature from '../feature/siteFeature.js'
+import Schema from '../feature/site/schema.js'
+import WebSdk from '../feature/site/webSdk.js'
+import Policies from '../feature/site/policies.js'
+import WebScreenSets from '../feature/site/webScreenSets.js'
+import PartnerFeature from '../feature/partnerFeature.js'
+import PermissionGroups from '../feature/partner/permissionGroups.js'
 import Accelerator from './accelerator.js'
-import EmailTemplates from './emailTemplates.js'
-import Configuration from './configuration.js'
+import EmailTemplates from '../feature/site/emailTemplates.js'
+import Configuration from '../feature/configuration.js'
 
 export default class CLI {
     siteFeature

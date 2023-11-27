@@ -1,12 +1,12 @@
-import { getSiteConfig, expectedGigyaResponseNok, expectedPoliciesResponse, expectedGigyaResponseOk } from './test.gigyaResponses.js'
+import { getSiteConfig, expectedGigyaResponseNok, expectedPoliciesResponse, expectedGigyaResponseOk } from '../../test.gigyaResponses.js'
 import fs from 'fs'
 import path from 'path'
-import Policies from './policies.js'
-import { SRC_DIRECTORY, BUILD_DIRECTORY } from './constants.js'
+import Policies from '../policies.js'
+import { SRC_DIRECTORY, BUILD_DIRECTORY } from '../../../core/constants.js'
 import axios from 'axios'
-import ToolkitPolicyOptions from '../sap-cdc-toolkit/copyConfig/policies/policyOptions.js'
-import { removePropertyFromObjectCascading } from '../sap-cdc-toolkit/copyConfig/objectHelper.js'
-import { credentials, siteDomain, apiKey, srcSiteDirectory } from './test.common.js'
+import ToolkitPolicyOptions from '../../../sap-cdc-toolkit/copyConfig/policies/policyOptions.js'
+import { removePropertyFromObjectCascading } from '../../../sap-cdc-toolkit/copyConfig/objectHelper.js'
+import { credentials, siteDomain, apiKey, srcSiteDirectory } from '../../test.common.js'
 jest.mock('fs')
 jest.mock('axios')
 

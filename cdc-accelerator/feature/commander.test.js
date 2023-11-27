@@ -1,8 +1,8 @@
-import { Operations } from './constants.js'
+import { Operations } from '../core/constants.js'
 import Commander from './commander.js'
-import CLI from './cli.js'
+import CLI from '../core/cli.js'
 
-jest.mock('./cli.js')
+jest.mock('../core/cli.js')
 jest.mock('child_process')
 
 describe('Commander test suite', () => {

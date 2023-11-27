@@ -1,14 +1,14 @@
-import { getSiteConfig } from './test.gigyaResponses'
+import { getSiteConfig } from '../test.gigyaResponses.js'
 import fs from 'fs'
 import path from 'path'
 import axios from 'axios'
-import { partnerIds, sites, spyAllFeaturesMethod, getPartnerFeature, buildSiteDirectory, getBaseFolder } from './test.common.js'
-import Feature from './feature.js'
-import { Operations } from './constants.js'
+import { partnerIds, sites, spyAllFeaturesMethod, getPartnerFeature, buildSiteDirectory, getBaseFolder } from '../test.common.js'
+import Feature from '../../core/feature.js'
+import { Operations } from '../../core/constants.js'
 
 jest.mock('axios')
 jest.mock('fs')
-jest.mock('./sitesCache.js')
+jest.mock('../../core/sitesCache.js')
 
 describe('Partner features test suite', () => {
     const partnerFeature = getPartnerFeature()

@@ -1,11 +1,11 @@
 // Import necessary modules and the WebSdk class
-import { expectedGlobalConf, getSiteConfig, expectedGigyaResponseOk, expectedGigyaResponseNok } from './test.gigyaResponses'
+import { expectedGlobalConf, getSiteConfig, expectedGigyaResponseOk, expectedGigyaResponseNok } from '../../test.gigyaResponses.js'
 import fs from 'fs'
-import WebSdk from './webSdk'
+import WebSdk from '../webSdk.js'
 import axios from 'axios'
 import path from 'path'
-import { SRC_DIRECTORY, BUILD_DIRECTORY } from '../constants.js'
-import { credentials, apiKey, srcSiteDirectory } from './test.common.js'
+import { SRC_DIRECTORY, BUILD_DIRECTORY } from '../../../constants.js'
+import { credentials, apiKey, srcSiteDirectory } from '../../test.common.js'
 
 jest.mock('axios')
 jest.mock('fs')

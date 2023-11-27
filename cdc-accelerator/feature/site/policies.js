@@ -2,14 +2,14 @@
  * Copyright: Copyright 2023 SAP SE or an SAP affiliate company and cdc-accelerator contributors
  * License: Apache-2.0
  */
-import ToolkitPolicies from '../sap-cdc-toolkit/copyConfig/policies/policies.js'
-import ToolkitPolicyOptions from '../sap-cdc-toolkit/copyConfig/policies/policyOptions.js'
-import { removePropertyFromObjectCascading } from '../sap-cdc-toolkit/copyConfig/objectHelper.js'
+import ToolkitPolicies from '../../sap-cdc-toolkit/copyConfig/policies/policies.js'
+import ToolkitPolicyOptions from '../../sap-cdc-toolkit/copyConfig/policies/policyOptions.js'
+import { removePropertyFromObjectCascading } from '../../sap-cdc-toolkit/copyConfig/objectHelper.js'
 import fs from 'fs'
 import path from 'path'
-import { clearDirectoryContents } from '../utils/utils.js'
-import SiteFeature from './siteFeature.js'
-import { SRC_DIRECTORY, BUILD_DIRECTORY } from './constants.js'
+import { clearDirectoryContents } from '../../utils/utils.js'
+import SiteFeature from '../siteFeature.js'
+import { SRC_DIRECTORY, BUILD_DIRECTORY } from '../../core/constants.js'
 
 export default class Policies extends SiteFeature {
     static POLICIES_FILE_NAME = 'policies.json'

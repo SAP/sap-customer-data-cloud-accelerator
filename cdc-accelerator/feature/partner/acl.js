@@ -1,8 +1,8 @@
 import path from 'path'
 import fs from 'fs'
-import { SRC_DIRECTORY, BUILD_DIRECTORY } from './constants.js'
-import client from '../sap-cdc-toolkit/gigya/client.js'
-import Feature from './feature.js'
+import { SRC_DIRECTORY, BUILD_DIRECTORY } from '../../core/constants.js'
+import client from '../../sap-cdc-toolkit/gigya/client.js'
+import Feature from '../../core/feature.js'
 export default class ACL extends Feature {
     #credentials
     constructor(credentials) {

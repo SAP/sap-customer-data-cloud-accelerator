@@ -2,12 +2,12 @@
  * Copyright: Copyright 2023 SAP SE or an SAP affiliate company and cdc-accelerator contributors
  * License: Apache-2.0
  */
-import ToolkitWebSdk from '../sap-cdc-toolkit/copyConfig/websdk/websdk.js'
-import { CDC_ACCELERATOR_DIRECTORY } from './constants.js'
+import ToolkitWebSdk from '../../sap-cdc-toolkit/copyConfig/websdk/websdk.js'
+import { CDC_ACCELERATOR_DIRECTORY } from '../../core/constants.js'
 import fs from 'fs'
 import path from 'path'
-import { cleanJavaScriptModuleBoilerplateWebSdk, replaceFilenamesWithFileContents } from '../utils/utils.js'
-import SiteFeature from './siteFeature.js'
+import { cleanJavaScriptModuleBoilerplateWebSdk, replaceFilenamesWithFileContents } from '../../utils/utils.js'
+import SiteFeature from '../siteFeature.js'
 
 export default class WebSdk extends SiteFeature {
     static #TEMPLATE_WEB_SDK_FILE = path.join(CDC_ACCELERATOR_DIRECTORY, 'templates', 'defaultWebSdk.js')

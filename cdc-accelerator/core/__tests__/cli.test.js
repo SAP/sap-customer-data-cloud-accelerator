@@ -2,14 +2,14 @@
  * Copyright: Copyright 2023 SAP SE or an SAP affiliate company and cdc-accelerator contributors
  * License: Apache-2.0
  */
-import CLI from './cli.js'
-import { getSiteFeature, credentials, config } from './test.common.js'
-import Accelerator from './accelerator.js'
-import PartnerFeature from './partnerFeature.js'
-import { Operations } from './constants.js'
+import CLI from '../cli.js'
+import { getSiteFeature, credentials, config } from '../../feature/test.common.js'
+import Accelerator from '../accelerator.js'
+import PartnerFeature from '../../feature/partnerFeature.js'
+import { Operations } from '../constants.js'
 
-jest.mock('./accelerator.js')
-jest.mock('./configuration.js')
+jest.mock('../accelerator.js')
+jest.mock('../../feature/configuration.js')
 
 describe('CLI test suite', () => {
     const processExecutable = 'cdc-accelerator/feature/index.js'

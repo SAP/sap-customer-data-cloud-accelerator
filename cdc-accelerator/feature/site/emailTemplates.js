@@ -2,14 +2,14 @@
  * Copyright: Copyright 2023 SAP SE or an SAP affiliate company and cdc-accelerator contributors
  * License: Apache-2.0
  */
-import ToolkitEmail from '../sap-cdc-toolkit/copyConfig/emails/emailConfiguration.js'
-import ToolkitEmailOptions from '../sap-cdc-toolkit/copyConfig/emails/emailOptions.js'
+import ToolkitEmail from '../../sap-cdc-toolkit/copyConfig/emails/emailConfiguration.js'
+import ToolkitEmailOptions from '../../sap-cdc-toolkit/copyConfig/emails/emailOptions.js'
 import fs from 'fs'
 import path from 'path'
 import Mustache from 'mustache'
-import SiteFeature from './siteFeature.js'
-import { BUILD_DIRECTORY, SRC_DIRECTORY } from './constants.js'
-import EmailTemplateNameTranslator from '../sap-cdc-toolkit/emails/emailTemplateNameTranslator.js'
+import SiteFeature from '../siteFeature.js'
+import { BUILD_DIRECTORY, SRC_DIRECTORY } from '../../core/constants.js'
+import EmailTemplateNameTranslator from '../../sap-cdc-toolkit/emails/emailTemplateNameTranslator.js'
 
 export default class EmailTemplates extends SiteFeature {
     static FOLDER_LOCALES = 'locales'
