@@ -14,6 +14,7 @@ import PermissionGroups from '../feature/partner/permissionGroups.js'
 import Accelerator from './accelerator.js'
 import EmailTemplates from '../feature/site/emailTemplates.js'
 import Configuration from '../feature/configuration.js'
+import smsTemplates from '../feature/site/smsTemplates.js'
 
 export default class CLI {
     siteFeature
@@ -26,6 +27,7 @@ export default class CLI {
         siteFeature.register(new Policies(credentials))
         siteFeature.register(new WebScreenSets(credentials))
         siteFeature.register(new EmailTemplates(credentials))
+        siteFeature.register(new smsTemplates(credentials))
         return siteFeature
     }
 
