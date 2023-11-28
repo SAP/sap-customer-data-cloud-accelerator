@@ -4,7 +4,7 @@ import fs from 'fs'
 import WebSdk from '../webSdk.js'
 import axios from 'axios'
 import path from 'path'
-import { SRC_DIRECTORY, BUILD_DIRECTORY } from '../../../constants.js'
+import { SRC_DIRECTORY, BUILD_DIRECTORY } from '../../utils/constants.js'
 import { credentials, apiKey, srcSiteDirectory } from '../../test.common.js'
 
 jest.mock('axios')

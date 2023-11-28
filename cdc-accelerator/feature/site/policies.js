@@ -7,7 +7,7 @@ import ToolkitPolicyOptions from '../../sap-cdc-toolkit/copyConfig/policies/poli
 import { removePropertyFromObjectCascading } from '../../sap-cdc-toolkit/copyConfig/objectHelper.js'
 import fs from 'fs'
 import path from 'path'
-import { clearDirectoryContents } from '../../utils/utils.js'
+import { clearDirectoryContents } from '../utils/utils.js'
 import SiteFeature from '../siteFeature.js'
 import { SRC_DIRECTORY, BUILD_DIRECTORY } from '../../core/constants.js'
 

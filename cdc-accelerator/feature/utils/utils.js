@@ -5,7 +5,7 @@
 import fs from 'fs'
 import path from 'path'
 
-import { FEATURE_NAME_LIST } from '../constants.js'
+import { FEATURE_NAME_LIST } from './constants.js'
 import { getPartnerID } from '../services/gigya/gigya.helpers.js'
 
 const parseArguments = ({ args, config }) => {

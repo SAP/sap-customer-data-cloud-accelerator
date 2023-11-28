@@ -6,7 +6,7 @@ import ToolkitWebSdk from '../../sap-cdc-toolkit/copyConfig/websdk/websdk.js'
 import { CDC_ACCELERATOR_DIRECTORY } from '../../core/constants.js'
 import fs from 'fs'
 import path from 'path'
-import { cleanJavaScriptModuleBoilerplateWebSdk, replaceFilenamesWithFileContents } from '../../utils/utils.js'
+import { cleanJavaScriptModuleBoilerplateWebSdk, replaceFilenamesWithFileContents } from '../utils/utils.js'
 import SiteFeature from '../siteFeature.js'
 
 export default class WebSdk extends SiteFeature {
