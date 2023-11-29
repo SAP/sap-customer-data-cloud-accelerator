@@ -104,6 +104,7 @@ const cleanJavaScriptModuleBoilerplateImportInline = (value) => {
     value = prependStringToEachLine(value, '    ')
 
     // Make module executable by wrapping in self executing function
+    value = value.replaceAll(`(exports['default'] = `, '')
     value = value.replaceAll(`var _default = `, 'return ')
     value = value.trimEnd()
 
@@ -147,6 +148,10 @@ const cleanJavaScriptModuleBoilerplateScreenSetEvents = (value) => {
     }
 
     // To make the module returnable, clean the object variable declaration and ; on the end of the object
+
+    if (value.indexOf("var _default = (exports['default'] = {") !== -1) {
+        value = value.replace("var _default = (exports['default'] = {", '{')
+    }
     if (value.indexOf('var _default = {') !== -1) {
         value = value.replace('var _default = {', '{')
     }
@@ -172,6 +177,7 @@ const cleanJavaScriptModuleBoilerplateScreenSetEvents = (value) => {
 const cleanJavaScriptModuleBoilerplateWebSdk = (value) => {
     value = value.trim()
 
+    value = value.substring(value.indexOf("var _default = (exports['default'] = {") + "var _default = (exports['default'] = {".length - 1)
     value = value.substring(value.indexOf('var _default = {') + 'var _default = {'.length - 1)
 
     if (value.indexOf(`exports['default'] = _default`) !== -1) {
