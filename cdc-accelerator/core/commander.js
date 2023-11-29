@@ -2,8 +2,8 @@
  * Copyright: Copyright 2023 SAP SE or an SAP affiliate company and cdc-accelerator contributors
  * License: Apache-2.0
  */
-import { Operations } from '../core/constants.js'
-import CLI from '../core/cli.js'
+import { Operations } from './constants.js'
+import CLI from './cli.js'
 import { program } from 'commander'
 import { execSync } from 'child_process'
 

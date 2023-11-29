@@ -1,4 +1,4 @@
-import { getSiteConfig, expectedGigyaResponseNok, expectedPoliciesResponse, expectedGigyaResponseOk } from '../../test.gigyaResponses.js'
+import { getSiteConfig, expectedGigyaResponseNok, expectedPoliciesResponse, expectedGigyaResponseOk } from '../../__tests__/test.gigyaResponses.js'
 import fs from 'fs'
 import path from 'path'
 import Policies from '../policies.js'

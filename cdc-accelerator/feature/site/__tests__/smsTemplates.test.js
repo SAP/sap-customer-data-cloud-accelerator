@@ -1,7 +1,7 @@
 import axios from 'axios'
 import SmsTemplates from '../smsTemplates.js'
 import { smsExpectedResponse } from '../test.gigyaResponse.sms.js'
-import { expectedGigyaResponseNok, getSiteConfig } from '../../test.gigyaResponses.js'
+import { expectedGigyaResponseNok, getSiteConfig } from '../../__tests__/test.gigyaResponses.js'
 import fs from 'fs'
 import path from 'path'
 import { credentials, apiKey, srcSiteDirectory } from '../../test.common.js'

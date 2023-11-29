@@ -5,7 +5,7 @@ import {
     expectedGigyaResponseNok,
     expectedPermissionGroupDataWithScope,
     expectedACLFileContent,
-} from '../../test.gigyaResponses.js'
+} from '../../__tests__/test.gigyaResponses.js'
 import fs from 'fs'
 import axios from 'axios'
 import path from 'path'
