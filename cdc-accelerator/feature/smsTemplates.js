@@ -2,6 +2,7 @@ import SmsConfiguration from '../sap-cdc-toolkit/copyConfig/sms/smsConfiguration
 import fs from 'fs'
 import path from 'path'
 import SiteFeature from './siteFeature.js'
+import { BUILD_DIRECTORY, SRC_DIRECTORY } from './constants.js'
 export default class SmsTemplates extends SiteFeature {
     static FOLDER_OTP = 'otp'
     static FOLDER_TFA = 'tfa'
@@ -71,7 +72,30 @@ export default class SmsTemplates extends SiteFeature {
         }
     }
 
+    build(siteDirectory) {
+        const srcFeaturePath = path.join(siteDirectory.replace(BUILD_DIRECTORY, SRC_DIRECTORY), this.getName())
+        const srcOtpPath = path.join(srcFeaturePath, SmsTemplates.FOLDER_OTP, SmsTemplates.FOLDER_GLOBAL_TEMPLATES)
+        const srcTfaPath = path.join(srcFeaturePath, SmsTemplates.FOLDER_TFA, SmsTemplates.FOLDER_GLOBAL_TEMPLATES)
+        const buildFeaturePath = path.join(siteDirectory, this.getName())
+
+        this.#buildTemplates(srcOtpPath, buildFeaturePath, 'otp')
+        this.#buildTemplates(srcTfaPath, buildFeaturePath, 'tfa')
+    }
+
+    #buildTemplates(srcTemplatesPath, buildFeaturePath, templateType) {
+        fs.readdirSync(srcTemplatesPath).forEach((templateFile) => {
+            const language = path.parse(templateFile).name
+            const templateContent = fs.readFileSync(path.join(srcTemplatesPath, templateFile), { encoding: 'utf8' })
+
+            const outputDirectory = path.join(buildFeaturePath, templateType)
+            this.createDirectoryIfNotExists(outputDirectory)
+            fs.writeFileSync(path.join(outputDirectory, `${language}.txt`), templateContent)
+        })
+    }
     reset(siteDirectory) {
-        this.deleteDirectory(path.join(siteDirectory, this.getName()))
+        const directory = path.join(siteDirectory, this.getName())
+        if (fs.existsSync(directory)) {
+            fs.rmdirSync(directory, { recursive: true })
+        }
     }
 }

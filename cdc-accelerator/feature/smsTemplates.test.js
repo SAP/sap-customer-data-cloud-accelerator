@@ -4,7 +4,7 @@ import { smsExpectedResponse } from './test.gigyaResponse.sms.js'
 import { expectedGigyaResponseNok, getSiteConfig } from './test.gigyaResponses.js'
 import fs from 'fs'
 import path from 'path'
-import { credentials, apiKey, srcSiteDirectory } from './test.common.js'
+import { credentials, siteDomain, apiKey, srcSiteDirectory, buildSiteDirectory } from './test.common.js'
 
 jest.mock('fs')
 jest.mock('axios')
@@ -92,28 +92,45 @@ describe('Sms templates test suite', () => {
         })
     })
 
-    describe('Reset test suite', () => {
-        test('reset with existing folder', () => {
-            testReset(true)
+    describe('Build test suite', () => {
+        test('SMS templates are built successfully', async () => {
+            const readFileSyncMock = jest.spyOn(fs, 'readFileSync').mockImplementation((path) => {
+                if (path.includes('en.txt')) {
+                    return 'Your verification code is: {{code}}'
+                }
+                return ''
+            })
+            const writeFileSyncMock = jest.spyOn(fs, 'writeFileSync').mockImplementation(() => {})
+            fs.readdirSync.mockReturnValue(['en.txt'])
+            fs.existsSync.mockReturnValue(true)
+
+            await smsTemplates.build(buildSiteDirectory)
+
+            expect(readFileSyncMock).toHaveBeenCalledTimes(2)
+            expect(writeFileSyncMock).toHaveBeenCalledTimes(2)
+            expect(writeFileSyncMock).toHaveBeenCalledWith(
+                expect.stringContaining(path.join(buildSiteDirectory, 'SmsTemplates', 'otp', 'en.txt')),
+                'Your verification code is: {{code}}',
+            )
+            expect(writeFileSyncMock).toHaveBeenCalledWith(
+                expect.stringContaining(path.join(buildSiteDirectory, 'SmsTemplates', 'tfa', 'en.txt')),
+                'Your verification code is: {{code}}',
+            )
+
+            readFileSyncMock.mockRestore()
+            writeFileSyncMock.mockRestore()
         })
 
-        test('reset with non-existing folder', () => {
-            testReset(false)
+        test('No SMS templates are built when no files are present', async () => {
+            fs.readdirSync.mockReturnValue([])
+            fs.existsSync.mockReturnValue(true)
+            const writeFileSyncMock = jest.spyOn(fs, 'writeFileSync').mockImplementation(() => {})
+
+            await smsTemplates.build(buildSiteDirectory)
+
+            expect(writeFileSyncMock).not.toHaveBeenCalled()
+
+            writeFileSyncMock.mockRestore()
         })
-
-        function testReset(dirExists) {
-            fs.existsSync.mockReturnValue(dirExists)
-            fs.rmSync.mockReturnValue(undefined)
-
-            smsTemplates.reset(srcSiteDirectory)
-
-            const featureDirectory = path.join(srcSiteDirectory, smsTemplates.getName())
-            expect(fs.existsSync).toHaveBeenCalledWith(featureDirectory)
-            if (dirExists) {
-                expect(fs.rmSync).toHaveBeenCalledWith(featureDirectory, { force: true, recursive: true })
-            } else {
-                expect(fs.rmSync).not.toHaveBeenCalled()
-            }
-        }
     })
 })
