@@ -1,4 +1,4 @@
-import { apiKey, credentials, partnerIds, siteDomain, sites, config } from '../../feature/test.common.js'
+import { apiKey, credentials, partnerIds, siteDomain, sites, config } from '../../feature/__tests__/test.common.js'
 import SitesCache from '../sitesCache.js'
 import SiteFinderPaginated from '../../sap-cdc-toolkit/search/siteFinderPaginated.js'
 

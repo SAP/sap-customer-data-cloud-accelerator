@@ -6,7 +6,7 @@ import { SRC_DIRECTORY, BUILD_DIRECTORY } from '../../../core/constants.js'
 import axios from 'axios'
 import ToolkitPolicyOptions from '../../../sap-cdc-toolkit/copyConfig/policies/policyOptions.js'
 import { removePropertyFromObjectCascading } from '../../../sap-cdc-toolkit/copyConfig/objectHelper.js'
-import { credentials, siteDomain, apiKey, srcSiteDirectory } from '../../test.common.js'
+import { credentials, siteDomain, apiKey, srcSiteDirectory } from '../../__tests__/test.common.js'
 jest.mock('fs')
 jest.mock('axios')
 

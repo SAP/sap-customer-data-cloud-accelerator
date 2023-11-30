@@ -1,4 +1,4 @@
-import { sites } from '../../feature/test.common.js'
+import { sites } from '../../feature/__tests__/test.common.js'
 import { acceleratorCommonTests, accelerator, siteFeatures, partnerFeatures } from './accelerator.common.test.js'
 import { Operations } from '../constants.js'
 

@@ -3,8 +3,8 @@
  * License: Apache-2.0
  */
 
-import { CONFIG_FILENAME, Operations } from '../core/constants.js'
-import SitesCache from '../core/sitesCache.js'
+import { CONFIG_FILENAME, Operations } from './constants.js'
+import SitesCache from './sitesCache.js'
 import fs from 'fs'
 
 export default class Configuration {

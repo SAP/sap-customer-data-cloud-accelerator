@@ -1,11 +1,11 @@
 import path from 'path'
-import { SRC_DIRECTORY, BUILD_DIRECTORY, SITES_DIRECTORY, Operations } from '../core/constants.js'
-import SiteFeature from './siteFeature.js'
-import Schema from './site/schema.js'
-import WebSdk from './site/webSdk.js'
-import Policies from './site/policies.js'
-import PartnerFeature from './partnerFeature.js'
-import PermissionGroups from './partner/permissionGroups.js'
+import { SRC_DIRECTORY, BUILD_DIRECTORY, SITES_DIRECTORY, Operations } from '../../core/constants.js'
+import SiteFeature from '../siteFeature.js'
+import Schema from '../site/schema.js'
+import WebSdk from '../site/webSdk.js'
+import Policies from '../site/policies.js'
+import PartnerFeature from '../partnerFeature.js'
+import PermissionGroups from '../partner/permissionGroups.js'
 
 export const credentials = {
     userKey: 'userKey',

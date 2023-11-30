@@ -13,7 +13,7 @@ import PartnerFeature from '../feature/partnerFeature.js'
 import PermissionGroups from '../feature/partner/permissionGroups.js'
 import Accelerator from './accelerator.js'
 import EmailTemplates from '../feature/site/emailTemplates.js'
-import Configuration from '../feature/configuration.js'
+import Configuration from './configuration.js'
 import smsTemplates from '../feature/site/smsTemplates.js'
 
 export default class CLI {

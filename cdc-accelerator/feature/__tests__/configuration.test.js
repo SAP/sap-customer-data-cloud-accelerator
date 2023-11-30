@@ -1,5 +1,5 @@
-import Configuration from '../configuration.js'
-import { config, credentials, sites } from '../test.common.js'
+import Configuration from '../../core/configuration.js'
+import { config, credentials, sites } from './test.common.js'
 import SitesCache from '../../core/sitesCache.js'
 import { CONFIG_FILENAME, Operations } from '../../core/constants.js'
 import fs from 'fs'

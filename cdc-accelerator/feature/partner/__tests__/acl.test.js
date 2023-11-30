@@ -3,7 +3,7 @@ import fs from 'fs'
 import axios from 'axios'
 import path from 'path'
 import { expectedGigyaResponseNok, expectedGigyaResponseOk, expectedAclResponse, expectedPermissionGroupsResponse, expectedACLFileContent } from '../../__tests__/test.gigyaResponses.js'
-import { credentials, partnerBuildDirectory, partnerBaseDirectory } from '../../test.common.js'
+import { credentials, partnerBuildDirectory, partnerBaseDirectory } from '../../__tests__/test.common.js'
 jest.mock('axios')
 jest.mock('fs')
 

@@ -34,7 +34,10 @@
     "jest": {
         "testPathIgnorePatterns": [
             "<rootDir>/build/",
-            "cdc-accelerator/feature/__tests__/test.gigyaResponses.js"
+            "cdc-accelerator/feature/__tests__/test.gigyaResponses.js",
+            "cdc-accelerator/feature/site/__tests__/test.gigyaResponse.sms.js",
+            "cdc-accelerator/feature/site/__tests__/test.gigyaResponses.emails.js",
+            "cdc-accelerator/feature/__tests__/test.common.js"
         ],
         "coveragePathIgnorePatterns": [
             "cdc-accelerator/scripts/"

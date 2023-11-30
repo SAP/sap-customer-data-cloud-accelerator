@@ -9,7 +9,7 @@ import {
 import fs from 'fs'
 import axios from 'axios'
 import path from 'path'
-import { credentials, partnerBaseDirectory, partnerBuildDirectory } from '../../test.common.js'
+import { credentials, partnerBaseDirectory, partnerBuildDirectory } from '../../__tests__/test.common.js'
 import PermissionGroups from '../permissionGroups.js'
 jest.mock('axios')
 jest.mock('fs')

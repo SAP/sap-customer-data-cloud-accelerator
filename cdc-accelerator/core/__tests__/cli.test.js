@@ -3,13 +3,13 @@
  * License: Apache-2.0
  */
 import CLI from '../cli.js'
-import { getSiteFeature, credentials, config } from '../../feature/test.common.js'
+import { getSiteFeature, credentials, config } from '../../feature/__tests__/test.common.js'
 import Accelerator from '../accelerator.js'
 import PartnerFeature from '../../feature/partnerFeature.js'
 import { Operations } from '../constants.js'
 
 jest.mock('../accelerator.js')
-jest.mock('../../feature/configuration.js')
+jest.mock('../configuration.js')
 
 describe('CLI test suite', () => {
     const processExecutable = 'cdc-accelerator/feature/index.js'

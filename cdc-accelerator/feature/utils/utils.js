@@ -5,70 +5,6 @@
 import fs from 'fs'
 import path from 'path'
 
-import { FEATURE_NAME_LIST } from './constants.js'
-import { getPartnerID } from '../services/gigya/gigya.helpers.js'
-
-const parseArguments = ({ args, config }) => {
-    let [, , featureName, environment] = args
-
-    // If no feature selected, deploy all features and the environment might be in the featureName variable
-    if (!FEATURE_NAME_LIST.includes(featureName)) {
-        environment = featureName
-        featureName = undefined
-    }
-
-    let sites
-    if (environment && Array.isArray(config[environment])) {
-        sites = config[environment]
-    }
-    // If source is object with single apiKey, convert to array
-    else if (!Array.isArray(config) && config.apiKey) {
-        config = [config]
-    }
-
-    if (!environment && Array.isArray(config)) {
-        sites = config
-    }
-
-    return { sites, featureName, environment }
-}
-
-const getPartnerId = async (gigya, apiKey) => {
-    const partnerIDResponse = await getPartnerID(gigya, {
-        query: `select partnerID, siteID, baseDomain from sites where apiKey="${apiKey}"`,
-    })
-
-    if (!partnerIDResponse || partnerIDResponse.errorCode) {
-        console.error(`Failed to retrieve partnerID for apiKey "${apiKey}"`)
-        throw new Error(JSON.stringify(partnerIDResponse))
-    }
-
-    return partnerIDResponse.data[0].partnerID
-}
-
-const runWithProgress = ({ name, pathMustExist, run }) => {
-    if (fs.existsSync(pathMustExist)) {
-        process.stdout.write(`- ${name}: `)
-        run()
-        process.stdout.clearLine()
-        process.stdout.cursorTo(0)
-        console.log(`- ${name}: \x1b[32m%s\x1b[0m`, `Done`)
-    } else {
-        console.log(`- ${name}: %s`, `Skip`)
-    }
-}
-const runWithProgressAsync = async ({ name, pathMustExist, run }) => {
-    if (fs.existsSync(pathMustExist)) {
-        process.stdout.write(`- ${name}: `)
-        await run()
-        process.stdout.clearLine()
-        process.stdout.cursorTo(0)
-        console.log(`- ${name}: \x1b[32m%s\x1b[0m`, `Done`)
-    } else {
-        console.log(`- ${name}: %s`, `Skip`)
-    }
-}
-
 const clearDirectoryContents = (directory) => {
     if (fs.existsSync(directory)) {
         fs.rmSync(directory, { recursive: true, force: true })
@@ -381,9 +317,6 @@ const readJsonFile = (filePath) => {
 }
 
 export {
-    parseArguments,
-    runWithProgress,
-    runWithProgressAsync,
     clearDirectoryContents,
     cleanJavaScriptModuleBoilerplateWebSdk,
     cleanJavaScriptModuleBoilerplateScreenSetEvents,
@@ -393,5 +326,4 @@ export {
     bundleInlineImportScripts,
     processMainScriptInlineImports,
     readJsonFile,
-    getPartnerId,
 }

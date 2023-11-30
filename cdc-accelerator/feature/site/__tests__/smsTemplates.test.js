@@ -1,10 +1,10 @@
 import axios from 'axios'
 import SmsTemplates from '../smsTemplates.js'
-import { smsExpectedResponse } from '../test.gigyaResponse.sms.js'
+import { smsExpectedResponse } from './test.gigyaResponse.sms.js'
 import { expectedGigyaResponseNok, getSiteConfig } from '../../__tests__/test.gigyaResponses.js'
 import fs from 'fs'
 import path from 'path'
-import { credentials, apiKey, srcSiteDirectory } from '../../test.common.js'
+import { credentials, apiKey, srcSiteDirectory } from '../../__tests__/test.common.js'
 
 jest.mock('fs')
 jest.mock('axios')

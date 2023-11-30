@@ -1,10 +1,10 @@
 import { expectedGigyaResponseNok, expectedGigyaResponseOk, getSiteConfig } from '../../__tests__/test.gigyaResponses.js'
-import { emailsExpectedResponse, emailTemplate, getEmailsExpectedResponseWithMinimumTemplates } from '../test.gigyaResponses.emails.js'
+import { emailsExpectedResponse, emailTemplate, getEmailsExpectedResponseWithMinimumTemplates } from './test.gigyaResponses.emails.js'
 import fs from 'fs'
 import EmailTemplates from '../emailTemplates.js'
 import axios from 'axios'
 import path from 'path'
-import { credentials, siteDomain, apiKey, srcSiteDirectory, buildSiteDirectory } from '../../test.common.js'
+import { credentials, siteDomain, apiKey, srcSiteDirectory, buildSiteDirectory } from '../../__tests__/test.common.js'
 import ToolkitEmailOptions from '../../../sap-cdc-toolkit/copyConfig/emails/emailOptions.js'
 import EmailTemplateNameTranslator from '../../../sap-cdc-toolkit/emails/emailTemplateNameTranslator.js'
 

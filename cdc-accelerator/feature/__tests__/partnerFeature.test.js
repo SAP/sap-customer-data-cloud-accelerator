@@ -2,7 +2,7 @@ import { getSiteConfig } from './test.gigyaResponses.js'
 import fs from 'fs'
 import path from 'path'
 import axios from 'axios'
-import { partnerIds, sites, spyAllFeaturesMethod, getPartnerFeature, buildSiteDirectory, getBaseFolder } from '../test.common.js'
+import { partnerIds, sites, spyAllFeaturesMethod, getPartnerFeature, buildSiteDirectory, getBaseFolder } from './test.common.js'
 import Feature from '../../core/feature.js'
 import { Operations } from '../../core/constants.js'
 

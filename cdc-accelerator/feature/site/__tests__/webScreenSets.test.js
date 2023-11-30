@@ -1,4 +1,4 @@
-import { apiKey, buildSiteDirectory, credentials, siteDomain, srcSiteDirectory } from '../../test.common.js'
+import { apiKey, buildSiteDirectory, credentials, siteDomain, srcSiteDirectory } from '../../__tests__/test.common.js'
 import axios from 'axios'
 import { expectedGigyaResponseNok, expectedGigyaResponseOk, getExpectedScreenSetResponse, getSiteConfig, screenSetIds, screenSetTemplate } from '../../__tests__/test.gigyaResponses.js'
 import fs from 'fs'
