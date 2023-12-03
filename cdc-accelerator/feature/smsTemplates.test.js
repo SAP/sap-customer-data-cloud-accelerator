@@ -91,7 +91,30 @@ describe('Sms templates test suite', () => {
             )
         })
     })
+    describe('Reset test suite', () => {
+        test('reset with existing folder', () => {
+            testReset(true)
+        })
 
+        test('reset with non-existing folder', () => {
+            testReset(false)
+        })
+
+        function testReset(dirExists) {
+            fs.existsSync.mockReturnValue(dirExists)
+            fs.rmSync.mockReturnValue(undefined)
+
+            smsTemplates.reset(srcSiteDirectory)
+
+            const featureDirectory = path.join(srcSiteDirectory, smsTemplates.getName())
+            expect(fs.existsSync).toHaveBeenCalledWith(featureDirectory)
+            if (dirExists) {
+                expect(fs.rmSync).toHaveBeenCalledWith(featureDirectory, { force: true, recursive: true })
+            } else {
+                expect(fs.rmSync).not.toHaveBeenCalled()
+            }
+        }
+    })
     describe('Build test suite', () => {
         test('SMS templates are built successfully', async () => {
             const readFileSyncMock = jest.spyOn(fs, 'readFileSync').mockImplementation((path) => {
@@ -110,11 +133,11 @@ describe('Sms templates test suite', () => {
             expect(writeFileSyncMock).toHaveBeenCalledTimes(2)
             expect(writeFileSyncMock).toHaveBeenCalledWith(
                 expect.stringContaining(path.join(buildSiteDirectory, 'SmsTemplates', 'otp', 'en.txt')),
-                'Your verification code is: {{code}}',
+                smsExpectedResponse.templates.otp.globalTemplates.templates.en,
             )
             expect(writeFileSyncMock).toHaveBeenCalledWith(
                 expect.stringContaining(path.join(buildSiteDirectory, 'SmsTemplates', 'tfa', 'en.txt')),
-                'Your verification code is: {{code}}',
+                smsExpectedResponse.templates.tfa.globalTemplates.templates.en,
             )
 
             readFileSyncMock.mockRestore()

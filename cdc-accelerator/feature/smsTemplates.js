@@ -78,8 +78,8 @@ export default class SmsTemplates extends SiteFeature {
         const srcTfaPath = path.join(srcFeaturePath, SmsTemplates.FOLDER_TFA, SmsTemplates.FOLDER_GLOBAL_TEMPLATES)
         const buildFeaturePath = path.join(siteDirectory, this.getName())
 
-        this.#buildTemplates(srcOtpPath, buildFeaturePath, 'otp')
-        this.#buildTemplates(srcTfaPath, buildFeaturePath, 'tfa')
+        this.#buildTemplates(srcOtpPath, buildFeaturePath, SmsTemplates.FOLDER_OTP)
+        this.#buildTemplates(srcTfaPath, buildFeaturePath, SmsTemplates.FOLDER_TFA)
     }
 
     #buildTemplates(srcTemplatesPath, buildFeaturePath, templateType) {
@@ -93,9 +93,6 @@ export default class SmsTemplates extends SiteFeature {
         })
     }
     reset(siteDirectory) {
-        const directory = path.join(siteDirectory, this.getName())
-        if (fs.existsSync(directory)) {
-            fs.rmdirSync(directory, { recursive: true })
-        }
+        this.deleteDirectory(path.join(siteDirectory, this.getName()))
     }
 }
