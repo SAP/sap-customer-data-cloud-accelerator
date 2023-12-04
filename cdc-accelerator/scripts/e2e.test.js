@@ -15,7 +15,7 @@ describe('End to end test suite', () => {
         const resultStr = result.toString()
         console.log(resultStr)
         const matched = resultStr.match(/Fail|Error/)
-        const testSuccess = matched ? 0 : 1
-        expect(testSuccess).toBe(1)
+        const testSuccess = matched ? false : true
+        expect(testSuccess).toBe(true)
     }
 })
