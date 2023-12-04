@@ -104,7 +104,7 @@ const cleanJavaScriptModuleBoilerplateImportInline = (value) => {
     value = prependStringToEachLine(value, '    ')
 
     // Make module executable by wrapping in self executing function
-    value = value.replaceAll(`(exports['default'] = `, '')
+    value = value.replaceAll(`(exports['default'] = `, '(')
     value = value.replaceAll(`var _default = `, 'return ')
     value = value.trimEnd()
 
@@ -150,7 +150,7 @@ const cleanJavaScriptModuleBoilerplateScreenSetEvents = (value) => {
     // To make the module returnable, clean the object variable declaration and ; on the end of the object
 
     if (value.indexOf("var _default = (exports['default'] = {") !== -1) {
-        value = value.replace("var _default = (exports['default'] = {", '{')
+        value = value.replace("var _default = (exports['default'] = {", '({')
     }
     if (value.indexOf('var _default = {') !== -1) {
         value = value.replace('var _default = {', '{')
@@ -175,10 +175,15 @@ const cleanJavaScriptModuleBoilerplateScreenSetEvents = (value) => {
 }
 
 const cleanJavaScriptModuleBoilerplateWebSdk = (value) => {
+    const newProjectBabelGeneratedString = "var _default = (exports['default'] = {"
     value = value.trim()
 
-    value = value.substring(value.indexOf("var _default = (exports['default'] = {") + "var _default = (exports['default'] = {".length - 1)
-    value = value.substring(value.indexOf('var _default = {') + 'var _default = {'.length - 1)
+    let idx = value.indexOf(newProjectBabelGeneratedString)
+    if (idx !== -1) {
+        value = value.substring(value.indexOf(newProjectBabelGeneratedString) + newProjectBabelGeneratedString.length - 1)
+    } else {
+        value = value.substring(value.indexOf('var _default = {') + 'var _default = {'.length - 1)
+    }
 
     if (value.indexOf(`exports['default'] = _default`) !== -1) {
         value = value.substring(0, value.indexOf(`exports['default'] = _default`))
@@ -192,14 +197,31 @@ const cleanJavaScriptModuleBoilerplateWebSdk = (value) => {
     if (value.slice(-1) === ';') {
         value = value.substring(0, value.length - 1)
     }
-
+    if (value.slice(-1) === ')') {
+        value = value.substring(0, value.length - 1)
+    }
     return value
 }
 
-const processMainScriptInlineImports = (value) => {
+const getHelperAndEventFunctions = (value) => {
+    let eventAndHelperFunctionsSeparator = '\n({\n'
     // Separate events and helper functions in different strings
-    const helperFunctions = value.substring(0, value.indexOf('\n{\n'))
-    let eventFunctions = value.substring(value.indexOf('\n{\n'))
+    let idx = value.indexOf(eventAndHelperFunctionsSeparator)
+    if (idx !== -1) {
+        const helperFunctions = value.substring(0, idx)
+        let eventFunctions = value.substring(idx)
+        return { helperFunctions, eventFunctions }
+    }
+    eventAndHelperFunctionsSeparator = '\n{\n'
+    // Separate events and helper functions in different strings
+    idx = value.indexOf(eventAndHelperFunctionsSeparator)
+    const helperFunctions = value.substring(0, idx)
+    let eventFunctions = value.substring(idx)
+    return { helperFunctions, eventFunctions }
+}
+
+const processMainScriptInlineImports = (value) => {
+    let { helperFunctions, eventFunctions } = getHelperAndEventFunctions(value)
 
     // Inject helper functions into each event
     if (helperFunctions.trim().length > 5) {

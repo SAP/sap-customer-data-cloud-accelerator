@@ -10,13 +10,13 @@
         <script src="../cdc-accelerator/preview/preview.js"></script>
         <script>
             // Show only the necessary screens for this demo
-            const filterScreens = []
+            const filter = []
 
             preview({
                 origin: 'deploy', // 'source' or 'deploy'
                 useLocalWebSdk: true, // For development use "true", to test the online version use "false" (it takes time to clear the cached online version)
                 useLocalScreenSets: true, // Use local screensets js code from build/ folder
-                filterScreens, // Show only the necessary screens for this demo
+                filter, // Show only the necessary screens for this demo
             })
         </script>
         <!-- /Preview -->
