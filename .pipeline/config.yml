@@ -49,7 +49,7 @@ steps:
         projectName: 'sap-customer-data-cloud-accelerator'
         teamName: '/CxServer/SP/SAP/PI/SMEDevelopmentSupport/SMECoreB1Program'
         preset: '100205' # https://github.wdf.sap.corp/pages/Security-Testing/doc/checkmarx/Presets/
-        filterPattern: '!**/node_modules/**, !**/.xmake/**, !**/sap-cdc-toolkit/**,!cdc-accelerator/core/__tests__**,!cdc-accelerator/feature/__tests__**,!cdc-accelerator/feature/partner/__tests__**,!src/**,!cdc-accelerator/feature/site/__tests__**,!build/**,!**/cdc-accelerator/scripts/**, **/feature/**, **/*.html, **/*.xml, **/*.js, **/*.ts'
+        filterPattern: '!**/node_modules/**, !**/.xmake/**, !**/sap-cdc-toolkit/**,!**/__tests__/**,!src/**,!build/**,!**/cdc-accelerator/scripts/**, **/feature/**, **/*.html, **/*.xml, **/*.js, **/*.ts'
     sapCumulusUpload:
         pipelineId: '696f688f-dfb9-4149-9532-ba2791daf458'
         cumulusFileCredentialsId: 'hyperspace-cumulusupload-3103'
