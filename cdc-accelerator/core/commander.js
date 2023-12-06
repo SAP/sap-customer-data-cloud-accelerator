@@ -6,7 +6,7 @@ import { Operations } from './constants.js'
 import CLI from './cli.js'
 import { program } from 'commander'
 import { execSync } from 'child_process'
-import ProjectSetup from './postInstall/projectSetup.js'
+import ProjectSetup from '../postInstall/projectSetup.js'
 
 export default class Commander {
     static #BABEL_COMMAND = 'npx babel --delete-dir-on-start src -d build'
