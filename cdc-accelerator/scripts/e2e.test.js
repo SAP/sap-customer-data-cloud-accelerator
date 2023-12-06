@@ -1,5 +1,5 @@
 import { execSync } from 'child_process'
-import { Operations } from '../feature/constants.js'
+import { Operations } from '../core/constants.js'
 
 describe('End to end test suite', () => {
     test(`Reset all features`, () => {
@@ -15,7 +15,7 @@ describe('End to end test suite', () => {
         const resultStr = result.toString()
         console.log(resultStr)
         const matched = resultStr.match(/Fail|Error/)
-        const testSuccess = matched ? 0 : 1
-        expect(testSuccess).toBe(1)
+        const testSuccess = matched ? false : true
+        expect(testSuccess).toBe(true)
     }
 })

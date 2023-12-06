@@ -3,8 +3,8 @@
  * License: Apache-2.0
  */
 import SiteConfigurator from '../sap-cdc-toolkit/configurator/siteConfigurator.js'
-import Feature from './feature.js'
-import { Operations, SITES_DIRECTORY, SRC_DIRECTORY, BUILD_DIRECTORY } from './constants.js'
+import Feature from '../core/feature.js'
+import { Operations, SITES_DIRECTORY, SRC_DIRECTORY, BUILD_DIRECTORY } from '../core/constants.js'
 import path from 'path'
 
 export default class SiteFeature extends Feature {
