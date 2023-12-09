@@ -6,7 +6,7 @@
 import readline from 'readline'
 import Feature from './feature.js'
 import { Operations, SRC_DIRECTORY } from './constants.js'
-import HookInit from '../feature/hookInit.js'
+import HookInit from './hookInit.js'
 
 export default class Accelerator {
     siteFeatures
