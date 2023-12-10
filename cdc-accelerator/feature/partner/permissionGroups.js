@@ -1,17 +1,19 @@
 import PartnerFeature from '../partnerFeature.js'
 import path from 'path'
 import fs from 'fs'
-import { clearDirectoryContents } from '../utils/utils.js'
 import { SRC_DIRECTORY, BUILD_DIRECTORY } from '../../core/constants.js'
 import client from '../../sap-cdc-toolkit/gigya/client.js'
 import ACL from './acl.js'
+import Feature from "../../core/feature.js";
 export default class PermissionGroups extends PartnerFeature {
     static PERMISSIONGROUP_FILE_NAME = 'PermissionGroups.json'
     #acls
+    #feature
 
     constructor(credentials) {
         super(credentials)
         this.#acls = new ACL(this.credentials)
+        this.#feature = new Feature(this.credentials)
     }
 
     getName() {
@@ -43,7 +45,7 @@ export default class PermissionGroups extends PartnerFeature {
     }
     build(directory) {
         const buildFeaturePath = path.join(directory, this.getName())
-        clearDirectoryContents(buildFeaturePath)
+        this.#feature.clearDirectoryContents(buildFeaturePath)
         const srcFeaturePath = buildFeaturePath.replace(BUILD_DIRECTORY, SRC_DIRECTORY)
         this.copyFileFromSrcToBuild(srcFeaturePath, PermissionGroups.PERMISSIONGROUP_FILE_NAME)
         this.#acls.build(buildFeaturePath)

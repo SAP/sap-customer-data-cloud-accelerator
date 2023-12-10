@@ -7,15 +7,17 @@ import ToolkitPolicyOptions from '../../sap-cdc-toolkit/copyConfig/policies/poli
 import { removePropertyFromObjectCascading } from '../../sap-cdc-toolkit/copyConfig/objectHelper.js'
 import fs from 'fs'
 import path from 'path'
-import { clearDirectoryContents } from '../utils/utils.js'
 import SiteFeature from '../siteFeature.js'
 import { SRC_DIRECTORY, BUILD_DIRECTORY } from '../../core/constants.js'
+import Feature from "../../core/feature.js";
 
 export default class Policies extends SiteFeature {
     static POLICIES_FILE_NAME = 'policies.json'
+    #feature
 
     constructor(credentials) {
         super(credentials)
+        this.#feature = new Feature(this.credentials)
     }
 
     getName() {
@@ -47,7 +49,7 @@ export default class Policies extends SiteFeature {
 
     build(sitePath) {
         const buildFeaturePath = path.join(sitePath, this.getName())
-        clearDirectoryContents(buildFeaturePath)
+        this.#feature.clearDirectoryContents(buildFeaturePath)
         const srcFeaturePath = buildFeaturePath.replace(BUILD_DIRECTORY, SRC_DIRECTORY)
         this.copyFileFromSrcToBuild(srcFeaturePath, Policies.POLICIES_FILE_NAME)
     }

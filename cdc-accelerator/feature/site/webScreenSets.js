@@ -7,7 +7,6 @@ import fs from 'fs'
 import path from 'path'
 import SiteFeature from '../siteFeature.js'
 import { BUILD_DIRECTORY, CDC_ACCELERATOR_DIRECTORY, SRC_DIRECTORY } from '../../core/constants.js'
-import { bundleInlineImportScripts, cleanJavaScriptModuleBoilerplateScreenSetEvents, processMainScriptInlineImports } from '../utils/utils.js'
 
 export default class WebScreenSets extends SiteFeature {
     static TEMPLATE_SCREEN_SET_JAVASCRIPT_FILE = path.join(CDC_ACCELERATOR_DIRECTORY, 'templates', 'defaultScreenSetJavaScript.js')
@@ -131,13 +130,13 @@ export default class WebScreenSets extends SiteFeature {
         let javascript = fs.readFileSync(jsFilename, { encoding: 'utf8' })
 
         // Bundle all imports in one file
-        javascript = bundleInlineImportScripts(javascript, buildScreenSetPath)
+        javascript = this.#bundleInlineImportScripts(javascript, buildScreenSetPath)
 
         // Remove screen-set events file boilerplate
-        javascript = cleanJavaScriptModuleBoilerplateScreenSetEvents(javascript)
+        javascript = this.#cleanJavaScriptModuleBoilerplateScreenSetEvents(javascript)
 
         // Bundle inline imported scripts to the start of the events where they were used
-        javascript = processMainScriptInlineImports(javascript)
+        javascript = this.#processMainScriptInlineImports(javascript)
 
         // Replace JavaScript file
         fs.writeFileSync(jsFilename, javascript)
@@ -150,14 +149,236 @@ export default class WebScreenSets extends SiteFeature {
         })
     }
 
-    #buildHtmlFiles(buildScreenSetPath, screenSetID) {
-        // Get html files from src/ because they are not compiled by babel
-        // const htmlBuildFilename = path.join(buildScreenSetPath, `${screenSetID}.html`)
-        // const htmlSrcFilename = path.join(buildScreenSetPath.replace(BUILD_DIRECTORY, SRC_DIRECTORY), `${screenSetID}.html`)
-        // const html = !fs.existsSync(htmlSrcFilename) ? '' : fs.readFileSync(htmlSrcFilename, { encoding: 'utf8' })
-        // if (html) {
-        //     fs.writeFileSync(htmlBuildFilename, html)
-        // }
+    #bundleInlineImportScripts(value, directory) {
+        let importedVariables = []
+        let lines = value.split('\n')
+        lines = lines.map((line) => {
+            if (!line.includes('require(')) {
+                return line
+            }
+
+            const variableInitialization = line.substring(0, line.indexOf(' = '))
+            const variableName = variableInitialization.substring(variableInitialization.lastIndexOf(' ') + 1)
+            importedVariables.push(variableName)
+
+            let filename = line.substring(line.indexOf("require('") + "require('".length)
+            filename = filename.substring(0, filename.indexOf("')"))
+
+            // Add .js to filename if it does not have it
+            if (filename.slice(-3) !== '.js') {
+                filename = filename + '.js'
+            }
+
+            const filePath = path.join(directory, filename)
+
+            try {
+                // Read file
+                let fileContent = fs.readFileSync(filePath, { encoding: 'utf8' })
+
+                // Recursively replace filenames with file contents for subsequent files
+                fileContent = this.#bundleInlineImportScripts(fileContent, path.dirname(filePath))
+
+                // Remove module boilerplate
+                fileContent = this.#cleanJavaScriptModuleBoilerplateImportInline(fileContent)
+
+                // Replace import with file content (Remove opening and closing of "_interopRequireDefault(")
+                line = `${variableInitialization} = ${fileContent}`
+            } catch (err) {
+                console.error('Not found.', err)
+                return
+            }
+            return line
+        })
+
+        value = lines.join('\n')
+
+        // Cleanup ['default'] in event calling
+        // NOTE: For now, do NOT support destructuring on imports, example: import { filterBlocklist } from './preference-center-ProfileUpdate.utils.js'
+        if (importedVariables.length) {
+            importedVariables.forEach((variableName) => {
+                value = value.replaceAll(`${variableName}['default']`, variableName)
+            })
+        }
+
+        return value
+    }
+
+    #cleanJavaScriptModuleBoilerplateImportInline(value) {
+        // Remove _interopRequireDefault function
+        value = value
+            .replaceAll(
+                `function _interopRequireDefault(obj) {
+    return obj && obj.__esModule ? obj : { default: obj };
+}`,
+                '',
+            )
+            .trim()
+
+        // Clean start of the module
+        if (value.indexOf(`exports['default'] = void 0;\n`) !== -1) {
+            value = value.substring(value.indexOf(`exports['default'] = void 0;\n`) + `exports['default'] = void 0;\n`.length)
+        }
+
+        // Clean end of the module
+        if (value.indexOf(`exports['default'] = _default`) !== -1) {
+            value = value.substring(0, value.indexOf(`exports['default'] = _default`))
+        }
+        if (value.indexOf(`exports["default"] = _default`) !== -1) {
+            value = value.substring(0, value.indexOf(`exports["default"] = _default`))
+        }
+
+        // Add tabulation spaces based on current line
+        value = this.#prependStringToEachLine(value, '    ')
+
+        // Make module executable by wrapping in self executing function
+        value = value.replaceAll(`var _default = `, 'return ')
+        value = value.trimEnd()
+
+        // // Make module executable by wrapping in self executing function
+        // value = value.replaceAll(`var _default = `, 'var _module_object = ')
+        // value = value.trimEnd()
+        // value = value + '\n    return _module_object;'
+
+        // // Wrap value in try catch to catch errors [DOESN'T WORK IN HERE, ONLY WHEN RUNNING THE FUNCTION ON THE EVENT]
+        // value = `try {\n${value}\n} catch (e) {\n    console.error(e);\n}`
+        // value = prependStringToEachLine(value, '    ')
+
+        // Wrap in self executing function
+        value = `(function() {\n${value}\n})();`
+
+        return value
+    }
+
+    #cleanJavaScriptModuleBoilerplateScreenSetEvents(value) {
+        // Remove _interopRequireDefault function
+        value = value
+            .replaceAll(
+                `function _interopRequireDefault(obj) {
+    return obj && obj.__esModule ? obj : { default: obj };
+}`,
+                '',
+            )
+            .trim()
+
+        // Clean start of the module
+        if (value.indexOf(`exports['default'] = void 0;\n`) !== -1) {
+            value = value.substring(value.indexOf(`exports['default'] = void 0;\n`) + `exports['default'] = void 0;\n`.length)
+        }
+
+        // Clean end of the module
+        if (value.indexOf(`exports['default'] = _default`) !== -1) {
+            value = value.substring(0, value.indexOf(`exports['default'] = _default`))
+        }
+        if (value.indexOf(`exports["default"] = _default`) !== -1) {
+            value = value.substring(0, value.indexOf(`exports["default"] = _default`))
+        }
+
+        // To make the module returnable, clean the object variable declaration and ; on the end of the object
+        if (value.indexOf('var _default = {') !== -1) {
+            value = value.replace('var _default = {', '{')
+        }
+        value = value.trimEnd()
+        if (value.slice(-1) === ';') {
+            value = value.substring(0, value.length - 1)
+        }
+
+        // Change CDC event functions
+        value = value.replaceAll('function onError', 'function')
+        value = value.replaceAll('function onBeforeValidation', 'function')
+        value = value.replaceAll('function onBeforeSubmit', 'function')
+        value = value.replaceAll('function onSubmit', 'function')
+        value = value.replaceAll('function onAfterSubmit', 'function')
+        value = value.replaceAll('function onBeforeScreenLoad', 'function')
+        value = value.replaceAll('function onAfterScreenLoad', 'function')
+        value = value.replaceAll('function onFieldChanged', 'function')
+        value = value.replaceAll('function onHide', 'function')
+
+        return value
+    }
+
+    #processMainScriptInlineImports(value){
+        // Separate events and helper functions in different strings
+        const helperFunctions = value.substring(0, value.indexOf('\n{\n'))
+        let eventFunctions = value.substring(value.indexOf('\n{\n'))
+
+        // Inject helper functions into each event
+        if (helperFunctions.trim().length > 5) {
+            // Get each function in helperFunctions into a string array
+            let helperFunctionsArray = helperFunctions.split('\nvar _')
+
+            // Add "var _" back to each function because it was removed on "split"
+            helperFunctionsArray = helperFunctionsArray.map((helperFunction) => (helperFunction.substring(0, 'var _'.length) !== 'var _' ? 'var _' + helperFunction : helperFunction))
+
+            // Trim functions
+            helperFunctionsArray = helperFunctionsArray.map((helperFunction) => helperFunction.trim())
+
+            // Loop each functions and prepend it to each event where it's used
+            helperFunctionsArray.forEach((helperFunction) => {
+                // Get the name of the helper function
+                const helperFunctionName = helperFunction.substring('var '.length, helperFunction.indexOf(' = (function'))
+
+                // Get the events where the helper function is used
+                let currentEventName
+                const helperFunctionsInEvents = eventFunctions.split('\n').reduce((acc, line) => {
+                    // If line is an event function, get event name
+                    if (line.substring(0, 6) === '    on') {
+                        currentEventName = line.substring(line.indexOf('on'), line.indexOf(': function'))
+                    }
+                    // If line does not include helper function, return false
+                    if (!line.includes(`${helperFunctionName}.`) && !line.includes(`${helperFunctionName}[`) && !line.includes(`${helperFunctionName}(`)) {
+                        return acc
+                    }
+                    if (acc.find((entry) => entry.eventName === currentEventName && entry.helperFunctionName === helperFunctionName)) {
+                        return acc
+                    }
+                    acc.push({ eventName: currentEventName, helperFunctionName })
+                    return acc
+                }, [])
+
+                // Wrap imported function calls in try catch to catch errors
+                eventFunctions = eventFunctions
+                    .split('\n')
+                    .map((line) => {
+                        // If line does not include helper function, return false
+                        if (!line.includes(`${helperFunctionName}.`) && !line.includes(`${helperFunctionName}[`) && !line.includes(`${helperFunctionName}(`)) {
+                            return line
+                        }
+
+                        let tabulationSpaces = ' '.repeat(line.length - line.trimStart().length)
+                        line = `${tabulationSpaces}try {\n    ${line}\n${tabulationSpaces}} catch (e) {\n${tabulationSpaces}    console.error(e);\n${tabulationSpaces}}`
+
+                        return line
+                    })
+                    .join('\n')
+
+                // Prepend helper functions to events where they are used
+                eventFunctions = eventFunctions
+                    .split('\n')
+                    .map((line) => {
+                        // If line is an event function and is has any helper functions to be prepended, prepend them
+                        if (helperFunctionsInEvents.find((entry) => line.includes(`    ${entry.eventName}: function(`))) {
+                            // Add tabulation spaces based on current line
+                            let tabulationSpaces = ' '.repeat(line.length - line.trimStart().length + 4)
+                            const tabulatedHelperFunction = this.#prependStringToEachLine(helperFunction, tabulationSpaces)
+                            line = line + '\n' + tabulatedHelperFunction
+                        }
+                        return line
+                    })
+                    .join('\n')
+            })
+
+            // Replace with the injected helper functions in the events
+            value = eventFunctions
+        }
+
+        return value.trim()
+    }
+
+    #prependStringToEachLine(value, valueToPrepend, skipLines = 0) {
+        value
+            .split('\n')
+            .map((line, index) => (index >= skipLines ? `${valueToPrepend}${line}` : line))
+            .join('\n')
     }
 
     #buildCssFiles(buildScreenSetPath, screenSetID) {

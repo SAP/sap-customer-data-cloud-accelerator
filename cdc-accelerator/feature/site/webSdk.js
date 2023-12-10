@@ -6,7 +6,6 @@ import ToolkitWebSdk from '../../sap-cdc-toolkit/copyConfig/websdk/websdk.js'
 import { CDC_ACCELERATOR_DIRECTORY } from '../../core/constants.js'
 import fs from 'fs'
 import path from 'path'
-import { cleanJavaScriptModuleBoilerplateWebSdk, replaceFilenamesWithFileContents } from '../utils/utils.js'
 import SiteFeature from '../siteFeature.js'
 
 export default class WebSdk extends SiteFeature {
@@ -46,16 +45,84 @@ export default class WebSdk extends SiteFeature {
         const buildFileName = path.join(buildFeaturePath, `${this.getName()}.js`)
 
         let webSdkContent = fs.readFileSync(buildFileName, { encoding: 'utf8' })
-        webSdkContent = cleanJavaScriptModuleBoilerplateWebSdk(webSdkContent)
+        webSdkContent = this.#cleanJavaScriptModuleBoilerplateWebSdk(webSdkContent)
 
         // Find filenames and replace them with the contents of the file
-        let webSdkBundled = replaceFilenamesWithFileContents(webSdkContent, buildFeaturePath).trim()
+        let webSdkBundled = this.#replaceFilenamesWithFileContents(webSdkContent, buildFeaturePath).trim()
 
         // Remove webSdk/ directory
         fs.rmSync(buildFeaturePath, { recursive: true, force: true })
         fs.mkdirSync(buildFeaturePath)
         // Write the result file
         fs.writeFileSync(buildFileName, webSdkBundled)
+    }
+
+    #cleanJavaScriptModuleBoilerplateWebSdk(value) {
+        value = value.trim()
+
+        value = value.substring(value.indexOf('var _default = {') + 'var _default = {'.length - 1)
+
+        if (value.indexOf(`exports['default'] = _default`) !== -1) {
+            value = value.substring(0, value.indexOf(`exports['default'] = _default`))
+        }
+        if (value.indexOf(`exports["default"] = _default`) !== -1) {
+            value = value.substring(0, value.indexOf(`exports["default"] = _default`))
+        }
+
+        value = value.trim()
+
+        if (value.slice(-1) === ';') {
+            value = value.substring(0, value.length - 1)
+        }
+
+        return value
+    }
+
+    #replaceFilenamesWithFileContents(value, directory) {
+        let lines = value.split('\n')
+        lines = lines.map((line) => {
+            if (!line.includes(".js'")) {
+                return line
+            }
+            // Skip if line is it's commented
+            if (line.trimStart().indexOf('//') === 0) {
+                return line
+            }
+
+            // Get filename from line
+            let filename = line.substring(0, line.indexOf(".js'") + 3)
+            filename = filename.substring(filename.lastIndexOf("'") + 1)
+
+            // Add .js to filename if it does not have it
+            if (filename.slice(-3) !== '.js') {
+                filename = filename + '.js'
+            }
+
+            try {
+                // Read file
+                let fileContent = fs.readFileSync(path.join(directory, filename), { encoding: 'utf8' })
+                fileContent = this.#cleanJavaScriptModuleBoilerplateWebSdk(fileContent)
+
+                // Recursively replace filenames with file contents for subsequent files
+                const fileDirectory = path.join(directory, path.dirname(filename))
+                fileContent = replaceFilenamesWithFileContents(fileContent, fileDirectory)
+
+                // Add tabulation spaces based on current line
+                let tabulationSpaces = ' '.repeat(line.length - line.trimStart().length)
+                fileContent = prependStringToEachLine(fileContent, tabulationSpaces, 1)
+
+                // Replace filename with file content
+                line = line.replace(`'${filename}'`, fileContent)
+            } catch (err) {
+                console.log('Not found.', err)
+                return
+            }
+            return line
+        })
+
+        value = lines.join('\n')
+
+        return value
     }
 
     async deploy(apiKey, siteConfig, siteDirectory) {
