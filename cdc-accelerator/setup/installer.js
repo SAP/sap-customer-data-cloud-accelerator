@@ -1,8 +1,8 @@
 import { execSync } from 'child_process'
 import fs from 'fs'
 import path from 'path'
-import { CONFIGURATION_FILES, PACKAGE_JSON_FILE_NAME } from './constants.js'
-import { CDC_ACCELERATOR_DIRECTORY, CONFIG_FILENAME, SRC_DIRECTORY } from '../core/constants.js'
+import { CONFIGURATION_FILES, PACKAGE_JSON_FILE_NAME, PREVIEW_DIRECTORY } from './constants.js'
+import { CDC_ACCELERATOR_DIRECTORY, CONFIG_FILENAME, Operations, SRC_DIRECTORY } from '../core/constants.js'
 
 export default class Installer {
     install(newProjectPackageJson, acceleratorInstallationPath, acceleratorPackageJson) {
@@ -17,7 +17,7 @@ export default class Installer {
     #generatePackageJsonProperties(newProjectPackageJson, acceleratorPackageJson) {
         this.#copyAcceleratorDependencies('devDependencies', newProjectPackageJson, acceleratorPackageJson)
         this.#generateNpmScripts(newProjectPackageJson)
-        this.#generateJestConfiguration(newProjectPackageJson, acceleratorPackageJson)
+        this.#generateJestConfiguration(newProjectPackageJson)
         this.#copyDependency('light-server', newProjectPackageJson, acceleratorPackageJson)
         fs.writeFileSync(PACKAGE_JSON_FILE_NAME, JSON.stringify(newProjectPackageJson, null, 4))
     }
@@ -31,13 +31,13 @@ export default class Installer {
     #generateNpmScripts(newProjectPackageJson) {
         return Object.assign(
             newProjectPackageJson['scripts'],
-            this.#generateScript('init'),
-            this.#generateScript('reset'),
-            this.#generateScript('build'),
-            this.#generateScript('deploy'),
-            this.#generateScript('start'),
+            this.#generateScript(Operations.init),
+            this.#generateScript(Operations.reset),
+            this.#generateScript(Operations.build),
+            this.#generateScript(Operations.deploy),
+            this.#generateScript(Operations.start),
             this.#generateScript('setup'),
-            { test: 'jest --collect-coverage --coverage --watch=all --coverageDirectory=coverage/unit ./src' },
+            { test: `jest --collect-coverage --coverage --watch=all --coverageDirectory=coverage/unit ${SRC_DIRECTORY}` },
         )
     }
 
@@ -45,7 +45,7 @@ export default class Installer {
         return { [name]: `npx cdc ${name}` }
     }
 
-    #generateJestConfiguration(newProjectPackageJson, acceleratorPackageJson) {
+    #generateJestConfiguration(newProjectPackageJson) {
         const jest = {
             testPathIgnorePatterns: ['build/'],
             coveragePathIgnorePatterns: ['build/'],
@@ -110,7 +110,7 @@ export default class Installer {
             // do not overwrite index.html file
             return
         }
-        const templatePath = path.join(acceleratorInstallationPath, CDC_ACCELERATOR_DIRECTORY, 'templates', 'preview', indexHtmlFileName)
+        const templatePath = path.join(acceleratorInstallationPath, CDC_ACCELERATOR_DIRECTORY, 'templates', PREVIEW_DIRECTORY, indexHtmlFileName)
         let content = fs.readFileSync(templatePath, { encoding: 'utf8' })
         content = this.#replaceLinks(content, acceleratorInstallationPath)
         if (!fs.existsSync(SRC_DIRECTORY)) {
@@ -120,8 +120,8 @@ export default class Installer {
     }
 
     #replaceLinks(content, acceleratorInstallationPath) {
-        const oldLink = path.join('..', CDC_ACCELERATOR_DIRECTORY, 'preview')
-        const newLink = path.join('..', acceleratorInstallationPath, CDC_ACCELERATOR_DIRECTORY, 'preview')
+        const oldLink = path.join('..', CDC_ACCELERATOR_DIRECTORY, PREVIEW_DIRECTORY)
+        const newLink = path.join('..', acceleratorInstallationPath, CDC_ACCELERATOR_DIRECTORY, PREVIEW_DIRECTORY)
         let lines = content.split('\n')
         lines = lines.map((line) => {
             if (line.includes(oldLink)) {
