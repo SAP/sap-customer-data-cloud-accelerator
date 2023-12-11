@@ -38,6 +38,12 @@ export default class Configuration {
         return JSON.parse(fs.readFileSync(CONFIG_FILENAME, { encoding: 'utf8' }))
     }
 
+    static isValid(operation, environment) {
+        const apiKeys = this.#getConfiguration(operation, environment)
+        const validApiKeys = apiKeys.filter(({ apiKey }) => apiKey.length > 0)
+        return validApiKeys.length > 0 ? true : false
+    }
+
     static #writeCacheToFile(cache) {
         const configContent = Configuration.getAllConfiguration()
         configContent['cache'] = cache
