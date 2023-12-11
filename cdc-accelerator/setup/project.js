@@ -4,7 +4,7 @@ import Uninstaller from './uninstaller.js'
 import { PACKAGE_JSON_FILE_NAME, SAP_ORG } from './constants.js'
 import Installer from './installer.js'
 
-export default class ProjectSetup {
+export default class Project {
     setup() {
         const newProjectPackageJson = JSON.parse(fs.readFileSync(PACKAGE_JSON_FILE_NAME, { encoding: 'utf8' }))
         const dependencyName = this.#getAcceleratorDependencyName(newProjectPackageJson.devDependencies)

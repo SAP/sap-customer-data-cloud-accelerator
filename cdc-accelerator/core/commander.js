@@ -6,7 +6,7 @@ import { Operations } from './constants.js'
 import CLI from './cli.js'
 import { program } from 'commander'
 import { execSync } from 'child_process'
-import ProjectSetup from '../setup/projectSetup.js'
+import Project from '../setup/project.js'
 
 export default class Commander {
     static #BABEL_COMMAND = 'npx babel --delete-dir-on-start src -d build'
@@ -45,7 +45,7 @@ export default class Commander {
     }
 
     async #setup() {
-        new ProjectSetup().setup()
+        new Project().setup()
     }
 
     #createCommandWithSharedOptions(name) {
