@@ -1,5 +1,6 @@
 import * as dataTest from './dataTest'
-import WebScreenSets from '../../cdc-accelerator/preview/preview'
+import * as preview from '../../cdc-accelerator/preview/preview'
+
 // import * as dataTest from '../../build/SAP Customer Data Cloud/Sites/cdc-accelerator.preferences-center.com/EmailTemplates/doubleOptIn/doubleOptIn-en.html'
 describe('template spec', () => {
     it('All feature test', async () => {
@@ -20,6 +21,7 @@ describe('template spec', () => {
 
         cy.visit('4_tqmAZeYVLPfPl9SYu_iFxA#/4_G9hcFjoYwj860VKK2eCILA/EmailTemplates/emailVerification/en')
         validateSites('#cdc-initializer--select-api-key-container', 8, options)
+
         checkEmail('4_tqmAZeYVLPfPl9SYu_iFxA#/4_G9hcFjoYwj860VKK2eCILA/EmailTemplates/emailVerification/en')
         // cy.readFile('build/SAP Customer Data Cloud/Sites/cdc-accelerator.preferences-center.com/EmailTemplates/doubleOptIn/doubleOptIn-en.html').then((content) => {
         //     console.log('htmlContent', content)
@@ -90,6 +92,7 @@ describe('template spec', () => {
 
     function checkEmail(pathFile) {
         // const webScreen = new WebScreenSets()
+        console.log('window', window.gigya)
         const splitString = pathFile.split('/')
         const getLang = splitString[splitString.length - 1]
         const getApikey = splitString[1]
@@ -108,6 +111,12 @@ describe('template spec', () => {
                         expect(content).to.contain(paragraph)
                     })
             })
+        })
+        cy.window().then((win) => {
+            const gigya = win.gigya
+            cy.wait(5000)
+            //  gigya.accounts.showScreenSet({ ...screenSetEvents, screenSet: params.groupID, startScreen: params.itemID, containerID: WebScreenSets.#PREVIEW_CONTAINER_ID })
+            console.log('asdasd', gigya)
         })
     }
 

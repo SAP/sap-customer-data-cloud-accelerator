@@ -11,7 +11,7 @@
         "reset": "cdc-accelerator/core/index.js reset",
         "build": "cdc-accelerator/core/index.js build",
         "deploy": "cdc-accelerator/core/index.js deploy",
-        "start": "cdc-accelerator/core/index.js start",
+        "start": "node cdc-accelerator/core/index.js start",
         "update-sap-cdc-toolkit": "node cdc-accelerator/scripts/updateSapCdcToolkit.js",
         "cypress:open": "cypress open",
         "cypress:stage": "cypress run --browser chrome",
