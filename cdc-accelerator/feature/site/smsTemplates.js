@@ -1,7 +1,10 @@
 import SmsConfiguration from '../../sap-cdc-toolkit/copyConfig/sms/smsConfiguration.js'
+import Sms from '../../sap-cdc-toolkit/sms/sms.js'
 import fs from 'fs'
 import path from 'path'
 import SiteFeature from '../siteFeature.js'
+import { BUILD_DIRECTORY, SRC_DIRECTORY } from '../../core/constants.js'
+
 export default class SmsTemplates extends SiteFeature {
     static FOLDER_OTP = 'otp'
     static FOLDER_TFA = 'tfa'
@@ -17,61 +20,146 @@ export default class SmsTemplates extends SiteFeature {
     }
 
     async init(apiKey, siteConfig, siteDirectory) {
-        if (!siteConfig || typeof siteConfig.dataCenter === 'undefined') {
-            throw new Error('Configuration error: siteConfig or siteConfig.dataCenter is undefined.')
-        }
-
         const smsConfig = new SmsConfiguration(this.credentials, apiKey, siteConfig.dataCenter)
         const smsResponse = await smsConfig.get()
-        if (smsResponse.errorCode) {
-            throw new Error(JSON.stringify(smsResponse))
-        }
+        if (smsResponse.errorCode) throw new Error(JSON.stringify(smsResponse))
 
-        const featureDirectory = path.join(siteDirectory, this.getName())
+        const featureDirectory = path.join(siteDirectory, this.constructor.name)
         this.createDirectory(featureDirectory)
-
-        this.generateOtpTemplateFiles(smsResponse, featureDirectory)
-        this.generateTfaTemplateFiles(smsResponse, featureDirectory)
+        this.#processTemplates(smsResponse, featureDirectory, SmsTemplates.FOLDER_OTP)
+        this.#processTemplates(smsResponse, featureDirectory, SmsTemplates.FOLDER_TFA)
     }
 
-    generateOtpTemplateFiles(smsResponse, featureDirectory) {
-        const featureDirectoryOtp = path.join(featureDirectory, SmsTemplates.FOLDER_OTP)
-        super.createDirectoryIfNotExists(featureDirectoryOtp)
-        this.#generateTemplateFiles(smsResponse.templates.otp, featureDirectoryOtp)
+    #processTemplates(smsResponse, featureDirectory, templateType) {
+        const featureDirectoryType = path.join(featureDirectory, templateType)
+        this.createDirectoryIfNotExists(featureDirectoryType)
+        this.#createAndWriteTemplates(smsResponse.templates[templateType].globalTemplates, featureDirectoryType)
+        this.#createAndWriteCountryCodeTemplates(smsResponse.templates[templateType].templatesPerCountryCode, featureDirectoryType)
     }
 
-    generateTfaTemplateFiles(smsResponse, featureDirectory) {
-        const featureDirectoryTfa = path.join(featureDirectory, SmsTemplates.FOLDER_TFA)
-        super.createDirectoryIfNotExists(featureDirectoryTfa)
-        this.#generateTemplateFiles(smsResponse.templates.tfa, featureDirectoryTfa)
-    }
+    #createAndWriteTemplates(globalTemplates, featureDirectoryType) {
+        const templatesDir = path.join(featureDirectoryType, SmsTemplates.FOLDER_GLOBAL_TEMPLATES)
+        this.createDirectoryIfNotExists(templatesDir)
 
-    #generateTemplateFiles(smsResponse, featureDirectory) {
-        const globalTemplates = smsResponse.globalTemplates.templates
-        const templatesPerCountryCode = smsResponse.templatesPerCountryCode
-        const globalTemplatesDir = path.join(featureDirectory, SmsTemplates.FOLDER_GLOBAL_TEMPLATES)
-        super.createDirectoryIfNotExists(globalTemplatesDir)
-
-        for (const [language, template] of Object.entries(globalTemplates)) {
-            const filePath = path.join(globalTemplatesDir, `${language}.txt`)
+        Object.entries(globalTemplates.templates).forEach(([language, template]) => {
+            const filePath = path.join(templatesDir, `${language}${language === globalTemplates.defaultLanguage ? '-default' : ''}.txt`)
             fs.writeFileSync(filePath, template)
-        }
+        })
+    }
 
-        const templatesPerCountryCodeDir = path.join(featureDirectory, SmsTemplates.FOLDER_TEMPLATES_PER_COUNTRY_CODE)
-        super.createDirectoryIfNotExists(templatesPerCountryCodeDir)
+    #createAndWriteCountryCodeTemplates(templatesPerCountryCode, featureDirectoryType) {
+        const countryCodeDir = path.join(featureDirectoryType, SmsTemplates.FOLDER_TEMPLATES_PER_COUNTRY_CODE)
+        this.createDirectoryIfNotExists(countryCodeDir)
 
-        for (const [countryCode, countryTemplates] of Object.entries(templatesPerCountryCode)) {
-            const countryDir = path.join(templatesPerCountryCodeDir, countryCode)
-            super.createDirectoryIfNotExists(countryDir)
+        Object.entries(templatesPerCountryCode).forEach(([countryCode, countryTemplates]) => {
+            const countryDir = path.join(countryCodeDir, countryCode)
+            this.createDirectoryIfNotExists(countryDir)
 
-            for (const [language, template] of Object.entries(countryTemplates.templates)) {
+            Object.entries(countryTemplates.templates).forEach(([language, template]) => {
                 const filePath = path.join(countryDir, `${language}.txt`)
                 fs.writeFileSync(filePath, template)
+            })
+        })
+    }
+
+    build(siteDirectory) {
+        this.#buildTemplates(siteDirectory, SmsTemplates.FOLDER_OTP)
+        this.#buildTemplates(siteDirectory, SmsTemplates.FOLDER_TFA)
+    }
+
+    #buildTemplates(siteDirectory, templateType) {
+        const srcPath = path.join(siteDirectory.replace(BUILD_DIRECTORY, SRC_DIRECTORY), this.constructor.name, templateType)
+        const buildFeaturePath = path.join(siteDirectory, this.constructor.name, templateType)
+        this.#copyTemplateFiles(srcPath, buildFeaturePath)
+    }
+
+    #copyTemplateFiles(srcPath, buildFeaturePath) {
+        this.createDirectoryIfNotExists(buildFeaturePath)
+
+        fs.readdirSync(srcPath).forEach((fileOrFolder) => {
+            const srcFilePath = path.join(srcPath, fileOrFolder)
+            const outputFilePath = path.join(buildFeaturePath, fileOrFolder)
+            if (fs.statSync(srcFilePath).isDirectory()) {
+                this.#copyTemplateFiles(srcFilePath, outputFilePath)
+            } else {
+                fs.copyFileSync(srcFilePath, outputFilePath)
             }
+        })
+    }
+
+    async deploy(apiKey, siteConfig, siteDirectory) {
+        const buildFeatureDirectory = path.join(siteDirectory, this.constructor.name)
+        const payload = this.#prepareSmsPayload(buildFeatureDirectory)
+        const sms = new Sms(this.credentials.userKey, this.credentials.secret)
+
+        const response = await sms.set(apiKey, siteConfig.dataCenter, payload)
+
+        if (response.errorCode !== 0) {
+            throw new Error(response.errorMessage || 'API error')
         }
+
+        return response
+    }
+
+    #prepareSmsPayload(buildFeatureDirectory) {
+        const payload = {
+            otp: { globalTemplates: { templates: {}, defaultLanguage: null }, templatesPerCountryCode: {} },
+            tfa: { globalTemplates: { templates: {}, defaultLanguage: null }, templatesPerCountryCode: {} },
+        }
+
+        this.#populateTemplatesFromDirectory(buildFeatureDirectory, payload, 'otp')
+        this.#populateTemplatesFromDirectory(buildFeatureDirectory, payload, 'tfa')
+        return payload
+    }
+
+    #populateTemplatesFromDirectory(buildFeatureDirectory, payload, templateType) {
+        const globalTemplatesDir = path.join(buildFeatureDirectory, templateType, SmsTemplates.FOLDER_GLOBAL_TEMPLATES)
+        this.#populateGlobalTemplatesFromDirectory(globalTemplatesDir, payload[templateType].globalTemplates)
+
+        const countryCodeDir = path.join(buildFeatureDirectory, templateType, SmsTemplates.FOLDER_TEMPLATES_PER_COUNTRY_CODE)
+        this.#populateTemplatesPerCountryCode(countryCodeDir, payload[templateType].templatesPerCountryCode)
+    }
+
+    #populateGlobalTemplatesFromDirectory(directory, globalTemplatesObj) {
+        if (!fs.existsSync(directory)) return
+
+        let defaultFiles = []
+        fs.readdirSync(directory).forEach((file) => {
+            const fullPath = path.join(directory, file)
+            const templateContent = fs.readFileSync(fullPath, 'utf8')
+            let language = file.replace('.txt', '').replace('-default', '')
+            if (file.endsWith('-default.txt')) {
+                globalTemplatesObj.defaultLanguage = language
+                defaultFiles.push(file)
+            }
+            globalTemplatesObj.templates[language] = templateContent
+        })
+
+        if (defaultFiles.length > 1) {
+            throw new Error(`There cannot be two default files in the same folder. Check the folder: ${directory}`)
+        }
+    }
+
+    #populateTemplatesPerCountryCode(countryCodeDir, targetObj) {
+        if (!fs.existsSync(countryCodeDir)) return
+
+        fs.readdirSync(countryCodeDir).forEach((countryCode) => {
+            const countryDir = path.join(countryCodeDir, countryCode)
+            if (!fs.statSync(countryDir).isDirectory()) return
+
+            targetObj[countryCode] = { templates: {}, defaultLanguage: null }
+            fs.readdirSync(countryDir).forEach((file) => {
+                const fullPath = path.join(countryDir, file)
+                const templateContent = fs.readFileSync(fullPath, 'utf8')
+                const language = path.basename(file, '.txt')
+                targetObj[countryCode].templates[language] = templateContent
+                if (file.endsWith('-default.txt')) targetObj[countryCode].defaultLanguage = language
+            })
+            if (!targetObj[countryCode].defaultLanguage) targetObj[countryCode].defaultLanguage = Object.keys(targetObj[countryCode].templates)[0]
+        })
     }
 
     reset(siteDirectory) {
-        this.deleteDirectory(path.join(siteDirectory, this.getName()))
+        this.deleteDirectory(path.join(siteDirectory, this.constructor.name))
     }
 }
