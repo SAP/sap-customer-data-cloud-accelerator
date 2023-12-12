@@ -10,6 +10,8 @@ import SiteFeature from '../siteFeature.js'
 
 export default class WebSdk extends SiteFeature {
     static #TEMPLATE_WEB_SDK_FILE = path.join(CDC_ACCELERATOR_DIRECTORY, 'templates', 'defaultWebSdk.js')
+    static #UTF8 = 'utf8'
+    static #JS_FILE_EXTENSION = '.js'
 
     constructor(credentials) {
         super(credentials)
@@ -23,7 +25,7 @@ export default class WebSdk extends SiteFeature {
         let { globalConf: originalWebSdk } = siteConfig
         // If globalConf is empty, get default template
         if (!originalWebSdk) {
-            originalWebSdk = fs.readFileSync(`${WebSdk.#TEMPLATE_WEB_SDK_FILE}`, { encoding: 'utf8' })
+            originalWebSdk = fs.readFileSync(`${WebSdk.#TEMPLATE_WEB_SDK_FILE}`, { encoding: WebSdk.#UTF8 })
         }
 
         // Wrap javascript in "module"
@@ -32,7 +34,7 @@ export default class WebSdk extends SiteFeature {
         this.createDirectory(featureDirectory)
 
         // Create new webSdk file
-        const fileName = path.join(featureDirectory, `${this.getName()}.js`)
+        const fileName = path.join(featureDirectory, `${this.getName()}${WebSdk.#JS_FILE_EXTENSION}`)
         fs.writeFileSync(fileName, webSdk)
     }
 
@@ -42,9 +44,9 @@ export default class WebSdk extends SiteFeature {
 
     build(sitePath) {
         const buildFeaturePath = path.join(sitePath, this.getName())
-        const buildFileName = path.join(buildFeaturePath, `${this.getName()}.js`)
+        const buildFileName = path.join(buildFeaturePath, `${this.getName()}${WebSdk.#JS_FILE_EXTENSION}`)
 
-        let webSdkContent = fs.readFileSync(buildFileName, { encoding: 'utf8' })
+        let webSdkContent = fs.readFileSync(buildFileName, { encoding: WebSdk.#UTF8 })
         webSdkContent = this.#cleanJavaScriptModuleBoilerplateWebSdk(webSdkContent)
 
         // Find filenames and replace them with the contents of the file
@@ -58,20 +60,26 @@ export default class WebSdk extends SiteFeature {
     }
 
     #cleanJavaScriptModuleBoilerplateWebSdk(value) {
-        value = value.trim()
-
-        value = value.substring(value.indexOf('var _default = {') + 'var _default = {'.length - 1)
-
-        if (value.indexOf(`exports['default'] = _default`) !== -1) {
-            value = value.substring(0, value.indexOf(`exports['default'] = _default`))
-        }
-        if (value.indexOf(`exports["default"] = _default`) !== -1) {
-            value = value.substring(0, value.indexOf(`exports["default"] = _default`))
-        }
+        const DEFAULT = 'default'
+        const VAR_DEFAULT = `var _${DEFAULT} = {`
+        const EXPORTS_DEFAULT_SINGLE_MARKS = `exports['${DEFAULT}'] = _${DEFAULT}`
+        const EXPORTS_DEFAULT_DOUBLE_MARKS = `exports["${DEFAULT}"] = _${DEFAULT}`
+        const SEMI_COLON = ';'
 
         value = value.trim()
 
-        if (value.slice(-1) === ';') {
+        value = value.substring(value.indexOf(VAR_DEFAULT) + VAR_DEFAULT.length - 1)
+
+        if (value.indexOf(EXPORTS_DEFAULT_SINGLE_MARKS) !== -1) {
+            value = value.substring(0, value.indexOf(EXPORTS_DEFAULT_SINGLE_MARKS))
+        }
+        if (value.indexOf(EXPORTS_DEFAULT_DOUBLE_MARKS) !== -1) {
+            value = value.substring(0, value.indexOf(EXPORTS_DEFAULT_DOUBLE_MARKS))
+        }
+
+        value = value.trim()
+
+        if (value.slice(-1) === SEMI_COLON) {
             value = value.substring(0, value.length - 1)
         }
 
@@ -79,9 +87,11 @@ export default class WebSdk extends SiteFeature {
     }
 
     #replaceFilenamesWithFileContents(value, directory) {
+        const JS_FILE_EXTENSION_FROM_LINE = ".js'"
+
         let lines = value.split('\n')
         lines = lines.map((line) => {
-            if (!line.includes(".js'")) {
+            if (!line.includes(JS_FILE_EXTENSION_FROM_LINE)) {
                 return line
             }
             // Skip if line is it's commented
@@ -90,17 +100,17 @@ export default class WebSdk extends SiteFeature {
             }
 
             // Get filename from line
-            let filename = line.substring(0, line.indexOf(".js'") + 3)
+            let filename = line.substring(0, line.indexOf(JS_FILE_EXTENSION_FROM_LINE) + 3)
             filename = filename.substring(filename.lastIndexOf("'") + 1)
 
             // Add .js to filename if it does not have it
-            if (filename.slice(-3) !== '.js') {
-                filename = filename + '.js'
+            if (filename.slice(-3) !== WebSdk.#JS_FILE_EXTENSION) {
+                filename = filename + WebSdk.#JS_FILE_EXTENSION
             }
 
             try {
                 // Read file
-                let fileContent = fs.readFileSync(path.join(directory, filename), { encoding: 'utf8' })
+                let fileContent = fs.readFileSync(path.join(directory, filename), { encoding: WebSdk.#UTF8 })
                 fileContent = this.#cleanJavaScriptModuleBoilerplateWebSdk(fileContent)
 
                 // Recursively replace filenames with file contents for subsequent files
@@ -127,9 +137,9 @@ export default class WebSdk extends SiteFeature {
 
     async deploy(apiKey, siteConfig, siteDirectory) {
         const buildFeatureDirectory = path.join(siteDirectory, this.getName())
-        const buildFileName = path.join(buildFeatureDirectory, `${this.getName()}.js`)
+        const buildFileName = path.join(buildFeatureDirectory, `${this.getName()}${WebSdk.#JS_FILE_EXTENSION}`)
         // Get bundled webSdk
-        const fileContent = fs.readFileSync(buildFileName, { encoding: 'utf8' })
+        const fileContent = fs.readFileSync(buildFileName, { encoding: WebSdk.#UTF8 })
         if (!fileContent || !fileContent.length) {
             throw new Error(`Invalid file: ${buildFileName}`)
         }

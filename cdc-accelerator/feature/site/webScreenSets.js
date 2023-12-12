@@ -318,53 +318,13 @@ export default class WebScreenSets extends SiteFeature {
                 const helperFunctionName = helperFunction.substring('var '.length, helperFunction.indexOf(' = (function'))
 
                 // Get the events where the helper function is used
-                let currentEventName
-                const helperFunctionsInEvents = eventFunctions.split('\n').reduce((acc, line) => {
-                    // If line is an event function, get event name
-                    if (line.substring(0, 6) === '    on') {
-                        currentEventName = line.substring(line.indexOf('on'), line.indexOf(': function'))
-                    }
-                    // If line does not include helper function, return false
-                    if (!line.includes(`${helperFunctionName}.`) && !line.includes(`${helperFunctionName}[`) && !line.includes(`${helperFunctionName}(`)) {
-                        return acc
-                    }
-                    if (acc.find((entry) => entry.eventName === currentEventName && entry.helperFunctionName === helperFunctionName)) {
-                        return acc
-                    }
-                    acc.push({ eventName: currentEventName, helperFunctionName })
-                    return acc
-                }, [])
+                const helperFunctionsInEvents = this.#getHelperFunctionsInEvents(eventFunctions, helperFunctionName)
 
                 // Wrap imported function calls in try catch to catch errors
-                eventFunctions = eventFunctions
-                    .split('\n')
-                    .map((line) => {
-                        // If line does not include helper function, return false
-                        if (!line.includes(`${helperFunctionName}.`) && !line.includes(`${helperFunctionName}[`) && !line.includes(`${helperFunctionName}(`)) {
-                            return line
-                        }
-
-                        let tabulationSpaces = ' '.repeat(line.length - line.trimStart().length)
-                        line = `${tabulationSpaces}try {\n    ${line}\n${tabulationSpaces}} catch (e) {\n${tabulationSpaces}    console.error(e);\n${tabulationSpaces}}`
-
-                        return line
-                    })
-                    .join('\n')
+                eventFunctions = this.#wrapFunctions(eventFunctions, helperFunctionName)
 
                 // Prepend helper functions to events where they are used
-                eventFunctions = eventFunctions
-                    .split('\n')
-                    .map((line) => {
-                        // If line is an event function and is has any helper functions to be prepended, prepend them
-                        if (helperFunctionsInEvents.find((entry) => line.includes(`    ${entry.eventName}: function(`))) {
-                            // Add tabulation spaces based on current line
-                            let tabulationSpaces = ' '.repeat(line.length - line.trimStart().length + 4)
-                            const tabulatedHelperFunction = this.#prependStringToEachLine(helperFunction, tabulationSpaces)
-                            line = line + '\n' + tabulatedHelperFunction
-                        }
-                        return line
-                    })
-                    .join('\n')
+                eventFunctions = this.#prependFunctionsToEvents(eventFunctions, helperFunctionsInEvents, helperFunction)
             })
 
             // Replace with the injected helper functions in the events
@@ -372,6 +332,58 @@ export default class WebScreenSets extends SiteFeature {
         }
 
         return value.trim()
+    }
+
+    #getHelperFunctionsInEvents(eventFunctions, helperFunctionName) {
+        let currentEventName
+        return eventFunctions.split('\n').reduce((acc, line) => {
+            // If line is an event function, get event name
+            if (line.substring(0, 6) === '    on') {
+                currentEventName = line.substring(line.indexOf('on'), line.indexOf(': function'))
+            }
+            // If line does not include helper function, return false
+            if (!line.includes(`${helperFunctionName}.`) && !line.includes(`${helperFunctionName}[`) && !line.includes(`${helperFunctionName}(`)) {
+                return acc
+            }
+            if (acc.find((entry) => entry.eventName === currentEventName && entry.helperFunctionName === helperFunctionName)) {
+                return acc
+            }
+            acc.push({ eventName: currentEventName, helperFunctionName })
+            return acc
+        }, [])
+    }
+
+    #wrapFunctions(eventFunctions, helperFunctionName) {
+        return eventFunctions
+            .split('\n')
+            .map((line) => {
+                // If line does not include helper function, return false
+                if (!line.includes(`${helperFunctionName}.`) && !line.includes(`${helperFunctionName}[`) && !line.includes(`${helperFunctionName}(`)) {
+                    return line
+                }
+
+                let tabulationSpaces = ' '.repeat(line.length - line.trimStart().length)
+                line = `${tabulationSpaces}try {\n    ${line}\n${tabulationSpaces}} catch (e) {\n${tabulationSpaces}    console.error(e);\n${tabulationSpaces}}`
+
+                return line
+            })
+            .join('\n')
+    }
+
+    #prependFunctionsToEvents(eventFunctions, helperFunctionsInEvents, helperFunction) {
+        return eventFunctions
+            .split('\n')
+            .map((line) => {
+                // If line is an event function and is has any helper functions to be prepended, prepend them
+                if (helperFunctionsInEvents.find((entry) => line.includes(`    ${entry.eventName}: function(`))) {
+                    // Add tabulation spaces based on current line
+                    let tabulationSpaces = ' '.repeat(line.length - line.trimStart().length + 4)
+                    const tabulatedHelperFunction = this.#prependStringToEachLine(helperFunction, tabulationSpaces)
+                    line = line + '\n' + tabulatedHelperFunction
+                }
+                return line
+            })
+            .join('\n')
     }
 
     #prependStringToEachLine(value, valueToPrepend, skipLines = 0) {
