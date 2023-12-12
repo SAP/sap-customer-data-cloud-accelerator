@@ -5,26 +5,20 @@
     "main": "index.js",
     "type": "module",
     "scripts": {
-        "test-old": "cross-env CI=true jest --collect-coverage --coverage --watch=all --coverageDirectory=coverage/unit ./cdc-accelerator",
-        "test": "cross-env CI=true npm run update-sap-cdc-toolkit && jest --collect-coverage --coverage --watch=all --coverageDirectory=coverage/unit ./cdc-accelerator/feature",
+        "test": "cross-env CI=true npm run update-sap-cdc-toolkit && jest --collect-coverage --coverage --watch=all --coverageDirectory=coverage/unit ./cdc-accelerator/core ./cdc-accelerator/feature",
         "test:e2e": "cross-env E2E=true CI=true jest -i cdc-accelerator/scripts",
-        "init-old": " cdc-accelerator/init/index.js",
-        "init": "cdc-accelerator/feature/index.js init",
-        "reset-old": " cdc-accelerator/reset/reset.js",
-        "reset": "cdc-accelerator/feature/index.js reset",
-        "build-old": "babel --delete-dir-on-start src -d build && prettier --semi true --trailing-comma none --write build/**/*.js && node cdc-accelerator/build/build.js",
-        "build": "cdc-accelerator/feature/index.js build",
-        "deploy-old": "babel --delete-dir-on-start src -d build && prettier --semi true --trailing-comma none --write build/**/webScreenSets/**/*.js && node cdc-accelerator/build/build.js && node cdc-accelerator/deploy/deploy.js",
-        "deploy": "cdc-accelerator/feature/index.js deploy",
-        "start-old": "babel --delete-dir-on-start src -d build && prettier --semi true --trailing-comma none --write build/**/webScreenSets/**/*.js && node cdc-accelerator/build/build.js && light-server -c .lightserverrc",
-        "start": " cdc-accelerator/feature/index.js start",
-        "update-sap-cdc-toolkit": " cdc-accelerator/scripts/updateSapCdcToolkit.js",
+        "init": "cdc-accelerator/core/index.js init",
+        "reset": "cdc-accelerator/core/index.js reset",
+        "build": "cdc-accelerator/core/index.js build",
+        "deploy": "cdc-accelerator/core/index.js deploy",
+        "start": "cdc-accelerator/core/index.js start",
+        "update-sap-cdc-toolkit": "node cdc-accelerator/scripts/updateSapCdcToolkit.js",
         "cypress:open": "cypress open",
         "cypress:stage": "cypress run --browser chrome",
         "cypress:ci": "start-server-and-test start http://localhost:3000 cypress:stage"
     },
     "bin": {
-        "cdc": "./cdc-accelerator/feature/index.js"
+        "cdc": "cdc-accelerator/core/index.js"
     },
     "repository": {
         "type": "git",
@@ -42,7 +36,11 @@
     ],
     "jest": {
         "testPathIgnorePatterns": [
-            "<rootDir>/build/"
+            "<rootDir>/build/",
+            "cdc-accelerator/feature/__tests__/test.gigyaResponses.js",
+            "cdc-accelerator/feature/site/__tests__/test.gigyaResponse.sms.js",
+            "cdc-accelerator/feature/site/__tests__/test.gigyaResponses.emails.js",
+            "cdc-accelerator/feature/__tests__/test.common.js"
         ],
         "coveragePathIgnorePatterns": [
             "cdc-accelerator/scripts/"

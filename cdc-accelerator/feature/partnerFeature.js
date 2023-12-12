@@ -2,9 +2,9 @@
  * Copyright: Copyright 2023 SAP SE or an SAP affiliate company and cdc-accelerator contributors
  * License: Apache-2.0
  */
-import Feature from './feature.js'
+import Feature from '../core/feature.js'
 import path from 'path'
-import { Operations, SITES_DIRECTORY, BUILD_DIRECTORY, SRC_DIRECTORY } from './constants.js'
+import { Operations, SITES_DIRECTORY, BUILD_DIRECTORY, SRC_DIRECTORY } from '../core/constants.js'
 
 export default class PartnerFeature extends Feature {
     #features = []
