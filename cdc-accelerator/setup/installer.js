@@ -2,19 +2,19 @@ import { execSync } from 'child_process'
 import fs from 'fs'
 import path from 'path'
 import { CONFIGURATION_FILES, PACKAGE_JSON_FILE_NAME, PREVIEW_DIRECTORY } from './constants.js'
-import { CDC_ACCELERATOR_DIRECTORY, CONFIG_FILENAME, Operations, SRC_DIRECTORY } from '../core/constants.js'
+import { CDC_ACCELERATOR_DIRECTORY, CONFIG_FILENAME, Operations, PREVIEW_FILE_NAME, SRC_DIRECTORY } from '../core/constants.js'
 
 export default class Installer {
     install(newProjectPackageJson, acceleratorInstallationPath, acceleratorPackageJson) {
-        this.#generatePackageJsonProperties(newProjectPackageJson, acceleratorPackageJson)
-        this.#copyConfigurationFiles(acceleratorInstallationPath)
-        this.#generateConfigurationFile()
-        this.#generatePreviewFile(acceleratorInstallationPath)
+        this.generatePackageJsonProperties(newProjectPackageJson, acceleratorPackageJson)
+        this.copyConfigurationFiles(acceleratorInstallationPath)
+        this.generateConfigurationFile()
+        this.generatePreviewFile(acceleratorInstallationPath)
 
         execSync('npm install', { stdio: 'inherit' })
     }
 
-    #generatePackageJsonProperties(newProjectPackageJson, acceleratorPackageJson) {
+    generatePackageJsonProperties(newProjectPackageJson, acceleratorPackageJson) {
         this.#copyAcceleratorDependencies('devDependencies', newProjectPackageJson, acceleratorPackageJson)
         this.#generateNpmScripts(newProjectPackageJson)
         this.#generateJestConfiguration(newProjectPackageJson)
@@ -69,7 +69,7 @@ export default class Installer {
         }
     }
 
-    #copyConfigurationFiles(acceleratorInstallationPath) {
+    copyConfigurationFiles(acceleratorInstallationPath) {
         const rootDirectory = '.'
         CONFIGURATION_FILES.forEach((file) => this.#copyFile(path.join(acceleratorInstallationPath, file), rootDirectory))
         const envFilePath = '.env'
@@ -80,11 +80,12 @@ export default class Installer {
     }
 
     #copyFile(src, dest) {
-        const fileName = path.parse(src).name
+        const idx = src.lastIndexOf(path.sep)
+        const fileName = idx === -1 ? src : src.substring(idx)
         fs.writeFileSync(path.join(dest, fileName), fs.readFileSync(src, { encoding: 'utf8' }))
     }
 
-    #generateConfigurationFile() {
+    generateConfigurationFile() {
         if (fs.existsSync(CONFIG_FILENAME)) {
             // do not overwrite CONFIG_FILENAME file
             return
@@ -104,8 +105,8 @@ export default class Installer {
         fs.writeFileSync(CONFIG_FILENAME, JSON.stringify(config, null, 4))
     }
 
-    #generatePreviewFile(acceleratorInstallationPath) {
-        const indexHtmlFileName = 'index.html'
+    generatePreviewFile(acceleratorInstallationPath) {
+        const indexHtmlFileName = PREVIEW_FILE_NAME
         if (fs.existsSync(indexHtmlFileName)) {
             // do not overwrite index.html file
             return
@@ -116,7 +117,7 @@ export default class Installer {
         if (!fs.existsSync(SRC_DIRECTORY)) {
             fs.mkdirSync(SRC_DIRECTORY, { recursive: true })
         }
-        fs.writeFileSync(path.join(SRC_DIRECTORY, indexHtmlFileName), content.toString())
+        fs.writeFileSync(path.join(SRC_DIRECTORY, indexHtmlFileName), content)
     }
 
     #replaceLinks(content, acceleratorInstallationPath) {
@@ -129,6 +130,6 @@ export default class Installer {
             }
             return line
         })
-        return lines
+        return lines.join('\n')
     }
 }

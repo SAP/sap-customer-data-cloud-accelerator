@@ -6,18 +6,20 @@ import Installer from './installer.js'
 
 export default class Project {
     setup() {
-        const newProjectPackageJson = JSON.parse(fs.readFileSync(PACKAGE_JSON_FILE_NAME, { encoding: 'utf8' }))
-        const dependencyName = this.#getAcceleratorDependencyName(newProjectPackageJson.devDependencies)
-        const acceleratorInstallationPath = path.join('node_modules', ...dependencyName.split(path.sep))
-        const acceleratorPackageJsonPath = path.join(acceleratorInstallationPath, PACKAGE_JSON_FILE_NAME)
-        const acceleratorPackageJson = JSON.parse(fs.readFileSync(acceleratorPackageJsonPath, { encoding: 'utf8' }))
-
         try {
+            const newProjectPackageJson = JSON.parse(fs.readFileSync(PACKAGE_JSON_FILE_NAME, { encoding: 'utf8' }))
+            const dependencyName = this.#getAcceleratorDependencyName(newProjectPackageJson.devDependencies)
+            const acceleratorInstallationPath = path.join('node_modules', ...dependencyName.split(path.sep))
+            const acceleratorPackageJsonPath = path.join(acceleratorInstallationPath, PACKAGE_JSON_FILE_NAME)
+            const acceleratorPackageJson = JSON.parse(fs.readFileSync(acceleratorPackageJsonPath, { encoding: 'utf8' }))
+
             new Uninstaller().uninstall(newProjectPackageJson, acceleratorPackageJson)
             new Installer().install(newProjectPackageJson, acceleratorInstallationPath, acceleratorPackageJson)
             console.log('Setup completed successfully')
+            return true
         } catch (err) {
             console.log(err)
+            return false
         }
     }
 

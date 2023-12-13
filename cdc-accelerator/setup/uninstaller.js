@@ -16,10 +16,17 @@ export default class Uninstaller {
                 execSync(`npm remove ${entry[0]}`, { stdio: 'inherit' })
             }
         })
+        this.#uninstallDependency('light-server', newProjectPackageJson)
     }
 
     #containsDependency(dependency, dependenciesContainer, newProjectPackageJson) {
-        return Object.entries(newProjectPackageJson[dependenciesContainer]).includes((entry) => entry === dependency)
+        return Object.keys(newProjectPackageJson[dependenciesContainer]).includes(dependency)
+    }
+
+    #uninstallDependency(dependency, newProjectPackageJson) {
+        if (newProjectPackageJson.dependencies && newProjectPackageJson.dependencies[dependency]) {
+            execSync(`npm remove ${dependency}`, { stdio: 'inherit' })
+        }
     }
 
     #deleteConfigurationFiles() {
