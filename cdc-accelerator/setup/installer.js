@@ -24,8 +24,15 @@ export default class Installer {
 
     #copyAcceleratorDependencies(dependenciesProperty, newProjectPackageJson, acceleratorPackageJson) {
         Object.entries(acceleratorPackageJson[dependenciesProperty]).forEach((entry) => {
-            Object.assign(newProjectPackageJson[dependenciesProperty], { [entry[0]]: entry[1] })
+            if (!this.#containsForbiddenCharacters(entry[0])) {
+                Object.assign(newProjectPackageJson[dependenciesProperty], { [entry[0]]: entry[1] })
+            }
         })
+    }
+
+    #containsForbiddenCharacters(dependency) {
+        const forbidden = dependency.match(/[*?:;,&|+]/)
+        return forbidden ? true : false
     }
 
     #generateNpmScripts(newProjectPackageJson) {

@@ -12,11 +12,20 @@ export default class Uninstaller {
     #uninstallAcceleratorDependencies(newProjectPackageJson, acceleratorPackageJson) {
         const dependenciesProperty = 'devDependencies'
         Object.entries(acceleratorPackageJson[dependenciesProperty]).forEach((entry) => {
-            if (!entry[0].includes(CDC_ACCELERATOR_DIRECTORY) && this.#containsDependency(entry[0], dependenciesProperty, newProjectPackageJson)) {
+            if (
+                !this.#containsForbiddenCharacters(entry[0]) &&
+                !entry[0].includes(CDC_ACCELERATOR_DIRECTORY) &&
+                this.#containsDependency(entry[0], dependenciesProperty, newProjectPackageJson)
+            ) {
                 execSync(`npm remove ${entry[0]}`, { stdio: 'inherit' })
             }
         })
         this.#uninstallDependency('light-server', newProjectPackageJson)
+    }
+
+    #containsForbiddenCharacters(dependency) {
+        const forbidden = dependency.match(/[*?:;,&|+]/)
+        return forbidden ? true : false
     }
 
     #containsDependency(dependency, dependenciesContainer, newProjectPackageJson) {
@@ -31,11 +40,13 @@ export default class Uninstaller {
 
     #deleteConfigurationFiles() {
         CONFIGURATION_FILES.forEach((file) => {
-            fs.unlink(file, function (err) {
-                if (err) {
-                    throw err
-                }
-            })
+            if (fs.existsSync(file)) {
+                fs.unlink(file, function (err) {
+                    if (err) {
+                        throw err
+                    }
+                })
+            }
         })
     }
 }

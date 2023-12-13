@@ -1,5 +1,5 @@
 import Uninstaller from '../uninstaller.js'
-import child_process from 'child_process'
+import child_process, { execSync } from 'child_process'
 import fs from 'fs'
 import { CONFIGURATION_FILES } from '../constants.js'
 
@@ -61,6 +61,7 @@ describe('Installer test suite', () => {
     })
 
     test('uninstall successfully', () => {
+        fs.existsSync.mockReturnValue(true)
         const spy = jest.spyOn(child_process, 'execSync')
         uninstaller.uninstall(newProjectPackageJson, acceleratorPackageJson)
         expect(spy.mock.calls.length).toBe(4)
