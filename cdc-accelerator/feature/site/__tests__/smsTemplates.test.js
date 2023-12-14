@@ -159,6 +159,38 @@ describe('Sms templates test suite', () => {
         })
     })
     describe('Deploy test suite', () => {
+        test('SMS templates deploy fails with multiple default files in a folder', async () => {
+            fs.existsSync.mockReturnValue(true)
+            fs.readdirSync.mockImplementation((dirPath) => {
+                if (dirPath.endsWith('otp/globalTemplates')) {
+                    return ['en-default.txt', 'es-default.txt']
+                }
+                return []
+            })
+
+            const expectedErrorMessage =
+                'There cannot be two default files in the same folder. Check the folder: src/partnerId1/Sites/domain.test.com/SmsTemplates/otp/globalTemplates'
+            await expect(smsTemplates.deploy(apiKey, getSiteConfig, srcSiteDirectory)).rejects.toThrow(new Error(expectedErrorMessage))
+        })
+
+        test('SMS templates deploy fails when default language is not set for a country code', async () => {
+            fs.existsSync.mockReturnValue(true)
+            fs.readdirSync.mockImplementation((dirPath) => {
+                if (dirPath.endsWith(SmsTemplates.FOLDER_TEMPLATES_PER_COUNTRY_CODE)) {
+                    return ['244']
+                } else if (dirPath.includes('244')) {
+                    return ['pt.txt']
+                }
+                return []
+            })
+
+            fs.statSync.mockImplementation((path) => {
+                return { isDirectory: () => path.includes('directory') || path.includes('244') }
+            })
+
+            const expectedErrorMessage = 'Default language not set for country code: 244'
+            await expect(smsTemplates.deploy(apiKey, getSiteConfig, srcSiteDirectory)).rejects.toThrow(new Error(expectedErrorMessage))
+        })
         test('SMS duplicate Default Files Error', async () => {
             axios.mockResolvedValue({ data: smsExpectedResponse })
 
@@ -202,7 +234,7 @@ describe('Sms templates test suite', () => {
         test('successful deploy of multiple SMS templates', async () => {
             axios.mockResolvedValue({ data: { errorCode: 0 } })
             fs.readdirSync.mockImplementation((dirPath) => {
-                if (dirPath.endsWith('otp/globalTemplates')) {
+                if (dirPath.endsWith(SmsTemplates.FOLDER_GLOBAL_TEMPLATES)) {
                     return ['en.txt', 'es.txt']
                 }
                 return []
