@@ -40,9 +40,15 @@ export default class CLI {
     async main(process, operation, featureName, environment) {
         try {
             const credentials = { userKey: process.env.USER_KEY, secret: process.env.SECRET_KEY }
+            if (!credentials.userKey || !credentials.secret) {
+                throw new Error('Credentials are not supplied. Fill the .env file and repeat the command.')
+            }
             this.siteFeature = this.initSiteFeature(credentials)
             this.partnerFeature = this.initPartnerFeature(credentials)
 
+            if (!Configuration.isValid(operation, environment)) {
+                throw new Error('Please fill the api keys on the configuration file.')
+            }
             await Configuration.generateCache(credentials)
             const sites = Configuration.getSites(operation, environment)
 

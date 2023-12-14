@@ -5,7 +5,9 @@
 import { Operations } from './constants.js'
 import CLI from './cli.js'
 import { program } from 'commander'
+import { spawnSync } from 'child_process'
 import { execSync } from 'child_process'
+import Project from '../setup/project.js'
 
 export default class Commander {
     static #BABEL_COMMAND = 'npx babel --delete-dir-on-start src -d build'
@@ -22,14 +24,14 @@ export default class Commander {
 
     async #build(options) {
         const command = `${Commander.#BABEL_COMMAND} && ${Commander.#PRETTIER_COMMAND} build/**/*.js`
-        execSync(command, { stdio: 'inherit' })
+        spawnSync(command, { shell: false, stdio: 'inherit' })
 
         await new CLI().main(process, Operations.build, options.feature, options.environment)
     }
 
     async #deploy(options) {
         const command = `${Commander.#BABEL_COMMAND} && ${Commander.#PRETTIER_COMMAND} build/**/WebScreenSets/**/*.js`
-        execSync(command, { stdio: 'inherit' })
+        spawnSync(command, { shell: false, stdio: 'inherit' })
 
         await new CLI().main(process, Operations.build, options.feature, options.environment)
         await new CLI().main(process, Operations.deploy, options.feature, options.environment)
@@ -37,10 +39,14 @@ export default class Commander {
 
     async #start() {
         const command = `${Commander.#BABEL_COMMAND} && ${Commander.#PRETTIER_COMMAND} build/**/WebScreenSets/**/*.js`
-        execSync(command, { stdio: 'inherit' })
+        spawnSync(command, { shell: false, stdio: 'inherit' })
 
         await new CLI().main(process, Operations.build)
         execSync(Commander.#START_SERVER_COMMAND, { stdio: 'inherit' })
+    }
+
+    async #setup() {
+        new Project().setup()
     }
 
     #createCommandWithSharedOptions(name) {
@@ -63,6 +69,7 @@ export default class Commander {
 
         program.name(name).description(description).version(version)
         program.command(Operations.start).description('Launch local server for testing using the preview functionality').action(this.#start)
+        program.command('setup').description('Setup a new project after this dependency is installed').action(this.#setup)
         program.addCommand(cmdInit).addCommand(cmdReset).addCommand(cmdBuild).addCommand(cmdDeploy).parse(process.argv)
     }
 }

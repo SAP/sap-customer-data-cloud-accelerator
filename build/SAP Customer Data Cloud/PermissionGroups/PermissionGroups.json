@@ -1,8 +1,5 @@
 {
-    "": {
-        "aclID": "alexTestAdminPermissionGroup",
-        "description": ""
-    },
+  
     "alexTestAdminPermissionGroup": {
         "aclID": "Bruno",
         "description": "Testing new configuration"
