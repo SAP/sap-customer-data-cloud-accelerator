@@ -1,7 +1,7 @@
-import Configuration from '../../core/configuration.js'
-import { config, credentials, sites } from './test.common.js'
-import SitesCache from '../../core/sitesCache.js'
-import { CONFIG_FILENAME, Operations } from '../../core/constants.js'
+import Configuration from '../configuration.js'
+import { config, credentials, sites } from '../../feature/__tests__/test.common.js'
+import SitesCache from '../sitesCache.js'
+import { CONFIG_FILENAME, Operations } from '../constants.js'
 import fs from 'fs'
 
 jest.mock('fs')
@@ -35,5 +35,18 @@ describe('Configuration test suite', () => {
         expect(sitesInfo.length).toEqual(config.source.length)
         expect(sitesInfo[0].features).toEqual(config.source[0].features)
         expect(sitesInfo[1].features).toEqual(config.source[1].features)
+    })
+
+    test('isValid true', async () => {
+        fs.readFileSync.mockReturnValue(JSON.stringify(config))
+        expect(Configuration.isValid(Operations.init, 'dev')).toBeTruthy()
+    })
+
+    test('isValid false', async () => {
+        const invalidConfig = {
+            deploy: [{ apiKey: '' }],
+        }
+        fs.readFileSync.mockReturnValue(JSON.stringify(invalidConfig))
+        expect(Configuration.isValid(Operations.deploy, 'dev')).toBeFalsy()
     })
 })
