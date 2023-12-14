@@ -1,10 +1,12 @@
-import * as dataTest from './dataTest'
 describe('template spec', () => {
     it('All feature test', async () => {
         const urls = [
             '4_tqmAZeYVLPfPl9SYu_iFxA#/4_tqmAZeYVLPfPl9SYu_iFxA/WebScreenSets/PreferencesCenter-PasswordReset/gigya-reset-password-screen',
             '4_51rYFDhKRgNJdru9HSz0JA#/4_51rYFDhKRgNJdru9HSz0JA/EmailTemplates/doubleOptIn/ar',
             '4_51rYFDhKRgNJdru9HSz0JA#/4_51rYFDhKRgNJdru9HSz0JA/EmailTemplates/doubleOptIn/en',
+            '4_51rYFDhKRgNJdru9HSz0JA#/4_51rYFDhKRgNJdru9HSz0JA/WebScreenSets/nescafe-LiteRegistration/gigya-subscribe-with-email-screen',
+            '4_51rYFDhKRgNJdru9HSz0JA#/4_51rYFDhKRgNJdru9HSz0JA/WebScreenSets/nescafe-RegistrationLogin/gigya-login-screen',
+            '4_tqmAZeYVLPfPl9SYu_iFxA#/4_tqmAZeYVLPfPl9SYu_iFxA/WebScreenSets/PreferencesCenter-ProfileUpdate/gigya-update-profile-screen',
         ]
         validateFeatures(urls)
     })
