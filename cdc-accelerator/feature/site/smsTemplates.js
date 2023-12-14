@@ -109,6 +109,8 @@ export default class SmsTemplates extends SiteFeature {
 
         this.#populateTemplatesFromDirectory(buildFeatureDirectory, payload, 'otp')
         this.#populateTemplatesFromDirectory(buildFeatureDirectory, payload, 'tfa')
+        console.log(payload)
+
         return payload
     }
 
@@ -155,7 +157,9 @@ export default class SmsTemplates extends SiteFeature {
                 targetObj[countryCode].templates[language] = templateContent
                 if (file.endsWith('-default.txt')) targetObj[countryCode].defaultLanguage = language
             })
-            if (!targetObj[countryCode].defaultLanguage) targetObj[countryCode].defaultLanguage = Object.keys(targetObj[countryCode].templates)[0]
+            if (!targetObj[countryCode].defaultLanguage) {
+                throw new Error(`Default language not set for country code: ${countryCode}`)
+            }
         })
     }
 

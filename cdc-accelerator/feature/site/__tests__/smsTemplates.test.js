@@ -159,16 +159,61 @@ describe('Sms templates test suite', () => {
         })
     })
     describe('Deploy test suite', () => {
+        test('SMS duplicate Default Files Error', async () => {
+            axios.mockResolvedValue({ data: smsExpectedResponse })
+
+            const smsDefaultError = {
+                otp: {
+                    globalTemplates: {
+                        templates: {
+                            'en-default': 'Your verification code is: {{code}}',
+                            'es-default': 'El código de verificación es: {{code}}',
+                        },
+                        defaultLanguage: 'en',
+                    },
+                },
+            }
+
+            fs.existsSync.mockReturnValue(true)
+            fs.readdirSync.mockImplementation((dirPath) => {
+                if (dirPath.endsWith('otp/globalTemplates')) {
+                    return ['en-default.txt', 'es-default.txt']
+                }
+                return []
+            })
+            fs.readFileSync.mockImplementation((filePath) => {
+                const templateKey = filePath.split('/').pop().split('.txt')[0]
+                return smsDefaultError.otp.globalTemplates.templates[templateKey]
+            })
+
+            const smsTemplates = new SmsTemplates(credentials)
+            const siteDirectory = srcSiteDirectory
+
+            const expectedErrorMessage = `There cannot be two default files in the same folder. Check the folder: ${path.join(
+                siteDirectory,
+                'SmsTemplates',
+                'otp',
+                'globalTemplates',
+            )}`
+
+            await expect(smsTemplates.deploy(apiKey, getSiteConfig, siteDirectory)).rejects.toThrow(new Error(expectedErrorMessage))
+        })
+
         test('successful deploy of multiple SMS templates', async () => {
             axios.mockResolvedValue({ data: { errorCode: 0 } })
-            fs.readdirSync.mockReturnValueOnce(['en.txt']).mockReturnValueOnce(['es.txt'])
-            fs.statSync.mockReturnValue({ isDirectory: () => true })
+            fs.readdirSync.mockImplementation((dirPath) => {
+                if (dirPath.endsWith('otp/globalTemplates')) {
+                    return ['en.txt', 'es.txt']
+                }
+                return []
+            })
             fs.readFileSync.mockImplementation((filePath) => {
                 if (filePath.includes('en.txt')) return 'Your verification code is: {{code}}'
                 if (filePath.includes('es.txt')) return 'Su código de verificación es: {{code}}'
+                return null
             })
-            const response = await smsTemplates.deploy(apiKey, getSiteConfig, buildSiteDirectory)
 
+            const response = await smsTemplates.deploy(apiKey, getSiteConfig, buildSiteDirectory)
             expect(response.errorCode).toBe(0)
         })
 
