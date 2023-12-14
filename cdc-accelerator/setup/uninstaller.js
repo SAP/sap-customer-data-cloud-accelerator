@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { execSync } from 'child_process'
+import { spawnSync } from 'child_process'
 import { CDC_ACCELERATOR_DIRECTORY } from '../core/constants.js'
 import { CONFIGURATION_FILES } from './constants.js'
 
@@ -17,7 +17,7 @@ export default class Uninstaller {
                 !entry[0].includes(CDC_ACCELERATOR_DIRECTORY) &&
                 this.#containsDependency(entry[0], dependenciesProperty, newProjectPackageJson)
             ) {
-                execSync(`npm remove ${entry[0]}`, { stdio: 'inherit' })
+                spawnSync(`npm remove ${entry[0]}`, { shell: false, stdio: 'inherit' })
             }
         })
         this.#uninstallDependency('light-server', newProjectPackageJson)
@@ -34,7 +34,7 @@ export default class Uninstaller {
 
     #uninstallDependency(dependency, newProjectPackageJson) {
         if (newProjectPackageJson.dependencies && newProjectPackageJson.dependencies[dependency]) {
-            execSync(`npm remove ${dependency}`, { stdio: 'inherit' })
+            spawnSync(`npm remove ${dependency}`, { shell: false, stdio: 'inherit' })
         }
     }
 

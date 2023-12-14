@@ -1,4 +1,4 @@
-import { execSync } from 'child_process'
+import { spawnSync } from 'child_process'
 import fs from 'fs'
 import path from 'path'
 import { CONFIGURATION_FILES, PACKAGE_JSON_FILE_NAME, PREVIEW_DIRECTORY } from './constants.js'
@@ -11,7 +11,7 @@ export default class Installer {
         this.generateConfigurationFile()
         this.generatePreviewFile(acceleratorInstallationPath)
 
-        execSync('npm install', { stdio: 'inherit' })
+        spawnSync('npm install', { shell: false, stdio: 'inherit' })
     }
 
     generatePackageJsonProperties(newProjectPackageJson, acceleratorPackageJson) {

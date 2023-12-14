@@ -1,16 +1,16 @@
 import Uninstaller from '../uninstaller.js'
-import child_process, { execSync } from 'child_process'
+import child_process, { spawnSync } from 'child_process'
 import fs from 'fs'
 import { CONFIGURATION_FILES } from '../constants.js'
 
 jest.mock('fs')
 jest.mock('child_process', () => {
     return {
-        execSync: () => '',
+        spawnSync: () => '',
     }
 })
 
-describe('Installer test suite', () => {
+describe('Uninstaller test suite', () => {
     let newProjectPackageJson, acceleratorPackageJson
     const uninstaller = new Uninstaller()
 
@@ -62,13 +62,14 @@ describe('Installer test suite', () => {
 
     test('uninstall successfully', () => {
         fs.existsSync.mockReturnValue(true)
-        const spy = jest.spyOn(child_process, 'execSync')
+        const spy = jest.spyOn(child_process, 'spawnSync')
         uninstaller.uninstall(newProjectPackageJson, acceleratorPackageJson)
+        const expectedOptions = { shell: false, stdio: 'inherit' }
         expect(spy.mock.calls.length).toBe(4)
-        expect(child_process.execSync).toBeCalledWith(`npm remove @babel/cli`, { stdio: 'inherit' })
-        expect(child_process.execSync).toBeCalledWith(`npm remove @babel/core`, { stdio: 'inherit' })
-        expect(child_process.execSync).toBeCalledWith(`npm remove @babel/preset-env`, { stdio: 'inherit' })
-        expect(child_process.execSync).toBeCalledWith('npm remove light-server', { stdio: 'inherit' })
+        expect(child_process.spawnSync).toBeCalledWith(`npm remove @babel/cli`, expectedOptions)
+        expect(child_process.spawnSync).toBeCalledWith(`npm remove @babel/core`, expectedOptions)
+        expect(child_process.spawnSync).toBeCalledWith(`npm remove @babel/preset-env`, expectedOptions)
+        expect(child_process.spawnSync).toBeCalledWith('npm remove light-server', expectedOptions)
 
         CONFIGURATION_FILES.forEach((file) => expect(fs.unlink).toHaveBeenCalledWith(file, expect.anything()))
     })
