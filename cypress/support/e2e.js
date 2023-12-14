@@ -17,6 +17,6 @@
 import './commands'
 import 'cypress-real-events'
 import 'cypress-iframe'
-
+import 'cypress-wait-until'
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
