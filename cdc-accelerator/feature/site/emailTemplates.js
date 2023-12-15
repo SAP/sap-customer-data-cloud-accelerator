@@ -19,6 +19,10 @@ export default class EmailTemplates extends SiteFeature {
         super(credentials)
     }
 
+    getType() {
+        return super.constructor.name
+    }
+
     getName() {
         return this.constructor.name
     }

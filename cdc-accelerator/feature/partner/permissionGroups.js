@@ -14,6 +14,10 @@ export default class PermissionGroups extends PartnerFeature {
         this.#acls = new ACL(this.credentials)
     }
 
+    getType() {
+        return super.constructor.name
+    }
+
     getName() {
         return this.constructor.name
     }

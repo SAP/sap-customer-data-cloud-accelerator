@@ -16,6 +16,10 @@ export default class WebSdk extends SiteFeature {
         super(credentials)
     }
 
+    getType() {
+        return super.constructor.name
+    }
+
     getName() {
         return this.constructor.name
     }
@@ -46,6 +50,7 @@ export default class WebSdk extends SiteFeature {
         const buildFileName = path.join(buildFeaturePath, `${this.getName()}.js`)
 
         let webSdkContent = fs.readFileSync(buildFileName, { encoding: 'utf8' })
+
         webSdkContent = cleanJavaScriptModuleBoilerplateWebSdk(webSdkContent)
 
         // Find filenames and replace them with the contents of the file
