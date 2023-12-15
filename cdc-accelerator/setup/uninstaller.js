@@ -17,25 +17,22 @@ export default class Uninstaller {
                 !entry[0].includes(CDC_ACCELERATOR_DIRECTORY) &&
                 this.#containsDependency(entry[0], dependenciesProperty, newProjectPackageJson)
             ) {
-                spawnSync(`npm remove ${entry[0]}`, { shell: false, stdio: 'inherit' })
+                this.#uninstallDependency(entry[0])
             }
         })
         this.#uninstallDependency('light-server', newProjectPackageJson)
     }
 
     #containsForbiddenCharacters(dependency) {
-        const forbidden = dependency.match(/[*?:;,&|+]/)
-        return forbidden ? true : false
+        return dependency.match(/[*?:;,&|+]/) ? true : false
     }
 
     #containsDependency(dependency, dependenciesContainer, newProjectPackageJson) {
         return Object.keys(newProjectPackageJson[dependenciesContainer]).includes(dependency)
     }
 
-    #uninstallDependency(dependency, newProjectPackageJson) {
-        if (newProjectPackageJson.dependencies && newProjectPackageJson.dependencies[dependency]) {
-            spawnSync(`npm remove ${dependency}`, { shell: false, stdio: 'inherit' })
-        }
+    #uninstallDependency(dependency) {
+        spawnSync('npm', ['remove', dependency], { shell: false, stdio: 'inherit' })
     }
 
     #deleteConfigurationFiles() {
