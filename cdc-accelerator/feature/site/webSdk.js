@@ -66,9 +66,15 @@ export default class WebSdk extends SiteFeature {
         const EXPORTS_DEFAULT_DOUBLE_MARKS = `exports["${DEFAULT}"] = _${DEFAULT}`
         const SEMI_COLON = ';'
 
+        const newProjectBabelGeneratedString = "var _default = (exports['default'] = {"
         value = value.trim()
 
-        value = value.substring(value.indexOf(VAR_DEFAULT) + VAR_DEFAULT.length - 1)
+        let idx = value.indexOf(newProjectBabelGeneratedString)
+        if (idx !== -1) {
+            value = value.substring(value.indexOf(newProjectBabelGeneratedString) + newProjectBabelGeneratedString.length - 1)
+        } else {
+            value = value.substring(value.indexOf(VAR_DEFAULT) + VAR_DEFAULT.length - 1)
+        }
 
         if (value.indexOf(EXPORTS_DEFAULT_SINGLE_MARKS) !== -1) {
             value = value.substring(0, value.indexOf(EXPORTS_DEFAULT_SINGLE_MARKS))
@@ -82,7 +88,9 @@ export default class WebSdk extends SiteFeature {
         if (value.slice(-1) === SEMI_COLON) {
             value = value.substring(0, value.length - 1)
         }
-
+        if (value.slice(-1) === ')') {
+            value = value.substring(0, value.length - 1)
+        }
         return value
     }
 
@@ -115,11 +123,11 @@ export default class WebSdk extends SiteFeature {
 
                 // Recursively replace filenames with file contents for subsequent files
                 const fileDirectory = path.join(directory, path.dirname(filename))
-                fileContent = replaceFilenamesWithFileContents(fileContent, fileDirectory)
+                fileContent = this.#replaceFilenamesWithFileContents(fileContent, fileDirectory)
 
                 // Add tabulation spaces based on current line
                 let tabulationSpaces = ' '.repeat(line.length - line.trimStart().length)
-                fileContent = prependStringToEachLine(fileContent, tabulationSpaces, 1)
+                fileContent = this.#prependStringToEachLine(fileContent, tabulationSpaces, 1)
 
                 // Replace filename with file content
                 line = line.replace(`'${filename}'`, fileContent)
@@ -133,6 +141,13 @@ export default class WebSdk extends SiteFeature {
         value = lines.join('\n')
 
         return value
+    }
+
+    #prependStringToEachLine(value, valueToPrepend, skipLines = 0){
+        return value
+            .split('\n')
+            .map((line, index) => (index >= skipLines ? `${valueToPrepend}${line}` : line))
+            .join('\n')
     }
 
     async deploy(apiKey, siteConfig, siteDirectory) {

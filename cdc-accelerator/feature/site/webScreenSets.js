@@ -50,7 +50,6 @@ export default class WebScreenSets extends SiteFeature {
             this.createDirectoryIfNotExists(webScreenSetDirectory)
 
             this.#initJavascriptFiles(webScreenSetDirectory, screenSet.screenSetID, screenSet.javascript)
-            this.#initHtmlFiles(webScreenSetDirectory, screenSet.screenSetID, screenSet)
             this.#initCssFiles(webScreenSetDirectory, screenSet.screenSetID, screenSet.css)
         })
     }
@@ -67,18 +66,6 @@ export default class WebScreenSets extends SiteFeature {
 
         // Create files
         fs.writeFileSync(path.join(webScreenSetDirectory, `${screenSetID}.js`), javascript)
-    }
-
-    #initHtmlFiles(webScreenSetDirectory, screenSetID, screenSet) {
-        // Clear HTML string syntax
-        // screenSet.html = screenSet.html.replaceAll(`\\"`, '"')
-        // screenSet.html = screenSet.html.replaceAll(`\\r\\n`, '\n')
-
-        // Create files
-        // fs.writeFileSync(path.join(webScreenSetDirectory, `${screenSetID}.html`), screenSet.html)
-        // fs.writeFileSync(path.join(webScreenSetDirectory, `${screenSetID}.metadata.json`), JSON.stringify(screenSet.metadata, null, 4))
-        // fs.writeFileSync(path.join(webScreenSetDirectory, `${screenSetID}.translations.json`), JSON.stringify(screenSet.translations, null, 4))
-        return
     }
 
     #initCssFiles(webScreenSetDirectory, screenSetID, css) {
@@ -231,17 +218,9 @@ export default class WebScreenSets extends SiteFeature {
         value = this.#prependStringToEachLine(value, '    ')
 
         // Make module executable by wrapping in self executing function
+        value = value.replaceAll(`(exports['default'] = `, '(')
         value = value.replaceAll(`var _default = `, 'return ')
         value = value.trimEnd()
-
-        // // Make module executable by wrapping in self executing function
-        // value = value.replaceAll(`var _default = `, 'var _module_object = ')
-        // value = value.trimEnd()
-        // value = value + '\n    return _module_object;'
-
-        // // Wrap value in try catch to catch errors [DOESN'T WORK IN HERE, ONLY WHEN RUNNING THE FUNCTION ON THE EVENT]
-        // value = `try {\n${value}\n} catch (e) {\n    console.error(e);\n}`
-        // value = prependStringToEachLine(value, '    ')
 
         // Wrap in self executing function
         value = `(function() {\n${value}\n})();`
@@ -274,6 +253,10 @@ export default class WebScreenSets extends SiteFeature {
         }
 
         // To make the module returnable, clean the object variable declaration and ; on the end of the object
+
+        if (value.indexOf("var _default = (exports['default'] = {") !== -1) {
+            value = value.replace("var _default = (exports['default'] = {", '({')
+        }
         if (value.indexOf('var _default = {') !== -1) {
             value = value.replace('var _default = {', '{')
         }
@@ -297,9 +280,7 @@ export default class WebScreenSets extends SiteFeature {
     }
 
     #processMainScriptInlineImports(value){
-        // Separate events and helper functions in different strings
-        const helperFunctions = value.substring(0, value.indexOf('\n{\n'))
-        let eventFunctions = value.substring(value.indexOf('\n{\n'))
+        let { helperFunctions, eventFunctions } = this.#getHelperAndEventFunctions(value)
 
         // Inject helper functions into each event
         if (helperFunctions.trim().length > 5) {
@@ -332,6 +313,23 @@ export default class WebScreenSets extends SiteFeature {
         }
 
         return value.trim()
+    }
+
+    #getHelperAndEventFunctions(value) {
+        let eventAndHelperFunctionsSeparator = '\n({\n'
+        // Separate events and helper functions in different strings
+        let idx = value.indexOf(eventAndHelperFunctionsSeparator)
+        if (idx !== -1) {
+            const helperFunctions = value.substring(0, idx)
+            let eventFunctions = value.substring(idx)
+            return { helperFunctions, eventFunctions }
+        }
+        eventAndHelperFunctionsSeparator = '\n{\n'
+        // Separate events and helper functions in different strings
+        idx = value.indexOf(eventAndHelperFunctionsSeparator)
+        const helperFunctions = value.substring(0, idx)
+        let eventFunctions = value.substring(idx)
+        return { helperFunctions, eventFunctions }
     }
 
     #getHelperFunctionsInEvents(eventFunctions, helperFunctionName) {

@@ -8,12 +8,10 @@ import Feature from "../../core/feature.js";
 export default class PermissionGroups extends PartnerFeature {
     static PERMISSIONGROUP_FILE_NAME = 'PermissionGroups.json'
     #acls
-    #feature
 
     constructor(credentials) {
         super(credentials)
         this.#acls = new ACL(this.credentials)
-        this.#feature = new Feature(this.credentials)
     }
 
     getName() {
@@ -45,7 +43,7 @@ export default class PermissionGroups extends PartnerFeature {
     }
     build(directory) {
         const buildFeaturePath = path.join(directory, this.getName())
-        this.#feature.clearDirectoryContents(buildFeaturePath)
+        this.clearDirectoryContents(buildFeaturePath)
         const srcFeaturePath = buildFeaturePath.replace(BUILD_DIRECTORY, SRC_DIRECTORY)
         this.copyFileFromSrcToBuild(srcFeaturePath, PermissionGroups.PERMISSIONGROUP_FILE_NAME)
         this.#acls.build(buildFeaturePath)

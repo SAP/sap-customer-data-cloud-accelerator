@@ -13,11 +13,9 @@ import Feature from "../../core/feature.js";
 
 export default class Policies extends SiteFeature {
     static POLICIES_FILE_NAME = 'policies.json'
-    #feature
 
     constructor(credentials) {
         super(credentials)
-        this.#feature = new Feature(this.credentials)
     }
 
     getName() {
@@ -49,7 +47,7 @@ export default class Policies extends SiteFeature {
 
     build(sitePath) {
         const buildFeaturePath = path.join(sitePath, this.getName())
-        this.#feature.clearDirectoryContents(buildFeaturePath)
+        this.clearDirectoryContents(buildFeaturePath)
         const srcFeaturePath = buildFeaturePath.replace(BUILD_DIRECTORY, SRC_DIRECTORY)
         this.copyFileFromSrcToBuild(srcFeaturePath, Policies.POLICIES_FILE_NAME)
     }
