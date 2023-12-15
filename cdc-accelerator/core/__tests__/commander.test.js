@@ -29,33 +29,33 @@ describe('Commander test suite', () => {
     })
 
     test('init with feature and environment', async () => {
-        process.argv.push(...[Operations.init, '-f webSdk', '-e dev'])
+        process.argv.push(...[Operations.init, '-fWebSdk'])
 
         await commander.startProgram(process, 'name', 'description', 'version')
-        expect(spy).toBeCalledWith(expect.any(Object), Operations.init, ' webSdk', ' dev')
+        expect(spy).toBeCalledWith(expect.any(Object), Operations.init, 'WebSdk', undefined)
     })
 
     test('reset with feature', async () => {
-        process.argv.push(...[Operations.reset, '-f Schema'])
+        process.argv.push(...[Operations.reset, '-fSchema'])
 
         await commander.startProgram(process, 'name', 'description', 'version')
-        expect(spy).toBeCalledWith(expect.any(Object), Operations.reset, ' Schema', undefined)
+        expect(spy).toBeCalledWith(expect.any(Object), Operations.reset, 'Schema', undefined)
     })
 
     test('build with environment', async () => {
-        process.argv.push(...[Operations.build, '-e qa'])
+        process.argv.push(...[Operations.build])
 
         await commander.startProgram(process, 'name', 'description', 'version')
-        expect(spy).toBeCalledWith(expect.any(Object), Operations.build, undefined, ' qa')
+        expect(spy).toBeCalledWith(expect.any(Object), Operations.build, undefined, undefined)
     })
 
     test('deploy with feature and environment', async () => {
-        process.argv.push(...[Operations.deploy, '-f policies', '-e qa'])
+        process.argv.push(...[Operations.deploy, '-fPolicies'])
 
         await commander.startProgram(process, 'name', 'description', 'version')
         expect(spy.mock.calls.length).toBe(2)
-        expect(spy).toHaveBeenNthCalledWith(1, expect.any(Object), Operations.build, ' policies', ' qa')
-        expect(spy).toHaveBeenNthCalledWith(2, expect.any(Object), Operations.deploy, ' policies', ' qa')
+        expect(spy).toHaveBeenNthCalledWith(1, expect.any(Object), Operations.build, 'Policies', undefined)
+        expect(spy).toHaveBeenNthCalledWith(2, expect.any(Object), Operations.deploy, 'Policies', undefined)
     })
 
     test('start', async () => {
