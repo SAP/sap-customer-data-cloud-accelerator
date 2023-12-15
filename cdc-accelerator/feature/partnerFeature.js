@@ -30,8 +30,7 @@ export default class PartnerFeature extends Feature {
             console.log(`\n${siteInfo.partnerName} - ${siteInfo.apiKey}`)
             const partnerDirectory = path.join(SRC_DIRECTORY, siteInfo.partnerName)
             this.createDirectoryIfNotExists(partnerDirectory)
-            const baseDirectory = path.join(partnerDirectory, SITES_DIRECTORY)
-            const anyFeatureExecuted = await this.executeOperationOnFeature(this.#features, featureName, siteInfo.features, baseDirectory, {
+            const anyFeatureExecuted = await this.executeOperationOnFeature(this.#features, featureName, siteInfo.features, partnerDirectory, {
                 operation: Operations.init,
                 args: [partnerDirectory, siteInfo],
             })

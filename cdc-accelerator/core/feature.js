@@ -78,6 +78,15 @@ export default class Feature {
 
     #calculateWorkingDirectory(directory, feature) {
         let workingDirectory = directory
+        if (feature.getName() === 'PermissionGroups') {
+            if (directory.startsWith(BUILD_DIRECTORY)) {
+                const srcWorkingDirectory = workingDirectory.replace(BUILD_DIRECTORY, SRC_DIRECTORY)
+                if (fs.existsSync(srcWorkingDirectory)) {
+                    return srcWorkingDirectory
+                }
+            }
+            return workingDirectory
+        }
         if (!workingDirectory.endsWith(SITES_DIRECTORY)) {
             workingDirectory = path.join(directory, feature.getName())
         }
@@ -89,6 +98,7 @@ export default class Feature {
                 return srcWorkingDirectory
             }
         }
+
         return workingDirectory
     }
 
