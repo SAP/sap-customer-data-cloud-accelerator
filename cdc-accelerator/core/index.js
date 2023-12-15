@@ -8,4 +8,4 @@ const require = createRequire(import.meta.url)
 const packageInfo = require('../../package.json')
 
 import Commander from './commander.js'
-new Commander().startProgram(process, packageInfo.name, packageInfo.description, packageInfo.version)
+new Commander().startProgram(process, 'npx cdc', packageInfo.description, packageInfo.version)
