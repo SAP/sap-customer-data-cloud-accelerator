@@ -1,5 +1,6 @@
 import axios from 'axios'
 import SmsTemplates from '../smsTemplates.js'
+import {BUILD_DIRECTORY } from '../../../core/constants.js'
 import { smsExpectedResponse } from './test.gigyaResponse.sms.js'
 import { expectedGigyaResponseNok, getSiteConfig } from '../../__tests__/test.gigyaResponses.js'
 import fs from 'fs'
@@ -8,7 +9,6 @@ import { credentials, apiKey, srcSiteDirectory } from '../../__tests__/test.comm
 
 jest.mock('fs')
 jest.mock('axios')
-const buildSiteDirectory = path.join(__dirname, '../site/build/smsTemplates')
 
 describe('Sms templates test suite', () => {
     let smsTemplates
@@ -144,7 +144,7 @@ describe('Sms templates test suite', () => {
             const writeFileSyncMock = jest.spyOn(fs, 'writeFileSync')
 
             const smsTemplates = new SmsTemplates(credentials)
-            smsTemplates.build(buildSiteDirectory)
+            smsTemplates.build(BUILD_DIRECTORY)
         })
 
         test('No SMS templates are built when no files are present', () => {
@@ -153,7 +153,7 @@ describe('Sms templates test suite', () => {
             const writeFileSyncMock = jest.spyOn(fs, 'writeFileSync').mockImplementation(() => {})
 
             const smsTemplates = new SmsTemplates(credentials)
-            smsTemplates.build(buildSiteDirectory)
+            smsTemplates.build(BUILD_DIRECTORY)
 
             expect(writeFileSyncMock).not.toHaveBeenCalled()
         })
@@ -245,7 +245,7 @@ describe('Sms templates test suite', () => {
                 return null
             })
 
-            const response = await smsTemplates.deploy(apiKey, getSiteConfig, buildSiteDirectory)
+            const response = await smsTemplates.deploy(apiKey, getSiteConfig, BUILD_DIRECTORY)
             expect(response.errorCode).toBe(0)
         })
 
@@ -253,7 +253,7 @@ describe('Sms templates test suite', () => {
             axios.mockResolvedValue({ data: { errorCode: 0 } })
             fs.readdirSync.mockReturnValue([])
 
-            const response = await smsTemplates.deploy(apiKey, getSiteConfig, buildSiteDirectory)
+            const response = await smsTemplates.deploy(apiKey, getSiteConfig, BUILD_DIRECTORY)
 
             expect(response.errorCode).toBe(0)
         })
@@ -268,7 +268,7 @@ describe('Sms templates test suite', () => {
             }))
             fs.readFileSync.mockReturnValue('Your verification code is: {{code}}')
 
-            await expect(smsTemplates.deploy(apiKey, getSiteConfig, buildSiteDirectory)).rejects.toThrow('API error')
+            await expect(smsTemplates.deploy(apiKey, getSiteConfig, BUILD_DIRECTORY)).rejects.toThrow('API error')
         })
     })
 })
