@@ -153,7 +153,7 @@ describe('Sms templates test suite', () => {
             const writeFileSyncMock = jest.spyOn(fs, 'writeFileSync').mockImplementation(() => {})
 
             const smsTemplates = new SmsTemplates(credentials)
-            smsTemplates.build('buildSiteDirectory')
+            smsTemplates.build(buildSiteDirectory)
 
             expect(writeFileSyncMock).not.toHaveBeenCalled()
         })
@@ -162,7 +162,7 @@ describe('Sms templates test suite', () => {
         test('SMS templates deploy fails with multiple default files in a folder', async () => {
             fs.existsSync.mockReturnValue(true)
             fs.readdirSync.mockImplementation((dirPath) => {
-                if (dirPath.endsWith('otp/globalTemplates')) {
+                if (dirPath.endsWith(SmsTemplates.FOLDER_GLOBAL_TEMPLATES)) {
                     return ['en-default.txt', 'es-default.txt']
                 }
                 return []
@@ -198,8 +198,8 @@ describe('Sms templates test suite', () => {
                 otp: {
                     globalTemplates: {
                         templates: {
-                            'en-default': 'Your verification code is: {{code}}',
-                            'es-default': 'El código de verificación es: {{code}}',
+                            en: 'Your verification code is: {{code}}',
+                            es: 'El código de verificación es: {{code}}',
                         },
                         defaultLanguage: 'en',
                     },
@@ -208,7 +208,7 @@ describe('Sms templates test suite', () => {
 
             fs.existsSync.mockReturnValue(true)
             fs.readdirSync.mockImplementation((dirPath) => {
-                if (dirPath.endsWith('otp/globalTemplates')) {
+                if (dirPath.endsWith(SmsTemplates.FOLDER_GLOBAL_TEMPLATES)) {
                     return ['en-default.txt', 'es-default.txt']
                 }
                 return []
