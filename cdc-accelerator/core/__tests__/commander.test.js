@@ -1,20 +1,23 @@
 import { Operations } from '../constants.js'
 import Commander from '../commander.js'
 import CLI from '../cli.js'
+import Project from '../../setup/project.js'
 
 jest.mock('../cli.js')
 jest.mock('child_process')
+jest.mock('../../setup/project.js')
 
 describe('Commander test suite', () => {
-    let spy
+    let spy, spyProject
     let process
     const commander = new Commander()
 
     beforeEach(() => {
         jest.clearAllMocks()
         spy = jest.spyOn(CLI.prototype, 'main')
+        spyProject = jest.spyOn(Project.prototype, 'setup')
         process = {
-            argv: ['node', 'cdc-accelerator/feature/index.js'],
+            argv: ['node', 'cdc-accelerator/core/index.js'],
         }
     })
 
@@ -60,5 +63,12 @@ describe('Commander test suite', () => {
 
         await commander.startProgram(process, 'name', 'description', 'version')
         expect(spy).toBeCalledWith(expect.any(Object), Operations.build)
+    })
+
+    test('setup', async () => {
+        process.argv.push(...['setup'])
+
+        await commander.startProgram(process, 'name', 'description', 'version')
+        expect(spyProject).toHaveBeenCalled()
     })
 })
