@@ -126,9 +126,3 @@ describe('Deploy webSdk test suite', () => {
         await expect(webSdkInstance.deploy(apiKey, getSiteConfig, srcSiteDirectory)).rejects.toEqual(new Error(JSON.stringify(expectedGigyaResponseNok)))
     })
 })
-
-describe('Private functions test suite', () => {
-    test('prependStringToEachLine', () => {
-        const prependStringToEachLine = rewire(webSdkInstance)
-    })
-})
