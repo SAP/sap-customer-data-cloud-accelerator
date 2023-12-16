@@ -9,7 +9,6 @@ import fs from 'fs'
 import path from 'path'
 import SiteFeature from '../siteFeature.js'
 import { SRC_DIRECTORY, BUILD_DIRECTORY } from '../../core/constants.js'
-import Feature from "../../core/feature.js";
 
 export default class Policies extends SiteFeature {
     static POLICIES_FILE_NAME = 'policies.json'

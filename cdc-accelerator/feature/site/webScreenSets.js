@@ -192,27 +192,7 @@ export default class WebScreenSets extends SiteFeature {
 
     #cleanJavaScriptModuleBoilerplateImportInline(value) {
         // Remove _interopRequireDefault function
-        value = value
-            .replaceAll(
-                `function _interopRequireDefault(obj) {
-    return obj && obj.__esModule ? obj : { default: obj };
-}`,
-                '',
-            )
-            .trim()
-
-        // Clean start of the module
-        if (value.indexOf(`exports['default'] = void 0;\n`) !== -1) {
-            value = value.substring(value.indexOf(`exports['default'] = void 0;\n`) + `exports['default'] = void 0;\n`.length)
-        }
-
-        // Clean end of the module
-        if (value.indexOf(`exports['default'] = _default`) !== -1) {
-            value = value.substring(0, value.indexOf(`exports['default'] = _default`))
-        }
-        if (value.indexOf(`exports["default"] = _default`) !== -1) {
-            value = value.substring(0, value.indexOf(`exports["default"] = _default`))
-        }
+        value = this.#startCleanJavaScriptModule(value)
 
         // Add tabulation spaces based on current line
         value = this.#prependStringToEachLine(value, '    ')
@@ -229,6 +209,36 @@ export default class WebScreenSets extends SiteFeature {
     }
 
     #cleanJavaScriptModuleBoilerplateScreenSetEvents(value) {
+        // Remove _interopRequireDefault function
+        value = this.#startCleanJavaScriptModule(value)
+
+        // To make the module returnable, clean the object variable declaration and ; on the end of the object
+        if (value.indexOf("var _default = (exports['default'] = {") !== -1) {
+            value = value.replace("var _default = (exports['default'] = {", '({')
+        }
+        if (value.indexOf('var _default = {') !== -1) {
+            value = value.replace('var _default = {', '{')
+        }
+        value = value.trimEnd()
+        if (value.slice(-1) === ';') {
+            value = value.substring(0, value.length - 1)
+        }
+
+        // Change CDC event functions
+        value = value.replaceAll('function onError', 'function')
+        value = value.replaceAll('function onBeforeValidation', 'function')
+        value = value.replaceAll('function onBeforeSubmit', 'function')
+        value = value.replaceAll('function onSubmit', 'function')
+        value = value.replaceAll('function onAfterSubmit', 'function')
+        value = value.replaceAll('function onBeforeScreenLoad', 'function')
+        value = value.replaceAll('function onAfterScreenLoad', 'function')
+        value = value.replaceAll('function onFieldChanged', 'function')
+        value = value.replaceAll('function onHide', 'function')
+
+        return value
+    }
+
+    #startCleanJavaScriptModule(value) {
         // Remove _interopRequireDefault function
         value = value
             .replaceAll(
@@ -251,30 +261,6 @@ export default class WebScreenSets extends SiteFeature {
         if (value.indexOf(`exports["default"] = _default`) !== -1) {
             value = value.substring(0, value.indexOf(`exports["default"] = _default`))
         }
-
-        // To make the module returnable, clean the object variable declaration and ; on the end of the object
-
-        if (value.indexOf("var _default = (exports['default'] = {") !== -1) {
-            value = value.replace("var _default = (exports['default'] = {", '({')
-        }
-        if (value.indexOf('var _default = {') !== -1) {
-            value = value.replace('var _default = {', '{')
-        }
-        value = value.trimEnd()
-        if (value.slice(-1) === ';') {
-            value = value.substring(0, value.length - 1)
-        }
-
-        // Change CDC event functions
-        value = value.replaceAll('function onError', 'function')
-        value = value.replaceAll('function onBeforeValidation', 'function')
-        value = value.replaceAll('function onBeforeSubmit', 'function')
-        value = value.replaceAll('function onSubmit', 'function')
-        value = value.replaceAll('function onAfterSubmit', 'function')
-        value = value.replaceAll('function onBeforeScreenLoad', 'function')
-        value = value.replaceAll('function onAfterScreenLoad', 'function')
-        value = value.replaceAll('function onFieldChanged', 'function')
-        value = value.replaceAll('function onHide', 'function')
 
         return value
     }

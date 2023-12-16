@@ -6,6 +6,7 @@ import axios from 'axios'
 import path from 'path'
 import { SRC_DIRECTORY, BUILD_DIRECTORY } from '../../../core/constants.js'
 import { credentials, apiKey, srcSiteDirectory } from '../../__tests__/test.common.js'
+import { rewire } from 'rewire'
 
 jest.mock('axios')
 jest.mock('fs')
@@ -124,5 +125,11 @@ describe('Deploy webSdk test suite', () => {
         const srcFileContent = JSON.stringify({ data: 'Testing' })
         fs.readFileSync.mockReturnValue(srcFileContent)
         await expect(webSdkInstance.deploy(apiKey, getSiteConfig, srcSiteDirectory)).rejects.toEqual(new Error(JSON.stringify(expectedGigyaResponseNok)))
+    })
+})
+
+describe('Private functions test suite', () => {
+    test('prependStringToEachLine', () => {
+        const prependStringToEachLine = rewire(webSdkInstance)
     })
 })
