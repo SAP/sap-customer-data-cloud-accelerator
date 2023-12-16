@@ -17,6 +17,10 @@ export default class WebScreenSets extends SiteFeature {
         super(credentials)
     }
 
+    getType() {
+        return super.constructor.name
+    }
+
     getName() {
         return this.constructor.name
     }
