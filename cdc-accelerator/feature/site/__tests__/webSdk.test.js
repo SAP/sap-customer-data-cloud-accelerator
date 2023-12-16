@@ -6,7 +6,6 @@ import axios from 'axios'
 import path from 'path'
 import { SRC_DIRECTORY, BUILD_DIRECTORY } from '../../../core/constants.js'
 import { credentials, apiKey, srcSiteDirectory } from '../../__tests__/test.common.js'
-import { rewire } from 'rewire'
 
 jest.mock('axios')
 jest.mock('fs')
