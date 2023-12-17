@@ -193,7 +193,7 @@ export default class EmailTemplates extends SiteFeature {
     }
 
     #emailTemplateShouldBeIgnored(templateName) {
-        return templateName === 'unknownLocationNotification' || templateName === 'passwordResetNotification' || templateName === EmailTemplates.FILE_METADATA
+        return templateName === EmailTemplates.FILE_METADATA
     }
 
     #generateEmailTemplatePayload(buildTemplateDirectory, templateName) {
