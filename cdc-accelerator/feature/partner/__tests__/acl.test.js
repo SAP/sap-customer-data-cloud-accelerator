@@ -2,7 +2,13 @@ import ACL from '../acl.js'
 import fs from 'fs'
 import axios from 'axios'
 import path from 'path'
-import { expectedGigyaResponseNok, expectedGigyaResponseOk, expectedAclResponse, expectedPermissionGroupsResponse, expectedACLFileContent } from '../../__tests__/test.gigyaResponses.js'
+import {
+    expectedGigyaResponseNok,
+    expectedGigyaResponseOk,
+    expectedAclResponse,
+    expectedPermissionGroupsResponse,
+    expectedACLFileContent,
+} from '../../__tests__/test.gigyaResponses.js'
 import { credentials, partnerBuildDirectory, partnerBaseDirectory } from '../../__tests__/test.common.js'
 jest.mock('axios')
 jest.mock('fs')
@@ -44,23 +50,7 @@ describe('ACLs test suite', () => {
             await expect(acls.init(aclIDs, getSiteInfo.partnerId, srcDirectory, getSiteInfo.dataCenter)).rejects.toThrow(new Error(JSON.stringify(expectedGigyaResponseNok)))
         })
     })
-    describe('Build test suit', () => {
-        test('All ACL files are built successfully', async () => {
-            const srcFileContent = JSON.stringify(expectedAclResponse.acl)
-            const aclName = Object.keys(expectedACLFileContent)
-            const buildPermissionGroupDirectory = path.join(partnerBuildDirectory, permissionGroupDirectoryName)
-            const dirExists = true
-            fs.existsSync.mockReturnValue(dirExists)
-            fs.readdirSync.mockReturnValue([`${aclName[0]}.json`, `${aclName[1]}.json`])
 
-            fs.readFileSync.mockReturnValue(srcFileContent)
-            acls.build(buildPermissionGroupDirectory)
-            expect(fs.writeFileSync.mock.calls.length).toBe(2)
-            expect(fs.writeFileSync).toHaveBeenNthCalledWith(1, path.join(buildPermissionGroupDirectory, `${acls.getName()}`, `${aclName[0]}.json`), srcFileContent)
-
-            expect(fs.writeFileSync).toHaveBeenNthCalledWith(2, path.join(buildPermissionGroupDirectory, `${acls.getName()}`, `${aclName[1]}.json`), srcFileContent)
-        })
-    })
     describe('Deploy test suit', () => {
         test('All ACL files are deployed successfully', async () => {
             axios.mockResolvedValue({ data: expectedGigyaResponseOk })

@@ -5,9 +5,11 @@ import fs from 'fs'
 import path from 'path'
 import WebScreenSets from '../webScreenSets.js'
 import { Operations } from '../../../core/constants.js'
+import Terminal from '../../../core/terminal.js'
 
 jest.mock('axios')
 jest.mock('fs')
+jest.mock('../../../core/terminal.js')
 
 describe('WebScreenSets test suite', () => {
     const webScreenSets = new WebScreenSets(credentials)
@@ -264,7 +266,9 @@ describe('WebScreenSets test suite', () => {
             const cssCustom = 'css custom content'
             fs.readFileSync.mockReturnValueOnce(file).mockReturnValueOnce(cssDefault).mockReturnValueOnce(cssCustom)
 
-            await webScreenSets.build(buildSiteDirectory)
+            await webScreenSets.build(srcSiteDirectory)
+            expect(Terminal.executeBabel).toHaveBeenCalledWith(path.join(srcSiteDirectory, webScreenSets.getName()))
+            expect(Terminal.executePrettier).toHaveBeenCalledWith(path.join(buildSiteDirectory, webScreenSets.getName()))
             const expectedCss = `${cssDefault}\n\n${WebScreenSets.TEMPLATE_SCREEN_SET_CSS_CUSTOM_CODE_SEPARATOR_START}\n\n${cssCustom}\n\n${WebScreenSets.TEMPLATE_SCREEN_SET_CSS_CUSTOM_CODE_SEPARATOR_END}\n`
             expect(fs.writeFileSync).toHaveBeenNthCalledWith(1, path.join(buildSiteDirectory, webScreenSets.getName(), screenSetIdFilter, `${screenSetIdFilter}.js`), expectedFile)
             expect(fs.writeFileSync).toHaveBeenNthCalledWith(2, path.join(buildSiteDirectory, webScreenSets.getName(), screenSetIdFilter, `${screenSetIdFilter}.css`), expectedCss)

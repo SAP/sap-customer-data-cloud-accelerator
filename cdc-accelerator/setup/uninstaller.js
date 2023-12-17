@@ -1,7 +1,7 @@
 import fs from 'fs'
-import { spawnSync } from 'child_process'
 import { CDC_ACCELERATOR_DIRECTORY } from '../core/constants.js'
 import { CONFIGURATION_FILES } from './constants.js'
+import Terminal from '../core/terminal'
 
 export default class Uninstaller {
     uninstall(newProjectPackageJson, acceleratorPackageJson) {
@@ -32,7 +32,7 @@ export default class Uninstaller {
     }
 
     #uninstallDependency(dependency) {
-        spawnSync('npm', ['remove', dependency], { shell: false, stdio: 'inherit' })
+        return Terminal.executeCommand(`npm remove ${dependency}`, { shell: false, stdio: 'inherit' })
     }
 
     #deleteConfigurationFiles() {

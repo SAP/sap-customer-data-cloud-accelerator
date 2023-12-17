@@ -5,16 +5,11 @@
 import { Operations } from './constants.js'
 import CLI from './cli.js'
 import { program, Option } from 'commander'
-import { spawnSync } from 'child_process'
-import { execSync } from 'child_process'
 import Project from '../setup/project.js'
+import Terminal from './terminal.js'
 
 export default class Commander {
-    static #BABEL_COMMAND = 'npx babel --delete-dir-on-start src -d build'
-    static #PRETTIER_COMMAND = 'npx prettier --semi true --trailing-comma none --write '
-    static #START_SERVER_COMMAND = 'npx light-server -c .lightserverrc'
-
-    async init(options) {
+    async #init(options) {
         await new CLI().main(process, Operations.init, options.feature, options.environment)
     }
 
@@ -23,26 +18,17 @@ export default class Commander {
     }
 
     async #build(options) {
-        const command = `${Commander.#BABEL_COMMAND} && ${Commander.#PRETTIER_COMMAND} build/**/*.js`
-        spawnSync(command, { shell: false, stdio: 'inherit' })
-
         await new CLI().main(process, Operations.build, options.feature, options.environment)
     }
 
     async #deploy(options) {
-        const command = `${Commander.#BABEL_COMMAND} && ${Commander.#PRETTIER_COMMAND} build/**/WebScreenSets/**/*.js`
-        spawnSync(command, { shell: false, stdio: 'inherit' })
-
         await new CLI().main(process, Operations.build, options.feature, options.environment)
         await new CLI().main(process, Operations.deploy, options.feature, options.environment)
     }
 
     async #start() {
-        const command = `${Commander.#BABEL_COMMAND} && ${Commander.#PRETTIER_COMMAND} build/**/WebScreenSets/**/*.js`
-        spawnSync(command, { shell: false, stdio: 'inherit' })
-
         await new CLI().main(process, Operations.build)
-        execSync(Commander.#START_SERVER_COMMAND, { stdio: 'inherit' })
+        Terminal.executeLightServer()
     }
 
     async #setup() {
@@ -66,7 +52,7 @@ export default class Commander {
     }
 
     startProgram(process, name, description, version) {
-        const cmdInit = this.#createCommandWithSharedOptions(Operations.init).description('Reads the data from the cdc console of the sites configured').action(this.init)
+        const cmdInit = this.#createCommandWithSharedOptions(Operations.init).description('Reads the data from the cdc console of the sites configured').action(this.#init)
         const cmdReset = this.#createCommandWithSharedOptions(Operations.reset)
             .description('Deletes the local folder and reads the data from the cdc console of the sites configured')
             .action(this.#reset)

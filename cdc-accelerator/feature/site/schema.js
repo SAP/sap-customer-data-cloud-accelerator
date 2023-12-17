@@ -8,6 +8,7 @@ import fs from 'fs'
 import path from 'path'
 import SiteFeature from '../siteFeature.js'
 import { SRC_DIRECTORY, BUILD_DIRECTORY } from '../../core/constants.js'
+import Terminal from '../../core/terminal.js'
 
 export default class Schema extends SiteFeature {
     static DATA_SCHEMA_FILE_NAME = 'data.json'
@@ -47,16 +48,12 @@ export default class Schema extends SiteFeature {
     }
 
     build(sitePath) {
-        const buildFeaturePath = path.join(sitePath, this.getName())
-        this.clearDirectoryContents(buildFeaturePath)
-        const srcFeaturePath = buildFeaturePath.replace(BUILD_DIRECTORY, SRC_DIRECTORY)
-        this.copyFileFromSrcToBuild(srcFeaturePath, Schema.DATA_SCHEMA_FILE_NAME)
-        this.copyFileFromSrcToBuild(srcFeaturePath, Schema.PROFILE_SCHEMA_FILE_NAME)
-        this.copyFileFromSrcToBuild(srcFeaturePath, Schema.SUBSCRIPTIONS_SCHEMA_FILE_NAME)
+        const srcFeaturePath = path.join(sitePath, this.getName())
+        Terminal.executeBabel(srcFeaturePath)
     }
 
     async deploy(apiKey, siteConfig, siteDirectory) {
-        const buildFeatureDirectory = path.join(siteDirectory, this.getName())
+        const buildFeatureDirectory = path.join(siteDirectory.replace(SRC_DIRECTORY, BUILD_DIRECTORY), this.getName())
         const rawFile = fs.readFileSync(path.join(buildFeatureDirectory, Schema.DATA_SCHEMA_FILE_NAME), { encoding: 'utf8' })
 
         const payload = {

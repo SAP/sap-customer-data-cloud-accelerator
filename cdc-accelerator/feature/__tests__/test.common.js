@@ -75,9 +75,9 @@ export function getBaseFolder(operation) {
     switch (operation) {
         case Operations.init:
         case Operations.reset:
+        case Operations.build:
             baseFolder = SRC_DIRECTORY
             break
-        case Operations.build:
         case Operations.deploy:
             baseFolder = BUILD_DIRECTORY
             break

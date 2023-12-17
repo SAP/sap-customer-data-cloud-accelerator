@@ -3,11 +3,12 @@
  * License: Apache-2.0
  */
 import ToolkitWebSdk from '../../sap-cdc-toolkit/copyConfig/websdk/websdk.js'
-import { CDC_ACCELERATOR_DIRECTORY } from '../../core/constants.js'
+import { BUILD_DIRECTORY, CDC_ACCELERATOR_DIRECTORY, SRC_DIRECTORY } from '../../core/constants.js'
 import fs from 'fs'
 import path from 'path'
 import { cleanJavaScriptModuleBoilerplateWebSdk, replaceFilenamesWithFileContents } from '../utils/utils.js'
 import SiteFeature from '../siteFeature.js'
+import Terminal from '../../core/terminal.js'
 
 export default class WebSdk extends SiteFeature {
     static #TEMPLATE_WEB_SDK_FILE = path.join(CDC_ACCELERATOR_DIRECTORY, 'templates', 'defaultWebSdk.js')
@@ -46,7 +47,11 @@ export default class WebSdk extends SiteFeature {
     }
 
     build(sitePath) {
-        const buildFeaturePath = path.join(sitePath, this.getName())
+        const srcFeaturePath = path.join(sitePath, this.getName())
+        Terminal.executeBabel(srcFeaturePath)
+
+        const buildFeaturePath = srcFeaturePath.replace(SRC_DIRECTORY, BUILD_DIRECTORY)
+        Terminal.executePrettier(buildFeaturePath)
         const buildFileName = path.join(buildFeaturePath, `${this.getName()}.js`)
 
         let webSdkContent = fs.readFileSync(buildFileName, { encoding: 'utf8' })
@@ -64,7 +69,7 @@ export default class WebSdk extends SiteFeature {
     }
 
     async deploy(apiKey, siteConfig, siteDirectory) {
-        const buildFeatureDirectory = path.join(siteDirectory, this.getName())
+        const buildFeatureDirectory = path.join(siteDirectory.replace(SRC_DIRECTORY, BUILD_DIRECTORY), this.getName())
         const buildFileName = path.join(buildFeatureDirectory, `${this.getName()}.js`)
         // Get bundled webSdk
         const fileContent = fs.readFileSync(buildFileName, { encoding: 'utf8' })

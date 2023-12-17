@@ -1,10 +1,11 @@
 import PartnerFeature from '../partnerFeature.js'
 import path from 'path'
 import fs from 'fs'
-import { clearDirectoryContents } from '../utils/utils.js'
-import { SRC_DIRECTORY, BUILD_DIRECTORY } from '../../core/constants.js'
 import client from '../../sap-cdc-toolkit/gigya/client.js'
 import ACL from './acl.js'
+import { BUILD_DIRECTORY, SRC_DIRECTORY } from '../../core/constants.js'
+import Terminal from '../../core/terminal.js'
+
 export default class PermissionGroups extends PartnerFeature {
     static PERMISSIONGROUP_FILE_NAME = 'PermissionGroups.json'
     #acls
@@ -45,16 +46,15 @@ export default class PermissionGroups extends PartnerFeature {
         this.deleteDirectory(path.join(directory, this.getName()))
         this.#acls.reset()
     }
+
     build(directory) {
-        const buildFeaturePath = path.join(directory, this.getName())
-        clearDirectoryContents(buildFeaturePath)
-        const srcFeaturePath = buildFeaturePath.replace(BUILD_DIRECTORY, SRC_DIRECTORY)
-        this.copyFileFromSrcToBuild(srcFeaturePath, PermissionGroups.PERMISSIONGROUP_FILE_NAME)
-        this.#acls.build(buildFeaturePath)
+        const srcFeaturePath = path.join(directory, this.getName())
+        Terminal.executeBabel(srcFeaturePath)
+        this.#acls.build(srcFeaturePath)
     }
 
     async deploy(partnerDirectory, siteInfo) {
-        const buildFeatureDirectory = path.join(partnerDirectory, this.getName())
+        const buildFeatureDirectory = path.join(partnerDirectory.replace(SRC_DIRECTORY, BUILD_DIRECTORY), this.getName())
         const buildFileName = path.join(buildFeatureDirectory, `${this.getName()}.json`)
         const fileContent = fs.readFileSync(buildFileName, { encoding: 'utf8' })
 
@@ -80,14 +80,17 @@ export default class PermissionGroups extends PartnerFeature {
     async deployPermissionGroup(siteInfo, groupId, config, credentials) {
         return await this.setPermissionRequest(siteInfo.dataCenter, siteInfo.partnerId, groupId, config, credentials.userKey, credentials.secret)
     }
+
     async updatePermissionGroup(siteInfo, groupID, config, credentials) {
         return await this.updatePermissionGroupRequest(siteInfo.dataCenter, siteInfo.partnerId, groupID, config, credentials)
     }
+
     async getPermissionGroups(dataCenter, partnerID, credentials) {
         const url = `https://admin.${dataCenter}.gigya.com/admin.getGroups`
         const response = await client.post(url, this.#getPermissionGroupsParameters(partnerID, credentials.userKey, credentials.secret))
         return response.data
     }
+
     async setPermissionRequest(dataCenter, partnerID, groupId, config, userKey, secret) {
         const url = `https://admin.${dataCenter}.gigya.com/admin.createGroup`
         const response = await client.post(url, this.#updatePermissionGroupsParameters(partnerID, groupId, config, userKey, secret))
@@ -125,6 +128,7 @@ export default class PermissionGroups extends PartnerFeature {
         parameters.partnerID = partnerID
         return parameters
     }
+
     getAcl() {
         return this.#acls
     }

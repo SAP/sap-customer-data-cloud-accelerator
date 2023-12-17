@@ -2,7 +2,7 @@
  * Copyright: Copyright 2023 SAP SE or an SAP affiliate company and cdc-accelerator contributors
  * License: Apache-2.0
  */
-import { SRC_DIRECTORY, BUILD_DIRECTORY, SITES_DIRECTORY } from './constants.js'
+import { SITES_DIRECTORY } from './constants.js'
 import fs from 'fs'
 import readline from 'readline'
 import path from 'path'
@@ -42,12 +42,6 @@ export default class Feature {
         return str1.localeCompare(str2, undefined, { sensitivity: 'base' }) === 0
     }
 
-    copyFileFromSrcToBuild(featurePath, file) {
-        const fileContent = JSON.parse(fs.readFileSync(path.join(featurePath, file), { encoding: 'utf8' }))
-        const buildBasePath = featurePath.replace(SRC_DIRECTORY, BUILD_DIRECTORY)
-        fs.writeFileSync(path.join(buildBasePath, file), JSON.stringify(fileContent, null, 4))
-    }
-
     async executeOperationOnFeature(features, featureName, allowedFeatures, directory, runnable) {
         let anyFeatureExecuted = false
         for (const feature of features) {
@@ -78,28 +72,9 @@ export default class Feature {
 
     #calculateWorkingDirectory(directory, feature) {
         let workingDirectory = directory
-
-        if (feature.getType() === 'PartnerFeature') {
-            if (directory.startsWith(BUILD_DIRECTORY)) {
-                const srcWorkingDirectory = workingDirectory.replace(BUILD_DIRECTORY, SRC_DIRECTORY)
-                if (fs.existsSync(srcWorkingDirectory)) {
-                    return srcWorkingDirectory
-                }
-            }
-            return workingDirectory
-        }
-        if (!workingDirectory.endsWith(SITES_DIRECTORY)) {
+        if (!workingDirectory.endsWith(SITES_DIRECTORY) && feature.getType() !== 'PartnerFeature') {
             workingDirectory = path.join(directory, feature.getName())
         }
-        if (fs.existsSync(workingDirectory)) {
-            return workingDirectory
-        } else if (directory.startsWith(BUILD_DIRECTORY)) {
-            const srcWorkingDirectory = workingDirectory.replace(BUILD_DIRECTORY, SRC_DIRECTORY)
-            if (fs.existsSync(srcWorkingDirectory)) {
-                return srcWorkingDirectory
-            }
-        }
-
         return workingDirectory
     }
 
@@ -114,16 +89,6 @@ export default class Feature {
         return Array.prototype.concat(...files)
     }
 
-    async getAllLocalSitePaths() {
-        const buildPaths = await this.getLocalSitePaths(BUILD_DIRECTORY)
-        const srcPaths = await this.getLocalSitePaths(SRC_DIRECTORY)
-        const set = new Set(buildPaths)
-        srcPaths.forEach((path) => {
-            set.add(path.replace(SRC_DIRECTORY, BUILD_DIRECTORY))
-        })
-        return Array.from(set)
-    }
-
     async getLocalSitePaths(baseDirectory) {
         const paths = await this.getFiles(baseDirectory)
         const pathSep = path.sep
@@ -135,10 +100,20 @@ export default class Feature {
             }
             let startIdx = path.indexOf(SITES_DIRECTORY)
             if (startIdx > -1) {
+                // SiteFeature
                 startIdx += SITES_DIRECTORY.length
                 const endIdx = path.indexOf(pathSep, startIdx)
                 if (endIdx > -1) {
                     sites.add(path.substring(baseIdx, endIdx))
+                }
+            } else {
+                // PartnerFeature
+                let partnerIdx = path.indexOf(pathSep, baseIdx + baseDirectory.length)
+                if (partnerIdx > -1) {
+                    const endIdx = path.indexOf(pathSep, partnerIdx + 1)
+                    if (endIdx > -1) {
+                        sites.add(path.substring(baseIdx, endIdx))
+                    }
                 }
             }
         }

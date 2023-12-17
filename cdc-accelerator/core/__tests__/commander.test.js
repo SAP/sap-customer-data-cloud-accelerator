@@ -3,6 +3,7 @@ import Commander from '../commander.js'
 import CLI from '../cli.js'
 import Project from '../../setup/project.js'
 
+jest.mock('../terminal.js')
 jest.mock('../cli.js')
 jest.mock('child_process')
 jest.mock('../../setup/project.js')

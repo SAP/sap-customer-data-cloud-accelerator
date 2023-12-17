@@ -62,7 +62,7 @@ describe('Uninstaller test suite', () => {
 
     test('uninstall successfully', () => {
         fs.existsSync.mockReturnValue(true)
-        const spy = jest.spyOn(child_process, 'spawnSync')
+        const spy = jest.spyOn(child_process, 'spawnSync').mockReturnValue({ status: 0 })
         uninstaller.uninstall(newProjectPackageJson, acceleratorPackageJson)
         const expectedOptions = { shell: false, stdio: 'inherit' }
         expect(spy.mock.calls.length).toBe(4)

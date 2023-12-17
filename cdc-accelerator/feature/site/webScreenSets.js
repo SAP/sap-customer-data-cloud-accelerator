@@ -8,6 +8,7 @@ import path from 'path'
 import SiteFeature from '../siteFeature.js'
 import { BUILD_DIRECTORY, CDC_ACCELERATOR_DIRECTORY, SRC_DIRECTORY } from '../../core/constants.js'
 import { bundleInlineImportScripts, cleanJavaScriptModuleBoilerplateScreenSetEvents, processMainScriptInlineImports } from '../utils/utils.js'
+import Terminal from '../../core/terminal.js'
 
 export default class WebScreenSets extends SiteFeature {
     static TEMPLATE_SCREEN_SET_JAVASCRIPT_FILE = path.join(CDC_ACCELERATOR_DIRECTORY, 'templates', 'defaultScreenSetJavaScript.js')
@@ -106,8 +107,10 @@ export default class WebScreenSets extends SiteFeature {
     }
 
     build(sitePath) {
-        const buildFeaturePath = path.join(sitePath, this.getName())
-        //this.clearDirectoryContents(buildFeaturePath)
+        const srcFeaturePath = path.join(sitePath, this.getName())
+        Terminal.executeBabel(srcFeaturePath)
+        const buildFeaturePath = srcFeaturePath.replace(SRC_DIRECTORY, BUILD_DIRECTORY)
+        Terminal.executePrettier(buildFeaturePath)
 
         fs.readdirSync(buildFeaturePath).forEach((screenSetID) => {
             // Ignore non-directories
@@ -187,7 +190,7 @@ export default class WebScreenSets extends SiteFeature {
         const dataCenter = siteConfig.dataCenter
         const screenSetResponse = await this.#getScreenSets(apiKey, dataCenter)
         const { screenSets: originalScreenSets } = screenSetResponse
-        const featureDirectory = path.join(siteDirectory, this.getName())
+        const featureDirectory = path.join(siteDirectory.replace(SRC_DIRECTORY, BUILD_DIRECTORY), this.getName())
 
         return Promise.all(
             fs.readdirSync(featureDirectory).map(async (screenSetID) => {
