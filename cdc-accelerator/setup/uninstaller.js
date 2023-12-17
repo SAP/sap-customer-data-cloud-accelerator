@@ -1,7 +1,7 @@
 import fs from 'fs'
 import { CDC_ACCELERATOR_DIRECTORY } from '../core/constants.js'
 import { CONFIGURATION_FILES } from './constants.js'
-import Terminal from '../core/terminal'
+import Terminal from '../core/terminal.js'
 
 export default class Uninstaller {
     uninstall(newProjectPackageJson, acceleratorPackageJson) {
