@@ -375,7 +375,7 @@ export default class WebScreenSets extends SiteFeature {
     }
 
     #prependStringToEachLine(value, valueToPrepend, skipLines = 0) {
-        value
+        return value
             .split('\n')
             .map((line, index) => (index >= skipLines ? `${valueToPrepend}${line}` : line))
             .join('\n')

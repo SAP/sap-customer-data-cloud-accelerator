@@ -256,13 +256,20 @@ describe('WebScreenSets test suite', () => {
                     },
                 })
 
-            const file = 'var _default = {' + `import module1 from '${screenSetIdFilter}File2.js'` + 'export default {' + '    func1: function (event) {}' + '};'
-            const expectedFile = '{' + "import module1 from 'Default-LinkAccountsFile2.js'" + 'export default {' + '    func1: function (event) {}' + '}'
+            const file = 'var _default = {' + `import module1 from '${screenSetIdFilter}File2.js'` + 'export default {' + '    func1: function (event) {}' + '};' +
+                '\nvar test = require(\'file1\')'
+            const file1Content = `function _interopRequireDefault(obj) {
+    return obj && obj.__esModule ? obj : { default: obj };
+}\n(exports['default'] = ; var _default = ;`
+            const expectedFile = '{' + "import module1 from 'Default-LinkAccountsFile2.js'" + 'export default {' + '    func1: function (event) {}' + '}' +
+            `;\nvar test = (function() {
+    (; return ;
+})()`
 
             fs.existsSync.mockReturnValue(true)
             const cssDefault = 'css default content'
             const cssCustom = 'css custom content'
-            fs.readFileSync.mockReturnValueOnce(file).mockReturnValueOnce(cssDefault).mockReturnValueOnce(cssCustom)
+            fs.readFileSync.mockReturnValueOnce(file).mockReturnValueOnce(file1Content).mockReturnValueOnce(cssDefault).mockReturnValueOnce(cssCustom)
 
             await webScreenSets.build(buildSiteDirectory)
             const expectedCss = `${cssDefault}\n\n${WebScreenSets.TEMPLATE_SCREEN_SET_CSS_CUSTOM_CODE_SEPARATOR_START}\n\n${cssCustom}\n\n${WebScreenSets.TEMPLATE_SCREEN_SET_CSS_CUSTOM_CODE_SEPARATOR_END}\n`
