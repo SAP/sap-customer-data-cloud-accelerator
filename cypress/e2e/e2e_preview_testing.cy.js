@@ -23,7 +23,7 @@ describe('template spec', () => {
                                         cy.get(subMenu)
                                             .find('[aria-level="2"]')
                                             .eq(i)
-                                            .click() //clicar em todos os submenus nivel 2
+                                            .click() //clicking in all the level 2 submenus
                                             .next()
                                             .within((featureMenu) => {
                                                 cy.get(featureMenu).find('[aria-level="3"]').should('be.visible')
@@ -37,7 +37,7 @@ describe('template spec', () => {
                                                                     .find('[aria-level="3"]')
                                                                     .eq(i)
                                                                     .click()
-                                                                    .then((feature) => {
+                                                                    .then(() => {
                                                                         cy.url().then((urls) => {
                                                                             validateFeatures(urls)
                                                                         })
@@ -51,9 +51,8 @@ describe('template spec', () => {
                             })
                     })
             })
-
-        //
     }
+
     function validateFeatures(urls) {
         if (urls.includes('EmailTemplates')) {
             cy.visit(urls)
@@ -110,7 +109,6 @@ describe('template spec', () => {
             createElement()
             cy.window().then((win) => {
                 const gigya = win.gigya
-
                 gigya.accounts.showScreenSet({
                     screenSet: screenSetName,
                     startScreen: startScreenName,
