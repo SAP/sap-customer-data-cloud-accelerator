@@ -1,6 +1,6 @@
 import axios from 'axios'
 import SmsTemplates from '../smsTemplates.js'
-import { BUILD_DIRECTORY } from '../../../core/constants.js'
+import { BUILD_DIRECTORY, SRC_DIRECTORY } from '../../../core/constants.js'
 import { smsExpectedResponse } from './test.gigyaResponse.sms.js'
 import { expectedGigyaResponseNok, getSiteConfig } from '../../__tests__/test.gigyaResponses.js'
 import fs from 'fs'
@@ -152,7 +152,7 @@ describe('Sms templates test suite', () => {
             fs.readFileSync.mockReturnValue('Template content')
             const copyFileSyncMock = jest.spyOn(fs, 'copyFileSync')
 
-            smsTemplates.build(BUILD_DIRECTORY)
+            smsTemplates.build(SRC_DIRECTORY)
 
             expect(copyFileSyncMock).toHaveBeenCalled()
         })
@@ -182,7 +182,7 @@ describe('Sms templates test suite', () => {
                 'There cannot be two default files in the same folder. Check the folder: src/partnerId1/Sites/domain.test.com/SmsTemplates/otp/globalTemplates'
             await expect(smsTemplates.deploy(apiKey, getSiteConfig, srcSiteDirectory)).rejects.toThrow(new Error(expectedErrorMessage))
         })
-        
+
         test('SMS duplicate Default Files Error', async () => {
             axios.mockResolvedValue({ data: smsExpectedResponse })
 
