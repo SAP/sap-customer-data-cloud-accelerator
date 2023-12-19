@@ -1,25 +1,66 @@
 describe('template spec', () => {
     it('All feature test', async () => {
-        const urls = [
-            '4_tqmAZeYVLPfPl9SYu_iFxA#/4_tqmAZeYVLPfPl9SYu_iFxA/WebScreenSets/PreferencesCenter-PasswordReset/gigya-reset-password-screen',
-            '4_51rYFDhKRgNJdru9HSz0JA#/4_51rYFDhKRgNJdru9HSz0JA/EmailTemplates/doubleOptIn/ar',
-            '4_51rYFDhKRgNJdru9HSz0JA#/4_51rYFDhKRgNJdru9HSz0JA/EmailTemplates/doubleOptIn/en',
-            '4_51rYFDhKRgNJdru9HSz0JA#/4_51rYFDhKRgNJdru9HSz0JA/WebScreenSets/nescafe-LiteRegistration/gigya-subscribe-with-email-screen',
-            '4_51rYFDhKRgNJdru9HSz0JA#/4_51rYFDhKRgNJdru9HSz0JA/WebScreenSets/nescafe-RegistrationLogin/gigya-login-screen',
-            '4_tqmAZeYVLPfPl9SYu_iFxA#/4_tqmAZeYVLPfPl9SYu_iFxA/WebScreenSets/PreferencesCenter-ProfileUpdate/gigya-update-profile-screen',
-        ]
-        validateFeatures(urls)
+        cy.visit('4_tqmAZeYVLPfPl9SYu_iFxA#/4_tqmAZeYVLPfPl9SYu_iFxA/')
+
+        navigateMenu(0)
+        navigateMenu(1)
     })
+    function navigateMenu(index) {
+        cy.get('#cdc-initializer--preview-menu-container')
+            .find('[aria-level="1"]')
+            .eq(index)
+            .click()
+            .then((div) => {
+                cy.get(div)
+                    .next()
+                    .within((subMenu) => {
+                        cy.get(subMenu)
+                            .find('[aria-level="2"]')
+                            .its('length')
+                            .then((length) => {
+                                for (let i = 0; i < length; i++) {
+                                    if (cy.get(subMenu).find('[aria-level="2"]').eq(i)) {
+                                        cy.get(subMenu)
+                                            .find('[aria-level="2"]')
+                                            .eq(i)
+                                            .click() //clicar em todos os submenus nivel 2
+                                            .next()
+                                            .within((featureMenu) => {
+                                                cy.get(featureMenu).find('[aria-level="3"]').should('be.visible')
+                                                cy.get(featureMenu)
+                                                    .find('[aria-level="3"]')
+                                                    .its('length')
+                                                    .then((length) => {
+                                                        for (let i = 0; i < length; i++) {
+                                                            if (cy.get(featureMenu).find('[aria-level="3"]').eq(i)) {
+                                                                cy.get(featureMenu)
+                                                                    .find('[aria-level="3"]')
+                                                                    .eq(i)
+                                                                    .click()
+                                                                    .then((feature) => {
+                                                                        cy.url().then((urls) => {
+                                                                            validateFeatures(urls)
+                                                                        })
+                                                                    })
+                                                            }
+                                                        }
+                                                    })
+                                            })
+                                    }
+                                }
+                            })
+                    })
+            })
+
+        //
+    }
     function validateFeatures(urls) {
-        for (let url of urls) {
-            if (url.includes('EmailTemplates')) {
-                cy.visit(url)
-                checkEmail(url)
-            }
-            if (url.includes('WebScreenSets')) {
-                cy.visit(url)
-                checkWebScreenSets(url)
-            }
+        if (urls.includes('EmailTemplates')) {
+            cy.visit(urls)
+            checkEmail(urls)
+        }
+        if (urls.includes('WebScreenSets')) {
+            checkWebScreenSets(urls)
         }
     }
 
@@ -36,57 +77,60 @@ describe('template spec', () => {
     function checkEmail(pathFile) {
         const splitString = pathFile.split('/')
         const getLang = splitString[splitString.length - 1]
-        const getApikey = splitString[1]
-        const featureFolder = splitString[2]
-        const fileFolder = splitString[3]
-        Cypress.Promise.all([cy.readFile('cdc-accelerator.json')]).then(([content]) => {
+        const getApikey = splitString[4]
+        const featureFolder = splitString[splitString.length - 2]
+        const fileFolder = splitString[splitString.length - 3]
+        cy.readFile('cdc-accelerator.json').then((content) => {
             const getCacheInfo = content.cache.filter((info) => info.apiKey === getApikey)
             const baseDomain = getCacheInfo[0].baseDomain
             const partnerName = getCacheInfo[0].partnerName
-            const createFilePath = `build/${partnerName}/Sites/${baseDomain}/${featureFolder}/${fileFolder}/${fileFolder}-${getLang}.html`
+            const createFilePath = `build/${partnerName}/Sites/${baseDomain}/${fileFolder}/${featureFolder}/${featureFolder}-${getLang}.html`
             cy.readFile(createFilePath).then((content) => {
-                cy.iframe(`iframe[src="../${createFilePath}"]`)
-                    .find('p')
-                    .invoke('html')
-                    .then((paragraph) => {
-                        expect(content).to.contain(paragraph)
-                    })
+                cy.document().then((doc) => {
+                    cy.get(doc)
+                        .find('[id="cdc-initializer--preview"]')
+                        .find('[id="cdc-initializer--preview-container"]')
+                        .children()
+                        .invoke('html')
+                        .then((iframe) => {
+                            expect(content).to.contain(iframe)
+                        })
+                })
             })
         })
-        checkMenu(fileFolder)
     }
 
     function checkWebScreenSets(urlPath) {
         const splitString = urlPath.split('/')
-        const screenSetName = splitString[3]
+        const screenSetName = splitString[splitString.length - 2]
         const startScreenName = splitString[splitString.length - 1]
+        cy.document().then((doc) => {
+            const preview = cy.get(doc).find('[id="cdc-initializer--preview"]')
+            cy.waitUntil(() => preview.should('be.visible'))
+            createElement()
+            cy.window().then((win) => {
+                const gigya = win.gigya
 
-        cy.waitUntil(() => cy.get('#cdc-initializer--preview-container_content').should('be.visible'))
-        createElement()
-        cy.window().then((win) => {
-            const gigya = win.gigya
-
-            gigya.accounts.showScreenSet({
-                screenSet: screenSetName,
-                startScreen: startScreenName,
-                containerID: 'test-div',
+                gigya.accounts.showScreenSet({
+                    screenSet: screenSetName,
+                    startScreen: startScreenName,
+                    containerID: 'test-div',
+                })
             })
+            cy.get(doc)
+                .find('[id="cdc-initializer--preview"]')
+                .find('[id="cdc-initializer--preview-container"]')
+                .children()
+                .invoke('html')
+                .then((actualHtml) => {
+                    cy.get(doc)
+                        .find('[id="test-div"]')
+                        .children()
+                        .invoke('html')
+                        .then((expectedHtml) => {
+                            expect(expectedHtml).to.equal(actualHtml)
+                        })
+                })
         })
-        cy.get('#cdc-initializer--preview-container')
-            .children()
-            .invoke('html')
-            .then((actualHtml) => {
-                cy.get('#test-div')
-                    .children()
-                    .invoke('html')
-                    .then((expectedHtml) => {
-                        expect(expectedHtml).to.equal(actualHtml)
-                    })
-            })
-        checkMenu(screenSetName)
-    }
-
-    function checkMenu(screenSetName) {
-        cy.get(`div:contains(${screenSetName})`).eq(4).click().should('have.attr', 'aria-expanded').and('eq', 'false')
     }
 })
