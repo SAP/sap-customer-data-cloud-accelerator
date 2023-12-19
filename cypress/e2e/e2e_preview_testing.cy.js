@@ -3,54 +3,56 @@ describe('template spec', () => {
         cy.visit('4_tqmAZeYVLPfPl9SYu_iFxA#/4_tqmAZeYVLPfPl9SYu_iFxA/')
 
         navigateMenu(0)
-        navigateMenu(1)
     })
     function navigateMenu(index) {
-        cy.get('#cdc-initializer--preview-menu-container')
-            .find('[aria-level="1"]')
-            .eq(index)
-            .click()
-            .then((div) => {
-                cy.get(div)
-                    .next()
-                    .within((subMenu) => {
-                        cy.get(subMenu)
-                            .find('[aria-level="2"]')
-                            .its('length')
-                            .then((length) => {
-                                for (let i = 0; i < length; i++) {
-                                    if (cy.get(subMenu).find('[aria-level="2"]').eq(i)) {
-                                        cy.get(subMenu)
-                                            .find('[aria-level="2"]')
-                                            .eq(i)
-                                            .click() //clicking in all the level 2 submenus
-                                            .next()
-                                            .within((featureMenu) => {
-                                                cy.get(featureMenu).find('[aria-level="3"]').should('be.visible')
-                                                cy.get(featureMenu)
-                                                    .find('[aria-level="3"]')
-                                                    .its('length')
-                                                    .then((length) => {
-                                                        for (let i = 0; i < length; i++) {
-                                                            if (cy.get(featureMenu).find('[aria-level="3"]').eq(i)) {
-                                                                cy.get(featureMenu)
-                                                                    .find('[aria-level="3"]')
-                                                                    .eq(i)
-                                                                    .click()
-                                                                    .then(() => {
-                                                                        cy.url().then((urls) => {
-                                                                            validateFeatures(urls)
+        if (index < 2) {
+            cy.get('#cdc-initializer--preview-menu-container')
+                .find('[aria-level="1"]')
+                .eq(index)
+                .click()
+                .then((div) => {
+                    cy.get(div)
+                        .next()
+                        .within((subMenu) => {
+                            cy.get(subMenu)
+                                .find('[aria-level="2"]')
+                                .its('length')
+                                .then((length) => {
+                                    for (let i = 0; i < length; i++) {
+                                        if (cy.get(subMenu).find('[aria-level="2"]').eq(i)) {
+                                            cy.get(subMenu)
+                                                .find('[aria-level="2"]')
+                                                .eq(i)
+                                                .click() //clicking in all the level 2 submenus
+                                                .next()
+                                                .within((featureMenu) => {
+                                                    cy.get(featureMenu).find('[aria-level="3"]').should('be.visible')
+                                                    cy.get(featureMenu)
+                                                        .find('[aria-level="3"]')
+                                                        .its('length')
+                                                        .then((length) => {
+                                                            for (let i = 0; i < length; i++) {
+                                                                if (cy.get(featureMenu).find('[aria-level="3"]').eq(i)) {
+                                                                    cy.get(featureMenu)
+                                                                        .find('[aria-level="3"]')
+                                                                        .eq(i)
+                                                                        .click()
+                                                                        .then(() => {
+                                                                            cy.url().then((urls) => {
+                                                                                validateFeatures(urls)
+                                                                            })
                                                                         })
-                                                                    })
+                                                                }
                                                             }
-                                                        }
-                                                    })
-                                            })
+                                                        })
+                                                })
+                                        }
                                     }
-                                }
-                            })
-                    })
-            })
+                                })
+                        })
+                })
+            navigateMenu(index + 1)
+        }
     }
 
     function validateFeatures(urls) {
