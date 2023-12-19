@@ -109,8 +109,6 @@ export default class SmsTemplates extends SiteFeature {
 
         this.#populateTemplatesFromDirectory(buildFeatureDirectory, payload, 'otp')
         this.#populateTemplatesFromDirectory(buildFeatureDirectory, payload, 'tfa')
-        console.log(payload)
-
         return payload
     }
 

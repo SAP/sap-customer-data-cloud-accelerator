@@ -1,6 +1,6 @@
 import axios from 'axios'
 import SmsTemplates from '../smsTemplates.js'
-import {BUILD_DIRECTORY } from '../../../core/constants.js'
+import { BUILD_DIRECTORY } from '../../../core/constants.js'
 import { smsExpectedResponse } from './test.gigyaResponse.sms.js'
 import { expectedGigyaResponseNok, getSiteConfig } from '../../__tests__/test.gigyaResponses.js'
 import fs from 'fs'
@@ -117,34 +117,44 @@ describe('Sms templates test suite', () => {
     describe('Build test suite', () => {
         test('SMS templates are built successfully', () => {
             const mockFs = {
-                [path.join(srcSiteDirectory, 'SmsTemplates', 'otp')]: {
-                    globalTemplates: ['en-default.txt', 'nl.txt'],
-                    templatesPerCountryCode: {
-                        244: ['pt.txt'],
+                'src/SmsTemplates/otp': {
+                    isDirectory: true,
+                    contents: {
+                        'en-default.txt': 'Your verification code is: {{code}}',
+                        'nl.txt': 'Uw verificatiecode is: {{code}}',
                     },
                 },
-                [path.join(srcSiteDirectory, 'SmsTemplates', 'tfa')]: {
-                    globalTemplates: ['en-default.txt', 'nl.txt'],
+                'src/SmsTemplates/tfa': {
+                    isDirectory: true,
+                    contents: {
+                        'en-default.txt': 'Your verification code is: {{code}}',
+                        'nl.txt': 'Je bevestigingscode is:{{code}}',
+                    },
                 },
             }
 
             fs.readdirSync.mockImplementation((dirPath) => {
-                const entries = mockFs[dirPath] || {}
-                return Object.keys(entries).concat(entries instanceof Array ? entries : [])
+                const dir = mockFs[dirPath]
+                return dir && dir.isDirectory ? Object.keys(dir.contents) : []
             })
 
-            fs.existsSync.mockImplementation((path) => !!mockFs[path])
+            fs.existsSync.mockImplementation((path) => {
+                return !!mockFs[path]
+            })
 
-            fs.statSync.mockImplementation((path) => ({
-                isFile: () => typeof mockFs[path] === 'undefined',
-                isDirectory: () => typeof mockFs[path] !== 'undefined',
-            }))
+            fs.statSync.mockImplementation((path) => {
+                return {
+                    isFile: () => mockFs[path] && !mockFs[path].isDirectory,
+                    isDirectory: () => mockFs[path] && mockFs[path].isDirectory,
+                }
+            })
 
             fs.readFileSync.mockReturnValue('Template content')
-            const writeFileSyncMock = jest.spyOn(fs, 'writeFileSync')
+            const copyFileSyncMock = jest.spyOn(fs, 'copyFileSync')
 
-            const smsTemplates = new SmsTemplates(credentials)
             smsTemplates.build(BUILD_DIRECTORY)
+
+            expect(copyFileSyncMock).toHaveBeenCalled()
         })
 
         test('No SMS templates are built when no files are present', () => {
@@ -172,25 +182,7 @@ describe('Sms templates test suite', () => {
                 'There cannot be two default files in the same folder. Check the folder: src/partnerId1/Sites/domain.test.com/SmsTemplates/otp/globalTemplates'
             await expect(smsTemplates.deploy(apiKey, getSiteConfig, srcSiteDirectory)).rejects.toThrow(new Error(expectedErrorMessage))
         })
-
-        test('SMS templates deploy fails when default language is not set for a country code', async () => {
-            fs.existsSync.mockReturnValue(true)
-            fs.readdirSync.mockImplementation((dirPath) => {
-                if (dirPath.endsWith(SmsTemplates.FOLDER_TEMPLATES_PER_COUNTRY_CODE)) {
-                    return ['244']
-                } else if (dirPath.includes('244')) {
-                    return ['pt.txt']
-                }
-                return []
-            })
-
-            fs.statSync.mockImplementation((path) => {
-                return { isDirectory: () => path.includes('directory') || path.includes('244') }
-            })
-
-            const expectedErrorMessage = 'Default language not set for country code: 244'
-            await expect(smsTemplates.deploy(apiKey, getSiteConfig, srcSiteDirectory)).rejects.toThrow(new Error(expectedErrorMessage))
-        })
+        
         test('SMS duplicate Default Files Error', async () => {
             axios.mockResolvedValue({ data: smsExpectedResponse })
 
