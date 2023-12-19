@@ -4,7 +4,6 @@ import fs from 'fs'
 import client from '../../sap-cdc-toolkit/gigya/client.js'
 import ACL from './acl.js'
 import { BUILD_DIRECTORY, SRC_DIRECTORY } from '../../core/constants.js'
-import Terminal from '../../core/terminal.js'
 
 export default class PermissionGroups extends PartnerFeature {
     static PERMISSIONGROUP_FILE_NAME = 'PermissionGroups.json'
@@ -49,7 +48,9 @@ export default class PermissionGroups extends PartnerFeature {
 
     build(directory) {
         const srcFeaturePath = path.join(directory, this.getName())
-        Terminal.executeBabel(srcFeaturePath)
+        const buildFeaturePath = srcFeaturePath.replace(SRC_DIRECTORY, BUILD_DIRECTORY)
+        this.clearDirectoryContents(buildFeaturePath)
+        this.copyFileFromSrcToBuild(srcFeaturePath, PermissionGroups.PERMISSIONGROUP_FILE_NAME)
         this.#acls.build(srcFeaturePath)
     }
 

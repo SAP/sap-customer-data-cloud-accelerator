@@ -8,7 +8,6 @@ import fs from 'fs'
 import path from 'path'
 import SiteFeature from '../siteFeature.js'
 import { SRC_DIRECTORY, BUILD_DIRECTORY } from '../../core/constants.js'
-import Terminal from '../../core/terminal.js'
 
 export default class Schema extends SiteFeature {
     static DATA_SCHEMA_FILE_NAME = 'data.json'
@@ -49,7 +48,11 @@ export default class Schema extends SiteFeature {
 
     build(sitePath) {
         const srcFeaturePath = path.join(sitePath, this.getName())
-        Terminal.executeBabel(srcFeaturePath)
+        const buildFeaturePath = srcFeaturePath.replace(SRC_DIRECTORY, BUILD_DIRECTORY)
+        this.clearDirectoryContents(buildFeaturePath)
+        this.copyFileFromSrcToBuild(srcFeaturePath, Schema.DATA_SCHEMA_FILE_NAME)
+        this.copyFileFromSrcToBuild(srcFeaturePath, Schema.PROFILE_SCHEMA_FILE_NAME)
+        this.copyFileFromSrcToBuild(srcFeaturePath, Schema.SUBSCRIPTIONS_SCHEMA_FILE_NAME)
     }
 
     async deploy(apiKey, siteConfig, siteDirectory) {

@@ -1,5 +1,5 @@
-import Terminal from '../terminal'
-import { srcSiteDirectory } from '../../feature/__tests__/test.common'
+import Terminal from '../terminal.js'
+import { srcSiteDirectory } from '../../feature/__tests__/test.common.js'
 import child_process from 'child_process'
 import { SRC_DIRECTORY, BUILD_DIRECTORY } from '../constants.js'
 import path from 'path'
@@ -20,7 +20,7 @@ describe('Terminal test suite', () => {
         expect(spy.mock.calls.length).toBe(1)
         expect(child_process.spawnSync).toBeCalledWith(
             'npx',
-            ['babel', '--copy-files', '--delete-dir-on-start', srcSiteDirectory, '-d', srcSiteDirectory.replace(SRC_DIRECTORY, BUILD_DIRECTORY)],
+            ['babel', '--delete-dir-on-start', srcSiteDirectory, '-d', srcSiteDirectory.replace(SRC_DIRECTORY, BUILD_DIRECTORY)],
             expectedOptions,
         )
     })

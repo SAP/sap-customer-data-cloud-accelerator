@@ -51,6 +51,24 @@ describe('ACLs test suite', () => {
         })
     })
 
+    describe('Build test suit', () => {
+        test('All ACL files are built successfully', async () => {
+            const srcFileContent = JSON.stringify(expectedAclResponse.acl)
+            const aclName = Object.keys(expectedACLFileContent)
+            const buildPermissionGroupDirectory = path.join(partnerBuildDirectory, permissionGroupDirectoryName)
+            const dirExists = true
+            fs.existsSync.mockReturnValue(dirExists)
+            fs.readdirSync.mockReturnValue([`${aclName[0]}.json`, `${aclName[1]}.json`])
+
+            fs.readFileSync.mockReturnValue(srcFileContent)
+            acls.build(buildPermissionGroupDirectory)
+            expect(fs.writeFileSync.mock.calls.length).toBe(2)
+            expect(fs.writeFileSync).toHaveBeenNthCalledWith(1, path.join(buildPermissionGroupDirectory, `${acls.getName()}`, `${aclName[0]}.json`), srcFileContent)
+
+            expect(fs.writeFileSync).toHaveBeenNthCalledWith(2, path.join(buildPermissionGroupDirectory, `${acls.getName()}`, `${aclName[1]}.json`), srcFileContent)
+        })
+    })
+
     describe('Deploy test suit', () => {
         test('All ACL files are deployed successfully', async () => {
             axios.mockResolvedValue({ data: expectedGigyaResponseOk })

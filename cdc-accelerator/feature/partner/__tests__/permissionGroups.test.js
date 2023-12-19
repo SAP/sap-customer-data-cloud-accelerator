@@ -4,17 +4,16 @@ import {
     expectedPermissionGroupsResponseAfterRemovingBuiltInGroups,
     expectedGigyaResponseNok,
     expectedPermissionGroupDataWithScope,
+    expectedACLFileContent,
 } from '../../__tests__/test.gigyaResponses.js'
 import fs from 'fs'
 import axios from 'axios'
 import path from 'path'
 import { credentials, partnerBaseDirectory, partnerBuildDirectory } from '../../__tests__/test.common.js'
 import PermissionGroups from '../permissionGroups.js'
-import Terminal from '../../../core/terminal.js'
 
 jest.mock('axios')
 jest.mock('fs')
-jest.mock('../../../core/terminal.js')
 
 describe('Permission Groups test suite', () => {
     const permissionGroups = new PermissionGroups(credentials)
@@ -86,11 +85,26 @@ describe('Permission Groups test suite', () => {
 
     describe('Build test suite', () => {
         test('all permission group files are build successfully', () => {
+            const srcFileContent = JSON.stringify(expectedPermissionGroupsResponse.groups)
+            const aclName = Object.keys(expectedACLFileContent)
+            const dirExists = true
+            fs.existsSync.mockReturnValue(dirExists)
+            fs.rmSync.mockReturnValue(undefined)
+            fs.mkdirSync.mockReturnValue(undefined)
+            fs.writeFileSync.mockReturnValue(undefined)
+            fs.readFileSync.mockReturnValue(srcFileContent)
             const spy = jest.spyOn(permissionGroups.getAcl(), 'build').mockImplementation(() => {})
-            const srcFeaturePath = path.join(partnerBaseDirectory, permissionGroups.getName())
-            permissionGroups.build(partnerBaseDirectory)
-            expect(Terminal.executeBabel).toHaveBeenCalledWith(srcFeaturePath)
+            permissionGroups.build(partnerBuildDirectory)
             expect(spy.mock.calls.length).toBe(1)
+            const buildFeatureDirectory = path.join(partnerBuildDirectory, permissionGroups.getName())
+            expect(fs.existsSync).toHaveBeenCalledWith(buildFeatureDirectory)
+            if (dirExists) {
+                expect(fs.rmSync).toHaveBeenCalledWith(buildFeatureDirectory, { force: true, recursive: true })
+            }
+            expect(fs.writeFileSync).toHaveBeenCalledWith(
+                path.join(buildFeatureDirectory, `${permissionGroups.getName()}.json`),
+                JSON.stringify(JSON.parse(srcFileContent), null, 4),
+            )
         })
     })
     describe('Reset test suite', () => {

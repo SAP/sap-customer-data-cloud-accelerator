@@ -2,7 +2,7 @@
  * Copyright: Copyright 2023 SAP SE or an SAP affiliate company and cdc-accelerator contributors
  * License: Apache-2.0
  */
-import { Operations } from './constants.js'
+import { Operations, SRC_DIRECTORY, BUILD_DIRECTORY } from './constants.js'
 import CLI from './cli.js'
 import { program, Option } from 'commander'
 import Project from '../setup/project.js'
@@ -18,17 +18,19 @@ export default class Commander {
     }
 
     async #build(options) {
-        await new CLI().main(process, Operations.build, options.feature, options.environment)
+        await CommanderBuild(options)
     }
 
     async #deploy(options) {
-        await new CLI().main(process, Operations.build, options.feature, options.environment)
-        await new CLI().main(process, Operations.deploy, options.feature, options.environment)
+        if (await CommanderBuild(options)) {
+            await new CLI().main(process, Operations.deploy, options.feature, options.environment)
+        }
     }
 
     async #start() {
-        await new CLI().main(process, Operations.build)
-        Terminal.executeLightServer()
+        if (await CommanderBuild({})) {
+            Terminal.executeLightServer()
+        }
     }
 
     async #setup() {
@@ -68,4 +70,16 @@ export default class Commander {
         program.command('setup').description('Setup a new project after this dependency is installed').action(this.#setup)
         program.addCommand(cmdInit).addCommand(cmdReset).addCommand(cmdBuild).addCommand(cmdDeploy).parse(process.argv)
     }
+}
+
+async function CommanderBuild(options) {
+    if (featureNeedsBabel(options.feature)) {
+        Terminal.executeBabel(SRC_DIRECTORY)
+        Terminal.executePrettier(BUILD_DIRECTORY)
+    }
+    return await new CLI().main(process, Operations.build, options.feature, options.environment)
+}
+
+function featureNeedsBabel(featureName) {
+    return featureName === undefined ? true : ['WebScreenSets', 'WebSdk'].includes(featureName)
 }

@@ -2,6 +2,7 @@ import path from 'path'
 import fs from 'fs'
 import client from '../../sap-cdc-toolkit/gigya/client.js'
 import Feature from '../../core/feature.js'
+import { SRC_DIRECTORY, BUILD_DIRECTORY } from '../../core/constants.js'
 
 export default class ACL extends Feature {
     #credentials
@@ -30,7 +31,13 @@ export default class ACL extends Feature {
     }
 
     build(directory) {
-        // The method is empty because there is nothing left to do after PermissionGroups.build is executed
+        const srcAclPath = path.join(directory, this.getName())
+        const buildPath = srcAclPath.replace(SRC_DIRECTORY, BUILD_DIRECTORY)
+        this.createDirectoryIfNotExists(buildPath)
+        fs.readdirSync(srcAclPath).forEach((aclFile) => {
+            const aclData = fs.readFileSync(path.join(srcAclPath, aclFile), { encoding: 'utf8' })
+            fs.writeFileSync(path.join(buildPath, aclFile), aclData)
+        })
     }
 
     reset() {

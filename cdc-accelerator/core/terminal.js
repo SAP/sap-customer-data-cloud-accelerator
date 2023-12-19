@@ -4,7 +4,7 @@ import path from 'path'
 
 export default class Terminal {
     static executeBabel(directory) {
-        const exitCode = spawnSync('npx', ['babel', '--copy-files', '--delete-dir-on-start', directory, '-d', directory.replace(SRC_DIRECTORY, BUILD_DIRECTORY)], {
+        const exitCode = spawnSync('npx', ['babel', '--delete-dir-on-start', directory, '-d', directory.replace(SRC_DIRECTORY, BUILD_DIRECTORY)], {
             shell: false,
             stdio: 'ignore',
         })

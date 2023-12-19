@@ -8,7 +8,6 @@ import fs from 'fs'
 import path from 'path'
 import { cleanJavaScriptModuleBoilerplateWebSdk, replaceFilenamesWithFileContents } from '../utils/utils.js'
 import SiteFeature from '../siteFeature.js'
-import Terminal from '../../core/terminal.js'
 
 export default class WebSdk extends SiteFeature {
     static #TEMPLATE_WEB_SDK_FILE = path.join(CDC_ACCELERATOR_DIRECTORY, 'templates', 'defaultWebSdk.js')
@@ -48,10 +47,7 @@ export default class WebSdk extends SiteFeature {
 
     build(sitePath) {
         const srcFeaturePath = path.join(sitePath, this.getName())
-        Terminal.executeBabel(srcFeaturePath)
-
         const buildFeaturePath = srcFeaturePath.replace(SRC_DIRECTORY, BUILD_DIRECTORY)
-        Terminal.executePrettier(buildFeaturePath)
         const buildFileName = path.join(buildFeaturePath, `${this.getName()}.js`)
 
         let webSdkContent = fs.readFileSync(buildFileName, { encoding: 'utf8' })

@@ -4,12 +4,11 @@ import Schema from '../schema.js'
 import axios from 'axios'
 import path from 'path'
 import ToolkitSchemaOptions from '../../../sap-cdc-toolkit/copyConfig/schema/schemaOptions.js'
+import { SRC_DIRECTORY, BUILD_DIRECTORY } from '../../../core/constants.js'
 import { credentials, siteDomain, apiKey, srcSiteDirectory } from '../../__tests__/test.common.js'
-import Terminal from '../../../core/terminal'
 
 jest.mock('axios')
 jest.mock('fs')
-jest.mock('../../../core/terminal.js')
 
 describe('Schema test suite', () => {
     const schema = new Schema(credentials)
@@ -82,9 +81,28 @@ describe('Schema test suite', () => {
 
     describe('Build test suite', () => {
         test('all schema files are build successfully', () => {
-            const srcFeaturePath = path.join(srcSiteDirectory, schema.getName())
-            schema.build(srcSiteDirectory)
-            expect(Terminal.executeBabel).toHaveBeenCalledWith(srcFeaturePath)
+            const srcFileContent = JSON.stringify(expectedSchemaResponse.dataSchema)
+            const dirExists = true
+            fs.existsSync.mockReturnValue(dirExists)
+            fs.rmSync.mockReturnValue(undefined)
+            fs.mkdirSync.mockReturnValue(undefined)
+            fs.writeFileSync.mockReturnValue(undefined)
+            fs.readFileSync.mockReturnValue(srcFileContent)
+
+            // for the build method it is passed the build path
+            schema.build(srcSiteDirectory.replace(SRC_DIRECTORY, BUILD_DIRECTORY))
+
+            const buildFeatureDirectory = path.join(srcSiteDirectory.replace(SRC_DIRECTORY, BUILD_DIRECTORY), schema.getName())
+            expect(fs.existsSync).toHaveBeenCalledWith(buildFeatureDirectory)
+            if (dirExists) {
+                expect(fs.rmSync).toHaveBeenCalledWith(buildFeatureDirectory, { force: true, recursive: true })
+            }
+            expect(fs.writeFileSync).toHaveBeenCalledWith(path.join(buildFeatureDirectory, Schema.DATA_SCHEMA_FILE_NAME), JSON.stringify(JSON.parse(srcFileContent), null, 4))
+            expect(fs.writeFileSync).toHaveBeenCalledWith(path.join(buildFeatureDirectory, Schema.PROFILE_SCHEMA_FILE_NAME), JSON.stringify(JSON.parse(srcFileContent), null, 4))
+            expect(fs.writeFileSync).toHaveBeenCalledWith(
+                path.join(buildFeatureDirectory, Schema.SUBSCRIPTIONS_SCHEMA_FILE_NAME),
+                JSON.stringify(JSON.parse(srcFileContent), null, 4),
+            )
         })
     })
 

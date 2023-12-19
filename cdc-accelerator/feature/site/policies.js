@@ -9,7 +9,6 @@ import fs from 'fs'
 import path from 'path'
 import SiteFeature from '../siteFeature.js'
 import { SRC_DIRECTORY, BUILD_DIRECTORY } from '../../core/constants.js'
-import Terminal from '../../core/terminal.js'
 
 export default class Policies extends SiteFeature {
     static POLICIES_FILE_NAME = 'policies.json'
@@ -51,7 +50,9 @@ export default class Policies extends SiteFeature {
 
     build(sitePath) {
         const srcFeaturePath = path.join(sitePath, this.getName())
-        Terminal.executeBabel(srcFeaturePath)
+        const buildFeaturePath = srcFeaturePath.replace(SRC_DIRECTORY, BUILD_DIRECTORY)
+        this.clearDirectoryContents(buildFeaturePath)
+        this.copyFileFromSrcToBuild(srcFeaturePath, Policies.POLICIES_FILE_NAME)
     }
 
     async deploy(apiKey, siteConfig, siteDirectory) {

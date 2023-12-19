@@ -6,11 +6,9 @@ import axios from 'axios'
 import path from 'path'
 import { SRC_DIRECTORY, BUILD_DIRECTORY } from '../../../core/constants.js'
 import { credentials, apiKey, srcSiteDirectory } from '../../__tests__/test.common.js'
-import Terminal from '../../../core/terminal.js'
 
 jest.mock('axios')
 jest.mock('fs')
-jest.mock('../../../core/terminal.js')
 
 describe('WebSdk test suite', () => {
     let webSdkInstance = new WebSdk(credentials)
@@ -105,8 +103,6 @@ describe('WebSdk test suite', () => {
             const srcDirectory = path.join(srcSiteDirectory, webSdkInstance.getName())
             const buildDirectory = srcDirectory.replace(SRC_DIRECTORY, BUILD_DIRECTORY)
             webSdkInstance.build(srcSiteDirectory)
-            expect(Terminal.executeBabel).toHaveBeenCalledWith(srcDirectory)
-            expect(Terminal.executePrettier).toHaveBeenCalledWith(buildDirectory)
             if (dirExists) {
                 expect(fs.rmSync).toHaveBeenCalledWith(buildDirectory, { force: true, recursive: true })
             }

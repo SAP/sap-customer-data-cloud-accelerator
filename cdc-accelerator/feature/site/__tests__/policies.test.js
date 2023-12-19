@@ -2,14 +2,13 @@ import { getSiteConfig, expectedGigyaResponseNok, expectedPoliciesResponse, expe
 import fs from 'fs'
 import path from 'path'
 import Policies from '../policies.js'
+import { SRC_DIRECTORY, BUILD_DIRECTORY } from '../../../core/constants.js'
 import axios from 'axios'
 import ToolkitPolicyOptions from '../../../sap-cdc-toolkit/copyConfig/policies/policyOptions.js'
 import { credentials, apiKey, srcSiteDirectory } from '../../__tests__/test.common.js'
-import Terminal from '../../../core/terminal'
 
 jest.mock('fs')
 jest.mock('axios')
-jest.mock('../../../core/terminal.js')
 
 describe('Policies test suite', () => {
     const policies = new Policies(credentials)
@@ -70,9 +69,27 @@ describe('Policies test suite', () => {
 
     describe('Build policies test suite', () => {
         test('policies are built successfully', () => {
-            const srcFeaturePath = path.join(srcSiteDirectory, policies.getName())
-            policies.build(srcSiteDirectory)
-            expect(Terminal.executeBabel).toHaveBeenCalledWith(srcFeaturePath)
+            const srcFileContent = JSON.stringify({
+                requireCaptcha: false,
+                requireSecurityQuestion: false,
+                requireLoginID: false,
+                enforceCoppa: false,
+            })
+            const buildDirectory = path.join(srcSiteDirectory.replace(SRC_DIRECTORY, BUILD_DIRECTORY), policies.getName())
+            const dirExists = true
+            fs.existsSync.mockReturnValue(dirExists)
+            fs.rmSync.mockReturnValue(undefined)
+            fs.mkdirSync.mockReturnValue(undefined)
+            fs.writeFileSync.mockReturnValue(undefined)
+            fs.readFileSync.mockReturnValue(srcFileContent)
+
+            policies.build(srcSiteDirectory.replace(SRC_DIRECTORY, BUILD_DIRECTORY))
+
+            expect(fs.existsSync).toHaveBeenCalledWith(buildDirectory)
+            if (dirExists) {
+                expect(fs.rmSync).toHaveBeenCalledWith(buildDirectory, { force: true, recursive: true })
+            }
+            expect(fs.writeFileSync).toHaveBeenCalledWith(path.join(buildDirectory, Policies.POLICIES_FILE_NAME), JSON.stringify(expectedPoliciesResponse.registration, null, 4))
         })
     })
 
