@@ -4,7 +4,7 @@
  */
 import { Operations } from './constants.js'
 import CLI from './cli.js'
-import { program } from 'commander'
+import { program, Option } from 'commander'
 import { spawnSync } from 'child_process'
 import { execSync } from 'child_process'
 import Project from '../setup/project.js'
@@ -50,9 +50,19 @@ export default class Commander {
     }
 
     #createCommandWithSharedOptions(name) {
-        return new program.Command(name)
-            .option('-f, --feature [feature]', 'Single feature to be executed')
-            .option('-e, --environment [environment]', 'Configuration environment to be used during execution')
+        return new program.Command(name).addOption(
+            new Option('-f, --feature [feature]', 'Single feature to be executed').choices([
+                'PermissionGroups',
+                'EmailTemplates',
+                'Policies',
+                'Schema',
+                'SmsTemplates',
+                'WebScreenSets',
+                'WebSdk',
+            ]),
+        )
+        //.option('-f, --feature [feature]', 'Single feature to be executed')
+        //.option('-e, --environment [environment]', 'Configuration environment to be used during execution')
     }
 
     startProgram(process, name, description, version) {
@@ -64,7 +74,7 @@ export default class Commander {
             .description('Processes the local data and prepares it to be deployed to the cdc console')
             .action(this.#build)
         const cmdDeploy = this.#createCommandWithSharedOptions(Operations.deploy)
-            .description('Writes the local data to the cdc console on the sites configured')
+            .description('Deploys the local data to the cdc console on the sites configured')
             .action(this.#deploy)
 
         program.name(name).description(description).version(version)

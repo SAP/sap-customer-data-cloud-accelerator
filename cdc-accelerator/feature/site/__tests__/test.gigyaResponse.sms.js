@@ -52,7 +52,14 @@ export const smsExpectedResponse = {
                 },
                 defaultLanguage: 'en',
             },
-            templatesPerCountryCode: {},
+            templatesPerCountryCode: {
+                244: {
+                    templates: {
+                        pt: 'wwwwwwwaxcdccddw {{code}}',
+                    },
+                    defaultLanguage: 'pt',
+                },
+            },
         },
         tfa: {
             globalTemplates: {
@@ -103,7 +110,14 @@ export const smsExpectedResponse = {
                 },
                 defaultLanguage: 'en',
             },
-            templatesPerCountryCode: {},
+            templatesPerCountryCode: {
+                244: {
+                    templates: {
+                        pt: 'wwwwwwwaxcdccddw {{code}}',
+                    },
+                    defaultLanguage: 'pt',
+                },
+            },
         },
     },
 }

@@ -18,6 +18,10 @@ export default class Schema extends SiteFeature {
         super(credentials)
     }
 
+    getType() {
+        return super.constructor.name
+    }
+
     getName() {
         return this.constructor.name
     }

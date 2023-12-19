@@ -11,7 +11,7 @@ export default class Installer {
         this.generateConfigurationFile()
         this.generatePreviewFile(acceleratorInstallationPath)
 
-        spawnSync('npm install', { shell: false, stdio: 'inherit' })
+        spawnSync('npm', ['install'], { shell: false, stdio: 'inherit' })
     }
 
     generatePackageJsonProperties(newProjectPackageJson, acceleratorPackageJson) {
@@ -31,8 +31,7 @@ export default class Installer {
     }
 
     #containsForbiddenCharacters(dependency) {
-        const forbidden = dependency.match(/[*?:;,&|+]/)
-        return forbidden ? true : false
+        return dependency.match(/[*?:;,&|+]/) ? true : false
     }
 
     #generateNpmScripts(newProjectPackageJson) {

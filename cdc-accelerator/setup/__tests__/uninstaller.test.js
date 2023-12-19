@@ -66,10 +66,10 @@ describe('Uninstaller test suite', () => {
         uninstaller.uninstall(newProjectPackageJson, acceleratorPackageJson)
         const expectedOptions = { shell: false, stdio: 'inherit' }
         expect(spy.mock.calls.length).toBe(4)
-        expect(child_process.spawnSync).toBeCalledWith(`npm remove @babel/cli`, expectedOptions)
-        expect(child_process.spawnSync).toBeCalledWith(`npm remove @babel/core`, expectedOptions)
-        expect(child_process.spawnSync).toBeCalledWith(`npm remove @babel/preset-env`, expectedOptions)
-        expect(child_process.spawnSync).toBeCalledWith('npm remove light-server', expectedOptions)
+        expect(child_process.spawnSync).toBeCalledWith('npm', ['remove', '@babel/cli'], expectedOptions)
+        expect(child_process.spawnSync).toBeCalledWith('npm', ['remove', '@babel/core'], expectedOptions)
+        expect(child_process.spawnSync).toBeCalledWith('npm', ['remove', '@babel/preset-env'], expectedOptions)
+        expect(child_process.spawnSync).toBeCalledWith('npm', ['remove', 'light-server'], expectedOptions)
 
         CONFIGURATION_FILES.forEach((file) => expect(fs.unlink).toHaveBeenCalledWith(file, expect.anything()))
     })
