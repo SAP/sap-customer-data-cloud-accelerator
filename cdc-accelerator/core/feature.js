@@ -79,7 +79,7 @@ export default class Feature {
 
     #calculateWorkingDirectory(directory, feature, operation) {
         let workingDirectory = directory
-        if (operation === Operations.build && feature.getType() === 'PartnerFeature') {
+        if (feature.getType() === 'PartnerFeature' && (operation === Operations.build || operation === Operations.deploy)) {
             workingDirectory = path.join(directory, feature.getName())
         } else if (!workingDirectory.endsWith(SITES_DIRECTORY) && feature.getType() !== 'PartnerFeature') {
             workingDirectory = path.join(directory, feature.getName())

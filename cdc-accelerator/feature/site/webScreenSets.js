@@ -6,8 +6,9 @@ import ToolkitScreenSet from '../../sap-cdc-toolkit/copyConfig/screenset/screens
 import fs from 'fs'
 import path from 'path'
 import SiteFeature from '../siteFeature.js'
-import { BUILD_DIRECTORY, CDC_ACCELERATOR_DIRECTORY, SRC_DIRECTORY } from '../../core/constants.js'
+import { BUILD_DIRECTORY, CDC_ACCELERATOR_DIRECTORY, SRC_DIRECTORY, PACKAGE_JSON_FILE_NAME } from '../../core/constants.js'
 import { bundleInlineImportScripts, cleanJavaScriptModuleBoilerplateScreenSetEvents, processMainScriptInlineImports } from '../utils/utils.js'
+import Project from '../../setup/project.js'
 
 export default class WebScreenSets extends SiteFeature {
     static TEMPLATE_SCREEN_SET_JAVASCRIPT_FILE = path.join(CDC_ACCELERATOR_DIRECTORY, 'templates', 'defaultScreenSetJavaScript.js')
@@ -48,6 +49,20 @@ export default class WebScreenSets extends SiteFeature {
         return screenSetResponse
     }
 
+    #getTemplateFilePath() {
+        if (fs.existsSync(WebScreenSets.TEMPLATE_SCREEN_SET_JAVASCRIPT_FILE)) {
+            return WebScreenSets.TEMPLATE_SCREEN_SET_JAVASCRIPT_FILE
+        } else {
+            const newProjectPackageJson = JSON.parse(fs.readFileSync(PACKAGE_JSON_FILE_NAME, { encoding: 'utf8' }))
+            const projectName = Project.getAcceleratorDependencyName(newProjectPackageJson.devDependencies)
+            const alternativeTemplatePath = path.join('node_modules', projectName, WebScreenSets.TEMPLATE_SCREEN_SET_JAVASCRIPT_FILE)
+            if (fs.existsSync(alternativeTemplatePath)) {
+                return alternativeTemplatePath
+            }
+        }
+        throw new Error('Could not find web screen sets template file')
+    }
+
     #initFiles(featureDirectory, screenSets) {
         screenSets.map((screenSet) => {
             // Create screenSet directory
@@ -63,7 +78,7 @@ export default class WebScreenSets extends SiteFeature {
     #initJavascriptFiles(webScreenSetDirectory, screenSetID, javascript) {
         // If JavaScript is empty, get default template
         if (!javascript || javascript.length === 0) {
-            javascript = fs.readFileSync(WebScreenSets.TEMPLATE_SCREEN_SET_JAVASCRIPT_FILE, { encoding: 'utf8' })
+            javascript = fs.readFileSync(this.#getTemplateFilePath(), { encoding: 'utf8' })
         }
 
         // Wrap javascript in "module"

@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
-import { CONFIGURATION_FILES, PACKAGE_JSON_FILE_NAME, PREVIEW_DIRECTORY } from './constants.js'
-import { CDC_ACCELERATOR_DIRECTORY, CONFIG_FILENAME, Operations, PREVIEW_FILE_NAME, SRC_DIRECTORY } from '../core/constants.js'
+import { CONFIGURATION_FILES, PREVIEW_DIRECTORY } from './constants.js'
+import { CDC_ACCELERATOR_DIRECTORY, CONFIG_FILENAME, Operations, PREVIEW_FILE_NAME, SRC_DIRECTORY, PACKAGE_JSON_FILE_NAME } from '../core/constants.js'
 import Terminal from '../core/terminal.js'
 
 export default class Installer {

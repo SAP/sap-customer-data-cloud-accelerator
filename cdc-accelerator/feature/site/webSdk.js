@@ -3,11 +3,12 @@
  * License: Apache-2.0
  */
 import ToolkitWebSdk from '../../sap-cdc-toolkit/copyConfig/websdk/websdk.js'
-import { BUILD_DIRECTORY, CDC_ACCELERATOR_DIRECTORY, SRC_DIRECTORY } from '../../core/constants.js'
+import { BUILD_DIRECTORY, CDC_ACCELERATOR_DIRECTORY, PACKAGE_JSON_FILE_NAME, SRC_DIRECTORY } from '../../core/constants.js'
 import fs from 'fs'
 import path from 'path'
 import { cleanJavaScriptModuleBoilerplateWebSdk, replaceFilenamesWithFileContents } from '../utils/utils.js'
 import SiteFeature from '../siteFeature.js'
+import Project from '../../setup/project.js'
 
 export default class WebSdk extends SiteFeature {
     static #TEMPLATE_WEB_SDK_FILE = path.join(CDC_ACCELERATOR_DIRECTORY, 'templates', 'defaultWebSdk.js')
@@ -28,7 +29,7 @@ export default class WebSdk extends SiteFeature {
         let { globalConf: originalWebSdk } = siteConfig
         // If globalConf is empty, get default template
         if (!originalWebSdk) {
-            originalWebSdk = fs.readFileSync(`${WebSdk.#TEMPLATE_WEB_SDK_FILE}`, { encoding: 'utf8' })
+            originalWebSdk = fs.readFileSync(this.#getTemplateFilePath(), { encoding: 'utf8' })
         }
 
         // Wrap javascript in "module"
@@ -39,6 +40,20 @@ export default class WebSdk extends SiteFeature {
         // Create new webSdk file
         const fileName = path.join(featureDirectory, `${this.getName()}.js`)
         fs.writeFileSync(fileName, webSdk)
+    }
+
+    #getTemplateFilePath() {
+        if (fs.existsSync(WebSdk.#TEMPLATE_WEB_SDK_FILE)) {
+            return WebSdk.#TEMPLATE_WEB_SDK_FILE
+        } else {
+            const newProjectPackageJson = JSON.parse(fs.readFileSync(PACKAGE_JSON_FILE_NAME, { encoding: 'utf8' }))
+            const projectName = Project.getAcceleratorDependencyName(newProjectPackageJson.devDependencies)
+            const alternativeTemplatePath = path.join('node_modules', projectName, WebSdk.#TEMPLATE_WEB_SDK_FILE)
+            if (fs.existsSync(alternativeTemplatePath)) {
+                return alternativeTemplatePath
+            }
+        }
+        throw new Error('Could not find web SDK template file')
     }
 
     reset(siteDirectory) {
