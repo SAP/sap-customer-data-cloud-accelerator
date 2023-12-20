@@ -63,8 +63,7 @@ export default class PartnerFeature extends Feature {
     async build(featureName) {
         const processedPartners = new Set()
         // Get all directories in src/ that are not features and check if they have features inside
-        const allSitePaths = await this.getLocalSitePaths(SRC_DIRECTORY)
-        const sitePaths = allSitePaths.filter((sitePath) => !sitePath.includes(path.join(path.sep, SITES_DIRECTORY)))
+        const sitePaths = await this.getLocalSitePaths(SRC_DIRECTORY)
         for (const sitePath of sitePaths) {
             const partnerPath = PartnerFeature.getPartnerPath(sitePath)
             if (processedPartners.has(partnerPath)) {
@@ -78,7 +77,10 @@ export default class PartnerFeature extends Feature {
     }
 
     static getPartnerPath(sitePath) {
-        const endIdx = sitePath.lastIndexOf(path.sep)
+        let endIdx = sitePath.indexOf(path.join(path.sep, SITES_DIRECTORY))
+        if (endIdx === -1) {
+            endIdx = sitePath.lastIndexOf(path.sep)
+        }
         if (endIdx < 0) {
             throw new Error(`Unexpected site path ${sitePath}`)
         }

@@ -2,10 +2,11 @@
  * Copyright: Copyright 2023 SAP SE or an SAP affiliate company and cdc-accelerator contributors
  * License: Apache-2.0
  */
-import { SRC_DIRECTORY, BUILD_DIRECTORY, SITES_DIRECTORY } from './constants.js'
+import { SRC_DIRECTORY, BUILD_DIRECTORY, SITES_DIRECTORY, Operations } from './constants.js'
 import fs from 'fs'
 import readline from 'readline'
 import path from 'path'
+import Directory from './directory.js'
 
 export default class Feature {
     credentials
@@ -54,7 +55,7 @@ export default class Feature {
             if (this.#isFeatureFilteredOut(featureName, feature.constructor.name, allowedFeatures)) {
                 continue
             }
-            const workingDirectory = this.#calculateWorkingDirectory(directory, feature)
+            const workingDirectory = this.#calculateWorkingDirectory(directory, feature, runnable.operation)
             if (fs.existsSync(workingDirectory)) {
                 process.stdout.write(`- ${feature.getName()}: `)
                 await feature[runnable.operation](...runnable.args) // the same as -> feature.init(apiKey, siteConfig, siteDomain)
@@ -76,53 +77,48 @@ export default class Feature {
         )
     }
 
-    #calculateWorkingDirectory(directory, feature) {
+    #calculateWorkingDirectory(directory, feature, operation) {
         let workingDirectory = directory
-        if (!workingDirectory.endsWith(SITES_DIRECTORY) && feature.getType() !== 'PartnerFeature') {
+        if (operation === Operations.build && feature.getType() === 'PartnerFeature') {
+            workingDirectory = path.join(directory, feature.getName())
+        } else if (!workingDirectory.endsWith(SITES_DIRECTORY) && feature.getType() !== 'PartnerFeature') {
             workingDirectory = path.join(directory, feature.getName())
         }
         return workingDirectory
     }
 
-    async getFiles(dir) {
-        const dirents = await fs.promises.readdir(dir, { withFileTypes: true })
-        const files = await Promise.all(
-            dirents.map((dirent) => {
-                const res = path.resolve(dir, dirent.name)
-                return dirent.isDirectory() ? this.getFiles(res) : res
-            }),
-        )
-        return Array.prototype.concat(...files)
-    }
-
     async getLocalSitePaths(baseDirectory) {
-        const paths = await this.getFiles(baseDirectory)
-        const pathSep = path.sep
+        const filePaths = await Directory.read(baseDirectory)
         const sites = new Set()
-        for (const path of paths) {
-            const baseIdx = path.indexOf(baseDirectory)
+        for (const filePath of filePaths) {
+            const baseIdx = filePath.indexOf(baseDirectory)
             if (baseIdx < 0) {
                 continue
             }
-            let startIdx = path.indexOf(SITES_DIRECTORY)
-            if (startIdx > -1) {
-                // SiteFeature
-                startIdx += SITES_DIRECTORY.length
-                const endIdx = path.indexOf(pathSep, startIdx)
+            this.#processPath(filePath, baseDirectory, baseIdx, sites)
+        }
+        return Array.from(sites)
+    }
+
+    #processPath(filePath, baseDirectory, baseIdx, sites) {
+        const pathSep = path.sep
+        let startIdx = filePath.indexOf(SITES_DIRECTORY)
+        if (startIdx > -1) {
+            // SiteFeature
+            startIdx += SITES_DIRECTORY.length
+            const endIdx = filePath.indexOf(pathSep, startIdx)
+            if (endIdx > -1) {
+                sites.add(filePath.substring(baseIdx, endIdx))
+            }
+        } else {
+            // PartnerFeature
+            let partnerIdx = filePath.indexOf(pathSep, baseIdx + baseDirectory.length)
+            if (partnerIdx > -1) {
+                const endIdx = filePath.indexOf(pathSep, partnerIdx + 1)
                 if (endIdx > -1) {
-                    sites.add(path.substring(baseIdx, endIdx))
-                }
-            } else {
-                // PartnerFeature
-                let partnerIdx = path.indexOf(pathSep, baseIdx + baseDirectory.length)
-                if (partnerIdx > -1) {
-                    const endIdx = path.indexOf(pathSep, partnerIdx + 1)
-                    if (endIdx > -1) {
-                        sites.add(path.substring(baseIdx, endIdx))
-                    }
+                    sites.add(filePath.substring(baseIdx, endIdx))
                 }
             }
         }
-        return Array.from(sites)
     }
 }

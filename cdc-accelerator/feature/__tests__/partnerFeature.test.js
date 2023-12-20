@@ -5,6 +5,7 @@ import axios from 'axios'
 import { partnerIds, sites, spyAllFeaturesMethod, getPartnerFeature, getBaseFolder, srcSiteDirectory, partnerBaseDirectory } from './test.common.js'
 import Feature from '../../core/feature.js'
 import { Operations, SRC_DIRECTORY } from '../../core/constants.js'
+import Directory from '../../core/directory.js'
 
 jest.mock('axios')
 jest.mock('fs')
@@ -56,7 +57,7 @@ describe('Partner features test suite', () => {
         const operation = Operations.build
 
         test('Build all features executed successfully', async () => {
-            const getFilesSpy = jest.spyOn(partnerFeature, 'getFiles').mockImplementation(async () => {
+            const getFilesSpy = jest.spyOn(Directory, 'read').mockImplementation(async () => {
                 return [
                     path.join('/root/', partnerBaseDirectory, 'PermissionGroups', 'PermissionGroups.json'),
                     path.join('/root/', srcSiteDirectory, 'WebSdk', 'webSdk.js'),
