@@ -62,7 +62,8 @@ export default class SiteFeature extends Feature {
 
     async build(featureName) {
         // Get all directories in src/ that are not features and check if they have features inside (Also '' to check the src/ directory itself)
-        const sitePaths = await this.getAllLocalSitePaths()
+        const allSitePaths = await this.getLocalSitePaths(SRC_DIRECTORY)
+        const sitePaths = allSitePaths.filter((sitePath) => sitePath.includes(path.join(path.sep, SITES_DIRECTORY)))
         for (const sitePath of sitePaths) {
             console.log(`\n${sitePath}`)
             await this.executeOperationOnFeature(this.#features, featureName, undefined, sitePath, { operation: Operations.build, args: [sitePath] })
