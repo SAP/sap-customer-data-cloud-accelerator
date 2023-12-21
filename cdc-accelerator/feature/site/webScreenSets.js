@@ -188,22 +188,18 @@ export default class WebScreenSets extends SiteFeature {
 
             const filePath = path.join(directory, filename)
 
-            try {
-                // Read file
-                let fileContent = fs.readFileSync(filePath, { encoding: 'utf8' })
+            // Read file
+            let fileContent = fs.readFileSync(filePath, { encoding: 'utf8' })
 
-                // Recursively replace filenames with file contents for subsequent files
-                fileContent = this.#bundleInlineImportScripts(fileContent, path.dirname(filePath))
+            // Recursively replace filenames with file contents for subsequent files
+            fileContent = this.#bundleInlineImportScripts(fileContent, path.dirname(filePath))
 
-                // Remove module boilerplate
-                fileContent = this.#cleanJavaScriptModuleBoilerplateImportInline(fileContent)
+            // Remove module boilerplate
+            fileContent = this.#cleanJavaScriptModuleBoilerplateImportInline(fileContent)
 
-                // Replace import with file content (Remove opening and closing of "_interopRequireDefault(")
-                line = `${variableInitialization} = ${fileContent}`
-            } catch (err) {
-                console.error('Not found.', err)
-                return
-            }
+            // Replace import with file content (Remove opening and closing of "_interopRequireDefault(")
+            line = `${variableInitialization} = ${fileContent}`
+
             return line
         })
 
