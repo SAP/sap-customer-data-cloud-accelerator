@@ -12,6 +12,7 @@ import fs from 'fs'
 import path from 'path'
 import WebScreenSets from '../webScreenSets.js'
 import { Operations } from '../../../core/constants.js'
+import Project from '../../../setup/project'
 
 jest.mock('axios')
 jest.mock('fs')
@@ -20,6 +21,7 @@ describe('WebScreenSets test suite', () => {
     const webScreenSets = new WebScreenSets(credentials)
 
     beforeEach(() => {
+        jest.restoreAllMocks()
         jest.clearAllMocks()
     })
 
@@ -30,6 +32,67 @@ describe('WebScreenSets test suite', () => {
 
         test('javascript file generated with custom content', async () => {
             await testJavascriptSingleScreenSet('{ javascript code here }')
+        })
+
+        test('javascript file generated with node_modules template content', async () => {
+            const screenSetIdFilter = 'Default-LinkAccounts'
+            const mockedResponse = getExpectedScreenSetResponse(screenSetIdFilter)
+            mockedResponse.screenSets[0].javascript = undefined
+            axios.mockResolvedValueOnce({ data: mockedResponse })
+
+            const existsSyncSpy = jest.spyOn(fs, 'existsSync').mockReturnValue(false)
+            fs.mkdirSync.mockReturnValue(undefined)
+            fs.writeFileSync.mockReturnValue(undefined)
+            fs.existsSync.mockReturnValueOnce(false).mockReturnValueOnce(true).mockReturnValueOnce(false).mockReturnValueOnce(true)
+            const expectedJavascript = '{' + 'onError: function (event) {' + "return 'default template'" + '}' + '}'
+            const readFileSyncSpy = jest
+                .spyOn(fs, 'readFileSync')
+                .mockReturnValueOnce(JSON.stringify({ test: true }))
+                .mockReturnValueOnce(expectedJavascript)
+            const expectedDependencyName = '@sap_oss/sap-customer-data-cloud-accelerator'
+            const dependencyNameSpy = jest.spyOn(Project, 'getAcceleratorDependencyName').mockReturnValueOnce(expectedDependencyName)
+
+            await webScreenSets.init(apiKey, getSiteConfig, srcSiteDirectory)
+
+            const srcDirectory = path.join(srcSiteDirectory, webScreenSets.getName())
+            const screenSetDirectory = path.join(srcDirectory, screenSetIdFilter)
+
+            expect(dependencyNameSpy).toBeCalled()
+            expect(existsSyncSpy.mock.calls.length).toBe(4)
+            expect(readFileSyncSpy.mock.calls.length).toBe(2)
+            expect(fs.existsSync).toHaveBeenCalledWith(srcDirectory)
+            expect(fs.existsSync).toHaveBeenCalledWith(screenSetDirectory)
+            expect(fs.writeFileSync).toHaveBeenCalledWith(path.join(screenSetDirectory, `${screenSetIdFilter}.js`), `export default ${expectedJavascript};\n`)
+            expect(fs.existsSync).toHaveBeenCalledWith(path.join('node_modules', expectedDependencyName, WebScreenSets.TEMPLATE_SCREEN_SET_JAVASCRIPT_FILE))
+        })
+
+        test('default template not found', async () => {
+            const screenSetIdFilter = 'Default-LinkAccounts'
+            const mockedResponse = getExpectedScreenSetResponse(screenSetIdFilter)
+            mockedResponse.screenSets[0].javascript = undefined
+            axios.mockResolvedValueOnce({ data: mockedResponse })
+
+            const existsSyncSpy = jest.spyOn(fs, 'existsSync').mockReturnValue(false)
+            fs.mkdirSync.mockReturnValue(undefined)
+            fs.writeFileSync.mockReturnValue(undefined)
+            fs.existsSync.mockReturnValueOnce(false).mockReturnValueOnce(true).mockReturnValueOnce(false).mockReturnValueOnce(false)
+            const expectedJavascript = '{' + 'onError: function (event) {' + "return 'default template'" + '}' + '}'
+            const readFileSyncSpy = jest.spyOn(fs, 'readFileSync').mockReturnValueOnce(JSON.stringify({ test: true }))
+            const expectedDependencyName = '@sap_oss/sap-customer-data-cloud-accelerator'
+            const dependencyNameSpy = jest.spyOn(Project, 'getAcceleratorDependencyName').mockReturnValueOnce(expectedDependencyName)
+
+            await expect(webScreenSets.init(apiKey, getSiteConfig, srcSiteDirectory)).rejects.toThrow(new Error('Could not find web screen sets template file'))
+
+            const srcDirectory = path.join(srcSiteDirectory, webScreenSets.getName())
+            const screenSetDirectory = path.join(srcDirectory, screenSetIdFilter)
+
+            expect(dependencyNameSpy).toBeCalled()
+            expect(existsSyncSpy.mock.calls.length).toBe(4)
+            expect(readFileSyncSpy.mock.calls.length).toBe(1)
+            expect(fs.existsSync).toHaveBeenCalledWith(srcDirectory)
+            expect(fs.existsSync).toHaveBeenCalledWith(screenSetDirectory)
+            expect(fs.writeFileSync).not.toHaveBeenCalled()
+            expect(fs.existsSync).toHaveBeenCalledWith(path.join('node_modules', expectedDependencyName, WebScreenSets.TEMPLATE_SCREEN_SET_JAVASCRIPT_FILE))
         })
 
         test('css file generated without custom content', async () => {
@@ -52,7 +115,7 @@ describe('WebScreenSets test suite', () => {
             const mockedResponse = getExpectedScreenSetResponse('Default-LinkAccounts')
             axios.mockResolvedValueOnce({ data: mockedResponse })
 
-            fs.existsSync.mockReturnValue(true)
+            fs.existsSync.mockReturnValueOnce(true)
             await expect(webScreenSets.init(apiKey, getSiteConfig, srcSiteDirectory, false)).rejects.toEqual(
                 new Error(
                     `The "${path.join(
@@ -81,15 +144,16 @@ describe('WebScreenSets test suite', () => {
             const existsSyncSpy = jest.spyOn(fs, 'existsSync').mockReturnValue(false)
             fs.mkdirSync.mockReturnValue(undefined)
             fs.writeFileSync.mockReturnValue(undefined)
+            fs.existsSync.mockReturnValueOnce(false).mockReturnValueOnce(true).mockReturnValueOnce(true)
             let expectedJavascript = javascript ? javascript : '{' + 'onError: function (event) {' + "return 'default template'" + '}' + '}'
-            const readFileSyncSpy = jest.spyOn(fs, 'readFileSync').mockReturnValue(expectedJavascript)
+            const readFileSyncSpy = jest.spyOn(fs, 'readFileSync').mockReturnValueOnce(expectedJavascript)
 
             await webScreenSets.init(apiKey, getSiteConfig, srcSiteDirectory)
 
             const srcDirectory = path.join(srcSiteDirectory, webScreenSets.getName())
             const screenSetDirectory = path.join(srcDirectory, screenSetIdFilter)
 
-            expect(existsSyncSpy.mock.calls.length).toBe(2)
+            expect(existsSyncSpy.mock.calls.length).toBe(2 + (javascript ? 0 : 1))
             expect(readFileSyncSpy.mock.calls.length).toBe(javascript ? 0 : 1)
             expect(fs.existsSync).toHaveBeenCalledWith(srcDirectory)
             expect(fs.existsSync).toHaveBeenCalledWith(screenSetDirectory)
@@ -102,7 +166,7 @@ describe('WebScreenSets test suite', () => {
             mockedResponse.screenSets[0].css = css
             axios.mockResolvedValueOnce({ data: mockedResponse })
 
-            const existsSyncSpy = jest.spyOn(fs, 'existsSync').mockReturnValue(false)
+            const existsSyncSpy = jest.spyOn(fs, 'existsSync').mockReturnValueOnce(false).mockReturnValueOnce(true).mockReturnValueOnce(true)
             fs.mkdirSync.mockReturnValue(undefined)
             fs.writeFileSync.mockReturnValue(undefined)
 
@@ -111,7 +175,7 @@ describe('WebScreenSets test suite', () => {
             const srcDirectory = path.join(srcSiteDirectory, webScreenSets.getName())
             const screenSetDirectory = path.join(srcDirectory, screenSetIdFilter)
 
-            expect(existsSyncSpy.mock.calls.length).toBe(2)
+            expect(existsSyncSpy.mock.calls.length).toBe(3)
             expect(fs.existsSync).toHaveBeenCalledWith(srcDirectory)
             expect(fs.existsSync).toHaveBeenCalledWith(screenSetDirectory)
             expect(fs.writeFileSync).toHaveBeenCalledWith(path.join(screenSetDirectory, `${screenSetIdFilter}.default.css`), expectedDefault)

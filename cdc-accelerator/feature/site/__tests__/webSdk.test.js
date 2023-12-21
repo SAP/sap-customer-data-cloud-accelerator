@@ -6,6 +6,7 @@ import axios from 'axios'
 import path from 'path'
 import { SRC_DIRECTORY, BUILD_DIRECTORY } from '../../../core/constants.js'
 import { credentials, apiKey, srcSiteDirectory } from '../../__tests__/test.common.js'
+import Project from '../../../setup/project.js'
 
 jest.mock('axios')
 jest.mock('fs')
@@ -24,7 +25,7 @@ describe('WebSdk test suite', () => {
         it('all webSdk files are generated successfully', async () => {
             axios.mockResolvedValueOnce({ data: expectedGlobalConf })
 
-            fs.existsSync.mockReturnValue(false)
+            fs.existsSync.mockReturnValueOnce(true).mockReturnValueOnce(false)
             fs.readFileSync.mockReturnValue(expectedGlobalConf)
             fs.mkdirSync.mockReturnValue(undefined)
             fs.writeFileSync.mockReturnValue(undefined)
@@ -39,7 +40,7 @@ describe('WebSdk test suite', () => {
 
         it('should create a new webSdk file with default template when globalConf is empty', async () => {
             const siteConfig = {}
-            fs.existsSync.mockReturnValue(false)
+            fs.existsSync.mockReturnValueOnce(true).mockReturnValueOnce(false)
             const srcDirectory = path.join(srcSiteDirectory, webSdkInstance.getName())
             const writeFile = path.join(srcSiteDirectory, webSdkInstance.getName(), `${webSdkInstance.getName()}.js`)
             fs.readFileSync.mockReturnValue(siteConfig)
@@ -47,6 +48,33 @@ describe('WebSdk test suite', () => {
 
             expect(fs.existsSync).toHaveBeenCalledWith(srcDirectory)
             expect(fs.writeFileSync).toHaveBeenCalledWith(writeFile, `export default ${siteConfig}`)
+        })
+
+        it('should create a new webSdk file with default template from node_modules', async () => {
+            const siteConfig = {}
+            fs.existsSync.mockReturnValueOnce(false).mockReturnValueOnce(true)
+            const srcDirectory = path.join(srcSiteDirectory, webSdkInstance.getName())
+            const writeFile = path.join(srcSiteDirectory, webSdkInstance.getName(), `${webSdkInstance.getName()}.js`)
+            fs.readFileSync.mockReturnValueOnce(JSON.stringify({ test: true })).mockReturnValueOnce(siteConfig)
+            const expectedDependencyName = '@sap_oss/sap-customer-data-cloud-accelerator'
+            const dependencyNameSpy = jest.spyOn(Project, 'getAcceleratorDependencyName').mockReturnValueOnce(expectedDependencyName)
+            await webSdkInstance.init(apiKey, expectedGlobalConf, srcSiteDirectory)
+
+            expect(fs.existsSync).toHaveBeenCalledWith(srcDirectory)
+            expect(fs.writeFileSync).toHaveBeenCalledWith(writeFile, `export default ${siteConfig}`)
+            expect(fs.existsSync).toHaveBeenCalledWith(path.join('node_modules', expectedDependencyName, WebSdk.TEMPLATE_WEB_SDK_FILE))
+            expect(dependencyNameSpy).toBeCalled()
+        })
+
+        it('default template not found', async () => {
+            const siteConfig = {}
+            fs.existsSync.mockReturnValueOnce(false).mockReturnValueOnce(false)
+            fs.readFileSync.mockReturnValueOnce(JSON.stringify({ test: true })).mockReturnValueOnce(siteConfig)
+            const expectedDependencyName = '@sap_oss/sap-customer-data-cloud-accelerator'
+            const dependencyNameSpy = jest.spyOn(Project, 'getAcceleratorDependencyName').mockReturnValueOnce(expectedDependencyName)
+            await expect(webSdkInstance.init(apiKey, expectedGlobalConf, srcSiteDirectory)).rejects.toThrow(new Error('Could not find web SDK template file'))
+            expect(fs.existsSync).toHaveBeenCalledWith(path.join('node_modules', expectedDependencyName, WebSdk.TEMPLATE_WEB_SDK_FILE))
+            expect(dependencyNameSpy).toBeCalled()
         })
     })
 

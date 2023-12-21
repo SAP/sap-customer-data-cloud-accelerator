@@ -10,7 +10,7 @@ import SiteFeature from '../siteFeature.js'
 import Project from '../../setup/project.js'
 
 export default class WebSdk extends SiteFeature {
-    static #TEMPLATE_WEB_SDK_FILE = path.join(CDC_ACCELERATOR_DIRECTORY, 'templates', 'defaultWebSdk.js')
+    static TEMPLATE_WEB_SDK_FILE = path.join(CDC_ACCELERATOR_DIRECTORY, 'templates', 'defaultWebSdk.js')
     static #UTF8 = 'utf8'
     static #JS_FILE_EXTENSION = '.js'
 
@@ -44,12 +44,12 @@ export default class WebSdk extends SiteFeature {
     }
 
     #getTemplateFilePath() {
-        if (fs.existsSync(WebSdk.#TEMPLATE_WEB_SDK_FILE)) {
-            return WebSdk.#TEMPLATE_WEB_SDK_FILE
+        if (fs.existsSync(WebSdk.TEMPLATE_WEB_SDK_FILE)) {
+            return WebSdk.TEMPLATE_WEB_SDK_FILE
         } else {
             const newProjectPackageJson = JSON.parse(fs.readFileSync(PACKAGE_JSON_FILE_NAME, { encoding: 'utf8' }))
             const projectName = Project.getAcceleratorDependencyName(newProjectPackageJson.devDependencies)
-            const alternativeTemplatePath = path.join('node_modules', projectName, WebSdk.#TEMPLATE_WEB_SDK_FILE)
+            const alternativeTemplatePath = path.join('node_modules', projectName, WebSdk.TEMPLATE_WEB_SDK_FILE)
             if (fs.existsSync(alternativeTemplatePath)) {
                 return alternativeTemplatePath
             }
