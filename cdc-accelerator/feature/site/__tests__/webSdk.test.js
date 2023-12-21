@@ -120,7 +120,7 @@ describe('WebSdk test suite', () => {
                 },
             })
 
-            const fileContent = `var _default = (exports['default'] = ${srcFileContent}\n//test comment .js'\ntest.js'`
+            const fileContent = `var _default = (exports['default'] = ${srcFileContent}\n//test comment .js'\ntest.js'\nexports['default'] = _default\nexports["default"] = _default`
             const dirExists = true
             fs.existsSync.mockReturnValue(dirExists)
             fs.rmSync.mockReturnValue(undefined)
