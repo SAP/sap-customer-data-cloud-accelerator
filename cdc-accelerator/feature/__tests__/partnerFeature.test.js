@@ -2,9 +2,10 @@ import { getSiteConfig } from './test.gigyaResponses.js'
 import fs from 'fs'
 import path from 'path'
 import axios from 'axios'
-import { partnerIds, sites, spyAllFeaturesMethod, getPartnerFeature, buildSiteDirectory, getBaseFolder } from './test.common.js'
+import { partnerIds, sites, spyAllFeaturesMethod, getPartnerFeature, getBaseFolder, srcSiteDirectory, partnerBaseDirectory } from './test.common.js'
 import Feature from '../../core/feature.js'
-import { Operations } from '../../core/constants.js'
+import { Operations, SRC_DIRECTORY } from '../../core/constants.js'
+import Directory from '../../core/directory.js'
 
 jest.mock('axios')
 jest.mock('fs')
@@ -56,18 +57,18 @@ describe('Partner features test suite', () => {
         const operation = Operations.build
 
         test('Build all features executed successfully', async () => {
-            const getFilesSpy = jest.spyOn(partnerFeature, 'getFiles').mockImplementation(async () => {
+            const getFilesSpy = jest.spyOn(Directory, 'read').mockImplementation(async () => {
                 return [
-                    path.join('/root/', buildSiteDirectory, 'Schema', 'data.json'),
-                    path.join('/root/', buildSiteDirectory, 'WebSdk', 'webSdk.js'),
-                    path.join('/root/', 'build', partnerIds[1], 'Sites', 'siteDomain', 'WebSdk', 'webSdk.js'),
+                    path.join('/root/', partnerBaseDirectory, 'PermissionGroups', 'PermissionGroups.json'),
+                    path.join('/root/', srcSiteDirectory, 'WebSdk', 'webSdk.js'),
+                    path.join('/root/', SRC_DIRECTORY, partnerIds[1], 'PermissionGroups', 'PermissionGroups.json'),
                     path.join('/root/', 'anyDirectory', 'Schema', 'data.json'),
                 ]
             })
 
             const spyesTotalCalls = await executeTestAndCountCalls(operation, undefined)
             expect(spyesTotalCalls).toBe(sites.length)
-            expect(getFilesSpy.mock.calls.length).toBe(2)
+            expect(getFilesSpy.mock.calls.length).toBe(1)
         })
     })
 
