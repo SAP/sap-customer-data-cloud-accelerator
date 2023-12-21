@@ -121,3 +121,5 @@ client.test.js
 /cypress/videos
 /cypress/screenshots
 /cypress/downloads
+
+./src_example
