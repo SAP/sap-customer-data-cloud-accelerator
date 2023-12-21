@@ -223,7 +223,15 @@ describe('Email templates test suite', () => {
         })
 
         async function testDeploy(serverResponse) {
-            const templatesToTest = ['magicLink', 'welcomeEmailTemplates', 'accountDeletedEmailTemplates', 'doubleOptIn', 'twoFactorAuth', 'unknownLocationNotification']
+            const templatesToTest = [
+                'magicLink',
+                'welcomeEmailTemplates',
+                'accountDeletedEmailTemplates',
+                'doubleOptIn',
+                'twoFactorAuth',
+                'unknownLocationNotification',
+                EmailTemplates.FILE_METADATA,
+            ]
             fs.readdirSync
                 .mockReturnValueOnce(templatesToTest)
                 .mockReturnValueOnce(['magicLink-en.html', 'magicLink-pt.html'])
@@ -231,7 +239,9 @@ describe('Email templates test suite', () => {
                 .mockReturnValueOnce(['accountDeletedEmailTemplates-pt-br.html'])
                 .mockReturnValueOnce(['doubleOptIn-en.html'])
                 .mockReturnValueOnce(['twoFactorAuth-en.html'])
+                .mockReturnValueOnce(['unknownLocationNotification-es-mx.html'])
             fs.readFileSync
+                .mockReturnValueOnce(emailTemplate)
                 .mockReturnValueOnce(emailTemplate)
                 .mockReturnValueOnce(emailTemplate)
                 .mockReturnValueOnce(emailTemplate)
@@ -263,6 +273,11 @@ describe('Email templates test suite', () => {
                         emailTemplates: {
                             en: emailTemplate,
                         },
+                    },
+                },
+                unknownLocationNotification: {
+                    emailTemplates: {
+                        'es-mx': emailTemplate,
                     },
                 },
             }

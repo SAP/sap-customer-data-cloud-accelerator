@@ -60,37 +60,37 @@ npx cdc help
 ### Get initial configuration from the source api key(s) <a id="single-environment-usage-init"></a>
 
 ```sh
-npx cdc init
+npm run init
 ```
 
 ### Replace existing files with the code from the origin api key(s) <a id="single-environment-usage-reset"></a>
 
 ```sh
-npx cdc reset
+npm run reset
 ```
 
 ### Start local development server <a id="single-environment-usage-start"></a>
 
 ```sh
-npx cdc start
+npm run start
 ```
 
 ### Run tests <a id="single-environment-usage-test"></a>
 
 ```
-npx cdc test
+npm run test
 ```
 
 ### Processes the local data and prepares it to be deployed to the cdc console <a id="single-environment-usage-build"></a>
 
 ```sh
-npx cdc build
+npm run build
 ```
 
 #### Deploy the local data to the cdc console on the sites configured <a id="single-environment-usage-deploy"></a>
 
 ```sh
-npx cdc deploy
+npm run deploy
 ```
 
 ## Features <a id="features"></a>

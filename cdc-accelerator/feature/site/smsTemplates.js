@@ -72,8 +72,8 @@ export default class SmsTemplates extends SiteFeature {
     }
 
     #buildTemplates(siteDirectory, templateType) {
-        const srcPath = path.join(siteDirectory.replace(BUILD_DIRECTORY, SRC_DIRECTORY), this.constructor.name, templateType)
-        const buildFeaturePath = path.join(siteDirectory, this.constructor.name, templateType)
+        const srcPath = path.join(siteDirectory, this.getName(), templateType)
+        const buildFeaturePath = srcPath.replace(SRC_DIRECTORY, BUILD_DIRECTORY)
         this.#copyTemplateFiles(srcPath, buildFeaturePath)
     }
 

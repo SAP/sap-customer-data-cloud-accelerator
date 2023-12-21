@@ -4,7 +4,8 @@ import path from 'path'
 import axios from 'axios'
 import { sites, getSiteFeature, spyAllFeaturesMethod, partnerIds, getBaseFolder } from './test.common.js'
 import Feature from '../../core/feature.js'
-import { Operations, SITES_DIRECTORY, BUILD_DIRECTORY } from '../../core/constants.js'
+import { Operations, SITES_DIRECTORY, SRC_DIRECTORY } from '../../core/constants.js'
+import Directory from '../../core/directory.js'
 
 jest.mock('axios')
 jest.mock('fs')
@@ -67,17 +68,17 @@ describe('Site features test suite', () => {
         const operation = Operations.build
 
         test(`${operation} all features executed successfully`, async () => {
-            const getFilesSpy = jest.spyOn(siteFeature, 'getFiles').mockImplementation(async () => {
+            const getFilesSpy = jest.spyOn(Directory, 'read').mockImplementation(async () => {
                 return [
-                    path.join('/root/', BUILD_DIRECTORY, partnerIds[0], SITES_DIRECTORY, sites[0].baseDomain, 'Schema', 'data.json'),
-                    path.join('/root/', BUILD_DIRECTORY, partnerIds[1], SITES_DIRECTORY, sites[1].baseDomain, 'WebSdk', 'webSdk.js'),
+                    path.join('/root/', SRC_DIRECTORY, partnerIds[0], SITES_DIRECTORY, sites[0].baseDomain, 'Schema', 'data.json'),
+                    path.join('/root/', SRC_DIRECTORY, partnerIds[1], SITES_DIRECTORY, sites[1].baseDomain, 'WebSdk', 'webSdk.js'),
                     '/root/anyDirectory/Schema/data.json',
                 ]
             })
 
             const spyesTotalCalls = await executeTestAndCountCalls(operation, undefined)
             expect(spyesTotalCalls).toBe(siteFeature.getFeatures().length * 2)
-            expect(getFilesSpy.mock.calls.length).toBe(2)
+            expect(getFilesSpy.mock.calls.length).toBe(1)
         })
     })
 

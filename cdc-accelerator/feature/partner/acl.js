@@ -1,8 +1,9 @@
 import path from 'path'
 import fs from 'fs'
-import { SRC_DIRECTORY, BUILD_DIRECTORY } from '../../core/constants.js'
 import client from '../../sap-cdc-toolkit/gigya/client.js'
 import Feature from '../../core/feature.js'
+import { SRC_DIRECTORY, BUILD_DIRECTORY } from '../../core/constants.js'
+
 export default class ACL extends Feature {
     #credentials
     constructor(credentials) {
@@ -28,19 +29,21 @@ export default class ACL extends Feature {
             }
         }
     }
+
     build(directory) {
-        const srcFeaturePath = directory.replace(BUILD_DIRECTORY, SRC_DIRECTORY)
-        const srcAclPath = path.join(srcFeaturePath, this.getName())
-        const buildPath = path.join(directory, this.getName())
+        const srcAclPath = path.join(directory, this.getName())
+        const buildPath = srcAclPath.replace(SRC_DIRECTORY, BUILD_DIRECTORY)
         this.createDirectoryIfNotExists(buildPath)
         fs.readdirSync(srcAclPath).forEach((aclFile) => {
             const aclData = fs.readFileSync(path.join(srcAclPath, aclFile), { encoding: 'utf8' })
             fs.writeFileSync(path.join(buildPath, aclFile), aclData)
         })
     }
+
     reset() {
         // The method is empty because there is nothing left to do after PermissionGroups.reset is executed
     }
+
     async deploy(permissionGroupDirectory, siteInfo) {
         const buildDirectory = path.join(permissionGroupDirectory, this.getName())
         const aclFiles = fs.readdirSync(buildDirectory)
@@ -64,16 +67,19 @@ export default class ACL extends Feature {
         const response = await client.post(url, this.#setAcl(aclID, partnerID, aclContent, credentials.userKey, credentials.secret))
         return response.data
     }
+
     async getAclsRequest(dataCenter, aclID, partnerID, credentials) {
         const url = `https://admin.${dataCenter}.gigya.com/admin.getACL`
         const response = await client.post(url, this.#getAcls(aclID, partnerID, credentials.userKey, credentials.secret))
         return response.data
     }
+
     #setAcl(aclID, partnerID, aclContent, userKey, secret) {
         const parameters = Object.assign(this.#getAcls(aclID, partnerID, userKey, secret))
         parameters.acl = JSON.stringify(aclContent)
         return parameters
     }
+
     #getAcls(aclID, partnerID, userKey, secret) {
         const parameters = Object.assign({})
         parameters.userKey = userKey

@@ -47,16 +47,16 @@ export default class Schema extends SiteFeature {
     }
 
     build(sitePath) {
-        const buildFeaturePath = path.join(sitePath, this.getName())
+        const srcFeaturePath = path.join(sitePath, this.getName())
+        const buildFeaturePath = srcFeaturePath.replace(SRC_DIRECTORY, BUILD_DIRECTORY)
         this.clearDirectoryContents(buildFeaturePath)
-        const srcFeaturePath = buildFeaturePath.replace(BUILD_DIRECTORY, SRC_DIRECTORY)
         this.copyFileFromSrcToBuild(srcFeaturePath, Schema.DATA_SCHEMA_FILE_NAME)
         this.copyFileFromSrcToBuild(srcFeaturePath, Schema.PROFILE_SCHEMA_FILE_NAME)
         this.copyFileFromSrcToBuild(srcFeaturePath, Schema.SUBSCRIPTIONS_SCHEMA_FILE_NAME)
     }
 
     async deploy(apiKey, siteConfig, siteDirectory) {
-        const buildFeatureDirectory = path.join(siteDirectory, this.getName())
+        const buildFeatureDirectory = path.join(siteDirectory.replace(SRC_DIRECTORY, BUILD_DIRECTORY), this.getName())
         const rawFile = fs.readFileSync(path.join(buildFeatureDirectory, Schema.DATA_SCHEMA_FILE_NAME), { encoding: 'utf8' })
 
         const payload = {
