@@ -328,7 +328,7 @@ describe('WebScreenSets test suite', () => {
                 })
 
             const file = 'var _default = {' + `import module1 from '${screenSetIdFilter}File2.js'` + 'export default {' + '    func1: function (event) {}' + '};' +
-                '\n{\ntest}\nvar test = require(\'file1\')'
+                '\n{\ntest}\nvar test = require(\'file1\')\nexports["default"] = _default\nexports[\'default\'] = _default'
             const file1Content = `function _interopRequireDefault(obj) {
     return obj && obj.__esModule ? obj : { default: obj };
 }\n(exports['default'] = ; var _default =`
