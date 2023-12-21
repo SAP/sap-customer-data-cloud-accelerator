@@ -1,6 +1,13 @@
 import { apiKey, buildSiteDirectory, credentials, siteDomain, srcSiteDirectory } from '../../__tests__/test.common.js'
 import axios from 'axios'
-import { expectedGigyaResponseNok, expectedGigyaResponseOk, getExpectedScreenSetResponse, getSiteConfig, screenSetIds, screenSetTemplate } from '../../__tests__/test.gigyaResponses.js'
+import {
+    expectedGigyaResponseNok,
+    expectedGigyaResponseOk,
+    getExpectedScreenSetResponse,
+    getSiteConfig,
+    screenSetIds,
+    screenSetTemplate,
+} from '../../__tests__/test.gigyaResponses.js'
 import fs from 'fs'
 import path from 'path'
 import WebScreenSets from '../webScreenSets.js'
@@ -270,7 +277,7 @@ describe('WebScreenSets test suite', () => {
             const cssCustom = 'css custom content'
             fs.readFileSync.mockReturnValueOnce(file).mockReturnValueOnce(file1Content).mockReturnValueOnce(cssDefault).mockReturnValueOnce(cssCustom)
 
-            await webScreenSets.build(buildSiteDirectory)
+            await webScreenSets.build(srcSiteDirectory)
             const expectedCss = `${cssDefault}\n\n${WebScreenSets.TEMPLATE_SCREEN_SET_CSS_CUSTOM_CODE_SEPARATOR_START}\n\n${cssCustom}\n\n${WebScreenSets.TEMPLATE_SCREEN_SET_CSS_CUSTOM_CODE_SEPARATOR_END}\n`
             expect(fs.writeFileSync).toHaveBeenNthCalledWith(1, path.join(buildSiteDirectory, webScreenSets.getName(), screenSetIdFilter, `${screenSetIdFilter}.js`), expectedFile)
             expect(fs.writeFileSync).toHaveBeenNthCalledWith(2, path.join(buildSiteDirectory, webScreenSets.getName(), screenSetIdFilter, `${screenSetIdFilter}.css`), expectedCss)

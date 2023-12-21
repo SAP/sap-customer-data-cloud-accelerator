@@ -49,13 +49,14 @@ export default class Policies extends SiteFeature {
     }
 
     build(sitePath) {
-        const buildFeaturePath = path.join(sitePath, this.getName())
+        const srcFeaturePath = path.join(sitePath, this.getName())
+        const buildFeaturePath = srcFeaturePath.replace(SRC_DIRECTORY, BUILD_DIRECTORY)
         this.clearDirectoryContents(buildFeaturePath)
-        const srcFeaturePath = buildFeaturePath.replace(BUILD_DIRECTORY, SRC_DIRECTORY)
         this.copyFileFromSrcToBuild(srcFeaturePath, Policies.POLICIES_FILE_NAME)
     }
+
     async deploy(apiKey, siteConfig, siteDirectory) {
-        const buildFeatureDirectory = path.join(siteDirectory, this.getName())
+        const buildFeatureDirectory = path.join(siteDirectory.replace(SRC_DIRECTORY, BUILD_DIRECTORY), this.getName())
         // Get file policies file
         const policiesContent = JSON.parse(fs.readFileSync(path.join(buildFeatureDirectory, Policies.POLICIES_FILE_NAME), { encoding: 'utf8' }))
         const response = await this.deployUsingToolkit(apiKey, siteConfig, policiesContent, new ToolkitPolicyOptions())

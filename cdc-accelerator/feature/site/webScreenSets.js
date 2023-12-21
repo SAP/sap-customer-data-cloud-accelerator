@@ -2,11 +2,12 @@
  * Copyright: Copyright 2023 SAP SE or an SAP affiliate company and cdc-accelerator contributors
  * License: Apache-2.0
  */
-import ToolkitScreenSet from '../../sap-cdc-toolkit/copyConfig/screenset/screenset.js'
 import fs from 'fs'
 import path from 'path'
+import { BUILD_DIRECTORY, CDC_ACCELERATOR_DIRECTORY, PACKAGE_JSON_FILE_NAME, SRC_DIRECTORY } from '../../core/constants.js'
+import ToolkitScreenSet from '../../sap-cdc-toolkit/copyConfig/screenset/screenset.js'
+import Project from '../../setup/project.js'
 import SiteFeature from '../siteFeature.js'
-import { BUILD_DIRECTORY, CDC_ACCELERATOR_DIRECTORY, SRC_DIRECTORY } from '../../core/constants.js'
 
 export default class WebScreenSets extends SiteFeature {
     static TEMPLATE_SCREEN_SET_JAVASCRIPT_FILE = path.join(CDC_ACCELERATOR_DIRECTORY, 'templates', 'defaultScreenSetJavaScript.js')
@@ -47,6 +48,20 @@ export default class WebScreenSets extends SiteFeature {
         return screenSetResponse
     }
 
+    #getTemplateFilePath() {
+        if (fs.existsSync(WebScreenSets.TEMPLATE_SCREEN_SET_JAVASCRIPT_FILE)) {
+            return WebScreenSets.TEMPLATE_SCREEN_SET_JAVASCRIPT_FILE
+        } else {
+            const newProjectPackageJson = JSON.parse(fs.readFileSync(PACKAGE_JSON_FILE_NAME, { encoding: 'utf8' }))
+            const projectName = Project.getAcceleratorDependencyName(newProjectPackageJson.devDependencies)
+            const alternativeTemplatePath = path.join('node_modules', projectName, WebScreenSets.TEMPLATE_SCREEN_SET_JAVASCRIPT_FILE)
+            if (fs.existsSync(alternativeTemplatePath)) {
+                return alternativeTemplatePath
+            }
+        }
+        throw new Error('Could not find web screen sets template file')
+    }
+
     #initFiles(featureDirectory, screenSets) {
         screenSets.map((screenSet) => {
             // Create screenSet directory
@@ -61,7 +76,7 @@ export default class WebScreenSets extends SiteFeature {
     #initJavascriptFiles(webScreenSetDirectory, screenSetID, javascript) {
         // If JavaScript is empty, get default template
         if (!javascript || javascript.length === 0) {
-            javascript = fs.readFileSync(WebScreenSets.TEMPLATE_SCREEN_SET_JAVASCRIPT_FILE, { encoding: 'utf8' })
+            javascript = fs.readFileSync(this.#getTemplateFilePath(), { encoding: 'utf8' })
         }
 
         // Wrap javascript in "module"
@@ -92,8 +107,8 @@ export default class WebScreenSets extends SiteFeature {
     }
 
     build(sitePath) {
-        const buildFeaturePath = path.join(sitePath, this.getName())
-        //this.clearDirectoryContents(buildFeaturePath)
+        const srcFeaturePath = path.join(sitePath, this.getName())
+        const buildFeaturePath = srcFeaturePath.replace(SRC_DIRECTORY, BUILD_DIRECTORY)
 
         fs.readdirSync(buildFeaturePath).forEach((screenSetID) => {
             // Ignore non-directories
@@ -129,6 +144,9 @@ export default class WebScreenSets extends SiteFeature {
         // Bundle inline imported scripts to the start of the events where they were used
         javascript = this.#processMainScriptInlineImports(javascript)
 
+        // Remove any extra formatting added by prettier or babel
+        javascript = this.#cleanJavaScriptMainFile(javascript)
+
         // Replace JavaScript file
         fs.writeFileSync(jsFilename, javascript)
 
@@ -138,6 +156,14 @@ export default class WebScreenSets extends SiteFeature {
                 fs.rmSync(path.join(buildScreenSetPath, screenSetFilename), { recursive: true, force: true })
             }
         })
+    }
+
+    #cleanJavaScriptMainFile(value){
+        // Cleanup extra parenthesis added by prettier around the module
+        if (value.startsWith('({') && value.endsWith('})')) {
+            value = value.substring(1, value.length - 1)
+        }
+        return value
     }
 
     #bundleInlineImportScripts(value, directory) {
@@ -404,7 +430,7 @@ export default class WebScreenSets extends SiteFeature {
         const dataCenter = siteConfig.dataCenter
         const screenSetResponse = await this.#getScreenSets(apiKey, dataCenter)
         const { screenSets: originalScreenSets } = screenSetResponse
-        const featureDirectory = path.join(siteDirectory, this.getName())
+        const featureDirectory = path.join(siteDirectory.replace(SRC_DIRECTORY, BUILD_DIRECTORY), this.getName())
 
         return Promise.all(
             fs.readdirSync(featureDirectory).map(async (screenSetID) => {
