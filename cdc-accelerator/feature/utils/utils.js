@@ -12,6 +12,14 @@ const clearDirectoryContents = (directory) => {
     fs.mkdirSync(directory, { recursive: true })
 }
 
+const cleanJavaScriptMainFile = (value) => {
+    // Cleanup extra parenthesis added by prettier around the module
+    if (value.startsWith('({') && value.endsWith('})')) {
+        value = value.substring(1, value.length - 1)
+    }
+    return value
+}
+
 const cleanJavaScriptModuleBoilerplateImportInline = (value) => {
     // Remove _interopRequireDefault function
     value = value
@@ -345,13 +353,8 @@ const readJsonFile = (filePath) => {
 }
 
 export {
-    clearDirectoryContents,
-    cleanJavaScriptModuleBoilerplateWebSdk,
-    cleanJavaScriptModuleBoilerplateScreenSetEvents,
-    cleanJavaScriptModuleBoilerplateImportInline,
-    prependStringToEachLine,
-    replaceFilenamesWithFileContents,
-    bundleInlineImportScripts,
-    processMainScriptInlineImports,
-    readJsonFile,
+    bundleInlineImportScripts, cleanJavaScriptMainFile,
+    cleanJavaScriptModuleBoilerplateImportInline, cleanJavaScriptModuleBoilerplateScreenSetEvents, cleanJavaScriptModuleBoilerplateWebSdk, clearDirectoryContents, prependStringToEachLine, processMainScriptInlineImports,
+    readJsonFile, replaceFilenamesWithFileContents
 }
+
