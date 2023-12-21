@@ -1,68 +1,68 @@
 {
-    "name": "@sap_oss/sap-customer-data-cloud-accelerator",
-    "version": "0.0.1",
-    "description": "A development environment for SAP Customer Data Cloud that enables the use of modern tools, such as JavaScript and source control.",
-    "main": "index.js",
-    "type": "module",
-    "scripts": {
-        "test": "cross-env CI=true npm run update-sap-cdc-toolkit && jest --collect-coverage --coverage --watch=all --coverageDirectory=coverage/unit ./cdc-accelerator/core ./cdc-accelerator/feature ./cdc-accelerator/setup",
-        "test:e2e": "cross-env E2E=true CI=true jest -i cdc-accelerator/scripts",
-        "init": "npx cdc init",
-        "reset": "npx cdc reset",
-        "build": "npx cdc build",
-        "deploy": "npx cdc deploy",
-        "start": "npx cdc start",
-        "update-sap-cdc-toolkit": "node cdc-accelerator/scripts/updateSapCdcToolkit.js"
-    },
-    "bin": {
-        "cdc": "cdc-accelerator/core/index.js"
-    },
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/SAP/sap-customer-data-cloud-accelerator.git"
-    },
-    "bugs": {
-        "url": "https://github.com/SAP/sap-customer-data-cloud-accelerator/issues"
-    },
-    "homepage": "https://github.com/SAP/sap-customer-data-cloud-accelerator#readme",
-    "contributors": [
-        "Bruno Santos",
-        "Guilherme Lopes",
-        "Luís Marques",
-        "Ricardo Gaião"
+  "name": "@sap_oss/sap-customer-data-cloud-accelerator",
+  "version": "0.0.1-20231221113116+21857fe1e28490dd6732900192a3edb2d1c1dccb",
+  "description": "A development environment for SAP Customer Data Cloud that enables the use of modern tools, such as JavaScript and source control.",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "cross-env CI=true npm run update-sap-cdc-toolkit \u0026\u0026 jest --collect-coverage --coverage --watch=all --coverageDirectory=coverage/unit ./cdc-accelerator/core ./cdc-accelerator/feature ./cdc-accelerator/setup",
+    "test:e2e": "cross-env E2E=true CI=true jest -i cdc-accelerator/scripts",
+    "init": "npx cdc init",
+    "reset": "npx cdc reset",
+    "build": "npx cdc build",
+    "deploy": "npx cdc deploy",
+    "start": "npx cdc start",
+    "update-sap-cdc-toolkit": "node cdc-accelerator/scripts/updateSapCdcToolkit.js"
+  },
+  "bin": {
+    "cdc": "cdc-accelerator/core/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SAP/sap-customer-data-cloud-accelerator.git"
+  },
+  "bugs": {
+    "url": "https://github.com/SAP/sap-customer-data-cloud-accelerator/issues"
+  },
+  "homepage": "https://github.com/SAP/sap-customer-data-cloud-accelerator#readme",
+  "contributors": [
+    "Bruno Santos",
+    "Guilherme Lopes",
+    "Luís Marques",
+    "Ricardo Gaião"
+  ],
+  "jest": {
+    "testPathIgnorePatterns": [
+      "\u003crootDir\u003e/build/",
+      "cdc-accelerator/feature/__tests__/test.gigyaResponses.js",
+      "cdc-accelerator/feature/site/__tests__/test.gigyaResponse.sms.js",
+      "cdc-accelerator/feature/site/__tests__/test.gigyaResponses.emails.js",
+      "cdc-accelerator/feature/__tests__/test.common.js"
     ],
-    "jest": {
-        "testPathIgnorePatterns": [
-            "<rootDir>/build/",
-            "cdc-accelerator/feature/__tests__/test.gigyaResponses.js",
-            "cdc-accelerator/feature/site/__tests__/test.gigyaResponse.sms.js",
-            "cdc-accelerator/feature/site/__tests__/test.gigyaResponses.emails.js",
-            "cdc-accelerator/feature/__tests__/test.common.js"
-        ],
-        "coveragePathIgnorePatterns": [
-            "cdc-accelerator/scripts/"
-        ],
-        "testEnvironment": "jsdom"
-    },
-    "devDependencies": {
-        "@babel/cli": "7.22.6",
-        "@babel/core": "7.22.8",
-        "@babel/preset-env": "7.22.7",
-        "babel-cli": "6.26.0",
-        "babel-plugin-transform-import-meta": "2.2.1",
-        "babel-preset-env": "1.7.0",
-        "cross-env": "7.0.3",
-        "jest": "29.6.1",
-        "jest-environment-jsdom": "29.6.1",
-        "jest-location-mock": "1.0.10",
-        "prettier": "2.8.8"
-    },
-    "dependencies": {
-        "axios": "1.6.0",
-        "commander": "11.1.0",
-        "dotenv": "16.0.3",
-        "jszip": "3.10.1",
-        "light-server": "2.9.1",
-        "mustache": "4.2.0"
-    }
+    "coveragePathIgnorePatterns": [
+      "cdc-accelerator/scripts/"
+    ],
+    "testEnvironment": "jsdom"
+  },
+  "devDependencies": {
+    "@babel/cli": "7.22.6",
+    "@babel/core": "7.22.8",
+    "@babel/preset-env": "7.22.7",
+    "babel-cli": "6.26.0",
+    "babel-plugin-transform-import-meta": "2.2.1",
+    "babel-preset-env": "1.7.0",
+    "cross-env": "7.0.3",
+    "jest": "29.6.1",
+    "jest-environment-jsdom": "29.6.1",
+    "jest-location-mock": "1.0.10",
+    "prettier": "2.8.8"
+  },
+  "dependencies": {
+    "axios": "1.6.0",
+    "commander": "11.1.0",
+    "dotenv": "16.0.3",
+    "jszip": "3.10.1",
+    "light-server": "2.9.1",
+    "mustache": "4.2.0"
+  }
 }
