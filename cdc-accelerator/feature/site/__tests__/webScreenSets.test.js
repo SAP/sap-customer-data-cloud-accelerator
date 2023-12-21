@@ -25,6 +25,10 @@ describe('WebScreenSets test suite', () => {
         jest.clearAllMocks()
     })
 
+    test('should get class super type', () => {
+        expect(webScreenSets.getType()).toEqual('SiteFeature')
+    })
+
     describe('Init test suite', () => {
         test('javascript file generated with template content', async () => {
             await testJavascriptSingleScreenSet(undefined)
