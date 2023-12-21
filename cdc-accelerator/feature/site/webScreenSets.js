@@ -2,13 +2,13 @@
  * Copyright: Copyright 2023 SAP SE or an SAP affiliate company and cdc-accelerator contributors
  * License: Apache-2.0
  */
-import ToolkitScreenSet from '../../sap-cdc-toolkit/copyConfig/screenset/screenset.js'
 import fs from 'fs'
 import path from 'path'
-import SiteFeature from '../siteFeature.js'
-import { BUILD_DIRECTORY, CDC_ACCELERATOR_DIRECTORY, SRC_DIRECTORY, PACKAGE_JSON_FILE_NAME } from '../../core/constants.js'
-import { bundleInlineImportScripts, cleanJavaScriptModuleBoilerplateScreenSetEvents, processMainScriptInlineImports } from '../utils/utils.js'
+import { BUILD_DIRECTORY, CDC_ACCELERATOR_DIRECTORY, PACKAGE_JSON_FILE_NAME, SRC_DIRECTORY } from '../../core/constants.js'
+import ToolkitScreenSet from '../../sap-cdc-toolkit/copyConfig/screenset/screenset.js'
 import Project from '../../setup/project.js'
+import SiteFeature from '../siteFeature.js'
+import { bundleInlineImportScripts, cleanJavaScriptMainFile, cleanJavaScriptModuleBoilerplateScreenSetEvents, processMainScriptInlineImports } from '../utils/utils.js'
 
 export default class WebScreenSets extends SiteFeature {
     static TEMPLATE_SCREEN_SET_JAVASCRIPT_FILE = path.join(CDC_ACCELERATOR_DIRECTORY, 'templates', 'defaultScreenSetJavaScript.js')
@@ -157,6 +157,9 @@ export default class WebScreenSets extends SiteFeature {
 
         // Bundle inline imported scripts to the start of the events where they were used
         javascript = processMainScriptInlineImports(javascript)
+
+        // Remove any extra formatting added by prettier or babel
+        javascript = cleanJavaScriptMainFile(javascript)
 
         // Replace JavaScript file
         fs.writeFileSync(jsFilename, javascript)
