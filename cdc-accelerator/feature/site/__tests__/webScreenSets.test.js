@@ -257,13 +257,12 @@ describe('WebScreenSets test suite', () => {
                 })
 
             const file = 'var _default = {' + `import module1 from '${screenSetIdFilter}File2.js'` + 'export default {' + '    func1: function (event) {}' + '};' +
-                '\nvar test = require(\'file1\')'
+                '\n{\ntest}\nvar test = require(\'file1\')'
             const file1Content = `function _interopRequireDefault(obj) {
     return obj && obj.__esModule ? obj : { default: obj };
-}\n(exports['default'] = ; var _default = ;`
-            const expectedFile = '{' + "import module1 from 'Default-LinkAccountsFile2.js'" + 'export default {' + '    func1: function (event) {}' + '}' +
-            `;\nvar test = (function() {
-    (; return ;
+}\n(exports['default'] = ; var _default =`
+            const expectedFile = `{\ntest}\nvar test = (function() {
+    (; var _default =
 })()`
 
             fs.existsSync.mockReturnValue(true)
