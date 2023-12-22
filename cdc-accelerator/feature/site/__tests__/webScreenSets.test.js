@@ -25,6 +25,10 @@ describe('WebScreenSets test suite', () => {
         jest.clearAllMocks()
     })
 
+    test('should get class super type', () => {
+        expect(webScreenSets.getType()).toEqual('SiteFeature')
+    })
+
     describe('Init test suite', () => {
         test('javascript file generated with template content', async () => {
             await testJavascriptSingleScreenSet(undefined)
@@ -327,13 +331,22 @@ describe('WebScreenSets test suite', () => {
                     },
                 })
 
-            const file = 'var _default = {' + `import module1 from '${screenSetIdFilter}File2.js'` + 'export default {' + '    func1: function (event) {}' + '};'
-            const expectedFile = '{' + "import module1 from 'Default-LinkAccountsFile2.js'" + 'export default {' + '    func1: function (event) {}' + '}'
+            const file = 'var _default = {' + `import module1 from '${screenSetIdFilter}File2.js'` + 'export default {' + '    func1: function (event) {}' + '};' +
+                '\n{\ntest}\nvar test = require(\'file1\')\nexports["default"] = _default\nexports[\'default\'] = _default'
+            const file1Content = `function _interopRequireDefault(obj) {
+    return obj && obj.__esModule ? obj : { default: obj };
+}\n(exports['default'] = ; var _default = ;\nonError: function(){};`
+            const expectedFile = `{
+test}
+var test = (function() {
+    (; return ;
+    onError: function(){};
+})()`
 
             fs.existsSync.mockReturnValue(true)
             const cssDefault = 'css default content'
             const cssCustom = 'css custom content'
-            fs.readFileSync.mockReturnValueOnce(file).mockReturnValueOnce(cssDefault).mockReturnValueOnce(cssCustom)
+            fs.readFileSync.mockReturnValueOnce(file).mockReturnValueOnce(file1Content).mockReturnValueOnce(cssDefault).mockReturnValueOnce(cssCustom)
 
             await webScreenSets.build(srcSiteDirectory)
             const expectedCss = `${cssDefault}\n\n${WebScreenSets.TEMPLATE_SCREEN_SET_CSS_CUSTOM_CODE_SEPARATOR_START}\n\n${cssCustom}\n\n${WebScreenSets.TEMPLATE_SCREEN_SET_CSS_CUSTOM_CODE_SEPARATOR_END}\n`
