@@ -5,6 +5,7 @@ import { CDC_ACCELERATOR_DIRECTORY, CONFIG_FILENAME, Operations, PREVIEW_FILE_NA
 import Terminal from '../core/terminal.js'
 
 export default class Installer {
+    static TEMPLATES_DIRECTORY = 'templates'
     install(newProjectPackageJson, acceleratorInstallationPath, acceleratorPackageJson) {
         this.generatePackageJsonProperties(newProjectPackageJson, acceleratorPackageJson)
         this.copyConfigurationFiles(acceleratorInstallationPath)
@@ -12,6 +13,7 @@ export default class Installer {
         this.generatePreviewFile(acceleratorInstallationPath)
 
         Terminal.executeCommand('npm install', { shell: false, stdio: 'inherit' })
+        this.generateGitData(acceleratorInstallationPath)
     }
 
     generatePackageJsonProperties(newProjectPackageJson, acceleratorPackageJson) {
@@ -117,7 +119,7 @@ export default class Installer {
             // do not overwrite index.html file
             return
         }
-        const templatePath = path.join(acceleratorInstallationPath, CDC_ACCELERATOR_DIRECTORY, 'templates', PREVIEW_DIRECTORY, indexHtmlFileName)
+        const templatePath = path.join(acceleratorInstallationPath, CDC_ACCELERATOR_DIRECTORY, Installer.TEMPLATES_DIRECTORY, PREVIEW_DIRECTORY, indexHtmlFileName)
         let content = fs.readFileSync(templatePath, { encoding: 'utf8' })
         content = this.#replaceLinks(content, acceleratorInstallationPath)
         if (!fs.existsSync(SRC_DIRECTORY)) {
@@ -137,5 +139,10 @@ export default class Installer {
             return line
         })
         return lines.join('\n')
+    }
+
+    generateGitData(acceleratorInstallationPath) {
+        Terminal.executeCommand('git init', { shell: false, stdio: 'inherit' })
+        this.#copyFile(path.join(acceleratorInstallationPath, CDC_ACCELERATOR_DIRECTORY, Installer.TEMPLATES_DIRECTORY, '.gitignore'), '.')
     }
 }

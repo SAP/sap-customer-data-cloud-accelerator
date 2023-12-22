@@ -10,9 +10,14 @@ A NodeJs library to setup a new CDC project defining a common structure and offe
 -   **Git**: Code history version control
 -   Multiple scripts to help you `init` and quicky `deploy` the code to the CDC apiKeys
 
+## Pre-requisites <a id="requisites"></a>
+
+As pre-requisite it is necessary to have git installed on the local machine.
+
 ## Set up a new CDC project <a id="setup"></a>
+
 ```sh
-npm init 
+npm init
 # to create a new CDC project
 
 npm install --save-dev @sap_oss/sap-customer-data-cloud-accelerator
@@ -27,6 +32,7 @@ npx cdc setup
 ### User Credentials <a id="user-credentials"></a>
 
 Edit the file `.env` in the project directory and add your credentials:
+
 ```sh
 USER_KEY="ex: XXXXXXXX"
 SECRET_KEY="ex: XXXXXXXXXXXXXXXXXXXXXXXXXXXX"
@@ -97,17 +103,17 @@ npm run deploy
 
 The Customer Data Cloud Accelerator allows reading, working locally and deploying data from the following features:
 
-- E-mail Templates <a id="features-email-templates"></a>
-- Permission Groups <a id="features-permission-groups"></a>
-- Policies <a id="features-policies"></a>
-- Schema <a id="features-schema"></a>
-- SMS Templates <a id="features-sms-templates"></a>
-- Web ScreenSets <a id="features-webscreensets"></a>  
-- Web SDK <a id="features-web-sdk"></a>
+-   E-mail Templates <a id="features-email-templates"></a>
+-   Permission Groups <a id="features-permission-groups"></a>
+-   Policies <a id="features-policies"></a>
+-   Schema <a id="features-schema"></a>
+-   SMS Templates <a id="features-sms-templates"></a>
+-   Web ScreenSets <a id="features-webscreensets"></a>
+-   Web SDK <a id="features-web-sdk"></a>
 
 ### Local Live Preview <a id="features-local-preview"></a>
 
-Local live preview allows the consultant to see and test the web screen sets and email templates on the local environment, before deploying them to the CDC console. 
+Local live preview allows the consultant to see and test the web screen sets and email templates on the local environment, before deploying them to the CDC console.
 
 #### Web Screen-Sets <a id="features-local-preview-web-screen-sets"></a>
 
