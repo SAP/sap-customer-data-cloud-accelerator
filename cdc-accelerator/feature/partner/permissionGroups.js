@@ -33,7 +33,7 @@ export default class PermissionGroups extends PartnerFeature {
         if (permissionGroupsRes.errorCode) {
             throw new Error(JSON.stringify(permissionGroupsRes))
         }
-        if (Object.keys(permissionGroupsRes.groups) !== '') {
+        if (Object.keys(permissionGroupsRes.groups) != '') {
             fs.writeFileSync(
                 path.join(featureDirectory, PermissionGroups.PERMISSIONGROUP_FILE_NAME),
                 JSON.stringify(this.remove_built_in_permission_groups(permissionGroupsRes.groups), null, 4),
