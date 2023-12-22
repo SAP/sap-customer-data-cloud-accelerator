@@ -335,9 +335,12 @@ describe('WebScreenSets test suite', () => {
                 '\n{\ntest}\nvar test = require(\'file1\')\nexports["default"] = _default\nexports[\'default\'] = _default'
             const file1Content = `function _interopRequireDefault(obj) {
     return obj && obj.__esModule ? obj : { default: obj };
-}\n(exports['default'] = ; var _default =`
-            const expectedFile = `{\ntest}\nvar test = (function() {
-    (; var _default =
+}\n(exports['default'] = ; var _default = ;\nonError: function(){};`
+            const expectedFile = `{
+test}
+var test = (function() {
+    (; return ;
+    onError: function(){};
 })()`
 
             fs.existsSync.mockReturnValue(true)
