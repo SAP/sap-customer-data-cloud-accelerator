@@ -34,7 +34,7 @@ export default class Terminal {
         return exitCode
     }
 
-    static executeCommand(command, options = { shell: false, stdio: 'ignore' }) {
+    static executeCommand(command, options = { shell: true, stdio: 'inherit' }) {
         const tokens = command.split(' ')
         const exitCode = spawnSync(tokens[0], tokens.slice(1), options)
         if (exitCode.status !== 0) {

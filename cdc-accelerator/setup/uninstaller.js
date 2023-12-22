@@ -20,7 +20,9 @@ export default class Uninstaller {
                 this.#uninstallDependency(entry[0])
             }
         })
-        this.#uninstallDependency('light-server', newProjectPackageJson)
+        if (this.#containsDependency('light-server', 'dependencies', newProjectPackageJson)) {
+            this.#uninstallDependency('light-server')
+        }
     }
 
     #containsForbiddenCharacters(dependency) {
@@ -28,7 +30,7 @@ export default class Uninstaller {
     }
 
     #containsDependency(dependency, dependenciesContainer, newProjectPackageJson) {
-        return Object.keys(newProjectPackageJson[dependenciesContainer]).includes(dependency)
+        return newProjectPackageJson[dependenciesContainer] !== undefined && Object.keys(newProjectPackageJson[dependenciesContainer]).includes(dependency)
     }
 
     #uninstallDependency(dependency) {
