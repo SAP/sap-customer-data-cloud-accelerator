@@ -3,6 +3,7 @@ import { CDC_ACCELERATOR_DIRECTORY, CONFIG_FILENAME, Operations, PREVIEW_FILE_NA
 import fs from 'fs'
 import path from 'path'
 import { CONFIGURATION_FILES, PREVIEW_DIRECTORY, SAP_ORG } from '../constants.js'
+import Terminal from '../../core/terminal.js'
 
 jest.mock('child_process')
 jest.mock('fs')
@@ -128,6 +129,15 @@ describe('Installer test suite', () => {
 
     test('generatePreviewFile and skip create src directory', () => {
         testGeneratePreviewFile(false)
+    })
+
+    test('generateGitData', () => {
+        const fileContent = 'USER_KEY=\nSECRET_KEY='
+        fs.readFileSync.mockReturnValue(fileContent)
+        const terminalSpy = jest.spyOn(Terminal, 'executeCommand').mockImplementation(() => {})
+        installer.generateGitData('')
+        expect(terminalSpy).toHaveBeenCalledWith('git init', { shell: false, stdio: 'inherit' })
+        expect(fs.writeFileSync).toHaveBeenCalledWith('.gitignore', fileContent)
     })
 
     function testGeneratePreviewFile(createSrcDirectory) {
