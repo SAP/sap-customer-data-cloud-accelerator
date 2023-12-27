@@ -136,7 +136,7 @@ describe('Installer test suite', () => {
         fs.readFileSync.mockReturnValue(fileContent)
         const terminalSpy = jest.spyOn(Terminal, 'executeCommand').mockImplementation(() => {})
         installer.generateGitData('')
-        expect(terminalSpy).toHaveBeenCalledWith('git init', { shell: false, stdio: 'inherit' })
+        expect(terminalSpy).toHaveBeenCalledWith('git init')
         expect(fs.writeFileSync).toHaveBeenCalledWith('.gitignore', fileContent)
     })
 
