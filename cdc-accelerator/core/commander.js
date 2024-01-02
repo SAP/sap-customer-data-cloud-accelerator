@@ -30,6 +30,7 @@ export default class Commander {
 
     async #start() {
         if (await Commander.#doBuild({})) {
+            Project.copyPreviewTemplateIfNotExists()
             Terminal.executeLightServer()
         }
     }

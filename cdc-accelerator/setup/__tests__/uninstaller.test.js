@@ -64,7 +64,7 @@ describe('Uninstaller test suite', () => {
         fs.existsSync.mockReturnValue(true)
         const spy = jest.spyOn(child_process, 'spawnSync').mockReturnValue({ status: 0 })
         uninstaller.uninstall(newProjectPackageJson, acceleratorPackageJson)
-        const expectedOptions = { shell: false, stdio: 'inherit' }
+        const expectedOptions = { shell: true, stdio: 'inherit' }
         expect(spy.mock.calls.length).toBe(4)
         expect(child_process.spawnSync).toBeCalledWith('npm', ['remove', '@babel/cli'], expectedOptions)
         expect(child_process.spawnSync).toBeCalledWith('npm', ['remove', '@babel/core'], expectedOptions)

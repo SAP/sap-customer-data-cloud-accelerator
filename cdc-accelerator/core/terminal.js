@@ -4,19 +4,16 @@ import path from 'path'
 
 export default class Terminal {
     static executeBabel(directory) {
-        const exitCode = spawnSync('npx', ['babel', '--delete-dir-on-start', directory, '-d', directory.replace(SRC_DIRECTORY, BUILD_DIRECTORY)], {
-            shell: false,
+        return Terminal.executeCommand(`npx babel --delete-dir-on-start '${directory}' -d '${directory.replace(SRC_DIRECTORY, BUILD_DIRECTORY)}'`, {
+            shell: true, // windows only executes commands on shell
             stdio: 'ignore',
         })
-        if (exitCode.status !== 0) {
-            throw new Error('Error executing babel')
-        }
-        return exitCode
     }
 
     static executePrettier(directory) {
+        // cannot call executeCommand because prettier command contains shell expansion characters
         const exitCode = spawnSync('npx', ['prettier', '--semi', 'true', '--trailing-comma', 'none', '--write', path.join(directory, '**', '*.js')], {
-            shell: false,
+            shell: true, // windows only executes commands on shell
             stdio: 'ignore',
         })
         if (exitCode.status !== 0) {
@@ -34,12 +31,20 @@ export default class Terminal {
         return exitCode
     }
 
-    static executeCommand(command, options = { shell: false, stdio: 'ignore' }) {
+    static executeCommand(command, options = { shell: true, stdio: 'inherit' }) {
+        // windows only executes commands on shell
+        if (Terminal.containsForbiddenCharacters(command)) {
+            throw new Error(`Error executing '${command}'. It contains shell expansion characters`)
+        }
         const tokens = command.split(' ')
         const exitCode = spawnSync(tokens[0], tokens.slice(1), options)
         if (exitCode.status !== 0) {
             throw new Error(`Error executing ${tokens.length > 1 ? tokens[1] : tokens[0]}`)
         }
         return exitCode
+    }
+
+    static containsForbiddenCharacters(command) {
+        return command.match(/[*?:;,&|+{}<>$`]/) ? true : false
     }
 }
