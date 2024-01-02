@@ -55,6 +55,31 @@ Edit the file `cdc-accelerator.json` in the project directory and add the `sourc
 }
 ```
 
+### How to configure the use of features on the file cdc-accelerator.json
+
+### How to use the feature specific commands
+
+Using the feature specific command lets the user run a specific feature instead of running all of them when doing an operation (init,reset,build,deploy).
+To use them, simply write on the terminal npm run <operation> -- -f <feature>.
+For example:
+
+```
+npm run init -- -f Schema
+```
+
+In this example the user is only going to run the feature Schema when running the operation Init, the feature name can be replaced by any other feature (Email Templates, WebScreenSet, PermissionGroup, WebSdk...)
+
+### How to use filters on preview
+
+### How to use specific environment commands and other functionalities of the CLI
+
+The user can use the CLI (Command Line Interface) to execute all operations instead of using the npm scripts.
+To use the CLI commands simply open the terminal and type npx cdc <operation>.
+The operation can be replaced by Init, Reset, Build, Deploy.
+So for example, if a user wants to use the CLI to run the init operation, the user can just type `npx cdc init`
+
+### Using different options of preview
+
 ## Usage <a id="single-environment-usage"></a>
 
 ### Get help about using the cli <a id="single-environment-usage-help"></a>
