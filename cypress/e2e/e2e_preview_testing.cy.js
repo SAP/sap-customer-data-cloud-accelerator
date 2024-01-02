@@ -6,6 +6,7 @@ describe('template spec', () => {
     })
     function navigateMenu(index) {
         if (index < 2) {
+            cy.get('#cdc-initializer--preview-menu-container').should('be.visible')
             cy.get('#cdc-initializer--preview-menu-container')
                 .find('[aria-level="1"]')
                 .eq(index)
@@ -20,6 +21,7 @@ describe('template spec', () => {
                                 .then((length) => {
                                     for (let i = 0; i < length; i++) {
                                         if (cy.get(subMenu).find('[aria-level="2"]').eq(i)) {
+                                            cy.get(subMenu).find('[aria-level="2"]').eq(i).should('be.visible')
                                             cy.get(subMenu)
                                                 .find('[aria-level="2"]')
                                                 .eq(i)
@@ -33,6 +35,7 @@ describe('template spec', () => {
                                                         .then((length) => {
                                                             for (let i = 0; i < length; i++) {
                                                                 if (cy.get(featureMenu).find('[aria-level="3"]').eq(i)) {
+                                                                    cy.get(featureMenu).find('[aria-level="3"]').eq(i).should('be.visible')
                                                                     cy.get(featureMenu)
                                                                         .find('[aria-level="3"]')
                                                                         .eq(i)
@@ -106,7 +109,7 @@ describe('template spec', () => {
         const screenSetName = splitString[splitString.length - 2]
         const startScreenName = splitString[splitString.length - 1]
         cy.document().then((doc) => {
-            const preview = cy.get(doc).find('[id="cdc-initializer--preview"]')
+            const preview = cy.get(doc).find('[id="cdc-initializer--preview-container"]')
             cy.waitUntil(() => preview.should('be.visible'))
             createElement()
             cy.window().then((win) => {
