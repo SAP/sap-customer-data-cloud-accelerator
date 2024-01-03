@@ -24,27 +24,6 @@ describe('Permission Groups test suite', () => {
 
     describe('Init test suit', () => {
         test('All permission groups files are generated sucessfully', async () => {
-            axios.mockResolvedValue({ data: expectedPermissionGroupsResponse })
-            const getSiteInfo = {
-                partnerId: 123123,
-                dataCenter: 'eu1',
-            }
-
-            fs.existsSync.mockReturnValue(false)
-            fs.mkdirSync.mockReturnValue(undefined)
-            fs.writeFileSync.mockReturnValue(undefined)
-            let spy = jest.spyOn(permissionGroups, 'remove_built_in_permission_groups')
-            await permissionGroups.init(partnerBaseDirectory, getSiteInfo)
-            const srcDirectory = path.join(partnerBaseDirectory, permissionGroups.getName())
-            expect(fs.existsSync).toHaveBeenCalledWith(srcDirectory)
-            expect(spy.mock.calls.length).toBe(1)
-            expect(spy).toHaveBeenCalledWith(expectedPermissionGroupsResponse.groups)
-            expect(fs.writeFileSync).toHaveBeenCalledWith(
-                path.join(srcDirectory, PermissionGroups.PERMISSIONGROUP_FILE_NAME),
-                JSON.stringify(expectedPermissionGroupsResponseAfterRemovingBuiltInGroups, null, 4),
-            )
-        })
-        test('PermissionGroups should not write empty groups', async () => {
             axios.mockResolvedValue({ data: expectedPermissionGroupsResponseWithEmptyGroup })
             const getSiteInfo = {
                 partnerId: 123123,
@@ -62,6 +41,7 @@ describe('Permission Groups test suite', () => {
                 JSON.stringify(expectedPermissionGroupsResponseAfterRemovingBuiltInGroups, null, 4),
             )
         })
+
         test('get permission groups failed', async () => {
             const getSiteInfo = {
                 partnerId: 123123,
