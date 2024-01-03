@@ -88,15 +88,46 @@ If the user doesn't provide the feature array it means that all of the features 
 
 ### How to use the feature specific commands
 
-Using the feature specific command lets the user run a specific feature instead of running all of them when doing an operation (init,reset,build,deploy).
-To use them, simply write on the terminal npm run <operation> -- -f <feature>.
+Using the feature specific command lets the user run a specific feature (Schema, PermissionGroups, WebSdk, WebScreenSets,EmailTemplates...) instead of running all of them when doing an operation (init,reset,build,deploy).
+To use them, simply write on the terminal
+
+```
+npm run <operation> -- -f <feature>
+```
+
 For example:
 
 ```
 npm run init -- -f Schema
 ```
 
-In this example the user is only going to run the feature Schema when running the operation Init, the feature name can be replaced by any other feature (Email Templates, WebScreenSet, PermissionGroup, WebSdk...)
+In this example the user is only going to run the feature Schema when running the operation Init, the feature name can be replaced by any other feature (Email Templates, WebScreenSet, PermissionGroup, WebSdk...).
+To show all the possible commands, the user can write simply
+
+```
+npx cdc help
+```
+
+This command will show all possible commands and options that the user can do, the output will be something like this:
+
+```
+Usage: npx cdc [options] [command]
+
+A development environment for SAP Customer Data Cloud that enables the use of modern tools, such as JavaScript and source control.
+
+Options:
+  -V, --version     output the version number
+  -h, --help        display help for command
+
+Commands:
+  start             Launch local server for testing using the preview functionality
+  setup             Setup a new project after this dependency is installed
+  init [options]    Reads the data from the cdc console of the sites configured
+  reset [options]   Deletes the local folder and reads the data from the cdc console of the sites configured
+  build [options]   Processes the local data and prepares it to be deployed to the cdc console
+  deploy [options]  Deploys the local data to the cdc console on the sites configured
+  help [command]    display help for command
+```
 
 ### How to use filters on preview
 
@@ -139,16 +170,24 @@ If the user needs to add that filter to all the ApiKeys that are on the configur
 ```
 
 By using this, the screen filtering will be applied to all the apiKeys inside the configuration file then the filter will then be applied on the preview file.
-The <origin> will retrieve the settings that are available on the 'source' or 'deploy'.
-The <filter> will be what was defined above, with the specific apiKeys and screens/email.
+
+### Using different options of preview
+
+Using the different options of the preview will enable the user to control what he wants to see or filter.
+
+The option <origin> will retrieve the settings that are available on the 'source' or 'deploy' inside the cdc-accelerator.json.
+The option <useLocalWebSdk> will use the local webSdk.js code that is inside the build/ directory.
+The option <useLocalScreenSets> will use the local screensets.js code that is inside the build/ directory
+The option <filter> will be what was defined above, with the specific apiKeys and screens/email.
+The option <lang> will define the language of the screen-sets, it can be changed accordingly to the user preference.
 
 ```
   preview({
-                origin: 'source', // 'source' or 'deploy'
-                useLocalWebSdk: true, // Use local web sdk js code from build/ directory (for development)
-                useLocalScreenSets: true, // Use local screensets js code from build/ directory (for development)
-                filter,     // Show only the necessary features for this demo
-                lang: 'en', // Language of the Screen-Sets
+                origin: 'source',
+                useLocalWebSdk: true,
+                useLocalScreenSets: true,
+                filter,
+                lang: 'en',
             })
 ```
 
@@ -158,8 +197,6 @@ The user can use the CLI (Command Line Interface) to execute all operations inst
 To use the CLI commands simply open the terminal and type npx cdc <operation>.
 The operation can be replaced by Init, Reset, Build, Deploy.
 So for example, if a user wants to use the CLI to run the init operation, the user can just type `npx cdc init`
-
-### Using different options of preview
 
 ## Usage <a id="single-environment-usage"></a>
 
