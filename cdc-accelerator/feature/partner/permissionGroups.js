@@ -33,7 +33,8 @@ export default class PermissionGroups extends PartnerFeature {
         if (permissionGroupsRes.errorCode) {
             throw new Error(JSON.stringify(permissionGroupsRes))
         }
-        const remove_permission_groups = this.remove_built_in_permission_groups(permissionGroupsRes.groups)
+        const remove_permission_groups = this.removeBuiltInPermissionGroups(permissionGroupsRes.groups)
+
         fs.writeFileSync(path.join(featureDirectory, PermissionGroups.PERMISSIONGROUP_FILE_NAME), JSON.stringify(remove_permission_groups, null, 4))
         const aclIDs = Object.keys(remove_permission_groups).map((key) => permissionGroupsRes['groups'][key].aclID)
         await this.#acls.init(aclIDs, siteInfo['partnerId'], featureDirectory, siteInfo['dataCenter'])
@@ -61,8 +62,9 @@ export default class PermissionGroups extends PartnerFeature {
             throw new Error(`Invalid file: ${buildFileName}`)
         }
         const parsedContent = JSON.parse(fileContent)
+        const remove_permission_groups = this.removeBuiltInPermissionGroups(parsedContent)
 
-        let keys = Object.keys(parsedContent)
+        let keys = Object.keys(remove_permission_groups)
         let response
         for (let ids of keys) {
             if (parsedContent[ids].scope) {
@@ -132,7 +134,7 @@ export default class PermissionGroups extends PartnerFeature {
         return this.#acls
     }
 
-    remove_built_in_permission_groups(content) {
+    removeBuiltInPermissionGroups(content) {
         const filteredGroups = {}
         for (const [key, value] of Object.entries(content)) {
             if (key && !key.startsWith('_')) {
