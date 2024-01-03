@@ -5,6 +5,7 @@ import {
     expectedGigyaResponseNok,
     expectedPermissionGroupDataWithScope,
     expectedACLFileContent,
+    expectedPermissionGroupsResponseWithEmptyGroup,
 } from '../../__tests__/test.gigyaResponses.js'
 import fs from 'fs'
 import axios from 'axios'
@@ -38,6 +39,24 @@ describe('Permission Groups test suite', () => {
             expect(fs.existsSync).toHaveBeenCalledWith(srcDirectory)
             expect(spy.mock.calls.length).toBe(1)
             expect(spy).toHaveBeenCalledWith(expectedPermissionGroupsResponse.groups)
+            expect(fs.writeFileSync).toHaveBeenCalledWith(
+                path.join(srcDirectory, PermissionGroups.PERMISSIONGROUP_FILE_NAME),
+                JSON.stringify(expectedPermissionGroupsResponseAfterRemovingBuiltInGroups, null, 4),
+            )
+        })
+        test('PermissionGroups should not write empty groups', async () => {
+            axios.mockResolvedValue({ data: expectedPermissionGroupsResponseWithEmptyGroup })
+            const getSiteInfo = {
+                partnerId: 123123,
+                dataCenter: 'eu1',
+            }
+
+            fs.existsSync.mockReturnValue(false)
+            fs.mkdirSync.mockReturnValue(undefined)
+            fs.writeFileSync.mockReturnValue(undefined)
+            await permissionGroups.init(partnerBaseDirectory, getSiteInfo)
+            const srcDirectory = path.join(partnerBaseDirectory, permissionGroups.getName())
+            expect(fs.existsSync).toHaveBeenCalledWith(srcDirectory)
             expect(fs.writeFileSync).toHaveBeenCalledWith(
                 path.join(srcDirectory, PermissionGroups.PERMISSIONGROUP_FILE_NAME),
                 JSON.stringify(expectedPermissionGroupsResponseAfterRemovingBuiltInGroups, null, 4),

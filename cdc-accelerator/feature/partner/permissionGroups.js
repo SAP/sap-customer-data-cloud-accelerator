@@ -38,10 +38,9 @@ export default class PermissionGroups extends PartnerFeature {
                 path.join(featureDirectory, PermissionGroups.PERMISSIONGROUP_FILE_NAME),
                 JSON.stringify(this.remove_built_in_permission_groups(permissionGroupsRes.groups), null, 4),
             )
+            const aclIDs = Object.keys(permissionGroupsRes['groups']).map((key) => permissionGroupsRes['groups'][key].aclID)
+            await this.#acls.init(aclIDs, siteInfo['partnerId'], featureDirectory, siteInfo['dataCenter'])
         }
-
-        const aclIDs = Object.keys(permissionGroupsRes['groups']).map((key) => permissionGroupsRes['groups'][key].aclID)
-        await this.#acls.init(aclIDs, siteInfo['partnerId'], featureDirectory, siteInfo['dataCenter'])
     }
 
     reset(directory) {
