@@ -57,6 +57,35 @@ Edit the file `cdc-accelerator.json` in the project directory and add the `sourc
 
 ### How to configure the use of features on the file cdc-accelerator.json
 
+On the cdc-accelerator.json file, there are two mandatory properties that the user has to fill, the "source" and "deploy".
+They both will have an array of objects that will contain the apiKeys that are related to the sites that we want to use in the project and optionally it will have the features.
+The features will be an optional array of strings that will have the name of the features that the user will want to have available to work on the specific site, for example:
+
+```
+{
+  "source":[
+    {
+    "apiKey":"1_B12AD0AISOPAD",
+    "features": ["Schema","PermissionGroup","WebSdk"]
+    }
+  ]
+}
+```
+
+In this example only the features "Schema","PermissionGroup" and "WebSdk" will be available for the apiKey "1_B12AD0AISOPAD".
+If the user doesn't provide the feature array it means that all of the features will be available and if it provides an empty array then no feature will be available, for example:
+
+```
+{
+  "source":[
+    {
+    "apiKey":"1_B12AD0AISOPAD",
+    "features": [""]
+    }
+  ]
+}
+```
+
 ### How to use the feature specific commands
 
 Using the feature specific command lets the user run a specific feature instead of running all of them when doing an operation (init,reset,build,deploy).
@@ -70,6 +99,58 @@ npm run init -- -f Schema
 In this example the user is only going to run the feature Schema when running the operation Init, the feature name can be replaced by any other feature (Email Templates, WebScreenSet, PermissionGroup, WebSdk...)
 
 ### How to use filters on preview
+
+The filter argument allows the user to filter the screens he wants to see using the apiKeys that are configured on the configuration file cdc-accelerator.json, for example:
+
+```
+ [{
+    apiKey: '1_2ABCDEFGHI345',
+    screens: [{ screenSetID: 'PreferencesCenter-ProfileUpdate', screenID: 'gigya-update-profile-screen' }],
+    emails: [ { emailID: 'codeVerification', languages: ['en'] } ]
+  }]
+```
+
+Here we are dealing with the apiKey '1_2ABCDEFGHI345', the filter is saying that the screen the user will see is the 'PreferencesCenter-ProfileUpdate' and the email template will be 'codeVerification' on that apiKey
+If the user wants to use the filter on more than one apiKey he can use the filter like this:
+
+```
+[{
+    apiKey: '1_2ABCDEFGHI345',
+    screens: [
+      { screenSetID: 'PreferencesCenter-ProfileUpdate', screenID: 'gigya-update-profile-screen' },
+      { screenSetID: 'PreferencesCenter-Landing', screenID: 'gigya-login-screen' },
+    ],
+    emails: []
+  },
+  {
+    apiKey: '1_3AS9DJAKSLA12',
+    emails: [{ emailID: 'doubleOptIn', languages: ['ar', 'en', 'pt-br'] } ]
+  }]
+```
+
+Here the first apiKey will have the webScreenSets filtered and on the second apiKey it will only show the emailTemplate 'doubleOptIn'.
+If the user needs to add that filter to all the ApiKeys that are on the configuration file, he can simply replace the apikey ID to '\*' for example:
+
+```
+[{
+  apiKey: '*',
+  emails: [{ emailID: 'doubleOptIn', languages: ['ar', 'en', 'pt-br'] } ]
+}]
+```
+
+By using this, the screen filtering will be applied to all the apiKeys inside the configuration file then the filter will then be applied on the preview file.
+The <origin> will retrieve the settings that are available on the 'source' or 'deploy'.
+The <filter> will be what was defined above, with the specific apiKeys and screens/email.
+
+```
+  preview({
+                origin: 'source', // 'source' or 'deploy'
+                useLocalWebSdk: true, // Use local web sdk js code from build/ directory (for development)
+                useLocalScreenSets: true, // Use local screensets js code from build/ directory (for development)
+                filter,     // Show only the necessary features for this demo
+                lang: 'en', // Language of the Screen-Sets
+            })
+```
 
 ### How to use specific environment commands and other functionalities of the CLI
 
