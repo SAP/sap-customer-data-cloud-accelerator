@@ -12,27 +12,21 @@ export default class Uninstaller {
     #uninstallAcceleratorDependencies(newProjectPackageJson, acceleratorPackageJson) {
         const dependenciesProperty = 'devDependencies'
         Object.entries(acceleratorPackageJson[dependenciesProperty]).forEach((entry) => {
-            if (
-                !this.#containsForbiddenCharacters(entry[0]) &&
-                !entry[0].includes(CDC_ACCELERATOR_DIRECTORY) &&
-                this.#containsDependency(entry[0], dependenciesProperty, newProjectPackageJson)
-            ) {
+            if (!entry[0].includes(CDC_ACCELERATOR_DIRECTORY) && this.#containsDependency(entry[0], dependenciesProperty, newProjectPackageJson)) {
                 this.#uninstallDependency(entry[0])
             }
         })
-        this.#uninstallDependency('light-server', newProjectPackageJson)
-    }
-
-    #containsForbiddenCharacters(dependency) {
-        return dependency.match(/[*?:;,&|+]/) ? true : false
+        if (this.#containsDependency('light-server', 'dependencies', newProjectPackageJson)) {
+            this.#uninstallDependency('light-server', newProjectPackageJson)
+        }
     }
 
     #containsDependency(dependency, dependenciesContainer, newProjectPackageJson) {
-        return Object.keys(newProjectPackageJson[dependenciesContainer]).includes(dependency)
+        return newProjectPackageJson[dependenciesContainer] !== undefined && Object.keys(newProjectPackageJson[dependenciesContainer]).includes(dependency)
     }
 
     #uninstallDependency(dependency) {
-        return Terminal.executeCommand(`npm remove ${dependency}`, { shell: false, stdio: 'inherit' })
+        return Terminal.executeCommand(`npm remove ${dependency}`)
     }
 
     #deleteConfigurationFiles() {

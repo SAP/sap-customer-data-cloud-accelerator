@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import { CONFIGURATION_FILES, PREVIEW_DIRECTORY } from './constants.js'
-import { CDC_ACCELERATOR_DIRECTORY, CONFIG_FILENAME, Operations, PREVIEW_FILE_NAME, SRC_DIRECTORY, PACKAGE_JSON_FILE_NAME } from '../core/constants.js'
+import { CDC_ACCELERATOR_DIRECTORY, CONFIG_FILENAME, Operations, PREVIEW_FILE_NAME, SRC_DIRECTORY, PACKAGE_JSON_FILE_NAME, TEMPLATES_DIRECTORY } from '../core/constants.js'
 import Terminal from '../core/terminal.js'
 
 export default class Installer {
@@ -11,7 +11,8 @@ export default class Installer {
         this.generateConfigurationFile()
         this.generatePreviewFile(acceleratorInstallationPath)
 
-        Terminal.executeCommand('npm install', { shell: false, stdio: 'inherit' })
+        Terminal.executeCommand('npm install')
+        this.generateGitData(acceleratorInstallationPath)
     }
 
     generatePackageJsonProperties(newProjectPackageJson, acceleratorPackageJson) {
@@ -24,14 +25,8 @@ export default class Installer {
 
     #copyAcceleratorDependencies(dependenciesProperty, newProjectPackageJson, acceleratorPackageJson) {
         Object.entries(acceleratorPackageJson[dependenciesProperty]).forEach((entry) => {
-            if (!this.#containsForbiddenCharacters(entry[0])) {
-                Object.assign(newProjectPackageJson[dependenciesProperty], { [entry[0]]: entry[1] })
-            }
+            Object.assign(newProjectPackageJson[dependenciesProperty], { [entry[0]]: entry[1] })
         })
-    }
-
-    #containsForbiddenCharacters(dependency) {
-        return dependency.match(/[*?:;,&|+]/) ? true : false
     }
 
     #generateNpmScripts(newProjectPackageJson) {
@@ -117,7 +112,7 @@ export default class Installer {
             // do not overwrite index.html file
             return
         }
-        const templatePath = path.join(acceleratorInstallationPath, CDC_ACCELERATOR_DIRECTORY, 'templates', PREVIEW_DIRECTORY, indexHtmlFileName)
+        const templatePath = path.join(acceleratorInstallationPath, CDC_ACCELERATOR_DIRECTORY, TEMPLATES_DIRECTORY, PREVIEW_DIRECTORY, indexHtmlFileName)
         let content = fs.readFileSync(templatePath, { encoding: 'utf8' })
         content = this.#replaceLinks(content, acceleratorInstallationPath)
         if (!fs.existsSync(SRC_DIRECTORY)) {
@@ -137,5 +132,10 @@ export default class Installer {
             return line
         })
         return lines.join('\n')
+    }
+
+    generateGitData(acceleratorInstallationPath) {
+        Terminal.executeCommand('git init')
+        this.#copyFile(path.join(acceleratorInstallationPath, CDC_ACCELERATOR_DIRECTORY, TEMPLATES_DIRECTORY, '.gitignore'), '.')
     }
 }

@@ -120,7 +120,7 @@ describe('WebSdk test suite', () => {
                 },
             })
 
-            const fileContent = `export Default ${srcFileContent}`
+            const fileContent = `var _default = (exports['default'] = ${srcFileContent}\n//test comment .js'\ntest.js'\nexports['default'] = _default\nexports["default"] = _default`
             const dirExists = true
             fs.existsSync.mockReturnValue(dirExists)
             fs.rmSync.mockReturnValue(undefined)
@@ -134,8 +134,7 @@ describe('WebSdk test suite', () => {
             if (dirExists) {
                 expect(fs.rmSync).toHaveBeenCalledWith(buildDirectory, { force: true, recursive: true })
             }
-            expect(fs.writeFileSync).toHaveBeenCalledWith(path.join(buildDirectory, `${webSdkInstance.getName()}.js`), srcFileContent)
-        })
+            expect(fs.writeFileSync).toHaveBeenCalledWith(path.join(buildDirectory, `${webSdkInstance.getName()}.js`), srcFileContent + `\n//test comment .js'\ntest.js'`)        })
     })
 
     describe('Deploy webSdk test suite', () => {

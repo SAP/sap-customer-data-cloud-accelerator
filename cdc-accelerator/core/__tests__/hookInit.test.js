@@ -1,5 +1,5 @@
 import HookInit from '../hookInit.js'
-import { PREVIEW_TEMPLATE_FILE, SRC_DIRECTORY } from '../../core/constants.js'
+import { PREVIEW_TEMPLATE_FILE, SRC_DIRECTORY } from '../constants.js'
 import fs from 'fs'
 import path from 'path'
 
