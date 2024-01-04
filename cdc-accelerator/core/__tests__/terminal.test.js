@@ -24,7 +24,22 @@ describe('Terminal test suite', () => {
             expectedOptions,
         )
     })
-
+    test('execute babel using the if statement is true', () => {
+        const spy = jest.spyOn(child_process, 'spawnSync').mockReturnValueOnce({ status: SUCCESS })
+        const expectedOptions = { shell: true, stdio: 'ignore' }
+        const srcFilePath = 'src' + path.sep
+        expect(Terminal.executeBabel(srcFilePath).status).toBe(SUCCESS)
+        expect(spy.mock.calls.length).toBe(1)
+        expect(child_process.spawnSync).toBeCalledWith('npx', ['babel', '--delete-dir-on-start', `\"src\"`, '-d', `\"build\"`], expectedOptions)
+    })
+    test('execute babel using the if statement is false', () => {
+        const spy = jest.spyOn(child_process, 'spawnSync').mockReturnValueOnce({ status: SUCCESS })
+        const expectedOptions = { shell: true, stdio: 'ignore' }
+        const srcFilePath = 'src'
+        expect(Terminal.executeBabel(srcFilePath).status).toBe(SUCCESS)
+        expect(spy.mock.calls.length).toBe(1)
+        expect(child_process.spawnSync).toBeCalledWith('npx', ['babel', '--delete-dir-on-start', `\"src\"`, '-d', `\"src\"`], expectedOptions)
+    })
     test('execute prettier', () => {
         const spy = jest.spyOn(child_process, 'spawnSync').mockReturnValueOnce({ status: SUCCESS })
         const expectedOptions = { shell: false, stdio: 'ignore' }
