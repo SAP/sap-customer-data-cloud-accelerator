@@ -117,14 +117,14 @@ describe('Sms templates test suite', () => {
     describe('Build test suite', () => {
         test('SMS templates are built successfully', () => {
             const mockFs = {
-                'src/SmsTemplates/otp': {
+                [path.join(SRC_DIRECTORY, smsTemplates.getName(), SmsTemplates.FOLDER_OTP)]: {
                     isDirectory: true,
                     contents: {
                         'en-default.txt': 'Your verification code is: {{code}}',
                         'nl.txt': 'Uw verificatiecode is: {{code}}',
                     },
                 },
-                'src/SmsTemplates/tfa': {
+                [path.join(SRC_DIRECTORY, smsTemplates.getName(), SmsTemplates.FOLDER_TFA)]: {
                     isDirectory: true,
                     contents: {
                         'en-default.txt': 'Your verification code is: {{code}}',
@@ -177,9 +177,8 @@ describe('Sms templates test suite', () => {
                 }
                 return []
             })
-
-            const expectedErrorMessage =
-                'There cannot be two default files in the same folder. Check the folder: src/partnerId1/Sites/domain.test.com/SmsTemplates/otp/globalTemplates'
+            const folderPath = path.join(srcSiteDirectory, smsTemplates.getName(), SmsTemplates.FOLDER_OTP, SmsTemplates.FOLDER_GLOBAL_TEMPLATES)
+            const expectedErrorMessage = `There cannot be two default files in the same folder. Check the folder: ${folderPath}`
             await expect(smsTemplates.deploy(apiKey, getSiteConfig, srcSiteDirectory)).rejects.toThrow(new Error(expectedErrorMessage))
         })
 

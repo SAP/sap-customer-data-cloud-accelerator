@@ -466,6 +466,43 @@ export const expectedPermissionGroupsResponse = {
         },
     },
 }
+export const expectedPermissionGroupsResponseWithEmptyGroup = {
+    callId: '143306dc47dc43ed96126dfecb025252',
+    errorCode: 0,
+    apiVersion: 2,
+    statusCode: 200,
+    statusReason: 'OK',
+    time: '2023-10-11T14:56:02.645Z',
+    groups: {
+        '': {
+            aclID: 'alexTestAdminPermissionGroup',
+            scope: {
+                allowPartners: ['_owner'],
+                allowSites: [],
+            },
+            users: ['ANHZHhdHWtKD'],
+            description: '',
+        },
+        alexTestAdminPermissionGroup: {
+            aclID: expectedPermissionGroupsResponse.groups.alexTestAdminPermissionGroup.aclID,
+            scope: expectedPermissionGroupsResponse.groups.alexTestAdminPermissionGroup.scope,
+            users: expectedPermissionGroupsResponse.groups.alexTestAdminPermissionGroup.users,
+            description: expectedPermissionGroupsResponse.groups.alexTestAdminPermissionGroup.description,
+        },
+        cdc_toolbox_e2e_test: {
+            aclID: expectedPermissionGroupsResponse.groups.cdc_toolbox_e2e_test.aclID,
+            scope: expectedPermissionGroupsResponse.groups.cdc_toolbox_e2e_test.scope,
+            users: expectedPermissionGroupsResponse.groups.cdc_toolbox_e2e_test.users,
+            description: expectedPermissionGroupsResponse.groups.cdc_toolbox_e2e_test.description,
+        },
+        _adminGroup: {
+            aclID: expectedPermissionGroupsResponse.groups._adminGroup.aclID,
+            scope: expectedPermissionGroupsResponse.groups._adminGroup.scope,
+            users: expectedPermissionGroupsResponse.groups._adminGroup.users,
+            description: expectedPermissionGroupsResponse.groups._adminGroup.description,
+        },
+    },
+}
 export const expectedPermissionGroupsResponseAfterRemovingBuiltInGroups = {
     alexTestAdminPermissionGroup: {
         aclID: expectedPermissionGroupsResponse.groups.alexTestAdminPermissionGroup.aclID,
