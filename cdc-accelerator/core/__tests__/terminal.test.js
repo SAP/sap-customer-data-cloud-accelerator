@@ -25,6 +25,19 @@ describe('Terminal test suite', () => {
         )
     })
 
+    test('execute babel when if is true', () => {
+        const spy = jest.spyOn(child_process, 'spawnSync').mockReturnValueOnce({ status: SUCCESS })
+        const expectedOptions = { shell: true, stdio: 'ignore' }
+
+        expect(Terminal.executeBabel(SRC_DIRECTORY).status).toBe(SUCCESS)
+        expect(spy.mock.calls.length).toBe(1)
+        expect(child_process.spawnSync).toBeCalledWith(
+            'npx',
+            ['babel', '--delete-dir-on-start', `"${SRC_DIRECTORY}"`, '-d', `"${SRC_DIRECTORY.replace(SRC_DIRECTORY, BUILD_DIRECTORY)}"`],
+            expectedOptions,
+        )
+    })
+
     test('execute prettier', () => {
         const spy = jest.spyOn(child_process, 'spawnSync').mockReturnValueOnce({ status: SUCCESS })
         const expectedOptions = { shell: true, stdio: 'ignore' }
