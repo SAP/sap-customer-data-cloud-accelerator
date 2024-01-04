@@ -20,7 +20,7 @@ describe('Terminal test suite', () => {
         expect(spy.mock.calls.length).toBe(1)
         expect(child_process.spawnSync).toBeCalledWith(
             'npx',
-            ['babel', '--delete-dir-on-start', `'${srcSiteDirectory}'`, '-d', `'${srcSiteDirectory.replace(SRC_DIRECTORY, BUILD_DIRECTORY)}'`],
+            ['babel', '--delete-dir-on-start', `"${srcSiteDirectory}"`, '-d', `"${srcSiteDirectory.replace(SRC_DIRECTORY, BUILD_DIRECTORY)}"`],
             expectedOptions,
         )
     })
