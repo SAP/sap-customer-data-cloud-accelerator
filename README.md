@@ -12,7 +12,7 @@ A NodeJs library to setup a new CDC project defining a common structure and offe
 
 ## Getting Started <a id="requisites"></a>
 
-To get started it is necessary to have git, javascript and nodejs installed on the local machine.
+To get started it is necessary to have `git` and `nodejs` installed on the local machine.
 
 ## Setup a CDC project <a id="setup"></a>
 
@@ -138,7 +138,7 @@ The Customer Data Cloud Accelerator allows reading, working locally and deployin
 
 ### How to configure the use of features on the file cdc-accelerator.json
 
-On the cdc-accelerator.json file, there are two mandatory properties that the user has to fill, the "source" and "deploy".
+On the `cdc-accelerator.json` file, there are two mandatory properties that the user has to fill, the `source` and `deploy`.
 They both will have an array of objects that will contain the apiKeys that are related to the sites that we want to use in the project and optionally it will have the features, for example:
 
 ```sh
@@ -167,7 +167,7 @@ They both will have an array of objects that will contain the apiKeys that are r
 
 ### How to use the feature specific commands
 
-Using the feature specific command lets the user run a specific feature (Schema, PermissionGroups, WebSdk, WebScreenSets,EmailTemplates...) instead of running all of them when doing an operation (init,reset,build,deploy).
+Using the feature specific command lets the user run a specific feature instead of running all of them when doing an operation (init, reset, build, deploy).
 To use them, simply write on the terminal
 
 ```sh
@@ -185,11 +185,11 @@ To show all the possible commands, the user can write simply
 
 ## Preview
 
-The preview mode is a feature that allows the user to see and test the changes in the local environment, without the need to deploy the data to the customer data cloud console.
+The preview mode is a feature that allows the user to see and test the changes in the local environment, without the need to `deploy` the data to the customer data cloud console.
 
 ### How to use filters on preview
 
-The filter is applied on the "src/index.html" file, that will filter the screens that the user will choose to see by using the apiKeys that are configured on the configuration file cdc-accelerator.json, for example:
+The filter is applied on the "src/index.html" file, that will filter the screens that the user will choose to see by using the apiKeys that are configured on the configuration file `cdc-accelerator.json`, for example:
 
 ```sh
  [{
@@ -216,7 +216,7 @@ The filter is applied on the "src/index.html" file, that will filter the screens
   }]
 ```
 
-### Adding the filter to all the ApiKeys that do not have already a specific filter that are on the configuration file
+### Adding the filter to all the ApiKeys that do not have already a specific filter
 
 ```sh
 [{
@@ -229,7 +229,7 @@ The filter is applied on the "src/index.html" file, that will filter the screens
 
 Using the different options of the preview will enable the user to control what he wants to see or filter.
 
-<origin> will retrieve the settings that are available on the 'source' or 'deploy' inside the cdc-accelerator.json.
+<origin> will retrieve the settings that are available on the `source` or `deploy` inside the `cdc-accelerator.json`.
 <useLocalWebSdk> will use the local webSdk.js code that is inside the build/ directory.
 <useLocalScreenSets> will use the local screensets.js code that is inside the build/ directory
 <filter> will be what was defined above, with the specific apiKeys and screens/email.
