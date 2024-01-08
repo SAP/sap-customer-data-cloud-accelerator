@@ -203,17 +203,17 @@ The filter is applied on the "src/index.html" file, that will filter the screens
 
 ```sh
 [{
-    apiKey: '1_2ABCDEFGHI345',
-    screens: [
-      { screenSetID: 'PreferencesCenter-ProfileUpdate', screenID: 'gigya-update-profile-screen' },
-      { screenSetID: 'PreferencesCenter-Landing', screenID: 'gigya-login-screen' },
-    ],
-    emails: []
+  apiKey: '1_2ABCDEFGHI345',
+  screens: [
+    { screenSetID: 'PreferencesCenter-ProfileUpdate', screenID: 'gigya-update-profile-screen' },
+    { screenSetID: 'PreferencesCenter-Landing', screenID: 'gigya-login-screen' },
+  ],
+  emails: []
   },
   {
-    apiKey: '1_3AS9DJAKSLA12',
-    emails: [{ emailID: 'doubleOptIn', languages: ['ar', 'en', 'pt-br'] } ]
-  }]
+  apiKey: '1_3AS9DJAKSLA12',
+  emails: [{ emailID: 'doubleOptIn', languages: ['ar', 'en', 'pt-br'] }]
+}]
 ```
 
 ### Adding the filter to all the ApiKeys that do not have already a specific filter
