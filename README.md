@@ -46,14 +46,14 @@ Edit the file `cdc-accelerator.json` in the project directory and add the `sourc
 
 ```sh
 {
-    "source": [
-        { "apiKey": "XXXXXXXXXX" },
-        { "apiKey": "YYYYYYYYYY" }
-    ],
-    "deploy": [
-        { "apiKey": "XXXXXXXXXX" },
-        { "apiKey": "YYYYYYYYYY" }
-    ]
+  "source": [
+      { "apiKey": "XXXXXXXXXX" },
+      { "apiKey": "YYYYYYYYYY" }
+  ],
+  "deploy": [
+      { "apiKey": "XXXXXXXXXX" },
+      { "apiKey": "YYYYYYYYYY" }
+  ]
 }
 ```
 
@@ -124,6 +124,18 @@ npm run deploy
 
 ## Configuration <a id="configuration"></a>
 
+### Features <a id="features"></a>
+
+The Customer Data Cloud Accelerator allows reading, working locally and deploying data from the following features:
+
+-   E-mail Templates <a id="features-email-templates"></a>
+-   Permission Groups <a id="features-permission-groups"></a>
+-   Policies <a id="features-policies"></a>
+-   Schema <a id="features-schema"></a>
+-   SMS Templates <a id="features-sms-templates"></a>
+-   Web ScreenSets <a id="features-webscreensets"></a>
+-   Web SDK <a id="features-web-sdk"></a>
+
 ### How to configure the use of features on the file cdc-accelerator.json
 
 On the cdc-accelerator.json file, there are two mandatory properties that the user has to fill, the "source" and "deploy".
@@ -140,7 +152,7 @@ They both will have an array of objects that will contain the apiKeys that are r
 }
 ```
 
-If it provides an empty array then no feature will be available, for example:
+### An empty array will mean no feature will be available, for example:
 
 ```sh
 {
@@ -168,12 +180,16 @@ For example:
 npm run init -- -f Schema
 ```
 
-In this example the user is only going to run the feature Schema when running the operation Init, the feature name can be replaced by any other feature (Email Templates, WebScreenSet, PermissionGroup, WebSdk...).
+In this example the user is only going to run the feature Schema when running the operation init, the feature name can be replaced by any other feature (Email Templates, WebScreenSet, PermissionGroup, WebSdk...).
 To show all the possible commands, the user can write simply
+
+## Preview
+
+The preview mode is a feature that allows the user to see and test the changes in the local environment, without the need to deploy the data to the customer data cloud console.
 
 ### How to use filters on preview
 
-The filter argument allows the user to filter the screens he wants to see using the apiKeys that are configured on the configuration file cdc-accelerator.json, for example:
+The filter is applied on the "src/index.html" file, that will filter the screens that the user will choose to see by using the apiKeys that are configured on the configuration file cdc-accelerator.json, for example:
 
 ```sh
  [{
@@ -183,8 +199,7 @@ The filter argument allows the user to filter the screens he wants to see using 
   }]
 ```
 
-Here we are dealing with the apiKey '1_2ABCDEFGHI345', the filter is saying that the screen the user will see is the 'PreferencesCenter-ProfileUpdate' and the email template will be 'codeVerification' on that apiKey
-If the user wants to use the filter on more than one apiKey he can use the filter like this:
+### Using the filter on more than one apiKey
 
 ```sh
 [{
@@ -201,8 +216,7 @@ If the user wants to use the filter on more than one apiKey he can use the filte
   }]
 ```
 
-Here the first apiKey will have the webScreenSets filtered and on the second apiKey it will only show the emailTemplate 'doubleOptIn'.
-If the user needs to add that filter to all the ApiKeys that are on the configuration file, he can simply replace the apikey ID to '\*' for example:
+### Adding the filter to all the ApiKeys that do not have already a specific filter that are on the configuration file
 
 ```sh
 [{
@@ -211,34 +225,26 @@ If the user needs to add that filter to all the ApiKeys that are on the configur
 }]
 ```
 
-By using this, the screen filtering will be applied to all the apiKeys inside the configuration file then the filter will then be applied on the preview file.
-
 ### Using different options of preview
 
 Using the different options of the preview will enable the user to control what he wants to see or filter.
 
-The option <origin> will retrieve the settings that are available on the 'source' or 'deploy' inside the cdc-accelerator.json.
-The option <useLocalWebSdk> will use the local webSdk.js code that is inside the build/ directory.
-The option <useLocalScreenSets> will use the local screensets.js code that is inside the build/ directory
-The option <filter> will be what was defined above, with the specific apiKeys and screens/email.
-The option <lang> will define the language of the screen-sets, it can be changed accordingly to the user preference.
+<origin> will retrieve the settings that are available on the 'source' or 'deploy' inside the cdc-accelerator.json.
+<useLocalWebSdk> will use the local webSdk.js code that is inside the build/ directory.
+<useLocalScreenSets> will use the local screensets.js code that is inside the build/ directory
+<filter> will be what was defined above, with the specific apiKeys and screens/email.
+<lang> will define the language of the screen-sets, it can be changed accordingly to the user preference.
 
+```sh
+  preview
+  ({
+    origin: 'source',
+    useLocalWebSdk: true,
+    useLocalScreenSets: true,
+    filter,
+    lang: 'en',
+})
 ```
-  preview({
-                origin: 'source',
-                useLocalWebSdk: true,
-                useLocalScreenSets: true,
-                filter,
-                lang: 'en',
-            })
-```
-
-### How to use specific environment commands and other functionalities of the CLI
-
-The user can use the CLI (Command Line Interface) to execute all operations instead of using the npm scripts.
-To use the CLI commands simply open the terminal and type npx cdc <operation>.
-The operation can be replaced by Init, Reset, Build, Deploy.
-So for example, if a user wants to use the CLI to run the init operation, the user can just type `npx cdc init`
 
 ## Support, Feedback, Contributing
 
