@@ -229,11 +229,15 @@ The filter is applied on the "src/index.html" file, that will filter the screens
 
 Using the different options of the preview will enable the user to control what he wants to see or filter.
 
-<origin> will retrieve the settings that are available on the `source` or `deploy` inside the `cdc-accelerator.json`.
-<useLocalWebSdk> will use the local webSdk.js code that is inside the build/ directory.
-<useLocalScreenSets> will use the local screensets.js code that is inside the build/ directory
-<filter> will be what was defined above, with the specific apiKeys and screens/email.
-<lang> will define the language of the screen-sets, it can be changed accordingly to the user preference.
+-   `<origin>`: Retrieves the settings available on the `source` or `deploy` inside the `cdc-accelerator.json`.
+
+-   `<useLocalWebSdk>`: Uses the local webSdk.js code that is inside the build/ directory.
+
+-   `<useLocalScreenSets>`: Uses the local screensets.js code that is inside the build/ directory.
+
+-   `<filter>`: Defines what was configured above, including specific apiKeys and screens/email.
+
+-   `<lang>`: Defines the language of the screen-sets, which can be changed according to user preference.
 
 ```sh
   preview
