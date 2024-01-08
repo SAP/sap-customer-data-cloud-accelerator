@@ -1,6 +1,6 @@
 # Customer Data Cloud Accelerator
 
-## Description <a id="description"></a>
+## About The Project <a id="description"></a>
 
 A NodeJs library to setup a new CDC project defining a common structure and offering quality control tools to help develop the best possible solutions:
 
@@ -10,11 +10,15 @@ A NodeJs library to setup a new CDC project defining a common structure and offe
 -   **Git**: Code history version control
 -   Multiple scripts to help you `init` and quicky `deploy` the code to the CDC apiKeys
 
-## Pre-requisites <a id="requisites"></a>
+## Getting Started <a id="requisites"></a>
 
-As pre-requisite it is necessary to have git installed on the local machine.
+To get started it is necessary to have git, javascript and nodejs installed on the local machine.
 
-## Set up a new CDC project <a id="setup"></a>
+## Setup a CDC project <a id="setup"></a>
+
+Firstly, please head towards the npm link https://www.npmjs.com/package/@sap_oss/sap-customer-data-cloud-accelerator.
+
+Then, execute the following commands:
 
 ```sh
 npm init
@@ -27,9 +31,7 @@ npx cdc setup
 # to setup the new CDC project with needed dependencies and generate the configuration files out of the box, to be able to use the different tools
 ```
 
-## Configuration <a id="configuration"></a>
-
-### User Credentials <a id="user-credentials"></a>
+## User Credentials <a id="user-credentials"></a>
 
 Edit the file `.env` in the project directory and add your credentials:
 
@@ -38,7 +40,7 @@ USER_KEY="ex: XXXXXXXX"
 SECRET_KEY="ex: XXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 ```
 
-### Configuration file <a id="single-environment-configuration-file"></a>
+## Configuration file <a id="single-environment-configuration-file"></a>
 
 Edit the file `cdc-accelerator.json` in the project directory and add the `source` site or sites you want to get the initial configuration from and to `deploy` to:
 
@@ -55,62 +57,17 @@ Edit the file `cdc-accelerator.json` in the project directory and add the `sourc
 }
 ```
 
-### How to configure the use of features on the file cdc-accelerator.json
+## Usage <a id="single-environment-usage"></a>
 
-On the cdc-accelerator.json file, there are two mandatory properties that the user has to fill, the "source" and "deploy".
-They both will have an array of objects that will contain the apiKeys that are related to the sites that we want to use in the project and optionally it will have the features.
-The features will be an optional array of strings that will have the name of the features that the user will want to have available to work on the specific site, for example:
+### Get help about using the cli <a id="single-environment-usage-help"></a>
 
-```
-{
-  "source":[
-    {
-    "apiKey":"1_B12AD0AISOPAD",
-    "features": ["Schema","PermissionGroup","WebSdk"]
-    }
-  ]
-}
-```
-
-In this example only the features "Schema","PermissionGroup" and "WebSdk" will be available for the apiKey "1_B12AD0AISOPAD".
-If the user doesn't provide the feature array it means that all of the features will be available and if it provides an empty array then no feature will be available, for example:
-
-```
-{
-  "source":[
-    {
-    "apiKey":"1_B12AD0AISOPAD",
-    "features": [""]
-    }
-  ]
-}
-```
-
-### How to use the feature specific commands
-
-Using the feature specific command lets the user run a specific feature (Schema, PermissionGroups, WebSdk, WebScreenSets,EmailTemplates...) instead of running all of them when doing an operation (init,reset,build,deploy).
-To use them, simply write on the terminal
-
-```
-npm run <operation> -- -f <feature>
-```
-
-For example:
-
-```
-npm run init -- -f Schema
-```
-
-In this example the user is only going to run the feature Schema when running the operation Init, the feature name can be replaced by any other feature (Email Templates, WebScreenSet, PermissionGroup, WebSdk...).
-To show all the possible commands, the user can write simply
-
-```
+```sh
 npx cdc help
 ```
 
 This command will show all possible commands and options that the user can do, the output will be something like this:
 
-```
+```sh
 Usage: npx cdc [options] [command]
 
 A development environment for SAP Customer Data Cloud that enables the use of modern tools, such as JavaScript and source control.
@@ -129,11 +86,96 @@ Commands:
   help [command]    display help for command
 ```
 
+### Get initial configuration from the source api key(s) <a id="single-environment-usage-init"></a>
+
+```sh
+npm run init
+```
+
+### Replace existing files with the code from the origin api key(s) <a id="single-environment-usage-reset"></a>
+
+```sh
+npm run reset
+```
+
+### Start local development server <a id="single-environment-usage-start"></a>
+
+```sh
+npm run start
+```
+
+### Run tests <a id="single-environment-usage-test"></a>
+
+```
+npm run test
+```
+
+### Processes the local data and prepares it to be deployed to the cdc console <a id="single-environment-usage-build"></a>
+
+```sh
+npm run build
+```
+
+### Deploy the local data to the cdc console on the sites configured <a id="single-environment-usage-deploy"></a>
+
+```sh
+npm run deploy
+```
+
+## Configuration <a id="configuration"></a>
+
+### How to configure the use of features on the file cdc-accelerator.json
+
+On the cdc-accelerator.json file, there are two mandatory properties that the user has to fill, the "source" and "deploy".
+They both will have an array of objects that will contain the apiKeys that are related to the sites that we want to use in the project and optionally it will have the features, for example:
+
+```sh
+{
+  "source":[
+    {
+    "apiKey":"1_B12AD0AISOPAD",
+    "features": ["Schema","PermissionGroup","WebSdk"]
+    }
+  ]
+}
+```
+
+If it provides an empty array then no feature will be available, for example:
+
+```sh
+{
+  "source":[
+    {
+    "apiKey":"1_B12AD0AISOPAD",
+    "features": []
+    }
+  ]
+}
+```
+
+### How to use the feature specific commands
+
+Using the feature specific command lets the user run a specific feature (Schema, PermissionGroups, WebSdk, WebScreenSets,EmailTemplates...) instead of running all of them when doing an operation (init,reset,build,deploy).
+To use them, simply write on the terminal
+
+```sh
+npm run <operation> -- -f <feature>
+```
+
+For example:
+
+```sh
+npm run init -- -f Schema
+```
+
+In this example the user is only going to run the feature Schema when running the operation Init, the feature name can be replaced by any other feature (Email Templates, WebScreenSet, PermissionGroup, WebSdk...).
+To show all the possible commands, the user can write simply
+
 ### How to use filters on preview
 
 The filter argument allows the user to filter the screens he wants to see using the apiKeys that are configured on the configuration file cdc-accelerator.json, for example:
 
-```
+```sh
  [{
     apiKey: '1_2ABCDEFGHI345',
     screens: [{ screenSetID: 'PreferencesCenter-ProfileUpdate', screenID: 'gigya-update-profile-screen' }],
@@ -144,7 +186,7 @@ The filter argument allows the user to filter the screens he wants to see using 
 Here we are dealing with the apiKey '1_2ABCDEFGHI345', the filter is saying that the screen the user will see is the 'PreferencesCenter-ProfileUpdate' and the email template will be 'codeVerification' on that apiKey
 If the user wants to use the filter on more than one apiKey he can use the filter like this:
 
-```
+```sh
 [{
     apiKey: '1_2ABCDEFGHI345',
     screens: [
@@ -162,7 +204,7 @@ If the user wants to use the filter on more than one apiKey he can use the filte
 Here the first apiKey will have the webScreenSets filtered and on the second apiKey it will only show the emailTemplate 'doubleOptIn'.
 If the user needs to add that filter to all the ApiKeys that are on the configuration file, he can simply replace the apikey ID to '\*' for example:
 
-```
+```sh
 [{
   apiKey: '*',
   emails: [{ emailID: 'doubleOptIn', languages: ['ar', 'en', 'pt-br'] } ]
@@ -197,79 +239,6 @@ The user can use the CLI (Command Line Interface) to execute all operations inst
 To use the CLI commands simply open the terminal and type npx cdc <operation>.
 The operation can be replaced by Init, Reset, Build, Deploy.
 So for example, if a user wants to use the CLI to run the init operation, the user can just type `npx cdc init`
-
-## Usage <a id="single-environment-usage"></a>
-
-### Get help about using the cli <a id="single-environment-usage-help"></a>
-
-```sh
-npx cdc help
-```
-
-### Get initial configuration from the source api key(s) <a id="single-environment-usage-init"></a>
-
-```sh
-npm run init
-```
-
-### Replace existing files with the code from the origin api key(s) <a id="single-environment-usage-reset"></a>
-
-```sh
-npm run reset
-```
-
-### Start local development server <a id="single-environment-usage-start"></a>
-
-```sh
-npm run start
-```
-
-### Run tests <a id="single-environment-usage-test"></a>
-
-```
-npm run test
-```
-
-### Processes the local data and prepares it to be deployed to the cdc console <a id="single-environment-usage-build"></a>
-
-```sh
-npm run build
-```
-
-#### Deploy the local data to the cdc console on the sites configured <a id="single-environment-usage-deploy"></a>
-
-```sh
-npm run deploy
-```
-
-## Features <a id="features"></a>
-
-The Customer Data Cloud Accelerator allows reading, working locally and deploying data from the following features:
-
--   E-mail Templates <a id="features-email-templates"></a>
--   Permission Groups <a id="features-permission-groups"></a>
--   Policies <a id="features-policies"></a>
--   Schema <a id="features-schema"></a>
--   SMS Templates <a id="features-sms-templates"></a>
--   Web ScreenSets <a id="features-webscreensets"></a>
--   Web SDK <a id="features-web-sdk"></a>
-
-### Local Live Preview <a id="features-local-preview"></a>
-
-Local live preview allows the consultant to see and test the web screen sets and email templates on the local environment, before deploying them to the CDC console.
-
-#### Web Screen-Sets <a id="features-local-preview-web-screen-sets"></a>
-
--   Filters: Show only the screenSets we want to work with in preview
--   Only supports inline imports of files exported with `export default ObjectName`
-
-#### E-mail templates <a id="features-local-preview-email-templates"></a>
-
--   Filters: Show only the email templates we want to work with in preview
-
-## Documentation
-
-[SAP Customer Data Cloud Accelerator wiki](https://github.com/SAP/sap-customer-data-cloud-accelerator/wiki)
 
 ## Support, Feedback, Contributing
 
