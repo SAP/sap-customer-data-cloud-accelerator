@@ -69,6 +69,8 @@ export default class SmsTemplates extends SiteFeature {
     }
 
     build(siteDirectory) {
+        const buildFeaturePath = path.join(BUILD_DIRECTORY, this.constructor.name)
+        this.clearDirectoryContents(buildFeaturePath)
         this.#buildTemplates(siteDirectory, SmsTemplates.FOLDER_OTP)
         this.#buildTemplates(siteDirectory, SmsTemplates.FOLDER_TFA)
     }
@@ -113,8 +115,8 @@ export default class SmsTemplates extends SiteFeature {
             tfa: { globalTemplates: { templates: {}, defaultLanguage: null }, templatesPerCountryCode: {} },
         }
 
-        this.#populateTemplatesFromDirectory(buildFeatureDirectory, payload, 'otp')
-        this.#populateTemplatesFromDirectory(buildFeatureDirectory, payload, 'tfa')
+        this.#populateTemplatesFromDirectory(buildFeatureDirectory, payload, SmsTemplates.FOLDER_OTP)
+        this.#populateTemplatesFromDirectory(buildFeatureDirectory, payload, SmsTemplates.FOLDER_TFA)
         return payload
     }
 

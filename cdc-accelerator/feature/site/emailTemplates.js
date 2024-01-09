@@ -141,6 +141,7 @@ export default class EmailTemplates extends SiteFeature {
         const srcTemplatesPath = path.join(srcFeaturePath, EmailTemplates.FOLDER_TEMPLATES)
         const srcLocalesPath = path.join(srcFeaturePath, EmailTemplates.FOLDER_LOCALES)
         const buildFeaturePath = srcFeaturePath.replace(SRC_DIRECTORY, BUILD_DIRECTORY)
+        this.clearDirectoryContents(buildFeaturePath)
         const previewEmailTemplatesMetadata = []
 
         fs.readdirSync(srcTemplatesPath).forEach((templateFile) => {
