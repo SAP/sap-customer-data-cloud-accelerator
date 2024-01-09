@@ -4,7 +4,7 @@ import path from 'path'
 
 export default class Terminal {
     static executeBabel(directory) {
-        let buildDir = directory.replace(SRC_DIRECTORY, BUILD_DIRECTORY)
+        let buildDir = directory.replace(SRC_DIRECTORY.substring(0, SRC_DIRECTORY.length - 1), BUILD_DIRECTORY.substring(0, BUILD_DIRECTORY.length - 1))
         if (directory.endsWith(path.sep)) {
             directory = directory.substring(0, directory.length - 1)
             buildDir = buildDir.substring(0, buildDir.length - 1)

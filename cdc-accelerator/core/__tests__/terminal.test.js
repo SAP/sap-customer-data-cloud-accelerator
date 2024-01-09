@@ -15,12 +15,12 @@ describe('Terminal test suite', () => {
 
     test('execute babel', () => {
         const spy = jest.spyOn(child_process, 'spawnSync').mockReturnValueOnce({ status: SUCCESS })
-        const expectedOptions = { shell: false, stdio: 'ignore' }
+        const expectedOptions = { shell: true, stdio: 'ignore' }
         expect(Terminal.executeBabel(srcSiteDirectory).status).toBe(SUCCESS)
         expect(spy.mock.calls.length).toBe(1)
         expect(child_process.spawnSync).toBeCalledWith(
             'npx',
-            ['babel', '--delete-dir-on-start', srcSiteDirectory, '-d', srcSiteDirectory.replace(SRC_DIRECTORY, BUILD_DIRECTORY)],
+            ['babel', '--delete-dir-on-start', `"${srcSiteDirectory}"`, '-d', `"${srcSiteDirectory.replace(SRC_DIRECTORY, BUILD_DIRECTORY)}"`],
             expectedOptions,
         )
     })
@@ -38,11 +38,12 @@ describe('Terminal test suite', () => {
         const srcFilePath = 'src'
         expect(Terminal.executeBabel(srcFilePath).status).toBe(SUCCESS)
         expect(spy.mock.calls.length).toBe(1)
-        expect(child_process.spawnSync).toBeCalledWith('npx', ['babel', '--delete-dir-on-start', `\"src\"`, '-d', `\"src\"`], expectedOptions)
+        expect(child_process.spawnSync).toBeCalledWith('npx', ['babel', '--delete-dir-on-start', `\"src\"`, '-d', `\"build\"`], expectedOptions)
     })
+
     test('execute prettier', () => {
         const spy = jest.spyOn(child_process, 'spawnSync').mockReturnValueOnce({ status: SUCCESS })
-        const expectedOptions = { shell: false, stdio: 'ignore' }
+        const expectedOptions = { shell: true, stdio: 'ignore' }
         expect(Terminal.executePrettier(srcSiteDirectory).status).toBe(SUCCESS)
         expect(spy.mock.calls.length).toBe(1)
         expect(child_process.spawnSync).toBeCalledWith(
@@ -66,5 +67,10 @@ describe('Terminal test suite', () => {
         expect(Terminal.executeCommand('ls -la ./directory', expectedOptions).status).toBe(SUCCESS)
         expect(spy.mock.calls.length).toBe(1)
         expect(child_process.spawnSync).toBeCalledWith('ls', ['-la', './directory'], expectedOptions)
+    })
+
+    test('execute command with forbidden characters', () => {
+        expect(() => Terminal.executeCommand('ls -la ./directory/*')).toThrow(Error)
+        expect(() => Terminal.executeCommand('ls -la; pwd')).toThrow(Error)
     })
 })

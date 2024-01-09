@@ -1,9 +1,9 @@
 import fs from 'fs'
 import path from 'path'
 import Uninstaller from './uninstaller.js'
-import { SAP_ORG } from './constants.js'
+import { PREVIEW_DIRECTORY, SAP_ORG } from './constants.js'
 import Installer from './installer.js'
-import { PACKAGE_JSON_FILE_NAME } from '../core/constants.js'
+import { CDC_ACCELERATOR_DIRECTORY, PACKAGE_JSON_FILE_NAME, PREVIEW_FILE_NAME, SRC_DIRECTORY, TEMPLATES_DIRECTORY } from '../core/constants.js'
 
 export default class Project {
     setup() {
@@ -30,5 +30,15 @@ export default class Project {
             throw new Error(`Cannot find ${SAP_ORG} dependency in ${PACKAGE_JSON_FILE_NAME} file`)
         }
         return name[0]
+    }
+
+    static copyPreviewTemplateIfNotExists() {
+        const newProjectPackageJson = JSON.parse(fs.readFileSync(PACKAGE_JSON_FILE_NAME, { encoding: 'utf8' }))
+        try {
+            const dependencyName = Project.getAcceleratorDependencyName(newProjectPackageJson.devDependencies)
+            new Installer().generatePreviewFile(path.join('node_modules', ...dependencyName.split(path.sep)))
+        } catch (error) {
+            fs.copyFileSync(path.join(CDC_ACCELERATOR_DIRECTORY, TEMPLATES_DIRECTORY, PREVIEW_DIRECTORY, PREVIEW_FILE_NAME), path.join(SRC_DIRECTORY, PREVIEW_FILE_NAME))
+        }
     }
 }

@@ -5,6 +5,7 @@ import {
     expectedGigyaResponseNok,
     expectedPermissionGroupDataWithScope,
     expectedACLFileContent,
+    expectedPermissionGroupsResponseWithEmptyGroup,
 } from '../../__tests__/test.gigyaResponses.js'
 import fs from 'fs'
 import axios from 'axios'
@@ -23,7 +24,7 @@ describe('Permission Groups test suite', () => {
 
     describe('Init test suit', () => {
         test('All permission groups files are generated sucessfully', async () => {
-            axios.mockResolvedValue({ data: expectedPermissionGroupsResponse })
+            axios.mockResolvedValue({ data: expectedPermissionGroupsResponseWithEmptyGroup })
             const getSiteInfo = {
                 partnerId: 123123,
                 dataCenter: 'eu1',
@@ -32,17 +33,15 @@ describe('Permission Groups test suite', () => {
             fs.existsSync.mockReturnValue(false)
             fs.mkdirSync.mockReturnValue(undefined)
             fs.writeFileSync.mockReturnValue(undefined)
-            let spy = jest.spyOn(permissionGroups, 'remove_built_in_permission_groups')
             await permissionGroups.init(partnerBaseDirectory, getSiteInfo)
             const srcDirectory = path.join(partnerBaseDirectory, permissionGroups.getName())
             expect(fs.existsSync).toHaveBeenCalledWith(srcDirectory)
-            expect(spy.mock.calls.length).toBe(1)
-            expect(spy).toHaveBeenCalledWith(expectedPermissionGroupsResponse.groups)
             expect(fs.writeFileSync).toHaveBeenCalledWith(
                 path.join(srcDirectory, PermissionGroups.PERMISSIONGROUP_FILE_NAME),
                 JSON.stringify(expectedPermissionGroupsResponseAfterRemovingBuiltInGroups, null, 4),
             )
         })
+
         test('get permission groups failed', async () => {
             const getSiteInfo = {
                 partnerId: 123123,
@@ -133,26 +132,35 @@ describe('Permission Groups test suite', () => {
     })
     describe('Deploy test suite', () => {
         test('all permission groups were deployed successfully', async () => {
-            const permissionGroupsResponse = expectedPermissionGroupDataWithScope
+            const permissionGroupsResponse = expectedPermissionGroupsResponseWithEmptyGroup
             axios.mockResolvedValue({ data: expectedGigyaResponseOk }).mockResolvedValue({ data: expectedGigyaResponseOk })
             const firstRequestBody = {
-                aclID: permissionGroupsResponse.alexTestAdminPermissionGroup.aclID,
-                scope: permissionGroupsResponse.alexTestAdminPermissionGroup.scope,
-                description: permissionGroupsResponse.alexTestAdminPermissionGroup.description,
+                aclID: permissionGroupsResponse.groups.alexTestAdminPermissionGroup.aclID,
+                scope: permissionGroupsResponse.groups.alexTestAdminPermissionGroup.scope,
+                description: permissionGroupsResponse.groups.alexTestAdminPermissionGroup.description,
+                users: permissionGroupsResponse.groups.alexTestAdminPermissionGroup.users,
+            }
+            const secondRequestBody = {
+                aclID: permissionGroupsResponse.groups.cdc_toolbox_e2e_test.aclID,
+                scope: permissionGroupsResponse.groups.cdc_toolbox_e2e_test.scope,
+                description: permissionGroupsResponse.groups.cdc_toolbox_e2e_test.description,
+                users: permissionGroupsResponse.groups.cdc_toolbox_e2e_test.users,
             }
 
             const alexTestAdminPermissionGroup_groupId = 'alexTestAdminPermissionGroup'
+            const cdc_toolbox_e2e_test_groupId = 'cdc_toolbox_e2e_test'
             const getSiteInfo = {
                 partnerId: 123123,
                 dataCenter: 'us1',
             }
-            fs.readFileSync.mockReturnValue(JSON.stringify(permissionGroupsResponse))
+            fs.readFileSync.mockReturnValue(JSON.stringify(expectedPermissionGroupsResponseWithEmptyGroup.groups))
             let spy = jest.spyOn(permissionGroups, 'deployPermissionGroup')
             const spyAcl = jest.spyOn(permissionGroups.getAcl(), 'deploy').mockImplementation(() => {})
             await permissionGroups.deploy(partnerBuildDirectory, getSiteInfo)
-            expect(spy.mock.calls.length).toBe(1)
+            expect(spy.mock.calls.length).toBe(2)
             expect(spyAcl.mock.calls.length).toBe(1)
             expect(spy).toHaveBeenNthCalledWith(1, getSiteInfo, alexTestAdminPermissionGroup_groupId, firstRequestBody, credentials)
+            expect(spy).toHaveBeenNthCalledWith(2, getSiteInfo, cdc_toolbox_e2e_test_groupId, secondRequestBody, credentials)
         })
         test('all permission groups should update instead of deploy', async () => {
             axios.mockResolvedValue({ data: expectedGigyaResponseOk }).mockResolvedValue({ data: expectedGigyaResponseOk })

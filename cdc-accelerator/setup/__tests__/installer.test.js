@@ -136,13 +136,13 @@ describe('Installer test suite', () => {
         fs.readFileSync.mockReturnValue(fileContent)
         const terminalSpy = jest.spyOn(Terminal, 'executeCommand').mockImplementation(() => {})
         installer.generateGitData('')
-        expect(terminalSpy).toHaveBeenCalledWith('git init', { shell: false, stdio: 'inherit' })
+        expect(terminalSpy).toHaveBeenCalledWith('git init')
         expect(fs.writeFileSync).toHaveBeenCalledWith('.gitignore', fileContent)
     })
 
     function testGeneratePreviewFile(createSrcDirectory) {
         const acceleratorInstallationPath = path.join('node_modules', SAP_ORG, 'sap-customer-data-cloud-accelerator')
-        const oldLink = `../${CDC_ACCELERATOR_DIRECTORY}/${PREVIEW_DIRECTORY}`
+        const oldLink = path.join('..', CDC_ACCELERATOR_DIRECTORY, PREVIEW_DIRECTORY)
         const newLink = path.join('..', acceleratorInstallationPath, CDC_ACCELERATOR_DIRECTORY, PREVIEW_DIRECTORY)
         const fileContent = `<html>\n<body>\n<img src='${oldLink}/anything'/>\n<a href='${oldLink}/otherthing'/>\n</body>\n</html>`
         const expectedFileContent = `<html>\n<body>\n<img src='${newLink}/anything'/>\n<a href='${newLink}/otherthing'/>\n</body>\n</html>`

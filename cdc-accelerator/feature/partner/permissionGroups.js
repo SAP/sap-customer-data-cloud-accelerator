@@ -33,11 +33,10 @@ export default class PermissionGroups extends PartnerFeature {
         if (permissionGroupsRes.errorCode) {
             throw new Error(JSON.stringify(permissionGroupsRes))
         }
-        fs.writeFileSync(
-            path.join(featureDirectory, PermissionGroups.PERMISSIONGROUP_FILE_NAME),
-            JSON.stringify(this.remove_built_in_permission_groups(permissionGroupsRes.groups), null, 4),
-        )
-        const aclIDs = Object.keys(permissionGroupsRes['groups']).map((key) => permissionGroupsRes['groups'][key].aclID)
+        const removePermissionGroups = this.removeBuiltInPermissionGroups(permissionGroupsRes.groups)
+
+        fs.writeFileSync(path.join(featureDirectory, PermissionGroups.PERMISSIONGROUP_FILE_NAME), JSON.stringify(removePermissionGroups, null, 4))
+        const aclIDs = Object.keys(removePermissionGroups).map((key) => permissionGroupsRes['groups'][key].aclID)
         await this.#acls.init(aclIDs, siteInfo['partnerId'], featureDirectory, siteInfo['dataCenter'])
     }
 
@@ -63,8 +62,9 @@ export default class PermissionGroups extends PartnerFeature {
             throw new Error(`Invalid file: ${buildFileName}`)
         }
         const parsedContent = JSON.parse(fileContent)
+        const removePermissionGroups = this.removeBuiltInPermissionGroups(parsedContent)
 
-        let keys = Object.keys(parsedContent)
+        let keys = Object.keys(removePermissionGroups)
         let response
         for (let ids of keys) {
             if (parsedContent[ids].scope) {
@@ -134,7 +134,7 @@ export default class PermissionGroups extends PartnerFeature {
         return this.#acls
     }
 
-    remove_built_in_permission_groups(content) {
+    removeBuiltInPermissionGroups(content) {
         const filteredGroups = {}
         for (const [key, value] of Object.entries(content)) {
             if (key && !key.startsWith('_')) {
