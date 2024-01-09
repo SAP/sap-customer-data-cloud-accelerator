@@ -23,6 +23,7 @@ describe('Project test suite', () => {
     beforeEach(() => {
         jest.clearAllMocks()
         jest.restoreAllMocks()
+        jest.resetAllMocks()
         spyUninstall = jest.spyOn(Uninstaller.prototype, 'uninstall')
         spyInstall = jest.spyOn(Installer.prototype, 'install')
         spyGeneratePreviewFile = jest.spyOn(Installer.prototype, 'generatePreviewFile')
