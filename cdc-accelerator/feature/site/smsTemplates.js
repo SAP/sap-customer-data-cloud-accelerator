@@ -46,7 +46,7 @@ export default class SmsTemplates extends SiteFeature {
         this.createDirectoryIfNotExists(templatesDir)
 
         Object.entries(globalTemplates.templates).forEach(([language, template]) => {
-            const filePath = path.join(templatesDir, `${language}${language === globalTemplates.defaultLanguage ? '-default' : ''}.txt`)
+            const filePath = path.join(templatesDir, `${language}${language === globalTemplates.defaultLanguage ? '.default' : ''}.txt`)
             fs.writeFileSync(filePath, template)
         })
     }
@@ -60,7 +60,9 @@ export default class SmsTemplates extends SiteFeature {
             this.createDirectoryIfNotExists(countryDir)
 
             Object.entries(countryTemplates.templates).forEach(([language, template]) => {
-                const filePath = path.join(countryDir, `${language}.txt`)
+                const isDefaultLanguage = language === countryTemplates.defaultLanguage
+                const fileName = isDefaultLanguage ? `${language}.default.txt` : `${language}.txt`
+                const filePath = path.join(countryDir, fileName)
                 fs.writeFileSync(filePath, template)
             })
         })
@@ -131,8 +133,8 @@ export default class SmsTemplates extends SiteFeature {
         fs.readdirSync(directory).forEach((file) => {
             const fullPath = path.join(directory, file)
             const templateContent = fs.readFileSync(fullPath, 'utf8')
-            let language = file.replace('.txt', '').replace('-default', '')
-            if (file.endsWith('-default.txt')) {
+            let language = file.replace('.txt', '').replace('.default', '')
+            if (file.endsWith('.default.txt')) {
                 globalTemplatesObj.defaultLanguage = language
                 defaultFiles.push(file)
             }
@@ -155,9 +157,11 @@ export default class SmsTemplates extends SiteFeature {
             fs.readdirSync(countryDir).forEach((file) => {
                 const fullPath = path.join(countryDir, file)
                 const templateContent = fs.readFileSync(fullPath, 'utf8')
-                const language = path.basename(file, '.txt')
+                let language = path.basename(file, '.txt').replace('.default', '')
                 targetObj[countryCode].templates[language] = templateContent
-                if (file.endsWith('-default.txt')) targetObj[countryCode].defaultLanguage = language
+                if (file.endsWith('.default.txt')) {
+                    targetObj[countryCode].defaultLanguage = language
+                }
             })
             if (!targetObj[countryCode].defaultLanguage) {
                 throw new Error(`Default language not set for country code: ${countryCode}`)
