@@ -16,7 +16,7 @@
         "cypress:open": "cypress open",
         "cypress:stage": "cypress run --browser chrome",
         "cypress:ci": "start-server-and-test start http://localhost:3000 cypress:stage"
-    
+
     },
     "bin": {
         "cdc": "cdc-accelerator/core/index.js"
@@ -49,31 +49,30 @@
         "testEnvironment": "jsdom"
     },
     "devDependencies": {
-        "@babel/cli": "7.22.6",
-        "@babel/core": "7.22.8",
-        "@babel/preset-env": "7.22.7",
+        "@babel/cli": "7.23.4",
+        "@babel/core": "7.23.7",
+        "@babel/preset-env": "7.23.8",
         "babel-cli": "6.26.0",
         "babel-plugin-transform-import-meta": "2.2.1",
         "babel-preset-env": "1.7.0",
         "cross-env": "7.0.3",
-        "jest": "29.6.1",
-        "jest-environment-jsdom": "29.6.1",
+        "jest": "29.7.0",
+        "jest-environment-jsdom": "29.7.0",
         "jest-location-mock": "1.0.10",
         "prettier": "2.8.8",
-        "cypress": "^13.6.0",
-        "cypress-iframe": "^1.0.1"
-    },
-  
-    "dependencies": {
-        "axios": "1.6.0",
-        "commander": "11.1.0",
-        "dotenv": "16.0.3",
-        "jszip": "3.10.1",
-        "light-server": "2.9.1",
-        "mustache": "4.2.0",
+        "cypress": "^13.6.2",
+        "cypress-iframe": "^1.0.1",
         "cypress-real-events": "^1.11.0",
         "cypress-wait-until": "^3.0.1",
         "start-server-and-test": "^2.0.3"
-    }
+    },
 
+    "dependencies": {
+        "axios": "1.6.5",
+        "commander": "11.1.0",
+        "dotenv": "16.3.1",
+        "jszip": "3.10.1",
+        "light-server": "2.9.1",
+        "mustache": "4.2.0"
+    }
 }
