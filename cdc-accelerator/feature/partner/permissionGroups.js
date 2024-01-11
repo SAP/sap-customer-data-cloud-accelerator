@@ -69,13 +69,22 @@ export default class PermissionGroups extends PartnerFeature {
         for (let ids of keys) {
             if (parsedContent[ids].scope) {
                 response = await this.deployPermissionGroup(siteInfo, ids, parsedContent[ids], this.credentials)
+            } else {
+                response = await this.updatePermissionGroup(siteInfo, ids, parsedContent[ids], this.credentials)
             }
-            response = await this.updatePermissionGroup(siteInfo, ids, parsedContent[ids], this.credentials)
             if (response.errorCode !== 0) {
-                throw new Error(JSON.stringify(response))
+                this.#processDeployError(response, ids)
             }
         }
         this.#acls.deploy(buildFeatureDirectory, siteInfo)
+    }
+
+    #processDeployError(response, id) {
+        const msg = JSON.stringify(response)
+        if (response.errorCode === 400006) {
+            throw new Error(`Permission group ${id} does not exists.`)
+        }
+        throw new Error(msg)
     }
 
     async deployPermissionGroup(siteInfo, groupId, config, credentials) {
