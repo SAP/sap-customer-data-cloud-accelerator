@@ -82,7 +82,7 @@ export default class PermissionGroups extends PartnerFeature {
     #processDeployError(response, id) {
         const msg = JSON.stringify(response)
         if (response.errorCode === 400006) {
-            throw new Error(`Permission group ${id} does not exists.\nGygia response: ${msg}`)
+            throw new Error(`Permission group ${id} does not exists.`)
         }
         throw new Error(msg)
     }

@@ -194,12 +194,11 @@ describe('Permission Groups test suite', () => {
             expect(spy).toHaveBeenNthCalledWith(2, getSiteInfo, cdc_toolbox_e2e_test_groupId, secondRequestBody, credentials)
         })
 
-        test('all permission groups were deployed unsuccessfully', async () => {
+        test('permission groups file is empty', async () => {
             const getSiteInfo = {
                 partnerId: 123123,
                 dataCenter: 'us1',
             }
-            axios.mockResolvedValueOnce({ data: expectedGigyaResponseNok })
             fs.readFileSync.mockReturnValue(true)
             await expect(permissionGroups.deploy(partnerBuildDirectory, getSiteInfo)).rejects.toThrow(Error)
         })
@@ -217,7 +216,21 @@ describe('Permission Groups test suite', () => {
                     "aclID": "anyId",
                     "description": "Testing new configuration"
                 }}))
-            await expect(permissionGroups.deploy(partnerBuildDirectory, getSiteInfo)).rejects.toThrow(Error(`Permission group unknownId does not exists.\nGygia response: ${JSON.stringify(gigyaResponse)}`))
+            await expect(permissionGroups.deploy(partnerBuildDirectory, getSiteInfo)).rejects.toThrow(Error('Permission group unknownId does not exists.'))
+        })
+
+        test('update permission group unsuccessfully', async () => {
+            const getSiteInfo = {
+                partnerId: 123123,
+                dataCenter: 'us1',
+            }
+            axios.mockResolvedValueOnce({ data: expectedGigyaResponseNok })
+            fs.readFileSync.mockReturnValue(JSON.stringify({
+                "id": {
+                    "aclID": "anyId",
+                    "description": "Testing new configuration"
+                }}))
+            await expect(permissionGroups.deploy(partnerBuildDirectory, getSiteInfo)).rejects.toThrow(Error(JSON.stringify(expectedGigyaResponseNok)))
         })
     })
 })
