@@ -15,6 +15,7 @@ export default class EmailTemplates extends SiteFeature {
     static FOLDER_LOCALES = 'locales'
     static FOLDER_TEMPLATES = 'templates'
     static FILE_METADATA = 'metadata.json'
+    static TEMPLATE_EXTENSION = 'html'
     constructor(credentials) {
         super(credentials)
     }
@@ -45,25 +46,13 @@ export default class EmailTemplates extends SiteFeature {
     }
 
     #generateTemplateFiles(emailsResponse, templatesDirectory, localesDirectory) {
-        let template = 'magicLink'
-        if (emailsResponse[template]) {
-            fs.writeFileSync(path.join(templatesDirectory, `${template}.html`), emailsResponse[template].emailTemplates[emailsResponse[template].defaultLanguage])
-            this.#generateLocaleFiles(template, emailsResponse[template].emailTemplates, localesDirectory)
-        }
-        template = 'codeVerification'
-        if (emailsResponse[template]) {
-            fs.writeFileSync(path.join(templatesDirectory, `${template}.html`), emailsResponse[template].emailTemplates[emailsResponse[template].defaultLanguage])
-            this.#generateLocaleFiles(template, emailsResponse[template].emailTemplates, localesDirectory)
-        }
-        template = 'emailVerification'
-        if (emailsResponse[template]) {
-            fs.writeFileSync(path.join(templatesDirectory, `${template}.html`), emailsResponse[template].emailTemplates[emailsResponse[template].defaultLanguage])
-            this.#generateLocaleFiles(template, emailsResponse[template].emailTemplates, localesDirectory)
-        }
-        template = 'welcomeEmailTemplates'
+        this.#generateTemplate('magicLink', emailsResponse, templatesDirectory, localesDirectory)
+        this.#generateTemplate('codeVerification', emailsResponse, templatesDirectory, localesDirectory)
+        this.#generateTemplate('emailVerification', emailsResponse, templatesDirectory, localesDirectory)
+        let template = 'welcomeEmailTemplates'
         if (emailsResponse.emailNotifications[template]) {
             fs.writeFileSync(
-                path.join(templatesDirectory, `${template}.html`),
+                path.join(templatesDirectory, `${template}.${EmailTemplates.TEMPLATE_EXTENSION}`),
                 emailsResponse.emailNotifications[template][emailsResponse.emailNotifications.welcomeEmailDefaultLanguage],
             )
             this.#generateLocaleFiles(template, emailsResponse.emailNotifications[template], localesDirectory)
@@ -71,7 +60,7 @@ export default class EmailTemplates extends SiteFeature {
         template = 'accountDeletedEmailTemplates'
         if (emailsResponse.emailNotifications[template]) {
             fs.writeFileSync(
-                path.join(templatesDirectory, `${template}.html`),
+                path.join(templatesDirectory, `${template}.${EmailTemplates.TEMPLATE_EXTENSION}`),
                 emailsResponse.emailNotifications[template][emailsResponse.emailNotifications.accountDeletedEmailDefaultLanguage],
             )
             this.#generateLocaleFiles(template, emailsResponse.emailNotifications[template], localesDirectory)
@@ -79,47 +68,40 @@ export default class EmailTemplates extends SiteFeature {
         template = 'confirmationEmailTemplates'
         if (emailsResponse.emailNotifications[template]) {
             fs.writeFileSync(
-                path.join(templatesDirectory, `${template}.html`),
+                path.join(templatesDirectory, `${template}.${EmailTemplates.TEMPLATE_EXTENSION}`),
                 emailsResponse.emailNotifications[template][emailsResponse.emailNotifications.confirmationEmailDefaultLanguage],
             )
             this.#generateLocaleFiles(template, emailsResponse.emailNotifications[template], localesDirectory)
         }
-        template = 'preferencesCenter'
-        if (emailsResponse[template]) {
-            fs.writeFileSync(path.join(templatesDirectory, `${template}.html`), emailsResponse[template].emailTemplates[emailsResponse[template].defaultLanguage])
-            this.#generateLocaleFiles(template, emailsResponse[template].emailTemplates, localesDirectory)
-        }
+        this.#generateTemplate('preferencesCenter', emailsResponse, templatesDirectory, localesDirectory)
         template = 'doubleOptIn'
         if (emailsResponse[template]) {
-            fs.writeFileSync(path.join(templatesDirectory, `${template}.html`), emailsResponse[template].confirmationEmailTemplates[emailsResponse[template].defaultLanguage])
+            fs.writeFileSync(
+                path.join(templatesDirectory, `${template}.${EmailTemplates.TEMPLATE_EXTENSION}`),
+                emailsResponse[template].confirmationEmailTemplates[emailsResponse[template].defaultLanguage],
+            )
             this.#generateLocaleFiles(template, emailsResponse[template].confirmationEmailTemplates, localesDirectory)
         }
-        template = 'passwordReset'
-        if (emailsResponse[template]) {
-            fs.writeFileSync(path.join(templatesDirectory, `${template}.html`), emailsResponse[template].emailTemplates[emailsResponse[template].defaultLanguage])
-            this.#generateLocaleFiles(template, emailsResponse[template].emailTemplates, localesDirectory)
-        }
+        this.#generateTemplate('passwordReset', emailsResponse, templatesDirectory, localesDirectory)
         template = 'twoFactorAuth'
         if (emailsResponse[template]) {
             fs.writeFileSync(
-                path.join(templatesDirectory, `${template}.html`),
+                path.join(templatesDirectory, `${template}.${EmailTemplates.TEMPLATE_EXTENSION}`),
                 emailsResponse[template].emailProvider.emailTemplates[emailsResponse[template].emailProvider.defaultLanguage],
             )
             this.#generateLocaleFiles(template, emailsResponse[template].emailProvider.emailTemplates, localesDirectory)
         }
-        template = 'impossibleTraveler'
+        this.#generateTemplate('impossibleTraveler', emailsResponse, templatesDirectory, localesDirectory)
+        this.#generateTemplate('unknownLocationNotification', emailsResponse, templatesDirectory, localesDirectory)
+        this.#generateTemplate('passwordResetNotification', emailsResponse, templatesDirectory, localesDirectory)
+    }
+
+    #generateTemplate(template, emailsResponse, templatesDirectory, localesDirectory) {
         if (emailsResponse[template]) {
-            fs.writeFileSync(path.join(templatesDirectory, `${template}.html`), emailsResponse[template].emailTemplates[emailsResponse[template].defaultLanguage])
-            this.#generateLocaleFiles(template, emailsResponse[template].emailTemplates, localesDirectory)
-        }
-        template = 'unknownLocationNotification'
-        if (emailsResponse[template]) {
-            fs.writeFileSync(path.join(templatesDirectory, `${template}.html`), emailsResponse[template].emailTemplates[emailsResponse[template].defaultLanguage])
-            this.#generateLocaleFiles(template, emailsResponse[template].emailTemplates, localesDirectory)
-        }
-        template = 'passwordResetNotification'
-        if (emailsResponse[template]) {
-            fs.writeFileSync(path.join(templatesDirectory, `${template}.html`), emailsResponse[template].emailTemplates[emailsResponse[template].defaultLanguage])
+            fs.writeFileSync(
+                path.join(templatesDirectory, `${template}.${EmailTemplates.TEMPLATE_EXTENSION}`),
+                emailsResponse[template].emailTemplates[emailsResponse[template].defaultLanguage],
+            )
             this.#generateLocaleFiles(template, emailsResponse[template].emailTemplates, localesDirectory)
         }
     }
@@ -141,9 +123,13 @@ export default class EmailTemplates extends SiteFeature {
         const srcTemplatesPath = path.join(srcFeaturePath, EmailTemplates.FOLDER_TEMPLATES)
         const srcLocalesPath = path.join(srcFeaturePath, EmailTemplates.FOLDER_LOCALES)
         const buildFeaturePath = srcFeaturePath.replace(SRC_DIRECTORY, BUILD_DIRECTORY)
+        this.clearDirectoryContents(buildFeaturePath)
         const previewEmailTemplatesMetadata = []
 
         fs.readdirSync(srcTemplatesPath).forEach((templateFile) => {
+            if (!this.#isTemplateFile(templateFile)) {
+                return
+            }
             const templateName = path.parse(templateFile).name
             const outputDirectory = path.join(buildFeaturePath, templateName)
             this.createDirectoryIfNotExists(outputDirectory)
@@ -163,6 +149,10 @@ export default class EmailTemplates extends SiteFeature {
             previewEmailTemplatesMetadata.push(previewMetadataEntry)
         })
         fs.writeFileSync(path.join(buildFeaturePath, EmailTemplates.FILE_METADATA), JSON.stringify(previewEmailTemplatesMetadata, null, 4))
+    }
+
+    #isTemplateFile(name) {
+        return name.endsWith(EmailTemplates.TEMPLATE_EXTENSION)
     }
 
     async deploy(apiKey, siteConfig, siteDirectory) {
