@@ -24,6 +24,13 @@ describe('Sms templates test suite', () => {
             fs.existsSync.mockReturnValue(false)
             const writeFileSyncMock = jest.spyOn(fs, 'writeFileSync').mockImplementation(() => {})
 
+            fs.readdirSync.mockImplementation((dirPath) => {
+                if (dirPath.includes(SmsTemplates.FOLDER_GLOBAL_TEMPLATES)) {
+                    return ['en.txt', '.DS_Store']
+                }
+                return []
+            })
+
             await smsTemplates.init(apiKey, getSiteConfig, srcSiteDirectory)
 
             expect(writeFileSyncMock).toHaveBeenCalled()
@@ -59,7 +66,6 @@ describe('Sms templates test suite', () => {
 
             writeFileSyncMock.mockRestore()
         })
-
 
         test('minimum sms templates files are not generated when no response is received', async () => {
             axios.mockResolvedValueOnce({
@@ -183,6 +189,9 @@ describe('Sms templates test suite', () => {
             fs.readdirSync.mockImplementation((dirPath) => {
                 if (dirPath.endsWith(SmsTemplates.FOLDER_GLOBAL_TEMPLATES)) {
                     return ['en.default.txt', 'es.default.txt']
+                }
+                if (dirPath.includes(SmsTemplates.FOLDER_GLOBAL_TEMPLATES)) {
+                    return ['en.txt', '.DS_Store']
                 }
                 return []
             })

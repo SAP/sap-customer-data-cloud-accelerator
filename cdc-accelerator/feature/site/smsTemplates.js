@@ -133,6 +133,7 @@ export default class SmsTemplates extends SiteFeature {
 
         let defaultFiles = []
         fs.readdirSync(directory).forEach((file) => {
+            if (!file.endsWith('.txt')) return
             const fullPath = path.join(directory, file)
             const templateContent = fs.readFileSync(fullPath, 'utf8')
             let language = file.replace('.txt', '').replace('.default', '')
@@ -157,6 +158,7 @@ export default class SmsTemplates extends SiteFeature {
 
             targetObj[countryCode] = { templates: {}, defaultLanguage: null }
             fs.readdirSync(countryDir).forEach((file) => {
+                if (!file.endsWith('.txt')) return
                 const fullPath = path.join(countryDir, file)
                 const templateContent = fs.readFileSync(fullPath, 'utf8')
                 let language = path.basename(file, '.txt').replace('.default', '')
