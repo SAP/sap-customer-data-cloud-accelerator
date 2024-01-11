@@ -36,21 +36,30 @@ describe('Sms templates test suite', () => {
                         basePath,
                         templateTypeName,
                         SmsTemplates.FOLDER_GLOBAL_TEMPLATES,
-                        `${language}${language === templateType.globalTemplates.defaultLanguage ? '-default' : ''}.txt`,
+                        `${language}${language === templateType.globalTemplates.defaultLanguage ? '.default' : ''}.txt`,
                     )
                     expect(writeFileSyncMock).toHaveBeenCalledWith(expect.stringContaining(expectedGlobalFilePath), expect.stringContaining(templateContent))
                 })
 
-                Object.entries(templateType.templatesPerCountryCode).forEach(([countryCode, countryTemplates]) => {
-                    Object.entries(countryTemplates.templates).forEach(([language, templateContent]) => {
-                        const expectedCountryFilePath = path.join(basePath, templateTypeName, SmsTemplates.FOLDER_TEMPLATES_PER_COUNTRY_CODE, countryCode, `${language}.txt`)
-                        expect(writeFileSyncMock).toHaveBeenCalledWith(expect.stringContaining(expectedCountryFilePath), expect.stringContaining(templateContent))
+                if (templateType.templatesPerCountryCode) {
+                    Object.entries(templateType.templatesPerCountryCode).forEach(([countryCode, countryTemplates]) => {
+                        Object.entries(countryTemplates.templates).forEach(([language, templateContent]) => {
+                            const expectedCountryFilePath = path.join(
+                                basePath,
+                                templateTypeName,
+                                SmsTemplates.FOLDER_TEMPLATES_PER_COUNTRY_CODE,
+                                countryCode,
+                                `${language}${language === countryTemplates.defaultLanguage ? '.default' : ''}.txt`,
+                            )
+                            expect(writeFileSyncMock).toHaveBeenCalledWith(expect.stringContaining(expectedCountryFilePath), expect.stringContaining(templateContent))
+                        })
                     })
-                })
+                }
             })
 
             writeFileSyncMock.mockRestore()
         })
+
 
         test('minimum sms templates files are not generated when no response is received', async () => {
             axios.mockResolvedValueOnce({
@@ -120,14 +129,14 @@ describe('Sms templates test suite', () => {
                 [path.join(SRC_DIRECTORY, smsTemplates.getName(), SmsTemplates.FOLDER_OTP)]: {
                     isDirectory: true,
                     contents: {
-                        'en-default.txt': 'Your verification code is: {{code}}',
+                        'en.default.txt': 'Your verification code is: {{code}}',
                         'nl.txt': 'Uw verificatiecode is: {{code}}',
                     },
                 },
                 [path.join(SRC_DIRECTORY, smsTemplates.getName(), SmsTemplates.FOLDER_TFA)]: {
                     isDirectory: true,
                     contents: {
-                        'en-default.txt': 'Your verification code is: {{code}}',
+                        'en.default.txt': 'Your verification code is: {{code}}',
                         'nl.txt': 'Je bevestigingscode is:{{code}}',
                     },
                 },
@@ -173,7 +182,7 @@ describe('Sms templates test suite', () => {
             fs.existsSync.mockReturnValue(true)
             fs.readdirSync.mockImplementation((dirPath) => {
                 if (dirPath.endsWith(SmsTemplates.FOLDER_GLOBAL_TEMPLATES)) {
-                    return ['en-default.txt', 'es-default.txt']
+                    return ['en.default.txt', 'es.default.txt']
                 }
                 return []
             })
@@ -200,7 +209,7 @@ describe('Sms templates test suite', () => {
             fs.existsSync.mockReturnValue(true)
             fs.readdirSync.mockImplementation((dirPath) => {
                 if (dirPath.endsWith(SmsTemplates.FOLDER_GLOBAL_TEMPLATES)) {
-                    return ['en-default.txt', 'es-default.txt']
+                    return ['en.default.txt', 'es.default.txt']
                 }
                 return []
             })
