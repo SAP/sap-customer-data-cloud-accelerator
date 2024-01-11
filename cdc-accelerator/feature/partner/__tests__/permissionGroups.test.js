@@ -3,7 +3,6 @@ import {
     expectedPermissionGroupsResponse,
     expectedPermissionGroupsResponseAfterRemovingBuiltInGroups,
     expectedGigyaResponseNok,
-    expectedPermissionGroupDataWithScope,
     expectedACLFileContent,
     expectedPermissionGroupsResponseWithEmptyGroup,
 } from '../../__tests__/test.gigyaResponses.js'
@@ -20,6 +19,8 @@ describe('Permission Groups test suite', () => {
     const permissionGroups = new PermissionGroups(credentials)
     beforeEach(() => {
         jest.clearAllMocks()
+        jest.resetAllMocks()
+        jest.restoreAllMocks()
     })
 
     describe('Init test suit', () => {
@@ -106,6 +107,7 @@ describe('Permission Groups test suite', () => {
             )
         })
     })
+
     describe('Reset test suite', () => {
         test('reset with existing folder', () => {
             testReset(true)
@@ -130,10 +132,11 @@ describe('Permission Groups test suite', () => {
             }
         }
     })
+
     describe('Deploy test suite', () => {
         test('all permission groups were deployed successfully', async () => {
             const permissionGroupsResponse = expectedPermissionGroupsResponseWithEmptyGroup
-            axios.mockResolvedValue({ data: expectedGigyaResponseOk }).mockResolvedValue({ data: expectedGigyaResponseOk })
+            axios.mockResolvedValue({ data: expectedGigyaResponseOk }).mockResolvedValueOnce({ data: expectedGigyaResponseOk })
             const firstRequestBody = {
                 aclID: permissionGroupsResponse.groups.alexTestAdminPermissionGroup.aclID,
                 scope: permissionGroupsResponse.groups.alexTestAdminPermissionGroup.scope,
@@ -162,8 +165,9 @@ describe('Permission Groups test suite', () => {
             expect(spy).toHaveBeenNthCalledWith(1, getSiteInfo, alexTestAdminPermissionGroup_groupId, firstRequestBody, credentials)
             expect(spy).toHaveBeenNthCalledWith(2, getSiteInfo, cdc_toolbox_e2e_test_groupId, secondRequestBody, credentials)
         })
+
         test('all permission groups should update instead of deploy', async () => {
-            axios.mockResolvedValue({ data: expectedGigyaResponseOk }).mockResolvedValue({ data: expectedGigyaResponseOk })
+            axios.mockResolvedValue({ data: expectedGigyaResponseOk })
             const getSiteInfo = {
                 partnerId: 123123,
                 dataCenter: 'us1',
@@ -189,14 +193,31 @@ describe('Permission Groups test suite', () => {
             expect(spy).toHaveBeenNthCalledWith(1, getSiteInfo, alexTestAdminPermissionGroup_groupId, firstRequestBody, credentials)
             expect(spy).toHaveBeenNthCalledWith(2, getSiteInfo, cdc_toolbox_e2e_test_groupId, secondRequestBody, credentials)
         })
-        test('all permission groups were not deployed unsuccessfully', async () => {
+
+        test('all permission groups were deployed unsuccessfully', async () => {
             const getSiteInfo = {
                 partnerId: 123123,
                 dataCenter: 'us1',
             }
-            axios.mockResolvedValueOnce({ data: expectedGigyaResponseNok }).mockResolvedValueOnce({ data: expectedGigyaResponseNok })
+            axios.mockResolvedValueOnce({ data: expectedGigyaResponseNok })
             fs.readFileSync.mockReturnValue(true)
             await expect(permissionGroups.deploy(partnerBuildDirectory, getSiteInfo)).rejects.toThrow(Error)
+        })
+
+        test('update permission group that do not exist', async () => {
+            const getSiteInfo = {
+                partnerId: 123123,
+                dataCenter: 'us1',
+            }
+            const gigyaResponse = Object.assign({}, expectedGigyaResponseNok)
+            gigyaResponse.errorCode = 400006
+            axios.mockResolvedValueOnce({ data: gigyaResponse })
+            fs.readFileSync.mockReturnValue(JSON.stringify({
+                "unknownId": {
+                    "aclID": "anyId",
+                    "description": "Testing new configuration"
+                }}))
+            await expect(permissionGroups.deploy(partnerBuildDirectory, getSiteInfo)).rejects.toThrow(Error(`Permission group unknownId does not exists.\nGygia response: ${JSON.stringify(gigyaResponse)}`))
         })
     })
 })
