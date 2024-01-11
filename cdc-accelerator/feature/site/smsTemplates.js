@@ -69,7 +69,7 @@ export default class SmsTemplates extends SiteFeature {
     }
 
     build(siteDirectory) {
-        const buildFeaturePath = path.join(BUILD_DIRECTORY, this.constructor.name)
+        const buildFeaturePath = path.join(siteDirectory, this.getName()).replace(SRC_DIRECTORY, BUILD_DIRECTORY)
         this.clearDirectoryContents(buildFeaturePath)
         this.#buildTemplates(siteDirectory, SmsTemplates.FOLDER_OTP)
         this.#buildTemplates(siteDirectory, SmsTemplates.FOLDER_TFA)
