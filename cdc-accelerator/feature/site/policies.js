@@ -32,16 +32,21 @@ export default class Policies extends SiteFeature {
             throw new Error(JSON.stringify(policiesResponse))
         }
 
-        const filteredPoliciesResponse = JSON.parse(JSON.stringify(policiesResponse))
-
-        removePropertyFromObjectCascading(filteredPoliciesResponse, 'confirmationEmailTemplates')
-        removePropertyFromObjectCascading(filteredPoliciesResponse, 'emailTemplates')
-
+        const filteredPoliciesResponse = this.#removeEmailTemplates(policiesResponse)
         const featureDirectory = path.join(siteDirectory, this.getName())
         this.createDirectory(featureDirectory)
 
-        this.removeResponseStatusFields(filteredPoliciesResponse)
+        this.#removeResponseStatusFields(filteredPoliciesResponse)
         fs.writeFileSync(path.join(featureDirectory, Policies.POLICIES_FILE_NAME), JSON.stringify(filteredPoliciesResponse, null, 4))
+    }
+
+    #removeEmailTemplates(policiesResponse) {
+        const filteredPoliciesResponse = JSON.parse(JSON.stringify(policiesResponse))
+        removePropertyFromObjectCascading(filteredPoliciesResponse, 'confirmationEmailTemplates')
+        removePropertyFromObjectCascading(filteredPoliciesResponse, 'emailTemplates')
+        removePropertyFromObjectCascading(filteredPoliciesResponse, 'welcomeEmailTemplates')
+        removePropertyFromObjectCascading(filteredPoliciesResponse, 'accountDeletedEmailTemplates')
+        return filteredPoliciesResponse
     }
 
     reset(siteDirectory) {
@@ -70,7 +75,7 @@ export default class Policies extends SiteFeature {
         return await toolkitPolicies.copyPolicies(apiKey, siteConfig, payload, options)
     }
 
-    removeResponseStatusFields(policiesResponse) {
+    #removeResponseStatusFields(policiesResponse) {
         delete policiesResponse.statusCode
         delete policiesResponse.errorCode
         delete policiesResponse.statusReason

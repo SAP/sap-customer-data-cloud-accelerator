@@ -29,6 +29,9 @@ describe('Policies test suite', () => {
                 delete cloned.statusReason
                 delete cloned.callId
                 delete cloned.time
+                delete cloned.emailNotifications.accountDeletedEmailTemplates
+                delete cloned.emailNotifications.welcomeEmailTemplates
+                delete cloned.emailNotifications.confirmationEmailTemplates
                 return cloned
             }
             axios.mockResolvedValueOnce({ data: expectedPoliciesResponse })
