@@ -2,36 +2,34 @@
 
 ## About The Project <a id="description"></a>
 
-A NodeJs library to setup a new CDC project defining a common structure and offering quality control tools to help develop the best possible solutions:
+The SAP Customer Data Cloud accelerator is local development environment for SAP Customer Data Cloud.
 
--   **Jest**: To create unit tests for all functions
--   **Babel**: Enables you do write modern JavaScript and converts it to older versions behind the scenes
--   **Prettier**: Formats the code with a standardized syntax and tabulation
--   **Git**: Code history version control
--   Multiple scripts to help you `init` and quicky `deploy` the code to the CDC apiKeys
+It enables the use of all modern tools, including modern JavaScript and real source control. It provides code separation, enabling unit tests and quality checks.
 
 ## Getting Started <a id="requisites"></a>
 
-To get started it is necessary to have `git` and `nodejs` installed on the local machine.
+To get started it is necessary to have **[git](https://git-scm.com/)** and **[node.js](https://nodejs.org/)** installed on the local machine.
 
-## Setup a CDC project <a id="setup"></a>
+### 1. Setup a CDC project <a id="setup"></a>
 
-Firstly, please head towards the npm link https://www.npmjs.com/package/@sap_oss/sap-customer-data-cloud-accelerator.
+<!-- Firstly, please head towards the npm link https://www.npmjs.com/package/@sap_oss/sap-customer-data-cloud-accelerator. -->
 
-Then, execute the following commands:
+Execute the following commands:
 
 ```sh
+# Create a new project
 npm init
-# to create a new CDC project
 
+# Install @sap_oss/sap-customer-data-cloud-accelerator as a development dependency of the new project
 npm install --save-dev @sap_oss/sap-customer-data-cloud-accelerator
-# to install @sap_oss/sap-customer-data-cloud-accelerator as a development dependency of the new project
 
+# Setup a new CDC project with dependencies configuration files
 npx cdc setup
-# to setup the new CDC project with needed dependencies and generate the configuration files out of the box, to be able to use the different tools
 ```
 
-## User Credentials <a id="user-credentials"></a>
+### 2. Project Configuration <a id="project-configuration"></a>
+
+#### 2.1 User Credentials <a id="configuration-user-credentials"></a>
 
 Edit the file `.env` in the project directory and add your credentials:
 
@@ -40,9 +38,9 @@ USER_KEY="ex: XXXXXXXX"
 SECRET_KEY="ex: XXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 ```
 
-## Configuration file <a id="single-environment-configuration-file"></a>
+#### 2.2 Configuration file <a id="single-environment-configuration-file"></a>
 
-Edit the file `cdc-accelerator.json` in the project directory and add the `source` site or sites you want to get the initial configuration from and to `deploy` to:
+Edit the file `cdc-accelerator.json` in the project directory and add the `source` site or sites you want to get the initial configuration from and sites to `deploy` to:
 
 ```sh
 {
@@ -57,15 +55,59 @@ Edit the file `cdc-accelerator.json` in the project directory and add the `sourc
 }
 ```
 
-## Usage <a id="single-environment-usage"></a>
+### 3. Usage <a id="single-environment-usage"></a>
 
-### Get help about using the cli <a id="single-environment-usage-help"></a>
+#### 3.1 Get initial configuration from the source API Key(s) <a id="single-environment-usage-init"></a>
+
+```sh
+npm run init
+```
+
+#### 3.2 Start local development server <a id="single-environment-usage-start"></a>
+
+```sh
+npm run start
+```
+
+Navigate to <http://localhost:3000/> to see the preview.
+
+The preview mode is a feature that allows the user to see and test the changes in the local environment, without the need to `deploy` the data to the SAP CDC console.
+
+#### 3.3 Run tests (optional) <a id="single-environment-usage-test"></a>
+
+```
+npm run test
+```
+
+Runs any existing `jest` tests in the project.
+
+#### 3.4 Deploy the local data to the SAP CDC console <a id="single-environment-usage-deploy"></a>
+
+```sh
+npm run deploy
+```
+
+Congratulations! You have successfully initialized and deployed a SAP Customer Data Cloud accelerator project.
+
+### Advanced Usage <a id="single-environment-advanced-usage"></a>
+
+#### Replace existing files with the code from the origin API Key(s) <a id="single-environment-usage-reset"></a>
+
+It's similar to `init`, but replaces the contents of `src/`.
+
+```sh
+npm run reset
+```
+
+#### Get help about using the cli <a id="single-environment-usage-help"></a>
+
+This command will show all possible commands and options that the user can do.
 
 ```sh
 npx cdc help
 ```
 
-This command will show all possible commands and options that the user can do, the output will be something like this:
+Example output:
 
 ```sh
 Usage: npx cdc [options] [command]
@@ -79,47 +121,11 @@ Options:
 Commands:
   start             Launch local server for testing using the preview functionality
   setup             Setup a new project after this dependency is installed
-  init [options]    Reads the data from the cdc console of the sites configured
-  reset [options]   Deletes the local folder and reads the data from the cdc console of the sites configured
-  build [options]   Processes the local data and prepares it to be deployed to the cdc console
-  deploy [options]  Deploys the local data to the cdc console on the sites configured
+  init [options]    Reads the data from the SAP CDC console of the sites configured
+  reset [options]   Deletes the local folder and reads the data from the SAP CDC console of the sites configured
+  build [options]   Processes the local data and prepares it to be deployed to the SAP CDC console
+  deploy [options]  Deploys the local data to the SAP CDC console on the sites configured
   help [command]    display help for command
-```
-
-### Get initial configuration from the source api key(s) <a id="single-environment-usage-init"></a>
-
-```sh
-npm run init
-```
-
-### Replace existing files with the code from the origin api key(s) <a id="single-environment-usage-reset"></a>
-
-```sh
-npm run reset
-```
-
-### Start local development server <a id="single-environment-usage-start"></a>
-
-```sh
-npm run start
-```
-
-### Run tests <a id="single-environment-usage-test"></a>
-
-```
-npm run test
-```
-
-### Processes the local data and prepares it to be deployed to the cdc console <a id="single-environment-usage-build"></a>
-
-```sh
-npm run build
-```
-
-### Deploy the local data to the cdc console on the sites configured <a id="single-environment-usage-deploy"></a>
-
-```sh
-npm run deploy
 ```
 
 ## Configuration <a id="configuration"></a>
@@ -128,13 +134,13 @@ npm run deploy
 
 The Customer Data Cloud Accelerator allows reading, working locally and deploying data from the following features:
 
--   E-mail Templates <a id="features-email-templates"></a>
--   Permission Groups <a id="features-permission-groups"></a>
--   Policies <a id="features-policies"></a>
--   Schema <a id="features-schema"></a>
--   SMS Templates <a id="features-sms-templates"></a>
--   Web ScreenSets <a id="features-webscreensets"></a>
--   Web SDK <a id="features-web-sdk"></a>
+-   E-mail Templates: `EmailTemplates` <a id="features-email-templates"></a>
+-   Permission Groups: `PermissionGroups` <a id="features-permission-groups"></a>
+-   Policies: `Policies` <a id="features-policies"></a>
+-   Schema: `Schema` <a id="features-schema"></a>
+-   SMS Templates: `SmsTemplates` <a id="features-sms-templates"></a>
+-   Web ScreenSets: `WebScreenSets` <a id="features-webscreensets"></a>
+-   Web SDK: `WebSdk` <a id="features-web-sdk"></a>
 
 ### How to configure the use of features on the file cdc-accelerator.json
 
@@ -145,8 +151,8 @@ They both will have an array of objects that will contain the apiKeys that are r
 {
   "source":[
     {
-    "apiKey":"1_B12AD0AISOPAD",
-    "features": ["Schema","PermissionGroup","WebSdk"]
+      "apiKey":"1_QWERTYUIOPASDFGHJKLZXCVBNM",
+      "features": ["Schema","PermissionGroups","WebSdk"]
     }
   ]
 }
@@ -158,20 +164,20 @@ They both will have an array of objects that will contain the apiKeys that are r
 {
   "source":[
     {
-    "apiKey":"1_B12AD0AISOPAD",
-    "features": []
+      "apiKey":"1_QWERTYUIOPASDFGHJKLZXCVBNM",
+      "features": []
     }
   ]
 }
 ```
 
-### How to use the feature specific commands
+### How to use the feature-specific commands
 
-Using the feature specific command lets the user run a specific feature instead of running all of them when doing an operation (init, reset, build, deploy).
+Using the feature-specific command lets the user run a specific feature instead of running all of them when doing an operation (init, reset, build, deploy).
 To use them, simply write on the terminal
 
 ```sh
-npm run <operation> -- -f <feature>
+npm run <operation> -- -f <featureName>
 ```
 
 For example:
