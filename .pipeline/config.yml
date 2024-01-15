@@ -58,4 +58,5 @@ steps:
     npmExecuteScripts:
         runScripts:
             - test
+            - cypress:ci
         failOnError: true
