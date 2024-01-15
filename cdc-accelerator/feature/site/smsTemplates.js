@@ -87,10 +87,13 @@ export default class SmsTemplates extends SiteFeature {
         fs.readdirSync(srcPath).forEach((fileOrFolder) => {
             const srcFilePath = path.join(srcPath, fileOrFolder)
             const outputFilePath = path.join(buildFeaturePath, fileOrFolder)
+
             if (fs.statSync(srcFilePath).isDirectory()) {
                 this.#copyTemplateFiles(srcFilePath, outputFilePath)
             } else {
-                fs.copyFileSync(srcFilePath, outputFilePath)
+                if (path.extname(srcFilePath) === '.txt') {
+                    fs.copyFileSync(srcFilePath, outputFilePath)
+                }
             }
         })
     }
@@ -133,7 +136,6 @@ export default class SmsTemplates extends SiteFeature {
 
         let defaultFiles = []
         fs.readdirSync(directory).forEach((file) => {
-            if (!file.endsWith('.txt')) return
             const fullPath = path.join(directory, file)
             const templateContent = fs.readFileSync(fullPath, 'utf8')
             let language = file.replace('.txt', '').replace('.default', '')

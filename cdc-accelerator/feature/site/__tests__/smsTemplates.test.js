@@ -191,7 +191,7 @@ describe('Sms templates test suite', () => {
                     return ['en.default.txt', 'es.default.txt']
                 }
                 if (dirPath.includes(SmsTemplates.FOLDER_GLOBAL_TEMPLATES)) {
-                    return ['en.txt', '.DS_Store']
+                    return ['en.txt', '.DS_Store'] 
                 }
                 return []
             })
@@ -278,6 +278,58 @@ describe('Sms templates test suite', () => {
             fs.readFileSync.mockReturnValue('Your verification code is: {{code}}')
 
             await expect(smsTemplates.deploy(apiKey, getSiteConfig, BUILD_DIRECTORY)).rejects.toThrow('API error')
+        })
+        test('processes country code templates correctly', async () => {
+            fs.existsSync.mockImplementation((path) => true)
+            fs.readdirSync.mockImplementation((dirPath) => {
+                if (dirPath.endsWith(SmsTemplates.FOLDER_TEMPLATES_PER_COUNTRY_CODE)) {
+                    return ['en', 'de'] 
+                }
+                if (dirPath.includes('en') || dirPath.includes('de')) {
+                    return ['en.default.txt', 'de.txt'] 
+                }
+                return []
+            })
+            fs.readFileSync.mockImplementation(() => 'Mock template content')
+            axios.mockResolvedValue({ data: { errorCode: 0 } }) 
+
+            const response = await smsTemplates.deploy(apiKey, getSiteConfig, BUILD_DIRECTORY)
+
+            expect(response).toBeDefined()
+        })
+        test('deploy throws error if no default language set for country code', async () => {
+            fs.existsSync.mockImplementation((path) => true)
+            fs.readdirSync.mockImplementation((path) => {
+                if (path.includes(SmsTemplates.FOLDER_TEMPLATES_PER_COUNTRY_CODE)) {
+                    return ['en'] 
+                }
+                if (path.includes('en')) {
+                    return ['en.txt'] 
+                }
+                return []
+            })
+            axios.mockResolvedValue({ data: { errorCode: 0 } })
+
+            await expect(smsTemplates.deploy(apiKey, getSiteConfig, srcSiteDirectory)).rejects.to
+        })
+
+        test('ignores non-txt files in country code directory', async () => {
+            fs.existsSync.mockImplementation((path) => true)
+            fs.readdirSync.mockImplementation((dirPath) => {
+                if (dirPath.endsWith(SmsTemplates.FOLDER_TEMPLATES_PER_COUNTRY_CODE)) {
+                    return ['en'] 
+                }
+                if (dirPath.includes('en')) {
+                    return ['image.jpg', 'document.pdf', 'en.default.txt'] 
+                }
+                return []
+            })
+            fs.readFileSync.mockImplementation(() => 'Mock template content')
+            axios.mockResolvedValue({ data: { errorCode: 0 } }) 
+
+            const response = await smsTemplates.deploy(apiKey, getSiteConfig, BUILD_DIRECTORY)
+
+            expect(response).toBeDefined()
         })
     })
 })
