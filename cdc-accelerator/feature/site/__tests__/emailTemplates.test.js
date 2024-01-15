@@ -178,9 +178,8 @@ describe('Email templates test suite', () => {
         test('two email templates generated successfully', async () => {
             const templateName1 = 'magicLink'
             const templateName2 = 'passwordReset'
-            const templateFileExtension = '.html'
             fs.readdirSync
-                .mockReturnValueOnce([`${templateName1}${templateFileExtension}`, `${templateName2}${templateFileExtension}`])
+                .mockReturnValueOnce([`${templateName1}.${EmailTemplates.TEMPLATE_EXTENSION}`, `${templateName2}.${EmailTemplates.TEMPLATE_EXTENSION}`, 'nonTemplateFile'])
                 .mockReturnValueOnce(['en.json'])
                 .mockReturnValueOnce(['en.json', 'pt.json'])
 
@@ -196,17 +195,17 @@ describe('Email templates test suite', () => {
             expect(fs.writeFileSync.mock.calls.length).toBe(3 + 1)
             expect(fs.writeFileSync).toHaveBeenNthCalledWith(
                 1,
-                path.join(buildSiteDirectory, emailTemplates.getName(), templateName1, `${templateName1}-en${templateFileExtension}`),
+                path.join(buildSiteDirectory, emailTemplates.getName(), templateName1, `${templateName1}-en.${EmailTemplates.TEMPLATE_EXTENSION}`),
                 emailTemplate,
             )
             expect(fs.writeFileSync).toHaveBeenNthCalledWith(
                 2,
-                path.join(buildSiteDirectory, emailTemplates.getName(), templateName2, `${templateName2}-en${templateFileExtension}`),
+                path.join(buildSiteDirectory, emailTemplates.getName(), templateName2, `${templateName2}-en.${EmailTemplates.TEMPLATE_EXTENSION}`),
                 passwordResetRenderedEn,
             )
             expect(fs.writeFileSync).toHaveBeenNthCalledWith(
                 3,
-                path.join(buildSiteDirectory, emailTemplates.getName(), templateName2, `${templateName2}-pt${templateFileExtension}`),
+                path.join(buildSiteDirectory, emailTemplates.getName(), templateName2, `${templateName2}-pt.${EmailTemplates.TEMPLATE_EXTENSION}`),
                 passwordResetRenderedPt,
             )
             expect(fs.writeFileSync).toHaveBeenNthCalledWith(4, path.join(buildSiteDirectory, emailTemplates.getName(), EmailTemplates.FILE_METADATA), expect.anything())

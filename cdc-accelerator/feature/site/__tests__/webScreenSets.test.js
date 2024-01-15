@@ -23,6 +23,7 @@ describe('WebScreenSets test suite', () => {
     beforeEach(() => {
         jest.restoreAllMocks()
         jest.clearAllMocks()
+        jest.resetAllMocks()
     })
 
     test('should get class super type', () => {

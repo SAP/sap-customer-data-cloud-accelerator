@@ -1,11 +1,4 @@
 {
-    "alexTestAdminPermissionGroup": {
-        "aclID": "Bruno",
-        "description": "Testing new configuration"
-    },
-    "alexTestAdminPermissionGroup-TEST3": {
-        "aclID": "alexTestAdminPermissionGroup"
-    },
     "alexTestAdminPermissionGroup-TEST4": {
         "aclID": "alexTestAdminPermissionGroup",
         "description": "Testing new configuration"

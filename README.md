@@ -1,6 +1,6 @@
 # Customer Data Cloud Accelerator
 
-## Description <a id="description"></a>
+## About The Project <a id="description"></a>
 
 A NodeJs library to setup a new CDC project defining a common structure and offering quality control tools to help develop the best possible solutions:
 
@@ -10,11 +10,15 @@ A NodeJs library to setup a new CDC project defining a common structure and offe
 -   **Git**: Code history version control
 -   Multiple scripts to help you `init` and quicky `deploy` the code to the CDC apiKeys
 
-## Pre-requisites <a id="requisites"></a>
+## Getting Started <a id="requisites"></a>
 
-As pre-requisite it is necessary to have git installed on the local machine.
+To get started it is necessary to have `git` and `nodejs` installed on the local machine.
 
-## Set up a new CDC project <a id="setup"></a>
+## Setup a CDC project <a id="setup"></a>
+
+Firstly, please head towards the npm link https://www.npmjs.com/package/@sap_oss/sap-customer-data-cloud-accelerator.
+
+Then, execute the following commands:
 
 ```sh
 npm init
@@ -27,9 +31,7 @@ npx cdc setup
 # to setup the new CDC project with needed dependencies and generate the configuration files out of the box, to be able to use the different tools
 ```
 
-## Configuration <a id="configuration"></a>
-
-### User Credentials <a id="user-credentials"></a>
+## User Credentials <a id="user-credentials"></a>
 
 Edit the file `.env` in the project directory and add your credentials:
 
@@ -38,20 +40,20 @@ USER_KEY="ex: XXXXXXXX"
 SECRET_KEY="ex: XXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 ```
 
-### Configuration file <a id="single-environment-configuration-file"></a>
+## Configuration file <a id="single-environment-configuration-file"></a>
 
 Edit the file `cdc-accelerator.json` in the project directory and add the `source` site or sites you want to get the initial configuration from and to `deploy` to:
 
 ```sh
 {
-    "source": [
-        { "apiKey": "XXXXXXXXXX" },
-        { "apiKey": "YYYYYYYYYY" }
-    ],
-    "deploy": [
-        { "apiKey": "XXXXXXXXXX" },
-        { "apiKey": "YYYYYYYYYY" }
-    ]
+  "source": [
+      { "apiKey": "XXXXXXXXXX" },
+      { "apiKey": "YYYYYYYYYY" }
+  ],
+  "deploy": [
+      { "apiKey": "XXXXXXXXXX" },
+      { "apiKey": "YYYYYYYYYY" }
+  ]
 }
 ```
 
@@ -61,6 +63,27 @@ Edit the file `cdc-accelerator.json` in the project directory and add the `sourc
 
 ```sh
 npx cdc help
+```
+
+This command will show all possible commands and options that the user can do, the output will be something like this:
+
+```sh
+Usage: npx cdc [options] [command]
+
+A development environment for SAP Customer Data Cloud that enables the use of modern tools, such as JavaScript and source control.
+
+Options:
+  -V, --version     output the version number
+  -h, --help        display help for command
+
+Commands:
+  start             Launch local server for testing using the preview functionality
+  setup             Setup a new project after this dependency is installed
+  init [options]    Reads the data from the cdc console of the sites configured
+  reset [options]   Deletes the local folder and reads the data from the cdc console of the sites configured
+  build [options]   Processes the local data and prepares it to be deployed to the cdc console
+  deploy [options]  Deploys the local data to the cdc console on the sites configured
+  help [command]    display help for command
 ```
 
 ### Get initial configuration from the source api key(s) <a id="single-environment-usage-init"></a>
@@ -93,13 +116,15 @@ npm run test
 npm run build
 ```
 
-#### Deploy the local data to the cdc console on the sites configured <a id="single-environment-usage-deploy"></a>
+### Deploy the local data to the cdc console on the sites configured <a id="single-environment-usage-deploy"></a>
 
 ```sh
 npm run deploy
 ```
 
-## Features <a id="features"></a>
+## Configuration <a id="configuration"></a>
+
+### Features <a id="features"></a>
 
 The Customer Data Cloud Accelerator allows reading, working locally and deploying data from the following features:
 
@@ -111,22 +136,119 @@ The Customer Data Cloud Accelerator allows reading, working locally and deployin
 -   Web ScreenSets <a id="features-webscreensets"></a>
 -   Web SDK <a id="features-web-sdk"></a>
 
-### Local Live Preview <a id="features-local-preview"></a>
+### How to configure the use of features on the file cdc-accelerator.json
 
-Local live preview allows the consultant to see and test the web screen sets and email templates on the local environment, before deploying them to the CDC console.
+On the `cdc-accelerator.json` file, there are two mandatory properties that the user has to fill, the `source` and `deploy`.
+They both will have an array of objects that will contain the apiKeys that are related to the sites that we want to use in the project and optionally it will have the features, for example:
 
-#### Web Screen-Sets <a id="features-local-preview-web-screen-sets"></a>
+```sh
+{
+  "source":[
+    {
+    "apiKey":"1_B12AD0AISOPAD",
+    "features": ["Schema","PermissionGroup","WebSdk"]
+    }
+  ]
+}
+```
 
--   Filters: Show only the screenSets we want to work with in preview
--   Only supports inline imports of files exported with `export default ObjectName`
+### An empty array will mean no feature will be available, for example:
 
-#### E-mail templates <a id="features-local-preview-email-templates"></a>
+```sh
+{
+  "source":[
+    {
+    "apiKey":"1_B12AD0AISOPAD",
+    "features": []
+    }
+  ]
+}
+```
 
--   Filters: Show only the email templates we want to work with in preview
+### How to use the feature specific commands
 
-## Documentation
+Using the feature specific command lets the user run a specific feature instead of running all of them when doing an operation (init, reset, build, deploy).
+To use them, simply write on the terminal
 
-[SAP Customer Data Cloud Accelerator wiki](https://github.com/SAP/sap-customer-data-cloud-accelerator/wiki)
+```sh
+npm run <operation> -- -f <feature>
+```
+
+For example:
+
+```sh
+npm run init -- -f Schema
+```
+
+In this example the user is only going to run the feature Schema when running the operation init, the feature name can be replaced by any other feature (Email Templates, WebScreenSet, PermissionGroup, WebSdk...).
+To show all the possible commands, the user can write simply
+
+## Preview
+
+The preview mode is a feature that allows the user to see and test the changes in the local environment, without the need to `deploy` the data to the customer data cloud console.
+
+### How to use filters on preview
+
+The filter is applied on the "src/index.html" file, that will filter the screens that the user will choose to see by using the apiKeys that are configured on the configuration file `cdc-accelerator.json`, for example:
+
+```sh
+ [{
+    apiKey: '1_2ABCDEFGHI345',
+    screens: [{ screenSetID: 'PreferencesCenter-ProfileUpdate', screenID: 'gigya-update-profile-screen' }],
+    emails: [ { emailID: 'codeVerification', languages: ['en'] } ]
+  }]
+```
+
+### Using the filter on more than one apiKey
+
+```sh
+[{
+  apiKey: '1_2ABCDEFGHI345',
+  screens: [
+    { screenSetID: 'PreferencesCenter-ProfileUpdate', screenID: 'gigya-update-profile-screen' },
+    { screenSetID: 'PreferencesCenter-Landing', screenID: 'gigya-login-screen' },
+  ],
+  emails: []
+  },
+  {
+  apiKey: '1_3AS9DJAKSLA12',
+  emails: [{ emailID: 'doubleOptIn', languages: ['ar', 'en', 'pt-br'] }]
+}]
+```
+
+### Adding the filter to all the ApiKeys that do not have already a specific filter
+
+```sh
+[{
+  apiKey: '*',
+  emails: [{ emailID: 'doubleOptIn', languages: ['ar', 'en', 'pt-br'] } ]
+}]
+```
+
+### Using different options of preview
+
+Using the different options of the preview will enable the user to control what he wants to see or filter.
+
+-   `<origin>`: Retrieves the settings available on the `source` or `deploy` inside the `cdc-accelerator.json`.
+
+-   `<useLocalWebSdk>`: Uses the local webSdk.js code that is inside the build/ directory.
+
+-   `<useLocalScreenSets>`: Uses the local screensets.js code that is inside the build/ directory.
+
+-   `<filter>`: Defines what was configured above, including specific apiKeys and screens/email.
+
+-   `<lang>`: Defines the language of the screen-sets, which can be changed according to user preference.
+
+```sh
+  preview
+  ({
+    origin: 'source',
+    useLocalWebSdk: true,
+    useLocalScreenSets: true,
+    filter,
+    lang: 'en',
+})
+```
 
 ## Support, Feedback, Contributing
 
