@@ -24,6 +24,13 @@ describe('Sms templates test suite', () => {
             fs.existsSync.mockReturnValue(false)
             const writeFileSyncMock = jest.spyOn(fs, 'writeFileSync').mockImplementation(() => {})
 
+            fs.readdirSync.mockImplementation((dirPath) => {
+                if (dirPath.includes(SmsTemplates.FOLDER_GLOBAL_TEMPLATES)) {
+                    return ['en.txt', '.DS_Store']
+                }
+                return []
+            })
+
             await smsTemplates.init(apiKey, getSiteConfig, srcSiteDirectory)
 
             expect(writeFileSyncMock).toHaveBeenCalled()
@@ -36,17 +43,25 @@ describe('Sms templates test suite', () => {
                         basePath,
                         templateTypeName,
                         SmsTemplates.FOLDER_GLOBAL_TEMPLATES,
-                        `${language}${language === templateType.globalTemplates.defaultLanguage ? '-default' : ''}.txt`,
+                        `${language}${language === templateType.globalTemplates.defaultLanguage ? '.default' : ''}.txt`,
                     )
                     expect(writeFileSyncMock).toHaveBeenCalledWith(expect.stringContaining(expectedGlobalFilePath), expect.stringContaining(templateContent))
                 })
 
-                Object.entries(templateType.templatesPerCountryCode).forEach(([countryCode, countryTemplates]) => {
-                    Object.entries(countryTemplates.templates).forEach(([language, templateContent]) => {
-                        const expectedCountryFilePath = path.join(basePath, templateTypeName, SmsTemplates.FOLDER_TEMPLATES_PER_COUNTRY_CODE, countryCode, `${language}.txt`)
-                        expect(writeFileSyncMock).toHaveBeenCalledWith(expect.stringContaining(expectedCountryFilePath), expect.stringContaining(templateContent))
+                if (templateType.templatesPerCountryCode) {
+                    Object.entries(templateType.templatesPerCountryCode).forEach(([countryCode, countryTemplates]) => {
+                        Object.entries(countryTemplates.templates).forEach(([language, templateContent]) => {
+                            const expectedCountryFilePath = path.join(
+                                basePath,
+                                templateTypeName,
+                                SmsTemplates.FOLDER_TEMPLATES_PER_COUNTRY_CODE,
+                                countryCode,
+                                `${language}${language === countryTemplates.defaultLanguage ? '.default' : ''}.txt`,
+                            )
+                            expect(writeFileSyncMock).toHaveBeenCalledWith(expect.stringContaining(expectedCountryFilePath), expect.stringContaining(templateContent))
+                        })
                     })
-                })
+                }
             })
 
             writeFileSyncMock.mockRestore()
@@ -120,14 +135,14 @@ describe('Sms templates test suite', () => {
                 [path.join(SRC_DIRECTORY, smsTemplates.getName(), SmsTemplates.FOLDER_OTP)]: {
                     isDirectory: true,
                     contents: {
-                        'en-default.txt': 'Your verification code is: {{code}}',
+                        'en.default.txt': 'Your verification code is: {{code}}',
                         'nl.txt': 'Uw verificatiecode is: {{code}}',
                     },
                 },
                 [path.join(SRC_DIRECTORY, smsTemplates.getName(), SmsTemplates.FOLDER_TFA)]: {
                     isDirectory: true,
                     contents: {
-                        'en-default.txt': 'Your verification code is: {{code}}',
+                        'en.default.txt': 'Your verification code is: {{code}}',
                         'nl.txt': 'Je bevestigingscode is:{{code}}',
                     },
                 },
@@ -173,7 +188,10 @@ describe('Sms templates test suite', () => {
             fs.existsSync.mockReturnValue(true)
             fs.readdirSync.mockImplementation((dirPath) => {
                 if (dirPath.endsWith(SmsTemplates.FOLDER_GLOBAL_TEMPLATES)) {
-                    return ['en-default.txt', 'es-default.txt']
+                    return ['en.default.txt', 'es.default.txt']
+                }
+                if (dirPath.includes(SmsTemplates.FOLDER_GLOBAL_TEMPLATES)) {
+                    return ['en.txt', '.DS_Store']
                 }
                 return []
             })
@@ -200,7 +218,7 @@ describe('Sms templates test suite', () => {
             fs.existsSync.mockReturnValue(true)
             fs.readdirSync.mockImplementation((dirPath) => {
                 if (dirPath.endsWith(SmsTemplates.FOLDER_GLOBAL_TEMPLATES)) {
-                    return ['en-default.txt', 'es-default.txt']
+                    return ['en.default.txt', 'es.default.txt']
                 }
                 return []
             })
@@ -209,7 +227,6 @@ describe('Sms templates test suite', () => {
                 return smsDefaultError.otp.globalTemplates.templates[templateKey]
             })
 
-            const smsTemplates = new SmsTemplates(credentials)
             const siteDirectory = srcSiteDirectory
 
             const expectedErrorMessage = `There cannot be two default files in the same folder. Check the folder: ${path.join(
@@ -260,6 +277,41 @@ describe('Sms templates test suite', () => {
             fs.readFileSync.mockReturnValue('Your verification code is: {{code}}')
 
             await expect(smsTemplates.deploy(apiKey, getSiteConfig, BUILD_DIRECTORY)).rejects.toThrow('API error')
+        })
+        test('successful deploy including population of templates per country code', async () => {
+            axios.mockResolvedValueOnce({ data: smsExpectedResponse })
+            fs.existsSync.mockReturnValue(true)
+
+            fs.statSync.mockImplementation((path) => ({
+                isDirectory: () => path.includes('templatesPerCountryCode'),
+            }))
+
+            fs.readdirSync.mockImplementation((dirPath) => {
+                if (dirPath.endsWith('templatesPerCountryCode')) {
+                    return Object.keys(smsExpectedResponse.templates.otp.templatesPerCountryCode)
+                }
+                if (dirPath.includes('244')) {
+                    return ['pt.default.txt']
+                }
+                return []
+            })
+
+            fs.readFileSync.mockImplementation((filePath) => {
+                if (filePath.includes('pt.default.txt')) {
+                    return smsExpectedResponse.templates.otp.templatesPerCountryCode['244'].templates.pt
+                }
+                return ''
+            })
+
+            const response = await smsTemplates.deploy(apiKey, getSiteConfig, srcSiteDirectory)
+
+            expect(response).toBeDefined()
+            expect(response.errorCode).toBe(0)
+            expect(fs.readdirSync).toHaveBeenCalledWith(expect.stringContaining('templatesPerCountryCode'))
+
+            const readFileSyncCalls = fs.readFileSync.mock.calls
+            const ptDefaultTxtCall = readFileSyncCalls.some((call) => call[0].includes('pt.default.txt'))
+            expect(ptDefaultTxtCall).toBeTruthy()
         })
     })
 })
