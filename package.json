@@ -1,6 +1,6 @@
 {
     "name": "@sap_oss/sap-customer-data-cloud-accelerator",
-    "version": "0.0.1",
+    "version": "1.0.0",
     "description": "A development environment for SAP Customer Data Cloud that enables the use of modern tools, such as JavaScript and source control.",
     "main": "index.js",
     "type": "module",
@@ -16,7 +16,6 @@
         "cypress:open": "cypress open",
         "cypress:stage": "cypress run",
         "cypress:ci": "start-server-and-test start http://localhost:3000 cypress:stage"
-
     },
     "bin": {
         "cdc": "cdc-accelerator/core/index.js"
@@ -66,7 +65,6 @@
         "cypress-wait-until": "^3.0.1",
         "start-server-and-test": "^2.0.3"
     },
-
     "dependencies": {
         "axios": "1.6.5",
         "commander": "11.1.0",
