@@ -30,9 +30,11 @@
     "homepage": "https://github.com/SAP/sap-customer-data-cloud-accelerator#readme",
     "contributors": [
         "Bruno Santos",
+        "Daniel Cabral",
         "Guilherme Lopes",
         "Luís Marques",
-        "Ricardo Gaião"
+        "Ricardo Gaião",
+        "Teresa Cerdeira"
     ],
     "jest": {
         "testPathIgnorePatterns": [
