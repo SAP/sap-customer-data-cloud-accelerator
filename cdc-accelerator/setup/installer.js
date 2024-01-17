@@ -108,7 +108,7 @@ export default class Installer {
 
     generatePreviewFile(acceleratorInstallationPath) {
         const indexHtmlFileName = PREVIEW_FILE_NAME
-        if (fs.existsSync(indexHtmlFileName)) {
+        if (fs.existsSync(path.join(SRC_DIRECTORY, indexHtmlFileName))) {
             // do not overwrite index.html file
             return
         }
@@ -122,7 +122,7 @@ export default class Installer {
     }
 
     #replaceLinks(content, acceleratorInstallationPath) {
-        const oldLink = path.join('..', CDC_ACCELERATOR_DIRECTORY, PREVIEW_DIRECTORY)
+        const oldLink = path.join('..', CDC_ACCELERATOR_DIRECTORY, PREVIEW_DIRECTORY).replaceAll('\\', '/')
         const newLink = path.join('..', acceleratorInstallationPath, CDC_ACCELERATOR_DIRECTORY, PREVIEW_DIRECTORY)
         let lines = content.split('\n')
         lines = lines.map((line) => {
