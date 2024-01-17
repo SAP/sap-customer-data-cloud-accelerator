@@ -301,8 +301,17 @@ export const expectedPoliciesResponse = {
     },
     emailNotifications: {
         welcomeEmailDefaultLanguage: 'en',
+        welcomeEmailTemplates: {
+            en: 'template',
+        },
         accountDeletedEmailDefaultLanguage: 'en',
+        accountDeletedEmailTemplates: {
+            en: 'template',
+        },
         confirmationEmailDefaultLanguage: 'en',
+        confirmationEmailTemplates: {
+            en: 'template',
+        },
     },
     passwordReset: {
         requireSecurityCheck: false,

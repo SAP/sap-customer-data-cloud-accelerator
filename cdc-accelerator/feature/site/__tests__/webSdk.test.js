@@ -126,7 +126,7 @@ describe('WebSdk test suite', () => {
             fs.rmSync.mockReturnValue(undefined)
             fs.mkdirSync.mockReturnValue(undefined)
             fs.writeFileSync.mockReturnValue(undefined)
-            fs.readFileSync.mockReturnValue(fileContent)
+            fs.readFileSync.mockReturnValueOnce(fileContent).mockReturnValueOnce(fileContent.replaceAll('js', ''))
 
             const srcDirectory = path.join(srcSiteDirectory, webSdkInstance.getName())
             const buildDirectory = srcDirectory.replace(SRC_DIRECTORY, BUILD_DIRECTORY)
@@ -134,7 +134,8 @@ describe('WebSdk test suite', () => {
             if (dirExists) {
                 expect(fs.rmSync).toHaveBeenCalledWith(buildDirectory, { force: true, recursive: true })
             }
-            expect(fs.writeFileSync).toHaveBeenCalledWith(path.join(buildDirectory, `${webSdkInstance.getName()}.js`), srcFileContent + `\n//test comment .js'\ntest.js'`)        })
+            expect(fs.writeFileSync).toHaveBeenCalledWith(path.join(buildDirectory, `${webSdkInstance.getName()}.js`), srcFileContent + `\n//test comment .js'\ntest.js'`)
+        })
     })
 
     describe('Deploy webSdk test suite', () => {
