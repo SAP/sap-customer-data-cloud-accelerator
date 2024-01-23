@@ -138,6 +138,7 @@ describe('Installer test suite', () => {
         installer.generateGitData('')
         expect(terminalSpy).toHaveBeenCalledWith('git init')
         expect(fs.writeFileSync).toHaveBeenCalledWith('.gitignore', fileContent)
+        expect(fs.readFileSync).toHaveBeenCalledWith(path.join('cdc-accelerator', 'templates', 'gitignore'), { encoding: 'utf8' })
     })
 
     function testGeneratePreviewFile(createSrcDirectory) {
