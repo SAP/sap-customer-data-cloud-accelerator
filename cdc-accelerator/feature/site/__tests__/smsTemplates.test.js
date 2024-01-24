@@ -20,7 +20,7 @@ describe('Sms templates test suite', () => {
 
     describe('Init test suite', () => {
         test('all sms templates files are generated successfully', async () => {
-            const expectedResponse = Object.assign({}, smsExpectedResponse)
+            const expectedResponse = JSON.parse(JSON.stringify(smsExpectedResponse))
             delete expectedResponse.templates.otp.templatesPerCountryCode
             axios.mockResolvedValueOnce({ data: expectedResponse })
             fs.existsSync.mockReturnValue(false)
@@ -283,6 +283,7 @@ describe('Sms templates test suite', () => {
 
             await expect(smsTemplates.deploy(apiKey, getSiteConfig, BUILD_DIRECTORY)).rejects.toThrow('API error')
         })
+
         test('successful deploy including population of templates per country code', async () => {
             axios.mockResolvedValueOnce({ data: smsExpectedResponse })
             fs.existsSync.mockReturnValue(true)
