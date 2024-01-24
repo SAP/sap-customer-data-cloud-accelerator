@@ -55,6 +55,9 @@ export default class SmsTemplates extends SiteFeature {
         const countryCodeDir = path.join(featureDirectoryType, SmsTemplates.FOLDER_TEMPLATES_PER_COUNTRY_CODE)
         this.createDirectoryIfNotExists(countryCodeDir)
 
+        if (!templatesPerCountryCode) {
+            return
+        }
         Object.entries(templatesPerCountryCode).forEach(([countryCode, countryTemplates]) => {
             const countryDir = path.join(countryCodeDir, countryCode)
             this.createDirectoryIfNotExists(countryDir)
