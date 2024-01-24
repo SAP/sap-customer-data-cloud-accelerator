@@ -45,7 +45,7 @@ export const config = {
             apiKey: sites[1].apiKey,
         },
     ],
-    deploy: { apiKey: sites[1].apiKey },
+    deploy: [{ apiKey: sites[1].apiKey }],
 }
 
 export function getSiteFeature() {

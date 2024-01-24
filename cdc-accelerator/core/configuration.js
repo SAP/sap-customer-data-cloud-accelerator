@@ -35,7 +35,17 @@ export default class Configuration {
     }
 
     static getAllConfiguration() {
-        return JSON.parse(fs.readFileSync(CONFIG_FILENAME, { encoding: 'utf8' }))
+        const config = JSON.parse(fs.readFileSync(CONFIG_FILENAME, { encoding: 'utf8' }))
+        config.source = this.#sanitizeProperty(config.source)
+        config.deploy = this.#sanitizeProperty(config.deploy)
+        return config
+    }
+
+    static #sanitizeProperty(property) {
+        if (!property) {
+            return [{ apiKey: '' }]
+        }
+        return Array.isArray(property) ? property : [property]
     }
 
     static isValid(operation, environment) {
