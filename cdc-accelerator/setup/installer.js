@@ -80,10 +80,10 @@ export default class Installer {
         }
     }
 
-    #copyFile(src, dest) {
+    #copyFile(src, dest, destFilename) {
         const idx = src.lastIndexOf(path.sep)
         const fileName = idx === -1 ? src : src.substring(idx)
-        fs.writeFileSync(path.join(dest, fileName), fs.readFileSync(src, { encoding: 'utf8' }))
+        fs.writeFileSync(path.join(dest, destFilename ? destFilename : fileName), fs.readFileSync(src, { encoding: 'utf8' }))
     }
 
     generateConfigurationFile() {
@@ -135,7 +135,8 @@ export default class Installer {
     }
 
     generateGitData(acceleratorInstallationPath) {
+        const filename = 'gitignore'
         Terminal.executeCommand('git init')
-        this.#copyFile(path.join(acceleratorInstallationPath, CDC_ACCELERATOR_DIRECTORY, TEMPLATES_DIRECTORY, '.gitignore'), '.')
+        this.#copyFile(path.join(acceleratorInstallationPath, CDC_ACCELERATOR_DIRECTORY, TEMPLATES_DIRECTORY, filename), '.', `.${filename}`)
     }
 }
