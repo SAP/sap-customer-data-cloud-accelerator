@@ -28,6 +28,7 @@ export default class SitesCache {
 
     static async load(credentials, configuration) {
         if (!this.isCacheUpdated(configuration)) {
+            console.log('Generating sites cache')
             await SitesCache.#init(credentials, configuration)
         } else {
             SitesCache.cache = Array.isArray(configuration.cache) ? configuration.cache : [configuration.cache]
@@ -45,20 +46,22 @@ export default class SitesCache {
         }
         let updated = true
         if (configuration.source) {
-            configuration.source.forEach((entry) => {
-                updated &= configuration.cache.some(({ apiKey }) => {
-                    return entry.apiKey === apiKey
-                })
-            })
+            updated = this.#isCacheSectionUpdated(configuration, 'source')
         }
 
         if (updated && configuration.deploy) {
-            configuration.deploy.forEach((entry) => {
-                updated &= configuration.cache.some(({ apiKey }) => {
-                    return entry.apiKey === apiKey
-                })
-            })
+            updated = this.#isCacheSectionUpdated(configuration, 'deploy')
         }
-        return updated ? true : false
+        return updated
+    }
+
+    static #isCacheSectionUpdated(configuration, section) {
+        let updated = true
+        configuration[section].forEach((entry) => {
+            updated &&= configuration.cache.some(({ apiKey }) => {
+                return entry.apiKey === apiKey
+            })
+        })
+        return updated
     }
 }

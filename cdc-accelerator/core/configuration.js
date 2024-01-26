@@ -43,7 +43,7 @@ export default class Configuration {
 
     static #sanitizeProperty(property) {
         if (!property) {
-            return [{ apiKey: '' }]
+            return []
         }
         return Array.isArray(property) ? property : [property]
     }
