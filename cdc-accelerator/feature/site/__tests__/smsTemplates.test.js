@@ -20,7 +20,9 @@ describe('Sms templates test suite', () => {
 
     describe('Init test suite', () => {
         test('all sms templates files are generated successfully', async () => {
-            axios.mockResolvedValueOnce({ data: smsExpectedResponse })
+            const expectedResponse = JSON.parse(JSON.stringify(smsExpectedResponse))
+            delete expectedResponse.templates.otp.templatesPerCountryCode
+            axios.mockResolvedValueOnce({ data: expectedResponse })
             fs.existsSync.mockReturnValue(false)
             const writeFileSyncMock = jest.spyOn(fs, 'writeFileSync').mockImplementation(() => {})
 
@@ -37,7 +39,7 @@ describe('Sms templates test suite', () => {
 
             const basePath = path.join(srcSiteDirectory, 'SmsTemplates')
 
-            Object.entries(smsExpectedResponse.templates).forEach(([templateTypeName, templateType]) => {
+            Object.entries(expectedResponse.templates).forEach(([templateTypeName, templateType]) => {
                 Object.entries(templateType.globalTemplates.templates).forEach(([language, templateContent]) => {
                     const expectedGlobalFilePath = path.join(
                         basePath,
@@ -105,6 +107,7 @@ describe('Sms templates test suite', () => {
             )
         })
     })
+
     describe('Reset test suite', () => {
         test('reset with existing folder', () => {
             testReset(true)
@@ -129,6 +132,7 @@ describe('Sms templates test suite', () => {
             }
         }
     })
+
     describe('Build test suite', () => {
         test('SMS templates are built successfully', () => {
             const mockFs = {
@@ -183,6 +187,7 @@ describe('Sms templates test suite', () => {
             expect(writeFileSyncMock).not.toHaveBeenCalled()
         })
     })
+
     describe('Deploy test suite', () => {
         test('SMS templates deploy fails with multiple default files in a folder', async () => {
             fs.existsSync.mockReturnValue(true)
@@ -278,6 +283,7 @@ describe('Sms templates test suite', () => {
 
             await expect(smsTemplates.deploy(apiKey, getSiteConfig, BUILD_DIRECTORY)).rejects.toThrow('API error')
         })
+
         test('successful deploy including population of templates per country code', async () => {
             axios.mockResolvedValueOnce({ data: smsExpectedResponse })
             fs.existsSync.mockReturnValue(true)
