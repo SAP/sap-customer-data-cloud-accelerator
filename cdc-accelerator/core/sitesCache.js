@@ -8,9 +8,6 @@ export default class SitesCache {
     static cache = []
 
     static async #init(credentials, configuration) {
-        if (SitesCache.cache.length > 0) {
-            return
-        }
         const parallelRequestsAllowed = 9999999999
         const configSites = SitesCache.#readAllSitesFromConfiguration(configuration)
         const siteFinderPaginated = new SiteFinderPaginated(credentials, parallelRequestsAllowed)
@@ -23,13 +20,15 @@ export default class SitesCache {
 
     static #readAllSitesFromConfiguration(configuration) {
         const sourceSites = new Set(configuration.source)
-        const deploySites = Array.isArray(configuration.deploy) ? configuration.deploy : [configuration.deploy]
-        deploySites.forEach((item) => sourceSites.add(item))
+        if (configuration.deploy) {
+            configuration.deploy.forEach((item) => sourceSites.add(item))
+        }
         return Array.from(sourceSites)
     }
 
     static async load(credentials, configuration) {
-        if (!configuration?.cache) {
+        if (!this.isCacheUpdated(configuration)) {
+            console.log('Generating sites cache')
             await SitesCache.#init(credentials, configuration)
         } else {
             SitesCache.cache = Array.isArray(configuration.cache) ? configuration.cache : [configuration.cache]
@@ -39,5 +38,30 @@ export default class SitesCache {
 
     static getSiteInfo(_apiKey) {
         return SitesCache.cache.find(({ apiKey }) => apiKey === _apiKey)
+    }
+
+    static isCacheUpdated(configuration) {
+        if (!configuration?.cache) {
+            return false
+        }
+        let updated = true
+        if (configuration.source) {
+            updated = this.#isCacheSectionUpdated(configuration, 'source')
+        }
+
+        if (updated && configuration.deploy) {
+            updated = this.#isCacheSectionUpdated(configuration, 'deploy')
+        }
+        return updated
+    }
+
+    static #isCacheSectionUpdated(configuration, section) {
+        let updated = true
+        configuration[section].forEach((entry) => {
+            updated &&= configuration.cache.some(({ apiKey }) => {
+                return entry.apiKey === apiKey
+            })
+        })
+        return updated
     }
 }
