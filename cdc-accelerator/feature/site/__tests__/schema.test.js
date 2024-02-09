@@ -129,7 +129,7 @@ describe('Schema test suite', () => {
             let spy = jest.spyOn(schema, 'deployUsingToolkit')
             if (serverResponse.statusCode === 200) {
                 const response = await schema.deploy(apiKey, getSiteConfig, srcSiteDirectory)
-                expect(response.length).toEqual(3)
+                expect(response.length).toEqual(4)
             } else {
                 await expect(schema.deploy(apiKey, getSiteConfig, siteDomain)).rejects.toThrow(Error)
             }
