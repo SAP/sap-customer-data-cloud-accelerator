@@ -130,7 +130,7 @@ Commands:
 
 ## Configuration <a id="configuration"></a>
 
-### Features <a id="configuration-features"></a>
+### Feature Configuration <a id="configuration-features"></a>
 
 The Customer Data Cloud Accelerator allows reading, working locally and deploying data from the following features:
 
