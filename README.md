@@ -130,17 +130,17 @@ Commands:
 
 ## Configuration <a id="configuration"></a>
 
-### Features <a id="features"></a>
+### Feature Configuration <a id="configuration-features"></a>
 
 The Customer Data Cloud Accelerator allows reading, working locally and deploying data from the following features:
 
--   E-mail Templates: `EmailTemplates` <a id="features-email-templates"></a>
--   Permission Groups: `PermissionGroups` <a id="features-permission-groups"></a>
--   Policies: `Policies` <a id="features-policies"></a>
--   Schema: `Schema` <a id="features-schema"></a>
--   SMS Templates: `SmsTemplates` <a id="features-sms-templates"></a>
--   Web ScreenSets: `WebScreenSets` <a id="features-webscreensets"></a>
--   Web SDK: `WebSdk` <a id="features-web-sdk"></a>
+-   Web SDK: `WebSdk`
+-   Web ScreenSets: `WebScreenSets`
+-   E-mail Templates: `EmailTemplates`
+-   SMS Templates: `SmsTemplates`
+-   Policies: `Policies`
+-   Schema: `Schema`
+-   Permission Groups: `PermissionGroups`
 
 ### How to configure the use of features on the file cdc-accelerator.json
 
@@ -188,6 +188,177 @@ npm run init -- -f Schema
 
 In this example the user is only going to run the feature Schema when running the operation init, the feature name can be replaced by any other feature (Email Templates, WebScreenSet, PermissionGroup, WebSdk...).
 To show all the possible commands, the user can write simply
+
+## Features <a id="features"></a>
+
+### WebSdk <a id="features-web-sdk"></a>
+
+You can separate the WebSdk into different files and use the `import` and `export` statements to organize the code.
+Using code segregation enables the use of unit tests and quality checks.
+
+[Example Code](src/SAP%20Customer%20Data%20Cloud/Sites/cdc-accelerator.preferences-center.com/WebSdk/)
+
+#### webSdk.js
+
+```js
+export default {
+    // A comma-delimited list of provider names to enable.
+    enabledProviders: '*',
+
+    // Define the language of Gigya's user interface and error message.
+    lang: 'en',
+
+    // Bind globally to events.
+    customEventMap: './customEventMap/customEventMap.js',
+
+    // Custom global methods
+    utils: './utils/utils.js',
+
+    // Custom variables
+    customPaths: './customPaths/customPaths.js',
+}
+```
+
+#### customEventMap/customEventMap.js
+
+```js
+export default {
+    eventMap: [
+        {
+            events: '*',
+            args: [
+                function (e) {
+                    return e
+                },
+            ],
+            method: function (e) {
+                if (e.fullEventName === 'login') {
+                    // Handle login event here.
+                } else if (e.fullEventName === 'logout') {
+                    // Handle logout event here.
+                    // console.log('here');
+                }
+            },
+        },
+    ],
+}
+```
+
+#### utils/utils.js
+
+```js
+export default {
+    // Custom global methods
+    customMethod: function () {
+        // Custom method code
+    },
+}
+```
+
+#### customPaths/customPaths.js
+
+```js
+export default {
+    pathRedirectLogin: '/login',
+    pathRedirectLogout: '/',
+}
+```
+
+### WebScreenSets <a id="features-webscreensets"></a>
+
+Using code segregation enables the use of unit tests and quality checks.
+
+[Example Code](src/SAP%20Customer%20Data%20Cloud/Sites/cdc-accelerator.preferences-center.com/WebScreenSets/PreferencesCenter-Landing/)
+
+#### WebScreenSets JavaScript
+
+You can separate the WebScreenSets JavaScript code into different files and use the `import` and `export` statements to organize the code.
+
+##### Default-RegistrationLogin.js
+
+```js
+import customFunctionalityOnAfterScreenLoad from '.customFunctionalityOnAfterScreenLoad.js'
+
+export default {
+    onError: function (event) {},
+
+    onBeforeValidation: function (event) {},
+
+    onBeforeSubmit: function (event) {},
+
+    onSubmit: function (event) {},
+
+    onAfterSubmit: function (event) {},
+
+    onBeforeScreenLoad: function (event) {},
+
+    onAfterScreenLoad: function (event) {
+        customFunctionalityOnAfterScreenLoad.exampleMethod()
+    },
+
+    onFieldChanged: function (event) {},
+
+    onHide: function (event) {},
+}
+```
+
+##### customFunctionalityOnAfterScreenLoad.js
+
+```js
+import config from 'utils/config'
+
+export default {
+    pathRedirectLogin: config.get('customPaths.pathRedirectLogin', '/login'),
+    pathRedirectLogout: config.get('customPaths.pathRedirectLogout', '/'),
+
+    profileUpdateScreen: 'gigya-update-profile-screen',
+    classLogoutButton: 'button-logout',
+
+    exampleMethod: function () {
+        const logoutButton = document.querySelector(`.${this.classLogoutButton}`)
+        console.log({ logoutButton, pathRedirectLogout: this.pathRedirectLogout })
+    },
+    ...
+}
+```
+
+##### utils/config.js
+
+Utility function to get a value from the WebSdk.
+
+```js
+export default {
+    get(configName, defaultValue) {
+        try {
+            const properties = configName.split('.')
+            return properties.reduce((acc, prop) => acc[prop] || defaultValue, gigya.thisScript.globalConf)
+        } catch (e) {
+            return defaultValue
+        }
+    },
+}
+```
+
+#### WebScreenSets CSS
+
+The CSS is separated into different files:
+
+-   `default.css` - The default CSS from SAP CDC.
+-   `custom.css` - The file to write all the custom CSS.
+
+It's helpful to keep these files separate to avoid conflicts and to make it easier to maintain the code.
+
+[Example Code](src/SAP%20Customer%20Data%20Cloud/Sites/cdc-accelerator.preferences-center.com/WebScreenSets/PreferencesCenter-Landing/)
+
+<!-- ### EmailTemplates <a id="features-email-templates"></a>
+
+### SmsTemplates <a id="features-sms-templates"></a>
+
+### Policies <a id="features-policies"></a>
+
+### Schema <a id="features-schema"></a>
+
+### PermissionGroups <a id="features-permission-groups"></a> -->
 
 ## Preview
 
