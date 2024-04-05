@@ -6,6 +6,9 @@ The SAP Customer Data Cloud accelerator is local development environment for SAP
 
 It enables the use of all modern tools, including modern JavaScript and real source control. It provides code separation, enabling unit tests and quality checks.
 
+<a href="docs/screenshots/vscode.png"><img src="docs/screenshots/vscode.png" alt="VS Code screenshot" style="height: 300px;"></a>
+<a href="docs/screenshots/preview-screenset-1.png"><img src="docs/screenshots/preview-screenset-1.png" alt="Preview feature" style="height: 300px;"></a>
+
 ## Getting Started <a id="requisites"></a>
 
 To get started it is necessary to have **[git](https://git-scm.com/)** and **[node.js](https://nodejs.org/)** installed on the local machine.
