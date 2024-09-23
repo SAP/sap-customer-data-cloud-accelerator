@@ -5,13 +5,35 @@ const packageJsonFileName = 'package.json'
 const dependencyName = '@sap_oss/sap-customer-data-cloud-accelerator'
 
 const isLocalFileDependency = (packageJsonFileName, dependencyName) => {
-    const newProjectPackageJson = JSON.parse(fs.readFileSync(packageJsonFileName, { encoding: 'utf8' }))
+    let fileContent
+
+    try {
+        fileContent = fs.readFileSync(packageJsonFileName, { encoding: 'utf8' })
+    } catch (error) {
+        console.log(`Failed to read file: ${packageJsonFileName}`, error)
+        return false
+    }
+
+    if (!fileContent) {
+        console.log(`File content is undefined: ${packageJsonFileName}`)
+        return false
+    }
+
+    let newProjectPackageJson
+
+    try {
+        newProjectPackageJson = JSON.parse(fileContent)
+    } catch (error) {
+        console.log(`Failed to parse JSON from file: ${packageJsonFileName}`, error)
+        return false
+    }
+
     const acceleratorVersion = newProjectPackageJson.devDependencies[dependencyName]
 
     if (acceleratorVersion && acceleratorVersion.includes('file:')) {
         return true
     } else if (!acceleratorVersion) {
-        console.error(`The dependency '${dependencyName}' was not found in devDependencies.`)
+        console.log(`The dependency '${dependencyName}' was not found in devDependencies.`)
     }
 
     return false
