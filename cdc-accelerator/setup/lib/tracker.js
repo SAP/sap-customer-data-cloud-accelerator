@@ -4,19 +4,19 @@ import fs from 'fs'
 const packageJsonFileName = 'package.json'
 const dependencyName = '@sap_oss/sap-customer-data-cloud-accelerator'
 
-const isLocalFileDependency = (packageJsonFileName, dependencyName) => {
+const checkDependency = (packageJsonFileName, dependencyName) => {
     let fileContent
 
     try {
         fileContent = fs.readFileSync(packageJsonFileName, { encoding: 'utf8' })
     } catch (error) {
         console.log(`Failed to read file: ${packageJsonFileName}`, error)
-        return false
+        return { isLocalFileDependency: false, errorOccured: true }
     }
 
     if (!fileContent) {
         console.log(`File content is undefined: ${packageJsonFileName}`)
-        return false
+        return { isLocalFileDependency: false, errorOccured: true }
     }
 
     let newProjectPackageJson
@@ -25,24 +25,26 @@ const isLocalFileDependency = (packageJsonFileName, dependencyName) => {
         newProjectPackageJson = JSON.parse(fileContent)
     } catch (error) {
         console.log(`Failed to parse JSON from file: ${packageJsonFileName}`, error)
-        return false
+        return { isLocalFileDependency: false, errorOccured: true }
     }
 
     const acceleratorVersion = newProjectPackageJson.devDependencies[dependencyName]
 
     if (acceleratorVersion && acceleratorVersion.includes('file:')) {
-        return true
+        return { isLocalFileDependency: true, errorOccured: false }
     } else if (!acceleratorVersion) {
         console.log(`The dependency '${dependencyName}' was not found in devDependencies.`)
+        return { isLocalFileDependency: false, errorOccured: true }
     }
 
-    return false
+    return { isLocalFileDependency: false, errorOccured: false }
 }
 
 const getCredentials = () => {
-    const isUsingLocalDependency = isLocalFileDependency(packageJsonFileName, dependencyName)
+    const isUsingLocalDependency = checkDependency(packageJsonFileName, dependencyName).isLocalFileDependency
+    const errorOccured = checkDependency(packageJsonFileName, dependencyName).errorOccured
 
-    if (isUsingLocalDependency && !process.env.TRACKER_API_KEY_DEV) {
+    if ((isUsingLocalDependency && !process.env.TRACKER_API_KEY_DEV) || errorOccured) {
         return null
     }
 
@@ -60,7 +62,8 @@ const initTracker = () => {
         return null
     }
 
-    return new CliTracker.default(credentials)
+    const tracker = CliTracker.default ? new CliTracker.default(credentials) : new CliTracker(credentials)
+    return tracker
 }
 
 const trackingTool = initTracker()
