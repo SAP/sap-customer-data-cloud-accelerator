@@ -4,10 +4,14 @@ import Uninstaller from './uninstaller.js'
 import { PREVIEW_DIRECTORY, SAP_ORG } from './constants.js'
 import Installer from './installer.js'
 import { CDC_ACCELERATOR_DIRECTORY, PACKAGE_JSON_FILE_NAME, PREVIEW_FILE_NAME, SRC_DIRECTORY, TEMPLATES_DIRECTORY } from '../core/constants.js'
+import { requestConsentConfirmation, trackUsage } from './lib/tracker.js'
 
 export default class Project {
-    setup() {
+    async setup() {
         try {
+            await requestConsentConfirmation()
+            await trackUsage()
+
             const newProjectPackageJson = JSON.parse(fs.readFileSync(PACKAGE_JSON_FILE_NAME, { encoding: 'utf8' }))
             const dependencyName = Project.getAcceleratorDependencyName(newProjectPackageJson.devDependencies)
             const acceleratorInstallationPath = path.join('node_modules', ...dependencyName.split(path.sep))

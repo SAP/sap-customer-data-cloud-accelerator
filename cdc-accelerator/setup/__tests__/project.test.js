@@ -35,7 +35,8 @@ describe('Project test suite', () => {
             },
         }
         fs.readFileSync.mockReturnValueOnce(JSON.stringify(newProjectPackageJson)).mockReturnValueOnce(JSON.stringify(acceleratorPackageJson))
-        expect(new Project().setup()).toBeTruthy()
+        const result = await new Project().setup()
+        expect(result).toBeTruthy()
         expect(spyUninstall).toBeCalledWith(newProjectPackageJson, acceleratorPackageJson)
         expect(spyInstall).toBeCalledWith(newProjectPackageJson, path.join('node_modules', SAP_ORG, projectName), acceleratorPackageJson)
     })
@@ -47,7 +48,8 @@ describe('Project test suite', () => {
             },
         }
         fs.readFileSync.mockReturnValueOnce(JSON.stringify(newProjectPackageJson)).mockReturnValueOnce(JSON.stringify(acceleratorPackageJson))
-        expect(new Project().setup()).toBeFalsy()
+        const result = await new Project().setup()
+        expect(result).toBeFalsy()
         expect(spyUninstall).not.toHaveBeenCalled()
         expect(spyInstall).not.toHaveBeenCalled()
     })
