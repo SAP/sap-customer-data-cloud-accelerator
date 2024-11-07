@@ -1,179 +1,140 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>Preview</title>
 
-        <!-- Preview -->
-        <link href="../cdc-accelerator/preview/preview.css" rel="stylesheet" />
-        <script src="../cdc-accelerator/preview/preview.js"></script>
-        <script>
-            // Show only the necessary screens for this demo
-            const filter = [
-                {
-                    apiKey: '4_Ch-q_qKrjBJ_-QBEfMPkKA',
-                    screens: [],
-                    emails: [
-                        { emailID: 'codeVerification', languages: ['en'] },
-                    ]
-                },
-                {
-                    apiKey: '4_tqmAZeYVLPfPl9SYu_iFxA',
-                    screens: [
-                        { screenSetID: 'PreferencesCenter-ProfileUpdate', screenID: 'gigya-update-profile-screen' },
-                        { screenSetID: 'PreferencesCenter-ProfileUpdate', screenID: 'gigya-change-password-screen' },
-                        { screenSetID: 'PreferencesCenter-Landing', screenID: 'gigya-login-screen' },
-                        { screenSetID: 'PreferencesCenter-Landing', screenID: 'gigya-complete-registration-screen' },
-                        { screenSetID: 'PreferencesCenter-Landing', screenID: 'lite-invite-success' },
-                        { screenSetID: 'PreferencesCenter-Landing', screenID: 'gigya-forgot-password-screen' },
-                        { screenSetID: 'PreferencesCenter-Landing', screenID: 'gigya-forgot-password-success-screen' },
-                        { screenSetID: 'PreferencesCenter-Landing', screenID: 'gigya-reset-password-screen' },
-                        { screenSetID: 'PreferencesCenter-Landing', screenID: 'gigya-reset-password-success-screen' },
-                        { screenSetID: 'PreferencesCenter-PasswordReset', screenID: 'gigya-reset-password-screen' },
-                        { screenSetID: 'PreferencesCenter-PasswordReset', screenID: 'gigya-reset-password-success-screen' },
-                    ],
-                    emails: [
-                        { emailID: 'codeVerification', languages: ['en'] },
-                        { emailID: 'doubleOptIn', languages: ['ar', 'en', 'pt-br'] },
-                        { emailID: 'emailVerification', languages: ['en'] },
-                        { emailID: 'impossibleTraveler', languages: ['en'] },
-                        { emailID: 'magicLink', languages: ['en'] },
-                        { emailID: 'passwordReset', languages: ['en', 'es-mx'] },
-                        { emailID: 'passwordResetNotification', languages: ['en'] },
-                        { emailID: 'preferencesCenter', languages: ['en'] },
-                        { emailID: 'twoFactorAuth', languages: ['en'] },
-                        { emailID: 'unknownLocationNotification', languages: ['en'] },
-                    ]
-                },
-                {
-                    apiKey: '4_G9hcFjoYwj860VKK2eCILA',
-                    screens: [
-                        { screenSetID: 'felix-LiteRegistration', screenID: 'gigya-subscribe-with-email-screen' },
-                        { screenSetID: 'felix-RegistrationLogin', screenID: 'gigya-login-screen' },
-                        { screenSetID: 'felix-RegistrationLogin', screenID: 'gigya-register-screen' },
-                        { screenSetID: 'felix-RegistrationLogin', screenID: 'gigya-complete-registration-screen' },
-                    ],
-                },
-                {
-                    apiKey: '4_51rYFDhKRgNJdru9HSz0JA',
-                    screens: [
-                        { screenSetID: 'nescafe-LiteRegistration', screenID: 'gigya-subscribe-with-email-screen' },
-                        { screenSetID: 'nescafe-RegistrationLogin', screenID: 'gigya-login-screen' },
-                        { screenSetID: 'nescafe-RegistrationLogin', screenID: 'gigya-register-screen' },
-                        { screenSetID: 'nescafe-RegistrationLogin', screenID: 'gigya-complete-registration-screen' },
-                    ],
-                    emails: [
-                        { emailID: 'doubleOptIn', languages: ['ar', 'en', 'pt-br'] }
-                    ]
-                },
-                {
-                    apiKey: '4_9XTXgPYTsS8EJ8ohejOCZw',
-                    screens: [
-                        { screenSetID: 'purina-LiteRegistration', screenID: 'gigya-subscribe-with-email-screen' },
-                        { screenSetID: 'purina-RegistrationLogin', screenID: 'gigya-login-screen' },
-                        { screenSetID: 'purina-RegistrationLogin', screenID: 'gigya-register-screen' },
-                        { screenSetID: 'purina-RegistrationLogin', screenID: 'gigya-complete-registration-screen' },
-                    ],
-                    emails: []
-                },
-                {
-                    apiKey: '*',
-                    emails: [
-                        { emailID: 'codeVerification', languages: ['en'] },
-                        { emailID: 'doubleOptIn', languages: ['ar', 'en', 'pt-br'] },
-                        { emailID: 'passwordReset', languages: ['en'] },
-                        { emailID: 'passwordResetNotification', languages: ['en'] },
-                        { emailID: 'preferencesCenter', languages: ['en'] },
-                    ]
-                }
-            ]
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Preview</title>
 
-            preview({
-                origin: 'source', // 'source' or 'deploy'
-                useLocalWebSdk: true, // Use local web sdk js code from build/ directory (for development)
-                useLocalScreenSets: true, // Use local screensets js code from build/ directory (for development)
-                filter,     // Show only the necessary features for this demo
-                lang: 'en', // Language of the Screen-Sets
-            })
-        </script>
-        <!-- /Preview -->
-    </head>
+    <!-- Preview -->
+    <link href="..\node_modules\@sap_oss\sap-customer-data-cloud-accelerator\cdc-accelerator\preview/preview.css"
+        rel="stylesheet" />
+    <script
+        src="..\node_modules\@sap_oss\sap-customer-data-cloud-accelerator\cdc-accelerator\preview/preview.js"></script>
+    <script>
+        // Show only the necessary screens for this demo
+        const filter = [
+            {
+                apiKey: '4_Ch-q_qKrjBJ_-QBEfMPkKA',
+                screens: [],
+                emails: [
+                    { emailID: 'codeVerification', languages: ['en'] },
+                ]
+            },
+            {
+                apiKey: '4_NMlrtRahOmBColBJ89vBxw',
+                screens: [
+                    { screenSetID: 'Default-ProfileUpdate', screenID: 'gigya-update-profile-screen' },
+                    { screenSetID: 'Default-ProfileUpdate', screenID: 'gigya-change-password-screen' },
+                    { screenSetID: 'Default-RegistrationLogin', screenID: 'gigya-login-screen' },
+                    { screenSetID: 'Default-RegistrationLogin', screenID: 'gigya-complete-registration-screen' },
+                    { screenSetID: 'Default-RegistrationLogin', screenID: 'gigya-mobile-login-screen' },
+                    { screenSetID: 'Default-RegistrationLogin', screenID: 'gigya-forgot-password-screen' },
+                    { screenSetID: 'Default-RegistrationLogin', screenID: 'gigya-forgot-password-success-screen' },
+                    { screenSetID: 'Default-RegistrationLogin', screenID: 'gigya-reset-password-screen' },
+                    { screenSetID: 'Default-RegistrationLogin', screenID: 'gigya-reset-password-success-screen' },
+                    { screenSetID: 'Default-LiteRegistration', screenID: 'gigya-subscribe-with-email-screen' },
+                    { screenSetID: 'Default-LiteRegistration', screenID: 'gigya-subscribe-thank-you-screen' },
+                ],
+                emails: [
+                    { emailID: 'codeVerification', languages: ['en'] },
+                    { emailID: 'doubleOptIn', languages: ['ar', 'en', 'pt-br', 'bg', 'cs', 'de'] },
+                    { emailID: 'emailVerification', languages: ['en'] },
+                    { emailID: 'impossibleTraveler', languages: ['en'] },
+                    { emailID: 'magicLink', languages: ['en'] },
+                    { emailID: 'confirmationEmailTemplates', languages: ['en', 'es-mx'] },
+                    { emailID: 'passwordResetNotification', languages: ['en'] },
+                    { emailID: 'preferencesCenter', languages: ['en'] },
+                    { emailID: 'twoFactorAuth', languages: ['en'] },
+                    { emailID: 'unknownLocationNotification', languages: ['en'] },
+                ]
+            },
+            {
+                apiKey: '4_KBclTNdMCudLU8jLkMpl9Q',
+                screens: [
+                    { screenSetID: 'ChildSite-LinkAccounts', screenID: 'gigya-link-account-screen' },
+                    { screenSetID: 'ChildSite-RegistrationLogin', screenID: 'gigya-login-screen' },
+                    { screenSetID: 'ChildSite-RegistrationLogin', screenID: 'gigya-register-screen' },
+                    { screenSetID: 'ChildSite-RegistrationLogin', screenID: 'gigya-complete-registration-screen' },
+                ],
+            },
+            {
+                apiKey: '4_i9SMcFM_LOyCDk7TUcjaxA',
+                screens: [
+                    { screenSetID: 'Default-LiteRegistration', screenID: 'gigya-subscribe-with-email-screen' },
+                    { screenSetID: 'Default-RegistrationLogin', screenID: 'gigya-login-screen' },
+                    { screenSetID: 'Default-RegistrationLogin', screenID: 'gigya-register-screen' },
+                    { screenSetID: 'Default-RegistrationLogin', screenID: 'gigya-complete-registration-screen' },
+                ],
+                emails: [
+                    { emailID: 'doubleOptIn', languages: ['ar', 'en', 'pt-br'] }
+                ]
+            },
+            {
+                apiKey: '4_DJV5S94zn_l7bYAKIvhqrA',
+                screens: [
+                    { screenSetID: 'Default-LiteRegistration', screenID: 'gigya-subscribe-with-email-screen' },
+                    { screenSetID: 'Default-RegistrationLogin', screenID: 'gigya-login-screen' },
+                    { screenSetID: 'Default-RegistrationLogin', screenID: 'gigya-register-screen' },
+                    { screenSetID: 'Default-RegistrationLogin', screenID: 'gigya-complete-registration-screen' },
+                ],
+                emails: []
+            },
+            {
+                apiKey: '*',
+                emails: [
+                    { emailID: 'codeVerification', languages: ['en'] },
+                    { emailID: 'doubleOptIn', languages: ['ar', 'en', 'pt-br'] },
+                    { emailID: 'passwordReset', languages: ['en'] },
+                    { emailID: 'passwordResetNotification', languages: ['en'] },
+                    { emailID: 'preferencesCenter', languages: ['en'] },
+                ]
+            }
+        ]
 
-    <body>
-        <div id="cdc-initializer--preview">
-            <div id="cdc-initializer--preview-menu">
-                <div id="cdc-initializer--select-api-key-container" class="list-group">
-                    <select id="cdc-initializer--select-api-key" class="form-select form-select-lg" aria-label="Select API key"></select>
-                </div>
-                <div id="cdc-initializer--preview-menu-container" class="list-group">
-                    <div class="spinner-border" role="status">
-                        <span class="visually-hidden"></span>
-                    </div>
-                </div>
+        preview({
+            origin: 'deploy', // 'source' or 'deploy'
+            useLocalWebSdk: true, // For development use "true", to test the online version use "false" (it takes time to clear the cached online version)
+            useLocalScreenSets: true, // Use local screensets js code from build/ folder
+            filter, // Show only the necessary screens for this demo
+        })
+    </script>
+    <!-- /Preview -->
+</head>
 
-                <!-- Instructions -->
-                <div class="alert alert-light" role="alert">
-                    <h6 class="alert-heading">Instructions Lite Account</h6>
-                    <ol>
-                        <li>
-                            Register a lite account in the
-                            <a href="#/4_G9hcFjoYwj860VKK2eCILA/WebScreenSets/felix-LiteRegistration/gigya-subscribe-with-email-screen" class="alert-link">Felix Lite Registration screen</a>
-                            selecting 1 or more subscriptions.
-                        </li>
-                        <li>
-                            Register the same lite account in the
-                            <a href="#/4_51rYFDhKRgNJdru9HSz0JA/WebScreenSets/nescafe-LiteRegistration/gigya-subscribe-with-email-screen" class="alert-link">Nescafé Lite Registration screen</a>
-                            selecting 1 or more subscriptions.
-                        </li>
-                        <li>
-                            Authenticate with the lite account in the
-                            <a href="#/4_tqmAZeYVLPfPl9SYu_iFxA/WebScreenSets/PreferencesCenter-Landing/gigya-login-screen" class="alert-link">Preferences Center Login screen</a>.
-                        </li>
-                        <li>
-                            Check your email's inbox and click on the link inside to be redirected to the
-                            <a href="#/4_tqmAZeYVLPfPl9SYu_iFxA/WebScreenSets/PreferencesCenter-ProfileUpdate/gigya-update-profile-screen" class="alert-link">Profile Update screen</a>
-                        </li>
-                    </ol>
-                    <hr />
-                    <h6 class="alert-heading">Instructions Full Account</h6>
-                    <ol>
-                        <li>
-                            Register an account in the
-                            <a href="#/4_G9hcFjoYwj860VKK2eCILA/WebScreenSets/felix-RegistrationLogin/gigya-register-screen" class="alert-link">Felix Registration screen</a> selecting 1 or more
-                            subscriptions.
-                        </li>
-                        <li>
-                            Login with the same account in the
-                            <a href="#/4_51rYFDhKRgNJdru9HSz0JA/WebScreenSets/nescafe-RegistrationLogin/gigya-login-screen" class="alert-link">Nescafé Login screen</a>, then select 1 or more
-                            subscriptions in the
-                            <a href="#/4_51rYFDhKRgNJdru9HSz0JA/WebScreenSets/nescafe-RegistrationLogin/gigya-complete-registration-screen" class="alert-link">Registration Completion screen</a>.
-                        </li>
-                        <li>Logout before trying to login on the preferences center</li>
-                        <li>
-                            Login in the
-                            <a href="#/4_tqmAZeYVLPfPl9SYu_iFxA/WebScreenSets/PreferencesCenter-Landing/gigya-login-screen" class="alert-link">Preferences Center Login screen</a> and accept the
-                            terms of service in the
-                            <a href="#/4_tqmAZeYVLPfPl9SYu_iFxA/WebScreenSets/PreferencesCenter-Landing/gigya-complete-registration-screen" class="alert-link">Registration Completion screen</a>.
-                        </li>
-                        <li>
-                            Access the subscriptions in the
-                            <a href="#/4_tqmAZeYVLPfPl9SYu_iFxA/WebScreenSets/PreferencesCenter-ProfileUpdate/gigya-update-profile-screen" class="alert-link">Profile Update screen</a>.
-                        </li>
-                    </ol>
-                </div>
-                <!-- /Instructions -->
+<body>
+    <div id="cdc-initializer--preview">
+        <div id="cdc-initializer--preview-menu">
+            <div id="cdc-initializer--select-api-key-container" class="list-group">
+                <select id="cdc-initializer--select-api-key" class="form-select form-select-lg"
+                    aria-label="Select API key"></select>
             </div>
-            <div id="cdc-initializer--preview-container"></div>
+            <div id="cdc-initializer--preview-menu-container" class="list-group">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden"></span>
+                </div>
+            </div>
         </div>
+        <div id="cdc-initializer--preview-container"></div>
+    </div>
 
-        <!-- Menu -->
-        <link href="../cdc-accelerator/preview/plugins/bootstrap-5.3.0-alpha1/css/bootstrap.min.css" rel="stylesheet" />
-        <link href="../cdc-accelerator/preview/plugins/fontawesome-free-6.3.0/css/all.css" rel="stylesheet" />
-        <link href="../cdc-accelerator/preview/plugins/bs5treeview/css/bstreeview.css" rel="stylesheet" />
-        <script src="../cdc-accelerator/preview/plugins/jquery/jquery-3.6.3.min.js"></script>
-        <script src="../cdc-accelerator/preview/plugins/bootstrap-5.3.0-alpha1/js/bootstrap.bundle.min.js"></script>
-        <script src="../cdc-accelerator/preview/plugins/bs5treeview/js/bstreeview.js"></script>
-        <!--  Menu -->
-    </body>
+    <!-- Menu -->
+    <link
+        href="..\node_modules\@sap_oss\sap-customer-data-cloud-accelerator\cdc-accelerator\preview/plugins/bootstrap-5.3.0-alpha1/css/bootstrap.min.css"
+        rel="stylesheet" />
+    <link
+        href="..\node_modules\@sap_oss\sap-customer-data-cloud-accelerator\cdc-accelerator\preview/plugins/fontawesome-free-6.3.0/css/all.css"
+        rel="stylesheet" />
+    <link
+        href="..\node_modules\@sap_oss\sap-customer-data-cloud-accelerator\cdc-accelerator\preview/plugins/bs5treeview/css/bstreeview.css"
+        rel="stylesheet" />
+    <script
+        src="..\node_modules\@sap_oss\sap-customer-data-cloud-accelerator\cdc-accelerator\preview/plugins/jquery/jquery-3.6.3.min.js"></script>
+    <script
+        src="..\node_modules\@sap_oss\sap-customer-data-cloud-accelerator\cdc-accelerator\preview/plugins/bootstrap-5.3.0-alpha1/js/bootstrap.bundle.min.js"></script>
+    <script
+        src="..\node_modules\@sap_oss\sap-customer-data-cloud-accelerator\cdc-accelerator\preview/plugins/bs5treeview/js/bstreeview.js"></script>
+    <!--  Menu -->
+</body>
+
 </html>

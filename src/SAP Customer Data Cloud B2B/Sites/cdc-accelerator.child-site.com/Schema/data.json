@@ -1,12 +1,12 @@
 {
     "fields": {
-        "terms": {
+        "subscribe": {
             "required": false,
             "type": "boolean",
             "allowNull": true,
             "writeAccess": "clientModify"
         },
-        "subscribe": {
+        "terms": {
             "required": false,
             "type": "boolean",
             "allowNull": true,

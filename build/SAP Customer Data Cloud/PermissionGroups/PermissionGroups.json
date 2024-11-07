@@ -1,12 +1,4 @@
 {
-  
-    "alexTestAdminPermissionGroup": {
-        "aclID": "Bruno",
-        "description": "Testing new configuration"
-    },
-    "alexTestAdminPermissionGroup-TEST3": {
-        "aclID": "alexTestAdminPermissionGroup"
-    },
     "alexTestAdminPermissionGroup-TEST4": {
         "aclID": "alexTestAdminPermissionGroup",
         "description": "Testing new configuration"
@@ -37,6 +29,10 @@
         "aclID": "alexTestAdminPermissionGroup",
         "description": "Testing new configuration"
     },
+    "ato_poc_app": {
+        "aclID": "ato_poc_app",
+        "description": ""
+    },
     "Bruno": {
         "aclID": "Bruno",
         "description": "test bruno2"
@@ -54,6 +50,10 @@
     },
     "cdc_toolbox_e2e_test_test": {
         "aclID": "cdc_toolbox_e2e_test"
+    },
+    "cdc_toolkit_dataworkbench": {
+        "aclID": "cdc_toolkit_dataworkbench",
+        "description": ""
     },
     "cpi": {
         "aclID": "cpi"
@@ -74,6 +74,18 @@
     "Daniel_Test_ACL": {
         "aclID": "daniel_AdminGroup",
         "description": "By creating a permission group, is an ACL created also?"
+    },
+    "DEMO-TEST1": {
+        "aclID": "alexTestAdminPermissionGroup",
+        "description": "Demo TESTING"
+    },
+    "DEMO-TEST2": {
+        "aclID": "alexTestAdminPermissionGroup",
+        "description": "Demo TESTING"
+    },
+    "demoTestinGroup": {
+        "aclID": "Bruno",
+        "description": "NEW TEST TEST GROUP"
     },
     "Dev CMS Portal": {
         "aclID": "Dev CMS Portal",
@@ -178,9 +190,21 @@
         "aclID": "ricardo_group",
         "description": "this ricardo group"
     },
+    "ricNewPermissionGroup": {
+        "aclID": "ricNewPermissionGroup",
+        "description": ""
+    },
     "ricTestAdminPermissionGroup": {
         "aclID": "ricTestAdminPermissionGroup",
         "description": "ricTestAdminPermissionGroup"
+    },
+    "RuiTest Admin Permission Group": {
+        "aclID": "RuiTest Admin Permission Group",
+        "description": ""
+    },
+    "RuiTest App Permission Group'": {
+        "aclID": "RuiTest App Permission Group'",
+        "description": ""
     },
     "StandardUser_dev": {
         "aclID": "StandardUser_dev",
@@ -234,7 +258,7 @@
     },
     "testing": {
         "aclID": "testing",
-        "description": ""
+        "description": "NEW DESCRIPTION FITTED FOR TESTING THE NEW CONFIG"
     },
     "testing tool": {
         "aclID": "testing tool",

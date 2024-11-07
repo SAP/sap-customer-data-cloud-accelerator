@@ -1,79 +1,36 @@
 {
     "source": [
         {
-            "apiKey": "4_Ch-q_qKrjBJ_-QBEfMPkKA"
+            "apiKey": "4_i9SMcFM_LOyCDk7TUcjaxA"
         },
         {
-            "apiKey": "4_tqmAZeYVLPfPl9SYu_iFxA"
-        },
-        {
-            "apiKey": "4_G9hcFjoYwj860VKK2eCILA"
-        },
-        {
-            "apiKey": "4_51rYFDhKRgNJdru9HSz0JA"
-        },
-        {
-            "apiKey": "4_9XTXgPYTsS8EJ8ohejOCZw"
+            "apiKey": "4_KBclTNdMCudLU8jLkMpl9Q"
         },
         {
             "apiKey": "4_DJV5S94zn_l7bYAKIvhqrA"
         },
         {
-            "apiKey": "4_i9SMcFM_LOyCDk7TUcjaxA"
-        },
-        {
-            "apiKey": "4_KBclTNdMCudLU8jLkMpl9Q"
+            "apiKey": "4_NMlrtRahOmBColBJ89vBxw"
         }
     ],
     "deploy": [
         {
-            "apiKey": "4_Ch-q_qKrjBJ_-QBEfMPkKA"
+            "apiKey": "4_i9SMcFM_LOyCDk7TUcjaxA"
         },
         {
-            "apiKey": "4_tqmAZeYVLPfPl9SYu_iFxA"
+            "apiKey": "4_KBclTNdMCudLU8jLkMpl9Q"
         },
         {
             "apiKey": "4_DJV5S94zn_l7bYAKIvhqrA"
         },
         {
-            "apiKey": "4_i9SMcFM_LOyCDk7TUcjaxA"
-        },
-        {
-            "apiKey": "4_KBclTNdMCudLU8jLkMpl9Q"
+            "apiKey": "4_NMlrtRahOmBColBJ89vBxw"
         }
     ],
     "cache": [
         {
-            "apiKey": "4_51rYFDhKRgNJdru9HSz0JA",
-            "baseDomain": "cdc-accelerator.preferences-center.nescafe.com",
-            "dataCenter": "eu1",
-            "partnerId": 79597568,
-            "partnerName": "SAP Customer Data Cloud"
-        },
-        {
-            "apiKey": "4_9XTXgPYTsS8EJ8ohejOCZw",
-            "baseDomain": "cdc-accelerator.preferences-center.purina.com",
-            "dataCenter": "eu1",
-            "partnerId": 79597568,
-            "partnerName": "SAP Customer Data Cloud"
-        },
-        {
-            "apiKey": "4_tqmAZeYVLPfPl9SYu_iFxA",
-            "baseDomain": "cdc-accelerator.preferences-center.com",
-            "dataCenter": "eu1",
-            "partnerId": 79597568,
-            "partnerName": "SAP Customer Data Cloud"
-        },
-        {
-            "apiKey": "4_Ch-q_qKrjBJ_-QBEfMPkKA",
-            "baseDomain": "cdc-accelerator.parent.site-group.com",
-            "dataCenter": "eu1",
-            "partnerId": 79597568,
-            "partnerName": "SAP Customer Data Cloud"
-        },
-        {
-            "apiKey": "4_G9hcFjoYwj860VKK2eCILA",
-            "baseDomain": "cdc-accelerator.preferences-center.felix.com",
+            "apiKey": "4_NMlrtRahOmBColBJ89vBxw",
+            "baseDomain": "cdc-accelerator.demo-site.com",
             "dataCenter": "eu1",
             "partnerId": 79597568,
             "partnerName": "SAP Customer Data Cloud"
