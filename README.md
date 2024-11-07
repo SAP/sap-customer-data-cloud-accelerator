@@ -199,7 +199,7 @@ To show all the possible commands, the user can write simply
 You can separate the WebSdk into different files and use the `import` and `export` statements to organize the code.
 Using code segregation enables the use of unit tests and quality checks.
 
-[Example Code](src/SAP%20Customer%20Data%20Cloud/Sites/cdc-accelerator.preferences-center.com/WebSdk/)
+[Example Code](src/SAP%20Customer%20Data%20Cloud/Sites/cdc-accelerator.demo-site.com/WebSdk/)
 
 #### webSdk.js
 
@@ -271,7 +271,7 @@ export default {
 
 Using code segregation enables the use of unit tests and quality checks.
 
-[Example Code](src/SAP%20Customer%20Data%20Cloud/Sites/cdc-accelerator.preferences-center.com/WebScreenSets/PreferencesCenter-Landing/)
+[Example Code](src/SAP%20Customer%20Data%20Cloud/Sites/cdc-accelerator.demo-site.com/WebScreenSets/Default-RegistrationLogin/)
 
 #### WebScreenSets JavaScript
 
@@ -351,7 +351,7 @@ The CSS is separated into different files:
 
 It's helpful to keep these files separate to avoid conflicts and to make it easier to maintain the code.
 
-[Example Code](src/SAP%20Customer%20Data%20Cloud/Sites/cdc-accelerator.preferences-center.com/WebScreenSets/PreferencesCenter-Landing/)
+[Example Code](src/SAP%20Customer%20Data%20Cloud/Sites/cdc-accelerator.demo-site.com/WebScreenSets/Default-RegistrationLogin/)
 
 <!-- ### EmailTemplates <a id="features-email-templates"></a>
 
@@ -366,6 +366,8 @@ It's helpful to keep these files separate to avoid conflicts and to make it easi
 ## Preview
 
 The preview mode is a feature that allows the user to see and test the changes in the local environment, without the need to `deploy` the data to the customer data cloud console.
+
+[Example Code](src/index.html)
 
 ### How to use filters on preview
 
