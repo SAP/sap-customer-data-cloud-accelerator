@@ -1,0 +1,10 @@
+{
+    "SUBJECT": "Email Code Verification",
+    "GREETING": "Hi",
+    "MESSAGE_1": "Please use the following code to verify your account: ",
+    "MESSAGE_2": "This email was sent to you since there was an attempt to access your account. \n The login attempt was made using",
+    "MESSAGE_3": "If you have not tried to access your account, please consider changing your password as soon as possible.",
+    "CONTACT_US": "If you have any questions or comments, contact us at ",
+    "BEST_REGARDS": "Best regards",
+    "COMPANY": "Demo Site"
+}

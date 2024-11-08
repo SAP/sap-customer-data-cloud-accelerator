@@ -1,0 +1,33 @@
+{
+    "_api": {},
+    "_data": {},
+    "_inherit": [
+        "_3rdPartyPlugins_restricted",
+        "_accountsFullAccess",
+        "_basicSiteAccess",
+        "_consentsApp",
+        "_extensions_editors",
+        "_identityAccessDeleteUsersRecords",
+        "_identityAccessUserRecords_editors",
+        "_idx_editors",
+        "_insights",
+        "_raasPoliciesAndEmailTamplates",
+        "_raasUiBuilder",
+        "_raasUiBuilder_limited_access",
+        "_reportsIdentitiesSyndicationAndUsage",
+        "_reportsIdentityQueryTool",
+        "_rolesAndPermissionsManagement",
+        "_siteDashboardAddSites",
+        "_siteDashboardExportUsers",
+        "_siteDashboardPartialSecretKey",
+        "_siteDashboardSecretKey",
+        "_siteProvidersConfigurationsAndPermissions_editors",
+        "_siteSettings",
+        "_sites_restricted",
+        "_sms_config_editors",
+        "_usersPartners_set_ip_restrictions",
+        "_viewPartnerAndSiteAuditLog",
+        "_viewSiteAuditLog",
+        "_webhooks"
+    ]
+}

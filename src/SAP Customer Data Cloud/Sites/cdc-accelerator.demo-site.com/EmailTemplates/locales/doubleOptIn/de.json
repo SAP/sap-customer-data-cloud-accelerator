@@ -1,0 +1,11 @@
+{
+    "SUBJECT": "Bestätigen Sie Ihr Abonnement",
+    "GREETING": "Hallo",
+    "MESSAGE_DOUBLE_OPTIN_REQUESTED": "Wir haben Ihre Anfrage zum Abonnieren unseres Newsletters erhalten:",
+    "CONFIRMATION_REQUEST": "Bitte bestätigen Sie das Abonnement.",
+    "ACCEPT": "Ja, ich möchte abonnieren",
+    "ERROR_EMAIL": "Falls Sie diese E-Mail irrtümlich erhalten haben, löschen Sie sie einfach. Sie werden nicht abonniert, wenn Sie nicht auf den Bestätigungsbutton oben klicken.",
+    "INQUIRIES": "Falls Sie Fragen oder Anregungen haben, kontaktieren Sie uns bitte per E-Mail unter:",
+    "BEST_REGARDS": "Mit freundlichen Grüßen",
+    "COMPANY": "Demo-Seite"
+}

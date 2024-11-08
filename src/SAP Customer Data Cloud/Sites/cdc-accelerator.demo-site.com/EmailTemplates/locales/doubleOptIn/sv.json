@@ -1,0 +1,11 @@
+{
+    "SUBJECT": "Bekräfta din prenumeration",
+    "GREETING": "Hej",
+    "MESSAGE_DOUBLE_OPTIN_REQUESTED": "Vi har mottagit din begäran om att prenumerera på vårt nyhetsbrev:",
+    "CONFIRMATION_REQUEST": "Vänligen bekräfta din prenumeration.",
+    "ACCEPT": "Ja, prenumerera mig",
+    "ERROR_EMAIL": "Om du fått detta e-postmeddelande av misstag, radera det bara. Du kommer inte att bli prenumerant om du inte klickar på bekräftelseknappen ovan.",
+    "INQUIRIES": "Om du har några frågor eller förslag, vänligen kontakta oss genom att skicka ett e-postmeddelande till:",
+    "BEST_REGARDS": "Vänliga hälsningar",
+    "COMPANY": "Demosajt"
+}

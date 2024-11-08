@@ -1,0 +1,11 @@
+{
+    "SUBJECT": "Kumpirmahin ang iyong pag-subscribe",
+    "GREETING": "Hi",
+    "MESSAGE_DOUBLE_OPTIN_REQUESTED": "Natanggap namin ang iyong kahilingan na mag-subscribe sa aming newsletter:",
+    "CONFIRMATION_REQUEST": "Pakitanggap na ng pag-subscribe.",
+    "ACCEPT": "Oo, i-subscribe ako",
+    "ERROR_EMAIL": "Kung natanggap mo ang email na ito nang hindi mo sinasadya, tanggalin mo na lang ito. Hindi ka ma-su-subscribe kung hindi mo ikiklik ang pindutan ng kumpirmasyon sa itaas.",
+    "INQUIRIES": "Kung mayroon kang mga tanong o suhestiyon, mangyaring makipag-ugnayan sa amin sa pamamagitan ng pagpapadala ng email sa:",
+    "BEST_REGARDS": "Pinakamahusay na pagbati",
+    "COMPANY": "Demo Site"
+}

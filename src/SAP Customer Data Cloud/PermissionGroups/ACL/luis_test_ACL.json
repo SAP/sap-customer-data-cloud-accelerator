@@ -1,0 +1,486 @@
+{
+    "_api": {
+        "accounts": {
+            "getAccountInfo": {
+                "_ace": {
+                    "perms": "x"
+                },
+                "callback": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "clientContext": {
+                    "_ace": {
+                        "perms": "x",
+                        "allowValues": [
+                            "none",
+                            "*",
+                            "*",
+                            "*",
+                            "none",
+                            "*",
+                            "*",
+                            "none",
+                            "none",
+                            "none",
+                            "none",
+                            "*",
+                            "none"
+                        ]
+                    }
+                },
+                "extraProfileFields": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "format": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "include": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "includeCommunications": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "includeUserInfo": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "lang": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "ns": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "regToken": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "uid": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                }
+            },
+            "getJWTPublicKey": {
+                "_ace": {
+                    "perms": "x"
+                },
+                "clientContext": {
+                    "_ace": {
+                        "perms": "x",
+                        "allowValues": [
+                            "none",
+                            "*",
+                            "*",
+                            "*",
+                            "none",
+                            "*",
+                            "*",
+                            "none",
+                            "none",
+                            "none",
+                            "none",
+                            "*",
+                            "none"
+                        ]
+                    }
+                },
+                "v2": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                }
+            },
+            "search": {
+                "_ace": {
+                    "perms": "x"
+                },
+                "accountTypes": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "clientContext": {
+                    "_ace": {
+                        "perms": "x",
+                        "allowValues": [
+                            "none",
+                            "*",
+                            "*",
+                            "*",
+                            "none",
+                            "*",
+                            "*",
+                            "none",
+                            "none",
+                            "none",
+                            "none",
+                            "*",
+                            "none"
+                        ]
+                    }
+                },
+                "cursorId": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "cursorTimeout": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "expTime": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "filters": {
+                    "_ace": {
+                        "perms": "x",
+                        "defaultValues": [
+                            "-subscriptions",
+                            "-subscriptions",
+                            "-subscriptions",
+                            "-subscriptions",
+                            "-subscriptions",
+                            "-subscriptions",
+                            "-subscriptions"
+                        ]
+                    }
+                },
+                "ns": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "openCursor": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "platformEnabled": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "query": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "querySig": {
+                    "_ace": {
+                        "perms": "x",
+                        "required": false
+                    }
+                },
+                "reportsQueryTool": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "scope": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "test": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "timeout": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "validateFields": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                }
+            },
+            "setAccountInfo": {
+                "_ace": {
+                    "perms": "x"
+                },
+                "addLoginEmails": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "blackBoxToken": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "captchaToken": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "captchaType": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "clientContext": {
+                    "_ace": {
+                        "perms": "x",
+                        "allowValues": [
+                            "none",
+                            "*",
+                            "*",
+                            "*",
+                            "none",
+                            "*",
+                            "*",
+                            "none",
+                            "none",
+                            "none",
+                            "none",
+                            "*",
+                            "none"
+                        ]
+                    }
+                },
+                "communications": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "conflictHandling": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "created": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "customIdentifiers": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "data": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "displayedPreferences": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "internal": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "isActive": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "isLite": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "isLockedOut": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "isVerified": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "muteWebhooks": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "newPassword": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "ns": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "oldPassword": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "password": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "phoneNumber": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "preferences": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "profile": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "rba": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "rbaPolicyLockingAllowed": {
+                    "_ace": {
+                        "perms": "x",
+                        "defaultValues": [
+                            true,
+                            true
+                        ]
+                    }
+                },
+                "regSource": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "regToken": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "removeLoginEmails": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "requirePasswordChange": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "secretAnswer": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "secretQuestion": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "securityOverride": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "subscriptions": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "tfaStatus": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "uid": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "username": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                }
+            }
+        }
+    },
+    "_data": {
+        "accounts": {
+            "account": {
+                "data": {
+                    "eid": {
+                        "_ace": {
+                            "perms": "rw"
+                        }
+                    },
+                    "idVerificationType": {
+                        "_ace": {
+                            "perms": "rw"
+                        }
+                    },
+                    "idVerified": {
+                        "_ace": {
+                            "perms": "rw"
+                        }
+                    },
+                    "idVerifiedAt": {
+                        "_ace": {
+                            "perms": "rw"
+                        }
+                    },
+                    "residenceVerificationType": {
+                        "_ace": {
+                            "perms": "rw"
+                        }
+                    },
+                    "residenceVerified": {
+                        "_ace": {
+                            "perms": "rw"
+                        }
+                    },
+                    "residenceVerifiedAt": {
+                        "_ace": {
+                            "perms": "rw"
+                        }
+                    }
+                },
+                "isActive": {
+                    "_ace": {
+                        "perms": "r"
+                    }
+                },
+                "isVerified": {
+                    "_ace": {
+                        "perms": "r"
+                    }
+                }
+            }
+        }
+    },
+    "_inherit": [
+        "_basicSiteAccess"
+    ]
+}

@@ -1,0 +1,8 @@
+{
+    "SUBJECT": "Password reset",
+    "GREETING": "Hi",
+    "MESSAGE_PASSWORD_SUCCESSUFULLY_CHANGED": "We wish to inform you that your password was successfully changed. ",
+    "CONTACT_US_MESSAGE": "If you did not intend to reset your password or if you have any questions, please contact us.",
+    "BEST_REGARDS": "Best regards",
+    "COMPANY": "Demo Site"
+}

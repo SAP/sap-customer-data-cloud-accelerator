@@ -1,0 +1,11 @@
+{
+    "SUBJECT": "Confirma la teva subscripció",
+    "GREETING": "Hola",
+    "MESSAGE_DOUBLE_OPTIN_REQUESTED": "Hem rebut la teva sol·licitud per subscriure't al nostre butlletí:",
+    "CONFIRMATION_REQUEST": "Si us plau, confirma la subscripció.",
+    "ACCEPT": "Sí, vull subscriure'm",
+    "ERROR_EMAIL": "Si has rebut aquest correu per error, simplement elimina'l. No et subscriuràs si no fas clic al botó de confirmació de dalt.",
+    "INQUIRIES": "Si tens alguna consulta o suggeriment, contacta'ns enviant un correu electrònic a:",
+    "BEST_REGARDS": "Salutacions cordials",
+    "COMPANY": "Lloc de demostració"
+}

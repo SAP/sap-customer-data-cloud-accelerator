@@ -1,0 +1,6 @@
+{
+    "SUBJECT": "Password reset",
+    "GREETING": "Hi",
+    "MESSAGE_PASSWORD": "Please click the link to reset your password:",
+    "RESET_LINK": "Reset link"
+}

@@ -1,0 +1,9 @@
+{
+    "SUBJECT": "Login with magic link",
+    "GREETING": "Hi",
+    "CLICK_1": "Please click the following",
+    "CLICK_2": "to login to domain;",
+    "IF_NOT": "If you have not tried to access your account, you may ignore this message.",
+    "MAGIC_LINK": "magic link",
+    "COMPANY": "Your &lt;sitename&gt; team"
+}

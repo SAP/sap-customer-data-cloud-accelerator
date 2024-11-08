@@ -1,0 +1,11 @@
+{
+    "SUBJECT": "Konfirmasi langganan Anda",
+    "GREETING": "Hai",
+    "MESSAGE_DOUBLE_OPTIN_REQUESTED": "Kami telah menerima permintaan Anda untuk berlangganan newsletter kami:",
+    "CONFIRMATION_REQUEST": "Silakan konfirmasi langganan Anda.",
+    "ACCEPT": "Ya, Langgani Saya",
+    "ERROR_EMAIL": "Jika Anda menerima email ini karena kesalahan, cukup hapus. Anda tidak akan berlangganan jika Anda tidak mengklik tombol konfirmasi di atas.",
+    "INQUIRIES": "Jika Anda memiliki pertanyaan atau saran, silakan hubungi kami dengan mengirimkan email ke:",
+    "BEST_REGARDS": "Salam hormat",
+    "COMPANY": "Demo Situs"
+}

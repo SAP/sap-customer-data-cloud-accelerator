@@ -1,0 +1,9 @@
+{
+    "_api": {},
+    "_data": {},
+    "_inherit": [
+        "_basicSiteAccess",
+        "_viewPartnerAndSiteAuditLog",
+        "_viewSiteAuditLog"
+    ]
+}

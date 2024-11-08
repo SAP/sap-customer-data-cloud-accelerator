@@ -1,0 +1,11 @@
+{
+    "SUBJECT": "Potvrďte svůj odběr",
+    "GREETING": "Ahoj",
+    "MESSAGE_DOUBLE_OPTIN_REQUESTED": "Obdrželi jsme vaši žádost o přihlášení k odběru našeho newsletteru:",
+    "CONFIRMATION_REQUEST": "Potvrďte prosím odběr.",
+    "ACCEPT": "Ano, chci se přihlásit",
+    "ERROR_EMAIL": "Pokud jste tento e-mail obdrželi omylem, jednoduše jej smažte. Nebudete přihlášeni, pokud nekliknete na potvrzovací tlačítko výše.",
+    "INQUIRIES": "Pokud máte nějaké dotazy nebo návrhy, kontaktujte nás zasláním e-mailu na:",
+    "BEST_REGARDS": "S pozdravem",
+    "COMPANY": "Ukázkový web"
+}

@@ -1,0 +1,11 @@
+{
+    "SUBJECT": "Confirme a sua subscrição",
+    "GREETING": "Olá",
+    "MESSAGE_DOUBLE_OPTIN_REQUESTED": "Recebemos o seu pedido para subscrever a nossa newsletter:",
+    "CONFIRMATION_REQUEST": "Por favor, confirme a subscrição.",
+    "ACCEPT": "Sim, Subscreva-me",
+    "ERROR_EMAIL": "Se recebeu este e-mail por engano, simplesmente elimine-o. Não será subscrito se não clicar no botão de confirmação acima.",
+    "INQUIRIES": "Se tiver alguma pergunta ou sugestão, por favor contacte-nos enviando um e-mail para:",
+    "BEST_REGARDS": "Melhores cumprimentos",
+    "COMPANY": "Site de Demonstração"
+}

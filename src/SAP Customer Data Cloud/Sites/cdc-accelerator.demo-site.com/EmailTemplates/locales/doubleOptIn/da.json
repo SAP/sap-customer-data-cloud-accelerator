@@ -1,0 +1,11 @@
+{
+    "SUBJECT": "Bekræft din tilmelding",
+    "GREETING": "Hej",
+    "MESSAGE_DOUBLE_OPTIN_REQUESTED": "Vi har modtaget din anmodning om at tilmelde dig vores nyhedsbrev:",
+    "CONFIRMATION_REQUEST": "Bekræft venligst din tilmelding.",
+    "ACCEPT": "Ja, tilmeld mig",
+    "ERROR_EMAIL": "Hvis du har modtaget denne e-mail ved en fejl, skal du blot slette den. Du bliver ikke tilmeldt, hvis du ikke klikker på bekræftelsesknappen ovenfor.",
+    "INQUIRIES": "Hvis du har spørgsmål eller forslag, bedes du kontakte os ved at sende en e-mail til:",
+    "BEST_REGARDS": "Med venlig hilsen",
+    "COMPANY": "Demo-side"
+}

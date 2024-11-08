@@ -1,0 +1,8 @@
+{
+    "SUBJECT": "Password reset",
+    "GREETING": "Hi",
+    "MESSAGE_PASSWORD_SUCCESSUFULLY_CHANGED": "We wish to inform you that your password was successfully changed. ",
+    "RESET_MESSAGE_1": "If this was you, it's all good. If it's not, click",
+    "HERE": "here",
+    "RESET_MESSAGE_2": "to recover your account"
+}
