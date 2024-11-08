@@ -1,1 +1,0 @@
-import registrationLoginOnAfterScreenLoad from './Default-RegistrationLoginOnAfterScreenLoad'

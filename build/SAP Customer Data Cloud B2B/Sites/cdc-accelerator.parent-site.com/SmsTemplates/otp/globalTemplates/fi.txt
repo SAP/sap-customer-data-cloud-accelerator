@@ -1,0 +1,1 @@
+Vahvistuskoodisi on: {{code}}

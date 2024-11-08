@@ -1,0 +1,17 @@
+{
+    "fields": {
+        "terms": {
+            "required": false,
+            "type": "boolean",
+            "allowNull": true,
+            "writeAccess": "clientModify"
+        },
+        "subscribe": {
+            "required": false,
+            "type": "boolean",
+            "allowNull": true,
+            "writeAccess": "clientModify"
+        }
+    },
+    "dynamicSchema": true
+}

@@ -1,20 +1,30 @@
 {
     "source": [
         {
+            "apiKey": "4_NMlrtRahOmBColBJ89vBxw"
+        },
+        {
             "apiKey": "4_i9SMcFM_LOyCDk7TUcjaxA"
         },
         {
-            "apiKey": "4_KBclTNdMCudLU8jLkMpl9Q"
+            "apiKey": "4_KBclTNdMCudLU8jLkMpl9Q",
+            "features": [
+                "WebSdk",
+                "Policies",
+                "WebScreenSets",
+                "EmailTemplates",
+                "SmsTemplates"
+            ]
         },
         {
             "apiKey": "4_DJV5S94zn_l7bYAKIvhqrA"
-        },
-        {
-            "apiKey": "4_NMlrtRahOmBColBJ89vBxw"
         }
     ],
     "deploy": [
         {
+            "apiKey": "4_NMlrtRahOmBColBJ89vBxw"
+        },
+        {
             "apiKey": "4_i9SMcFM_LOyCDk7TUcjaxA"
         },
         {
@@ -22,9 +32,6 @@
         },
         {
             "apiKey": "4_DJV5S94zn_l7bYAKIvhqrA"
-        },
-        {
-            "apiKey": "4_NMlrtRahOmBColBJ89vBxw"
         }
     ],
     "cache": [

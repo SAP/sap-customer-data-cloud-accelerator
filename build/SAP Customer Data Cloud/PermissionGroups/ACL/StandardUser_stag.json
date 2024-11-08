@@ -1,0 +1,13 @@
+{
+    "_api": {},
+    "_data": {},
+    "_inherit": [
+        "_3rdPartyPlugins",
+        "_accountsFullAccess",
+        "_basicSiteAccess",
+        "_identityAccessUserRecords_viewers",
+        "_raasUiBuilder_limited_access",
+        "_reportsIdentityQueryTool",
+        "_sites"
+    ]
+}

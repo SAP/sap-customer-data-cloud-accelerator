@@ -1,4 +1,5 @@
 import defaultRegistrationLoginOnAfterScreenLoad from './Default-RegistrationLoginOnAfterScreenLoad'
+
 export default {
     // Called when an error occurs.
     onError: function (event) {},

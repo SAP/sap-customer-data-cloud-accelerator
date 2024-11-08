@@ -1,7 +1,4 @@
-'use strict';
-Object.defineProperty(exports, '__esModule', { value: true });
-exports['default'] = void 0;
-var _default = (exports['default'] = {
+{
     // A comma-delimited list of provider names to enable.
     enabledProviders: '*',
 
@@ -29,4 +26,4 @@ var _default = (exports['default'] = {
             }
         ]
     }
-});
+}

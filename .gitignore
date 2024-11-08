@@ -112,7 +112,6 @@ dist
 *.iml
 
 # development time ignore rules
-build/*
 cdc-accelerator/sap-cdc-toolkit/*
 cdc-accelerator.json
 client.test.js

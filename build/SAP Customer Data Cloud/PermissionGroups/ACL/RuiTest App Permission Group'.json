@@ -1,0 +1,16 @@
+{
+    "_api": {},
+    "_data": {
+        "accounts": {
+            "account": {
+                "_ace": {
+                    "perms": "r"
+                }
+            }
+        }
+    },
+    "_inherit": [
+        "_accounts_sections_limited_access",
+        "_basicSiteAccess"
+    ]
+}

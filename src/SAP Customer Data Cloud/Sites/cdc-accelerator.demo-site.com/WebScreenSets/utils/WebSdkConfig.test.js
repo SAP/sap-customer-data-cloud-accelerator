@@ -1,4 +1,4 @@
-import webSdkConfig from '../utils/webSdkConfig'
+import webSdkConfig from './webSdkConfig'
 
 describe('Utils: webSdkConfig.get()', () => {
     it('should return default value when window.gigya is not defined', () => {
