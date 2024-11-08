@@ -1,0 +1,10 @@
+{
+    "SUBJECT": "unknown-login-location",
+    "GREETING": "Dear",
+    "MESSAGE": "We wish to inform you that your last login occurred from an unknown location.",
+    "HERE": "here",
+    "MESSAGE_2": "If this was not you click",
+    "MESSAGE_3": "to change your password now, otherwise, you can ignore this message.",
+    "CONTACT_US_MESSAGE": "If you did not intend to reset your password or if you have any questions, please contact us.",
+    "COMPANY": "Demo Site"
+}

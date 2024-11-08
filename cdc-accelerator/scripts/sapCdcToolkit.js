@@ -1,7 +1,7 @@
 import axios from 'axios'
+import { once } from 'events'
 import fs from 'fs'
 import JSZip from 'jszip'
-import { once } from 'events'
 import path from 'path'
 
 class SapCdcToolkit {
@@ -25,7 +25,7 @@ class SapCdcToolkit {
         try {
             const response = await axios({
                 method: 'get',
-                url: 'https://api.github.com/repos/SAP/sap-customer-data-cloud-toolkit/releases/latest',
+                url: 'https://api.github.com/repos/SAP/sap-customer-data-cloud-toolkit/releases/tags/1.6.7',
             })
             return response.data
         } catch (error) {

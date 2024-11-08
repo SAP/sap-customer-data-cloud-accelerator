@@ -1,0 +1,11 @@
+{
+    "SUBJECT": "Potrdite svojo naročnino",
+    "GREETING": "Pozdravljeni",
+    "MESSAGE_DOUBLE_OPTIN_REQUESTED": "Prejeli smo vašo zahtevo za naročnino na naše novice:",
+    "CONFIRMATION_REQUEST": "Prosimo potrdite svojo naročnino.",
+    "ACCEPT": "Da, naroči me",
+    "ERROR_EMAIL": "Če ste to e-pošto prejeli po pomoti, jo preprosto izbrišite. Ne boste se naročili, če ne kliknete na zgornji potrditveni gumb.",
+    "INQUIRIES": "Če imate kakršnakoli vprašanja ali predloge, nas prosimo kontaktirajte tako, da pošljete e-pošto na:",
+    "BEST_REGARDS": "Lep pozdrav",
+    "COMPANY": "Demo spletna stran"
+}

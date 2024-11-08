@@ -1,0 +1,10 @@
+{
+    "_api": {},
+    "_data": {},
+    "_inherit": [
+        "_basicSiteAccess",
+        "_consentsApp",
+        "_viewPartnerAndSiteAuditLog",
+        "_viewSiteAuditLog"
+    ]
+}

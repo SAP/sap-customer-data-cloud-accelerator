@@ -137,40 +137,43 @@ Commands:
 
 The Customer Data Cloud Accelerator allows reading, working locally and deploying data from the following features:
 
--   Web SDK: `WebSdk`
--   Web ScreenSets: `WebScreenSets`
--   E-mail Templates: `EmailTemplates`
--   SMS Templates: `SmsTemplates`
--   Policies: `Policies`
--   Schema: `Schema`
--   Permission Groups: `PermissionGroups`
+-   Web SDK: `WebSdk` ([Example Code](src/SAP%20Customer%20Data%20Cloud/Sites/cdc-accelerator.demo-site.com/WebSdk/))
+
+-   Web ScreenSets: `WebScreenSets` ([Example Code](src/SAP%20Customer%20Data%20Cloud/Sites/cdc-accelerator.demo-site.com/WebScreenSets/Default-RegistrationLogin/))
+-   E-mail Templates: `EmailTemplates` ([Example Code](src/SAP%20Customer%20Data%20Cloud/Sites/cdc-accelerator.demo-site.com/EmailTemplates/))
+-   SMS Templates: `SmsTemplates` ([Example Code](src/SAP%20Customer%20Data%20Cloud/Sites/cdc-accelerator.demo-site.com/SmsTemplates/))
+-   Policies: `Policies` ([Example Code](src/SAP%20Customer%20Data%20Cloud/Sites/cdc-accelerator.demo-site.com/Policies/))
+-   Schema: `Schema` ([Example Code](src/SAP%20Customer%20Data%20Cloud/Sites/cdc-accelerator.demo-site.com/Schema/))
+-   Permission Groups: `PermissionGroups` ([Example Code](src/SAP%20Customer%20Data%20Cloud/PermissionGroups/))
 
 ### How to configure the use of features on the file cdc-accelerator.json
 
 On the `cdc-accelerator.json` file, there are two mandatory properties that the user has to fill, the `source` and `deploy`.
 They both will have an array of objects that will contain the apiKeys that are related to the sites that we want to use in the project and optionally it will have the features, for example:
 
-```sh
+```json
 {
-  "source":[
-    {
-      "apiKey":"1_QWERTYUIOPASDFGHJKLZXCVBNM",
-      "features": ["Schema","PermissionGroups","WebSdk"]
-    }
-  ]
+    "source": [
+        {
+            "apiKey": "1_QWERTYUIOPASDFGHJKLZXCVBNM",
+            "features": ["Schema", "PermissionGroups", "WebSdk"]
+        }
+    ]
 }
 ```
 
+[Example Code](cdc-accelerator.json)
+
 ### An empty array will mean no feature will be available, for example:
 
-```sh
+```json
 {
-  "source":[
-    {
-      "apiKey":"1_QWERTYUIOPASDFGHJKLZXCVBNM",
-      "features": []
-    }
-  ]
+    "source": [
+        {
+            "apiKey": "1_QWERTYUIOPASDFGHJKLZXCVBNM",
+            "features": []
+        }
+    ]
 }
 ```
 
@@ -199,7 +202,7 @@ To show all the possible commands, the user can write simply
 You can separate the WebSdk into different files and use the `import` and `export` statements to organize the code.
 Using code segregation enables the use of unit tests and quality checks.
 
-[Example Code](src/SAP%20Customer%20Data%20Cloud/Sites/cdc-accelerator.preferences-center.com/WebSdk/)
+[Example Code](src/SAP%20Customer%20Data%20Cloud/Sites/cdc-accelerator.demo-site.com/WebSdk/)
 
 #### webSdk.js
 
@@ -271,7 +274,7 @@ export default {
 
 Using code segregation enables the use of unit tests and quality checks.
 
-[Example Code](src/SAP%20Customer%20Data%20Cloud/Sites/cdc-accelerator.preferences-center.com/WebScreenSets/PreferencesCenter-Landing/)
+[Example Code](src/SAP%20Customer%20Data%20Cloud/Sites/cdc-accelerator.demo-site.com/WebScreenSets/Default-RegistrationLogin/)
 
 #### WebScreenSets JavaScript
 
@@ -351,7 +354,7 @@ The CSS is separated into different files:
 
 It's helpful to keep these files separate to avoid conflicts and to make it easier to maintain the code.
 
-[Example Code](src/SAP%20Customer%20Data%20Cloud/Sites/cdc-accelerator.preferences-center.com/WebScreenSets/PreferencesCenter-Landing/)
+[Example Code](src/SAP%20Customer%20Data%20Cloud/Sites/cdc-accelerator.demo-site.com/WebScreenSets/Default-RegistrationLogin/)
 
 <!-- ### EmailTemplates <a id="features-email-templates"></a>
 
@@ -367,32 +370,34 @@ It's helpful to keep these files separate to avoid conflicts and to make it easi
 
 The preview mode is a feature that allows the user to see and test the changes in the local environment, without the need to `deploy` the data to the customer data cloud console.
 
+[Example Code](src/index.html)
+
 ### How to use filters on preview
 
 The filter is applied on the "src/index.html" file, that will filter the screens that the user will choose to see by using the apiKeys that are configured on the configuration file `cdc-accelerator.json`, for example:
 
 ```sh
- [{
+[{
     apiKey: '1_2ABCDEFGHI345',
     screens: [{ screenSetID: 'PreferencesCenter-ProfileUpdate', screenID: 'gigya-update-profile-screen' }],
     emails: [ { emailID: 'codeVerification', languages: ['en'] } ]
-  }]
+}]
 ```
 
 ### Using the filter on more than one apiKey
 
 ```sh
 [{
-  apiKey: '1_2ABCDEFGHI345',
-  screens: [
-    { screenSetID: 'PreferencesCenter-ProfileUpdate', screenID: 'gigya-update-profile-screen' },
-    { screenSetID: 'PreferencesCenter-Landing', screenID: 'gigya-login-screen' },
-  ],
-  emails: []
-  },
-  {
-  apiKey: '1_3AS9DJAKSLA12',
-  emails: [{ emailID: 'doubleOptIn', languages: ['ar', 'en', 'pt-br'] }]
+    apiKey: '1_2ABCDEFGHI345',
+    screens: [
+        { screenSetID: 'PreferencesCenter-ProfileUpdate', screenID: 'gigya-update-profile-screen' },
+        { screenSetID: 'PreferencesCenter-Landing', screenID: 'gigya-login-screen' },
+    ],
+    emails: []
+},
+{
+    apiKey: '1_3AS9DJAKSLA12',
+    emails: [{ emailID: 'doubleOptIn', languages: ['ar', 'en', 'pt-br'] }]
 }]
 ```
 
@@ -400,8 +405,8 @@ The filter is applied on the "src/index.html" file, that will filter the screens
 
 ```sh
 [{
-  apiKey: '*',
-  emails: [{ emailID: 'doubleOptIn', languages: ['ar', 'en', 'pt-br'] } ]
+    apiKey: '*',
+    emails: [{ emailID: 'doubleOptIn', languages: ['ar', 'en', 'pt-br'] } ]
 }]
 ```
 
@@ -419,9 +424,8 @@ Using the different options of the preview will enable the user to control what 
 
 -   `<lang>`: Defines the language of the screen-sets, which can be changed according to user preference.
 
-```sh
-  preview
-  ({
+```js
+preview({
     origin: 'source',
     useLocalWebSdk: true,
     useLocalScreenSets: true,

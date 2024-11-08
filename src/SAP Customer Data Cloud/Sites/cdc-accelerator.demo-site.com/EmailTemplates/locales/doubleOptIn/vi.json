@@ -1,0 +1,11 @@
+{
+    "SUBJECT": "Xác nhận đăng ký của bạn",
+    "GREETING": "Chào",
+    "MESSAGE_DOUBLE_OPTIN_REQUESTED": "Chúng tôi đã nhận được yêu cầu đăng ký nhận bản tin của bạn:",
+    "CONFIRMATION_REQUEST": "Vui lòng xác nhận đăng ký.",
+    "ACCEPT": "Vâng, đăng ký tôi",
+    "ERROR_EMAIL": "Nếu bạn nhận được email này do nhầm lẫn, hãy xóa nó đi. Bạn sẽ không được đăng ký nếu bạn không nhấp vào nút xác nhận ở trên.",
+    "INQUIRIES": "Nếu bạn có bất kỳ thắc mắc hoặc đề xuất nào, vui lòng liên hệ với chúng tôi bằng cách gửi email đến:",
+    "BEST_REGARDS": "Trân trọng",
+    "COMPANY": "Trang Web Minh Họa"
+}

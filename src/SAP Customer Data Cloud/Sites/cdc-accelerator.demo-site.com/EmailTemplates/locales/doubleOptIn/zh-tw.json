@@ -1,0 +1,11 @@
+{
+    "SUBJECT": "确认您的订阅",
+    "GREETING": "您好",
+    "MESSAGE_DOUBLE_OPTIN_REQUESTED": "我们已收到您订阅我们新闻通讯的请求:",
+    "CONFIRMATION_REQUEST": "请确认订阅。",
+    "ACCEPT": "是的，订阅我",
+    "ERROR_EMAIL": "如果您误收到此邮件，只需将其删除。如果您不点击上方的确认按钮，您将不会被订阅。",
+    "INQUIRIES": "如果您有任何疑问或建议，请通过发送电子邮件联系我们:",
+    "BEST_REGARDS": "此致",
+    "COMPANY": "演示网站"
+}

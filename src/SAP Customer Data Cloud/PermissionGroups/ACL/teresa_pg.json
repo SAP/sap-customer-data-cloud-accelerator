@@ -1,0 +1,11 @@
+{
+    "_api": {},
+    "_data": {},
+    "_inherit": [
+        "_basicSiteAccess",
+        "_identityAccessUserRecords_viewers",
+        "_raasPoliciesAndEmailTamplates",
+        "_raasUiBuilder_limited_access",
+        "_siteSettings"
+    ]
+}

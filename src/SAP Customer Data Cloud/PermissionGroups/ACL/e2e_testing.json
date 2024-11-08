@@ -1,0 +1,10 @@
+{
+    "_api": {},
+    "_data": {},
+    "_inherit": [
+        "_basicSiteAccess",
+        "_rolesAndPermissionsManagement",
+        "_siteProvidersConfigurationsAndPermissions_editors",
+        "_siteSettings"
+    ]
+}

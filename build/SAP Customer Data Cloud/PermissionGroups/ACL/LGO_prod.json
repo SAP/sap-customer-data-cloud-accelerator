@@ -1,0 +1,47 @@
+{
+    "_api": {
+        "accounts": {
+            "deleteAccount": {
+                "_ace": {
+                    "perms": "x",
+                    "denyValues": [
+                        "dev*"
+                    ]
+                },
+                "ns": {
+                    "_ace": {
+                        "perms": "x",
+                        "denyValues": [
+                            "dev*"
+                        ]
+                    }
+                },
+                "uid": {
+                    "_ace": {
+                        "perms": "x",
+                        "denyValues": [
+                            "dev*"
+                        ]
+                    }
+                }
+            },
+            "deleteLiteAccount": {
+                "_ace": {
+                    "perms": "-x"
+                },
+                "emailAccountToken": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                }
+            }
+        }
+    },
+    "_data": {},
+    "_inherit": [
+        "_admins",
+        "_basicSiteAccess",
+        "_extensions_editors",
+        "_webhooks"
+    ]
+}

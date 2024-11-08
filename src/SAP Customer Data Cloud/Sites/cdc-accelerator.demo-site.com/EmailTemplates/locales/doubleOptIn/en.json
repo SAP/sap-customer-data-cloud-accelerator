@@ -1,0 +1,11 @@
+{
+    "SUBJECT": "Confirm your subscription",
+    "GREETING": "Hi",
+    "MESSAGE_DOUBLE_OPTIN_REQUESTED": "We have received your request to subscribe to our newsletter:",
+    "CONFIRMATION_REQUEST": "Please confirm the subscription.",
+    "ACCEPT":"Yes, Subscribe Me",
+    "ERROR_EMAIL":"If you received this email by mistake, simply delete it. You won't be subscribed if you don't click the confirmation button above.",
+    "INQUIRIES": "If you have any inquiries or suggestions, please contact us by sending an email to:",
+    "BEST_REGARDS": "Best regards",
+    "COMPANY": "Demo Site"
+}

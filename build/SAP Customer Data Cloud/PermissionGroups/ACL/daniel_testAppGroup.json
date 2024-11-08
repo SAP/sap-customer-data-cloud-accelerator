@@ -1,0 +1,18 @@
+{
+    "_api": {},
+    "_data": {
+        "accounts": {
+            "account": {
+                "_ace": {
+                    "perms": "rw"
+                }
+            }
+        }
+    },
+    "_inherit": [
+        "_basicSiteAccess",
+        "_consentsApp",
+        "_viewPartnerAndSiteAuditLog",
+        "_viewSiteAuditLog"
+    ]
+}

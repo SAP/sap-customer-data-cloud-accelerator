@@ -1,0 +1,113 @@
+[
+    {
+        "emailID": "codeVerification",
+        "languages": [
+            "en"
+        ]
+    },
+    {
+        "emailID": "confirmationEmailTemplates",
+        "languages": [
+            "en",
+            "es-mx",
+            "es"
+        ]
+    },
+    {
+        "emailID": "doubleOptIn",
+        "languages": [
+            "ar",
+            "bg",
+            "ca",
+            "cs",
+            "da",
+            "de-inf",
+            "de",
+            "el",
+            "en",
+            "es-inf",
+            "es-mx",
+            "es",
+            "fa",
+            "fi",
+            "fr-inf",
+            "fr",
+            "he",
+            "hr",
+            "hu",
+            "id",
+            "it",
+            "ja",
+            "ko",
+            "ms",
+            "nl-inf",
+            "nl",
+            "no",
+            "pl",
+            "pt-br",
+            "pt",
+            "ro",
+            "ru",
+            "sk",
+            "sl",
+            "sr",
+            "sv",
+            "th",
+            "tl",
+            "tr",
+            "uk",
+            "vi",
+            "zh-cn",
+            "zh-hk",
+            "zh-tw"
+        ]
+    },
+    {
+        "emailID": "emailVerification",
+        "languages": [
+            "en"
+        ]
+    },
+    {
+        "emailID": "impossibleTraveler",
+        "languages": [
+            "en"
+        ]
+    },
+    {
+        "emailID": "magicLink",
+        "languages": [
+            "en"
+        ]
+    },
+    {
+        "emailID": "passwordReset",
+        "languages": [
+            "en"
+        ]
+    },
+    {
+        "emailID": "passwordResetNotification",
+        "languages": [
+            "en"
+        ]
+    },
+    {
+        "emailID": "preferencesCenter",
+        "languages": [
+            "en"
+        ]
+    },
+    {
+        "emailID": "twoFactorAuth",
+        "languages": [
+            "en"
+        ]
+    },
+    {
+        "emailID": "unknownLocationNotification",
+        "languages": [
+            "en"
+        ]
+    }
+]

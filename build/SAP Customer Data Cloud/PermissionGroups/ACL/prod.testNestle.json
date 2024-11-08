@@ -1,0 +1,36 @@
+{
+    "_api": {
+        "accounts": {
+            "deleteAccount": {
+                "_ace": {
+                    "perms": "-x"
+                },
+                "ns": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "uid": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                }
+            },
+            "deleteLiteAccount": {
+                "_ace": {
+                    "perms": "-x"
+                },
+                "emailAccountToken": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                }
+            }
+        }
+    },
+    "_data": {},
+    "_inherit": [
+        "_basicSiteAccess",
+        "_identityAccessUserRecords_editors"
+    ]
+}

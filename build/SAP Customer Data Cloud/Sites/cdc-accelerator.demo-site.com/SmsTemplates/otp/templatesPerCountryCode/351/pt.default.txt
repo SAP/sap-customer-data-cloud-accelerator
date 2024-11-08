@@ -1,0 +1,2 @@
+.: Demo Site OTP :.
+O seu código de verificação é: {{code}}

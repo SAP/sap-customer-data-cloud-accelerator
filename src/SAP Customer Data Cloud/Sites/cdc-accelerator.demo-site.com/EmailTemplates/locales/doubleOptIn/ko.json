@@ -1,0 +1,11 @@
+{
+    "SUBJECT": "구독을 확인하세요",
+    "GREETING": "안녕하세요",
+    "MESSAGE_DOUBLE_OPTIN_REQUESTED": "뉴스레터 구독 요청을 받았습니다:",
+    "CONFIRMATION_REQUEST": "구독을 확인해 주세요.",
+    "ACCEPT": "예, 구독합니다",
+    "ERROR_EMAIL": "이 이메일을 잘못 받은 경우, 단순히 삭제해 주세요. 위의 확인 버튼을 클릭하지 않으면 구독되지 않습니다.",
+    "INQUIRIES": "질문이나 제안이 있으시면, 다음 이메일 주소로 연락해 주세요:",
+    "BEST_REGARDS": "감사합니다",
+    "COMPANY": "데모 사이트"
+}

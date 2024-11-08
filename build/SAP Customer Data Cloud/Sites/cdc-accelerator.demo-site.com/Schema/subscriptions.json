@@ -1,0 +1,26 @@
+{
+    "fields": {
+        "demoSite_byDirectMail": {
+            "email": {
+                "required": false,
+                "type": "subscription",
+                "writeAccess": "clientModify",
+                "doubleOptIn": false,
+                "description": "I want to receive demoSite news by direct mail",
+                "enableConditionalDoubleOptIn": false,
+                "relatedConsentIds": []
+            }
+        },
+        "demoSite_byEmail": {
+            "email": {
+                "required": false,
+                "type": "subscription",
+                "writeAccess": "clientModify",
+                "doubleOptIn": false,
+                "description": "I want to receive demoSite news by email",
+                "enableConditionalDoubleOptIn": false,
+                "relatedConsentIds": []
+            }
+        }
+    }
+}

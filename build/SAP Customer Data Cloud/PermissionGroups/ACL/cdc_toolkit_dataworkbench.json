@@ -1,0 +1,13 @@
+{
+    "_api": {},
+    "_data": {},
+    "_inherit": [
+        "_accountsFullAccess",
+        "_basicSiteAccess",
+        "_identityAccessDeleteUsersRecords",
+        "_identityAccessUserRecords_editors",
+        "_ips_role",
+        "_reportsIdentityQueryTool",
+        "_sites"
+    ]
+}

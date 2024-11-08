@@ -1,0 +1,68 @@
+{
+    "_api": {},
+    "_data": {
+        "accounts": {
+            "account": {
+                "data": {
+                    "_ace": {
+                        "perms": "w"
+                    }
+                },
+                "emails": {
+                    "_ace": {
+                        "perms": "rw"
+                    }
+                },
+                "identities": {
+                    "_ace": {
+                        "perms": "w"
+                    }
+                },
+                "loginIDs": {
+                    "_ace": {
+                        "perms": "w"
+                    }
+                },
+                "password": {
+                    "_ace": {
+                        "perms": "w"
+                    }
+                },
+                "phoneNumber": {
+                    "_ace": {
+                        "perms": "w"
+                    }
+                },
+                "preferences": {
+                    "_ace": {
+                        "perms": "w"
+                    }
+                },
+                "profile": {
+                    "_ace": {
+                        "perms": "w"
+                    }
+                }
+            }
+        }
+    },
+    "_inherit": [
+        "_3rdPartyPlugins_restricted",
+        "_basicSiteAccess",
+        "_consentsApp",
+        "_identityAccessDeleteUsersRecords",
+        "_identityAccessUserRecords_viewers",
+        "_idx_viewers",
+        "_insights",
+        "_manageAuthorizedContacts",
+        "_reportsIdentitiesSyndicationAndUsage",
+        "_reportsIdentityQueryTool",
+        "_siteDashboardExportUsers",
+        "_siteDashboardPartialSecretKey",
+        "_siteDashboardSecretKey",
+        "_sites_restricted",
+        "_viewPartnerAndSiteAuditLog",
+        "_viewSiteAuditLog",
+        "_webhooks"
+    ]
+}

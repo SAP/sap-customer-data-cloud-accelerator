@@ -1,0 +1,132 @@
+{
+    "_api": {
+        "accounts": {
+            "getAccountInfo": {
+                "_ace": {
+                    "perms": "x"
+                }
+            },
+            "importFullAccount": {
+                "_ace": {
+                    "perms": "x"
+                },
+                "created": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "data": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "emails": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "identities": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "importPolicy": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "isActive": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "isRegistered": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "isVerified": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "lang": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "lastLogin": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "lastUpdated": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "loginIds": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "password": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "preferences": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "profile": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "providerSessions": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "registered": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "regSource": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "subscriptions": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "uid": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "verified": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                }
+            },
+            "search": {
+                "_ace": {
+                    "perms": "x"
+                }
+            }
+        }
+    },
+    "_data": {},
+    "_inherit": [
+        "_accountsFullAccess",
+        "_basicSiteAccess",
+        "_identityAccessUserRecords_viewers"
+    ]
+}

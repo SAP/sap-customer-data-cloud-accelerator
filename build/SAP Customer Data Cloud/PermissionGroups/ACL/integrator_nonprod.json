@@ -1,0 +1,305 @@
+{
+    "_api": {
+        "accounts": {
+            "registerCounters": {
+                "_ace": {
+                    "perms": "-x"
+                }
+            },
+            "setSchema": {
+                "_ace": {
+                    "perms": "x"
+                },
+                "dataSchema": {
+                    "_ace": {
+                        "perms": "x",
+                        "denyValues": [
+                            "regex(\"^.*$\")"
+                        ]
+                    }
+                },
+                "preferencesSchema": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "profileSchema": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "subscriptionsSchema": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                }
+            }
+        },
+        "admin": {
+            "createGroup": {
+                "_ace": {
+                    "perms": "x"
+                },
+                "groupID": {
+                    "_ace": {
+                        "perms": "x",
+                        "denyValues": [
+                            "regex(\"^.*$\")"
+                        ]
+                    }
+                }
+            },
+            "createSite": {
+                "_ace": {
+                    "perms": "x"
+                },
+                "baseDomain": {
+                    "_ace": {
+                        "perms": "x",
+                        "denyValues": [
+                            "regex(\"^.*$\")"
+                        ]
+                    }
+                }
+            },
+            "deleteGroup": {
+                "_ace": {
+                    "perms": "x"
+                },
+                "groupID": {
+                    "_ace": {
+                        "perms": "x",
+                        "denyValues": [
+                            "regex(\"^.*$\")"
+                        ]
+                    }
+                }
+            },
+            "deleteUserKey": {
+                "_ace": {
+                    "perms": "-x"
+                }
+            },
+            "getGroups": {
+                "_ace": {
+                    "perms": "-x"
+                }
+            },
+            "getPartner": {
+                "_ace": {
+                    "perms": "x"
+                },
+                "full": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "includeSecretKeys": {
+                    "_ace": {
+                        "perms": "-x",
+                        "defaultValues": [
+                            "partial",
+                            "partial",
+                            "partial"
+                        ]
+                    }
+                },
+                "partnerID": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                }
+            },
+            "setSiteConfig": {
+                "_ace": {
+                    "perms": "x"
+                },
+                "abTesting": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "apikey": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "baseDomain": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "captchaProvider": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "description": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "enableDataSharing": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "funCaptcha": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "globalConf": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "invisibleRecaptcha": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "logoutURL": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "overrideBaseDomain": {
+                    "_ace": {
+                        "perms": "x",
+                        "defaultValues": [
+                            true
+                        ]
+                    }
+                },
+                "recaptchaV2": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "settings": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "siteGroupConfig": {
+                    "_ace": {
+                        "perms": "x",
+                        "denyValues": [
+                            "regex(\"^.*$\")"
+                        ]
+                    }
+                },
+                "siteGroupOwner": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "tags": {
+                    "_ace": {
+                        "perms": "x",
+                        "denyValues": [
+                            "regex(\"^.*$\")"
+                        ]
+                    }
+                },
+                "trustedShareURLs": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "trustedSiteURLs": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "urlShorteners": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                }
+            }
+        },
+        "admin.certificates": {
+            "createRequest": {
+                "_ace": {
+                    "perms": "-x"
+                }
+            }
+        },
+        "fidm.oidc.op": {
+            "createRP": {
+                "_ace": {
+                    "perms": "-x"
+                }
+            },
+            "setConfig": {
+                "_ace": {
+                    "perms": "-x"
+                }
+            }
+        },
+        "fidm.oidc.rp": {
+            "createOP": {
+                "_ace": {
+                    "perms": "-x"
+                }
+            },
+            "delOP": {
+                "_ace": {
+                    "perms": "-x"
+                }
+            },
+            "updateOP": {
+                "_ace": {
+                    "perms": "-x"
+                }
+            }
+        },
+        "idx": {
+            "createDataflow": {
+                "_ace": {
+                    "perms": "-x"
+                }
+            },
+            "createScheduling": {
+                "_ace": {
+                    "perms": "-x"
+                }
+            },
+            "deleteDataflow": {
+                "_ace": {
+                    "perms": "-x"
+                }
+            },
+            "deleteScheduling": {
+                "_ace": {
+                    "perms": "-x"
+                }
+            },
+            "getDataflow": {
+                "_ace": {
+                    "perms": "-x"
+                }
+            },
+            "setDataflow": {
+                "_ace": {
+                    "perms": "-x"
+                }
+            },
+            "setScheduling": {
+                "_ace": {
+                    "perms": "-x"
+                }
+            }
+        }
+    },
+    "_data": {},
+    "_inherit": [
+        "_admins",
+        "_basicSiteAccess",
+        "_consentsApp",
+        "_extensions_editors",
+        "_webhooks"
+    ]
+}

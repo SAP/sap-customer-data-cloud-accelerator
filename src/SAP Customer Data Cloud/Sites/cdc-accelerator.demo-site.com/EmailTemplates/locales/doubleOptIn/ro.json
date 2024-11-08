@@ -1,0 +1,11 @@
+{
+    "SUBJECT": "Confirmați abonamentul",
+    "GREETING": "Bună",
+    "MESSAGE_DOUBLE_OPTIN_REQUESTED": "Am primit solicitarea dvs. de a vă abona la newsletter-ul nostru:",
+    "CONFIRMATION_REQUEST": "Vă rugăm să confirmați abonamentul.",
+    "ACCEPT": "Da, abonati-ma",
+    "ERROR_EMAIL": "Dacă ați primit acest e-mail din greșeală, ștergeți-l pur și simplu. Nu veți fi abonat dacă nu faceți clic pe butonul de confirmare de mai sus.",
+    "INQUIRIES": "Dacă aveți întrebări sau sugestii, vă rugăm să ne contactați trimițând un e-mail la:",
+    "BEST_REGARDS": "Cu stimă",
+    "COMPANY": "Site Demo"
+}

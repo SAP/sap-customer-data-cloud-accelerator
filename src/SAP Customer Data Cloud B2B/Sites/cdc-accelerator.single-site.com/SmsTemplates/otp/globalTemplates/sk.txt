@@ -1,0 +1,1 @@
+Váš overovací kód je: {{code}}

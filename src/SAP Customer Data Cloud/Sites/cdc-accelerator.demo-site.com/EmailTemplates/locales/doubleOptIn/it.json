@@ -1,0 +1,11 @@
+{
+    "SUBJECT": "Conferma la tua iscrizione",
+    "GREETING": "Ciao",
+    "MESSAGE_DOUBLE_OPTIN_REQUESTED": "Abbiamo ricevuto la tua richiesta di iscrizione alla nostra newsletter:",
+    "CONFIRMATION_REQUEST": "Per favore conferma l'iscrizione.",
+    "ACCEPT": "Sì, Iscrivimi",
+    "ERROR_EMAIL": "Se hai ricevuto questa email per errore, semplicemente eliminala. Non sarai iscritto se non clicchi sul pulsante di conferma sopra.",
+    "INQUIRIES": "Se hai domande o suggerimenti, contattaci inviando un'email a:",
+    "BEST_REGARDS": "Cordiali saluti",
+    "COMPANY": "Sito Demo"
+}
