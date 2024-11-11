@@ -1,0 +1,11 @@
+{
+    "SUBJECT": "Vahvista tilauksesi",
+    "GREETING": "Hei",
+    "MESSAGE_DOUBLE_OPTIN_REQUESTED": "Olemme vastaanottaneet pyyntösi tilata uutiskirjeemme:",
+    "CONFIRMATION_REQUEST": "Ole hyvä ja vahvista tilauksesi.",
+    "ACCEPT": "Kyllä, tilaa minut",
+    "ERROR_EMAIL": "Jos sait tämän sähköpostin vahingossa, hävitä se. Et tilaa, jos et klikkaa yläpuolella olevaa vahvistuspainiketta.",
+    "INQUIRIES": "Jos sinulla on kysymyksiä tai ehdotuksia, ota meihin yhteyttä lähettämällä sähköpostia osoitteeseen:",
+    "BEST_REGARDS": "Ystävällisin terveisin",
+    "COMPANY": "Demo Sivu"
+}

@@ -1,0 +1,11 @@
+{
+    "SUBJECT": "Potvrdite svoju pretplatu",
+    "GREETING": "Pozdrav",
+    "MESSAGE_DOUBLE_OPTIN_REQUESTED": "Primili smo vaš zahtjev za pretplatu na naš newsletter:",
+    "CONFIRMATION_REQUEST": "Molimo potvrdite svoju pretplatu.",
+    "ACCEPT": "Da, pretplatite me",
+    "ERROR_EMAIL": "Ako ste ovu e-poštu primili greškom, jednostavno je obrišite. Nećete biti pretplaćeni ako ne kliknete na gumb za potvrdu iznad.",
+    "INQUIRIES": "Ako imate bilo kakvih upita ili prijedloga, kontaktirajte nas slanjem e-pošte na:",
+    "BEST_REGARDS": "Srdačni pozdravi",
+    "COMPANY": "Demo sajt"
+}

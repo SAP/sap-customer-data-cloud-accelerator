@@ -1,0 +1,56 @@
+{
+    "_api": {},
+    "_data": {
+        "accounts": {
+            "account": {
+                "data": {
+                    "C4CAccountID": {
+                        "_ace": {
+                            "perms": "rw"
+                        }
+                    },
+                    "C4CContactID": {
+                        "_ace": {
+                            "perms": "rw"
+                        }
+                    },
+                    "ceeEmail": {
+                        "_ace": {
+                            "perms": "rw"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "_inherit": [
+        "_3rdPartyPlugins_restricted",
+        "_basicSiteAccess",
+        "_commentsSetupAndSettings_editors",
+        "_consentsApp",
+        "_extensions_editors",
+        "_gmSetup_editors",
+        "_identityAccessDeleteUsersRecords",
+        "_identityAccessUserRecords_editors",
+        "_idx_editors",
+        "_insights",
+        "_moderatorsManagement_editors",
+        "_raasPoliciesAndEmailTamplates",
+        "_raasUiBuilder_limited_access",
+        "_reportsCommunity",
+        "_reportsGamificationAggregated",
+        "_reportsGamificationTopUsers",
+        "_reportsIRank",
+        "_reportsIdentitiesSyndicationAndUsage",
+        "_reportsIdentityQueryTool",
+        "_siteCounters_editors",
+        "_siteDashboardPartialSecretKey",
+        "_siteDashboardSecretKey",
+        "_siteProvidersConfigurationsAndPermissions_editors",
+        "_siteRestrictions_editors",
+        "_sites_restricted",
+        "_viewPartnerAndSiteAuditLog",
+        "_viewSiteAuditLog",
+        "_webhooks"
+    ]
+}

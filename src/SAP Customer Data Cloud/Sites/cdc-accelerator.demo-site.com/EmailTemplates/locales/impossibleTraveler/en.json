@@ -1,0 +1,10 @@
+{
+    "SUBJECT": "Suspicious activity notification",
+    "GREETING": "Dear",
+    "MESSAGE_LOGIN": "We have detected a suspicious login from $countryName.",
+    "IF_MESSAGE": "If this was you, you can safely ignore this email.",
+    "IF_NOT_MESSAGE_1": "If it was not, click",
+    "IF_NOT_MESSAGE_2": "to change your password and recover your account.",
+    "BEST_REGARDS": "Your Friendly Security Team",
+    "COMPANY": "Demo Site"
+}

@@ -1,0 +1,116 @@
+{
+    "registration": {
+        "requireCaptcha": false,
+        "requireSecurityQuestion": false,
+        "requireLoginID": false,
+        "enforceCoppa": false
+    },
+    "gigyaPlugins": {
+        "connectWithoutLoginBehavior": "alwaysLogin",
+        "defaultRegScreenSet": "Default-RegistrationLogin",
+        "defaultMobileRegScreenSet": "Default-RegistrationLogin",
+        "sessionExpiration": 0,
+        "rememberSessionExpiration": 0
+    },
+    "accountOptions": {
+        "verifyEmail": false,
+        "verifyProviderEmail": false,
+        "useCodeVerification": false,
+        "allowUnverifiedLogin": false,
+        "preventLoginIDHarvesting": false,
+        "sendWelcomeEmail": false,
+        "sendAccountDeletedEmail": false,
+        "defaultLanguage": "en",
+        "loginIdentifierConflict": "failOnSiteConflictingIdentity",
+        "loginIdentifiers": "email, providerEmail"
+    },
+    "passwordComplexity": {
+        "minCharGroups": 0,
+        "minLength": 6
+    },
+    "security": {
+        "accountLockout": {
+            "failedLoginThreshold": 0,
+            "lockoutTimeSec": 300,
+            "failedLoginResetSec": 0
+        },
+        "captcha": {
+            "failedLoginThreshold": 0
+        },
+        "ipLockout": {
+            "hourlyFailedLoginThreshold": 0,
+            "lockoutTimeSec": 0
+        },
+        "passwordChangeInterval": 0,
+        "passwordHistorySize": 0,
+        "riskAssessmentWithReCaptchaV3": false,
+        "riskAssessmentWithTransUnion": false,
+        "sendUnknownLocationNotification": false,
+        "signDeviceId": "js_latest"
+    },
+    "emailVerification": {
+        "verificationEmailExpiration": 86400,
+        "autoLogin": false,
+        "defaultLanguage": "en"
+    },
+    "authentication": {
+        "methods": {
+            "password": {
+                "enabled": true
+            },
+            "push": {
+                "enabled": false
+            }
+        }
+    },
+    "doubleOptIn": {
+        "nextURL": "",
+        "defaultLanguage": "en",
+        "confirmationLinkExpiration": 1209600
+    },
+    "emailNotifications": {
+        "welcomeEmailDefaultLanguage": "en",
+        "accountDeletedEmailDefaultLanguage": "en",
+        "confirmationEmailDefaultLanguage": "en"
+    },
+    "passwordReset": {
+        "requireSecurityCheck": false,
+        "tokenExpiration": 3600,
+        "sendConfirmationEmail": false,
+        "defaultLanguage": "en"
+    },
+    "profilePhoto": {
+        "thumbnailWidth": 64,
+        "thumbnailHeight": 64
+    },
+    "federation": {
+        "allowMultipleIdentities": false
+    },
+    "twoFactorAuth": {
+        "providers": [
+            {
+                "name": "gigyaPhone",
+                "enabled": true
+            }
+        ],
+        "emailProvider": {
+            "defaultLanguage": "en"
+        },
+        "smsProvider": {}
+    },
+    "rba": {
+        "riskPolicies": [
+            {
+                "name": "_off"
+            }
+        ],
+        "defaultPolicy": "_off",
+        "allowOverride": "no"
+    },
+    "preferencesCenter": {
+        "defaultLanguage": "en"
+    },
+    "codeVerification": {
+        "defaultLanguage": "en"
+    }
+}

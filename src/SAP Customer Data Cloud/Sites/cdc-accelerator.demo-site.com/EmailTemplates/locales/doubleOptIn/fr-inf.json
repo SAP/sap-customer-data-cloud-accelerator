@@ -1,0 +1,11 @@
+{
+    "SUBJECT": "Confirme ton abonnement",
+    "GREETING": "Salut",
+    "MESSAGE_DOUBLE_OPTIN_REQUESTED": "Nous avons reçu ta demande pour t'abonner à notre newsletter :",
+    "CONFIRMATION_REQUEST": "Merci de confirmer ton abonnement.",
+    "ACCEPT": "Oui, abonne-moi",
+    "ERROR_EMAIL": "Si tu as reçu ce mail par erreur, supprime-le simplement. Tu ne seras pas abonné si tu ne cliques pas sur le bouton de confirmation ci-dessus.",
+    "INQUIRIES": "Si tu as des questions ou des suggestions, contacte-nous en envoyant un mail à :",
+    "BEST_REGARDS": "Cordialement",
+    "COMPANY": "Site Démo"
+}

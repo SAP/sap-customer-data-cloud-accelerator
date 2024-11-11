@@ -1,0 +1,11 @@
+{
+    "SUBJECT": "Potvrďte svoje predplatné",
+    "GREETING": "Ahoj",
+    "MESSAGE_DOUBLE_OPTIN_REQUESTED": "Dostali sme vašu žiadosť o prihlásenie na odber nášho newslettera:",
+    "CONFIRMATION_REQUEST": "Prosím, potvrďte svoje predplatné.",
+    "ACCEPT": "Áno, prihláste ma",
+    "ERROR_EMAIL": "Ak ste tento e-mail dostali omylom, jednoducho ho vymažte. Nebudete prihlásený na odber, ak nekliknete na tlačidlo potvrdenia vyššie.",
+    "INQUIRIES": "Ak máte nejaké otázky alebo návrhy, kontaktujte nás zaslaním e-mailu na:",
+    "BEST_REGARDS": "S pozdravom",
+    "COMPANY": "Ukážková stránka"
+}

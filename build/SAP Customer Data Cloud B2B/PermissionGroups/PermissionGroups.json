@@ -1,0 +1,26 @@
+{
+    "demo_testing_group": {
+        "aclID": "testing_group",
+        "description": "This a test description"
+    },
+    "demo_testing_group_2": {
+        "aclID": "testing_group",
+        "description": "This is the second demo description"
+    },
+    "testing_group": {
+        "aclID": "testing_group",
+        "description": "This a testing description number 2"
+    },
+    "testing_group_guilherme": {
+        "aclID": "testing_group",
+        "description": "This a testing description"
+    },
+    "testing_group_guilherme_2": {
+        "aclID": "testing_group",
+        "description": "This a testing description"
+    },
+    "testing_group_guilherme_3": {
+        "aclID": "testing_group",
+        "description": "This a testing description"
+    }
+}

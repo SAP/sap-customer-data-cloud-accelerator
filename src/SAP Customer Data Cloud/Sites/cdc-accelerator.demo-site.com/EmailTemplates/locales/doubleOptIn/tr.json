@@ -1,0 +1,11 @@
+{
+    "SUBJECT": "Aboneliğinizi Onaylayın",
+    "GREETING": "Merhaba",
+    "MESSAGE_DOUBLE_OPTIN_REQUESTED": "Bültenimize abone olma isteğinizi aldık:",
+    "CONFIRMATION_REQUEST": "Lütfen aboneliğinizi onaylayın.",
+    "ACCEPT": "Evet, Beni Abone Et",
+    "ERROR_EMAIL": "Bu e-postayı yanlışlıkla aldıysanız, lütfen silin. Yukarıdaki onay düğmesine tıklamazsanız abone olmayacaksınız.",
+    "INQUIRIES": "Herhangi bir sorunuz veya öneriniz varsa, lütfen şu adrese e-posta göndererek bizimle iletişime geçin:",
+    "BEST_REGARDS": "Saygılarımızla",
+    "COMPANY": "Demo Sitesi"
+}

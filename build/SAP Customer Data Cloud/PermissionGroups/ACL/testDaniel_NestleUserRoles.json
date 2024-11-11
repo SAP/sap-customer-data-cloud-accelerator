@@ -1,0 +1,341 @@
+{
+    "_api": {
+        "accounts": {
+            "setSchema": {
+                "_ace": {
+                    "perms": "x"
+                },
+                "dataSchema": {
+                    "_ace": {
+                        "perms": "x",
+                        "denyValues": [
+                            "regex(\"^.*$\")"
+                        ]
+                    }
+                },
+                "preferencesSchema": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "profileSchema": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "subscriptionsSchema": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                }
+            }
+        },
+        "admin": {
+            "createGroup": {
+                "_ace": {
+                    "perms": "x"
+                },
+                "groupID": {
+                    "_ace": {
+                        "perms": "x",
+                        "denyValues": [
+                            "regex(\"^.*$\")"
+                        ]
+                    }
+                }
+            },
+            "createSite": {
+                "_ace": {
+                    "perms": "x"
+                },
+                "baseDomain": {
+                    "_ace": {
+                        "perms": "x",
+                        "denyValues": [
+                            "regex(\"^.*$\")"
+                        ]
+                    }
+                }
+            },
+            "deleteGroup": {
+                "_ace": {
+                    "perms": "x"
+                },
+                "groupID": {
+                    "_ace": {
+                        "perms": "x",
+                        "denyValues": [
+                            "regex(\"^.*$\")"
+                        ]
+                    }
+                }
+            },
+            "getPartner": {
+                "_ace": {
+                    "perms": "x"
+                },
+                "full": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "includeSecretKeys": {
+                    "_ace": {
+                        "perms": "-x",
+                        "defaultValues": [
+                            "partial",
+                            "partial",
+                            "partial"
+                        ]
+                    }
+                },
+                "partnerID": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                }
+            },
+            "setSiteConfig": {
+                "_ace": {
+                    "perms": "x"
+                },
+                "abTesting": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "apikey": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "baseDomain": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "captchaProvider": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "description": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "enableDataSharing": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "funCaptcha": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "globalConf": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "invisibleRecaptcha": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "logoutURL": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "overrideBaseDomain": {
+                    "_ace": {
+                        "perms": "x",
+                        "defaultValues": [
+                            true
+                        ]
+                    }
+                },
+                "recaptchaV2": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "settings": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "siteGroupConfig": {
+                    "_ace": {
+                        "perms": "x",
+                        "denyValues": [
+                            "regex(\"^.*$\")"
+                        ]
+                    }
+                },
+                "siteGroupOwner": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "tags": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "trustedShareURLs": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "trustedSiteURLs": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "urlShorteners": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                }
+            },
+            "updateGroup": {
+                "_ace": {
+                    "perms": "x"
+                },
+                "aclID": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "addUsers": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "description": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "groupID": {
+                    "_ace": {
+                        "perms": "x",
+                        "denyValues": [
+                            "prod*"
+                        ]
+                    }
+                },
+                "newGroupID": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "partnerID": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "removeUsers": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "scope": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "setUsers": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                }
+            }
+        },
+        "admin.certificates": {
+            "createRequest": {
+                "_ace": {
+                    "perms": "x"
+                }
+            }
+        },
+        "comments": {
+            "setCategoryInfo": {
+                "_ace": {
+                    "perms": "-x"
+                }
+            },
+            "setModerators": {
+                "_ace": {
+                    "perms": "-x"
+                }
+            }
+        },
+        "fidm.oidc.op": {
+            "createRP": {
+                "_ace": {
+                    "perms": "-x"
+                }
+            },
+            "setConfig": {
+                "_ace": {
+                    "perms": "-x"
+                }
+            }
+        },
+        "fidm.oidc.rp": {
+            "createOP": {
+                "_ace": {
+                    "perms": "-x"
+                }
+            },
+            "delOP": {
+                "_ace": {
+                    "perms": "-x"
+                }
+            },
+            "updateOP": {
+                "_ace": {
+                    "perms": "-x"
+                }
+            }
+        },
+        "socialize": {
+            "getProvidersConfig": {
+                "_ace": {
+                    "perms": "x"
+                },
+                "includeCapabilities": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                },
+                "includeSecretKeys": {
+                    "_ace": {
+                        "perms": "x",
+                        "defaultValues": [
+                            "partial",
+                            "partial",
+                            "partial"
+                        ]
+                    }
+                },
+                "includeSettings": {
+                    "_ace": {
+                        "perms": "x"
+                    }
+                }
+            }
+        }
+    },
+    "_data": {},
+    "_inherit": [
+        "_admins",
+        "_basicSiteAccess",
+        "_extensions_editors",
+        "_webhooks"
+    ]
+}

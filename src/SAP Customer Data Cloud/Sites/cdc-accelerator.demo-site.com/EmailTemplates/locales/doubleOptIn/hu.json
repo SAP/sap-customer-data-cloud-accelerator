@@ -1,0 +1,11 @@
+{
+    "SUBJECT": "Erősítsd meg a feliratkozásodat",
+    "GREETING": "Szia",
+    "MESSAGE_DOUBLE_OPTIN_REQUESTED": "Megkaptuk a hírlevelünkre való feliratkozási kérelmedet:",
+    "CONFIRMATION_REQUEST": "Kérjük, erősítsd meg a feliratkozást.",
+    "ACCEPT": "Igen, iratkozz fel",
+    "ERROR_EMAIL": "Ha tévedésből kaptad ezt az e-mailt, egyszerűen töröld. Nem fogsz feliratkozni, ha nem kattintasz a fenti megerősítő gombra.",
+    "INQUIRIES": "Ha bármilyen kérdésed vagy javaslatod van, kérjük, lépj velünk kapcsolatba e-mail küldésével erre a címre:",
+    "BEST_REGARDS": "Üdvözlettel",
+    "COMPANY": "Demo Site"
+}

@@ -1,0 +1,24 @@
+{
+    "_api": {},
+    "_data": {
+        "accounts": {
+            "account": {
+                "data": {
+                    "_ace": {
+                        "perms": "w"
+                    }
+                },
+                "emails": {
+                    "_ace": {
+                        "perms": "w"
+                    }
+                }
+            }
+        }
+    },
+    "_inherit": [
+        "_basicSiteAccess",
+        "_rolesAndPermissionsManagement",
+        "_usersPartners_ip_restrictions_viewers"
+    ]
+}

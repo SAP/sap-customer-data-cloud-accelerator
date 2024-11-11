@@ -1,0 +1,11 @@
+{
+    "SUBJECT": "Bekreft abonnementet ditt",
+    "GREETING": "Hei",
+    "MESSAGE_DOUBLE_OPTIN_REQUESTED": "Vi har mottatt din forespørsel om å abonnere på vårt nyhetsbrev:",
+    "CONFIRMATION_REQUEST": "Vennligst bekreft abonnementet.",
+    "ACCEPT": "Ja, abonner på meg",
+    "ERROR_EMAIL": "Hvis du ved en feil har mottatt denne e-posten, slett den bare. Du vil ikke bli abonnert hvis du ikke klikker på bekreftelsesknappen ovenfor.",
+    "INQUIRIES": "Hvis du har noen spørsmål eller forslag, vennligst kontakt oss ved å sende en e-post til:",
+    "BEST_REGARDS": "Med vennlig hilsen",
+    "COMPANY": "Demo Nettsted"
+}

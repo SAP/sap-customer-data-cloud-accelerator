@@ -1,0 +1,11 @@
+{
+    "SUBJECT": "Potwierdź swoją subskrypcję",
+    "GREETING": "Cześć",
+    "MESSAGE_DOUBLE_OPTIN_REQUESTED": "Otrzymaliśmy Twoją prośbę o subskrypcję naszego newslettera:",
+    "CONFIRMATION_REQUEST": "Proszę potwierdź subskrypcję.",
+    "ACCEPT": "Tak, zapisz mnie",
+    "ERROR_EMAIL": "Jeśli otrzymałeś/otrzymałaś ten e-mail przez pomyłkę, po prostu go usuń. Nie zostaniesz zapisany/zapisana, jeśli nie klikniesz powyższego przycisku potwierdzenia.",
+    "INQUIRIES": "Jeśli masz jakiekolwiek pytania lub sugestie, skontaktuj się z nami, wysyłając e-mail na adres:",
+    "BEST_REGARDS": "Pozdrawiam",
+    "COMPANY": "Strona Demo"
+}
