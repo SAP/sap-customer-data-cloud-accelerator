@@ -121,3 +121,5 @@ client.test.js
 /cypress/downloads
 
 ./src_example
+./src
+./build
