@@ -9,6 +9,7 @@ on:
 jobs:
   sonar:
     runs-on: ubuntu-latest
+    environment: sonarqube
     steps:
       - uses: actions/checkout@v4
         with:
