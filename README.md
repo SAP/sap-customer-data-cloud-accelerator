@@ -41,7 +41,20 @@ USER_KEY="ex: XXXXXXXX"
 SECRET_KEY="ex: XXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 ```
 
-#### 2.2 Configuration file <a id="single-environment-configuration-file"></a>
+#### 2.2 AOA Usage Tracking Credentials <a id="configuration-aoa-credentials"></a>
+
+The accelerator automatically reports usage to the [Automation Operations & Analytics (AOA)](https://aoa-prod.cfapps.eu10-004.hana.ondemand.com) platform after each successful `deploy`. To enable this, add your AOA credentials to the `.env` file:
+
+```sh
+AOA_CLIENT_ID="your_aoa_client_id"
+AOA_CLIENT_SECRET="your_aoa_client_secret"
+```
+
+Credentials can be requested by contacting a tool contribuitor. If these variables are not set, tracking is silently skipped and the deploy is unaffected.
+
+> Optionally, `AOA_TOKEN_URL` and `AOA_API_URL` can be set to override the default production endpoints (e.g. for testing).
+
+#### 2.3 Configuration file <a id="single-environment-configuration-file"></a>
 
 Edit the file `cdc-accelerator.json` in the project directory and add the `source` site or sites you want to get the initial configuration from and sites to `deploy` to:
 
