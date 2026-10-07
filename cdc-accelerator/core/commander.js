@@ -8,6 +8,8 @@ import { program, Option } from 'commander'
 import Project from '../setup/project.js'
 import Terminal from './terminal.js'
 import Directory from './directory.js'
+import _TrackingToolModule from '@sap_oss/automated-usage-tracking-tool'
+const TrackingTool = _TrackingToolModule.default
 
 export default class Commander {
     async #init(options) {
@@ -24,7 +26,19 @@ export default class Commander {
 
     async #deploy(options) {
         if (await Commander.#doBuild(options)) {
-            await new CLI().main(process, Operations.deploy, options.feature, options.environment)
+            const result = await new CLI().main(process, Operations.deploy, options.feature, options.environment)
+            if (result) {
+                await Commander.#trackUsage(options.feature)
+            }
+        }
+    }
+
+    static async #trackUsage(featureName) {
+        try {
+            const trackingTool = new TrackingTool({ apiKey: '', dataCenter: '' })
+            await trackingTool.trackUsage({ toolName: 'Customer Data Cloud accelerator', featureName })
+        } catch (error) {
+            console.log('\x1b[33m%s\x1b[0m', `AOA tracking failed: ${String(error)}`)
         }
     }
 
