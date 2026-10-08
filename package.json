@@ -53,6 +53,7 @@
         "@babel/cli": "7.23.4",
         "@babel/core": "7.23.7",
         "@babel/preset-env": "7.23.8",
+        "@sap_oss/sap-customer-data-cloud-accelerator": "^1.0.3",
         "babel-cli": "6.26.0",
         "babel-plugin-transform-import-meta": "2.2.1",
         "babel-preset-env": "1.7.0",
@@ -68,6 +69,7 @@
         "start-server-and-test": "^2.0.3"
     },
     "dependencies": {
+        "@sap_oss/automated-usage-tracking-tool": "^1.2.6",
         "axios": "1.6.5",
         "commander": "11.1.0",
         "dotenv": "16.3.1",
