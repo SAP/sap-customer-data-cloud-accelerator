@@ -10,6 +10,11 @@ jest.mock('../terminal.js')
 jest.mock('../cli.js')
 jest.mock('child_process')
 jest.mock('../../setup/project.js')
+jest.mock('@sap_oss/automated-usage-tracking-tool', () => ({
+    default: jest.fn().mockImplementation(() => ({
+        trackUsage: jest.fn().mockResolvedValue(undefined),
+    })),
+}))
 
 describe('Commander test suite', () => {
     let spy, spyProject, spyBabel, spyPrettier, spyServer, spyDirectory
