@@ -1,3 +1,5 @@
+[![REUSE status](https://api.reuse.software/badge/github.com/SAP/sap-customer-data-cloud-accelerator)](https://api.reuse.software/info/github.com/SAP/sap-customer-data-cloud-accelerator)
+
 # Customer Data Cloud Accelerator
 
 ## About The Project <a id="description"></a>
